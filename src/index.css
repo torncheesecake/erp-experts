@@ -1,0 +1,441 @@
+@import "tailwindcss";
+
+/* ========================================
+   Golden Ratio Design System
+   Base: 1rem = 18px, Ratio: 1.618
+   ======================================== */
+
+:root {
+    /* Golden Ratio */
+    --phi: 1.618;
+
+    /* Colours */
+    --color-bg: #ffffff;
+    --color-bg-light: #ffffff;
+    --color-bg-mid: #f7f7f7;
+    --color-bg-dark: #1a1a1a;
+    --color-text: #1a1a1a;
+    --color-text-muted: #333333;
+    --color-text-on-dark: #ffffff;
+    --color-text-on-dark-muted: #a0a0a0;
+    --color-primary: #e6307d;
+    --color-primary-hover: #d42a71;
+    --color-secondary: #6d28d9;
+    --color-secondary-hover: #5b21b6;
+    --color-tertiary: #1e40af;
+    --color-tertiary-hover: #1e3a8a;
+
+    /* Typography Scale - Change --type-ratio to adjust entire scale */
+    --type-ratio: 1.5; /* Perfect Fifth. Try: 1.25 (Major Third), 1.333 (Perfect Thirds), 1.414 (Augmented Fourth), 1.618 (Golden) */
+    --text-small: 1rem;
+    --text-body: 1.125rem;
+    --text-body-lg: calc(1rem * var(--type-ratio));
+    --text-h6: calc(1rem * var(--type-ratio));
+    --text-h5: calc(1rem * var(--type-ratio) * var(--type-ratio));
+    --text-h4: calc(1rem * var(--type-ratio) * var(--type-ratio) * var(--type-ratio));
+    --text-h3: calc(
+        1rem * var(--type-ratio) * var(--type-ratio) * var(--type-ratio) * var(--type-ratio)
+    );
+    --text-h2: calc(
+        1rem * var(--type-ratio) * var(--type-ratio) * var(--type-ratio) * var(--type-ratio) *
+            var(--type-ratio)
+    );
+    --text-h1: calc(
+        1rem * var(--type-ratio) * var(--type-ratio) * var(--type-ratio) * var(--type-ratio) *
+            var(--type-ratio) * var(--type-ratio)
+    );
+
+    /* Spacing Scale - Golden Ratio (base 0.5rem = 8px) */
+    --space-xs: 0.309rem; /* ~5px */
+    --space-sm: 0.5rem; /* ~8px */
+    --space-md: 0.809rem; /* ~13px */
+    --space-lg: 1.309rem; /* ~21px */
+    --space-xl: 2.118rem; /* ~34px */
+    --space-2xl: 3.427rem; /* ~55px */
+    --space-3xl: 5.545rem; /* ~89px */
+    --space-4xl: 8.972rem; /* ~144px */
+    --space-5xl: 14.517rem; /* ~233px */
+
+    /* Font Families */
+    --font-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-heading: "Manrope", sans-serif;
+}
+
+/* ========================================
+   Base Styles
+   ======================================== */
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.618;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   Typography - Semantic Headings
+   ======================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    margin: 0;
+}
+
+h1 {
+    line-height: 1;
+}
+h2 {
+    line-height: 1.05;
+}
+h3 {
+    line-height: 1.1;
+}
+h4 {
+    line-height: 1.15;
+}
+h5 {
+    line-height: 1.2;
+}
+h6 {
+    line-height: 1.272;
+}
+
+/* Mobile-first heading sizes */
+h1 {
+    font-size: var(--text-h4);
+}
+h2 {
+    font-size: var(--text-h5);
+}
+h3 {
+    font-size: var(--text-h5);
+}
+h4 {
+    font-size: var(--text-h6);
+}
+h5 {
+    font-size: var(--text-h6);
+}
+h6 {
+    font-size: var(--text-body-lg);
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+    h1 {
+        font-size: var(--text-h3);
+    }
+    h2 {
+        font-size: var(--text-h4);
+    }
+    h3 {
+        font-size: var(--text-h4);
+    }
+    h4 {
+        font-size: var(--text-h5);
+    }
+    h5 {
+        font-size: var(--text-h6);
+    }
+    h6 {
+        font-size: var(--text-h6);
+    }
+}
+
+/* Desktop and up */
+@media (min-width: 1024px) {
+    h1 {
+        font-size: var(--text-h1);
+    }
+    h2 {
+        font-size: var(--text-h2);
+    }
+    h3 {
+        font-size: var(--text-h3);
+    }
+    h4 {
+        font-size: var(--text-h4);
+    }
+    h5 {
+        font-size: var(--text-h5);
+    }
+    h6 {
+        font-size: var(--text-h6);
+    }
+}
+
+/* ========================================
+   Typography - Tailwind-style Utilities
+   ======================================== */
+
+.text-sm {
+    font-size: var(--text-small);
+} /* 1rem / 18px */
+.text-base {
+    font-size: var(--text-body);
+} /* 1.125rem / ~20px */
+.text-lg {
+    font-size: var(--text-body-lg);
+} /* 1.618rem / ~29px */
+.text-xl {
+    font-size: var(--text-h6);
+} /* 1.618rem / ~29px */
+.text-2xl {
+    font-size: var(--text-h5);
+} /* 2.618rem / ~47px */
+.text-3xl {
+    font-size: var(--text-h4);
+} /* 4.236rem / ~76px */
+.text-4xl {
+    font-size: var(--text-h3);
+} /* 6.854rem / ~123px */
+.text-5xl {
+    font-size: var(--text-h1);
+} /* 11.089rem / ~200px */
+
+/* Responsive hero text - BIG and bold, fills the screen */
+.text-hero {
+    font-size: clamp(var(--text-h3), 18vw, var(--text-h1));
+}
+
+/* Massive stats numbers - like the original wireframe */
+.text-stat {
+    font-size: clamp(4rem, 10vw, 8rem);
+    line-height: 1;
+}
+
+/* Heading font family utility */
+.font-heading {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+}
+
+/* Label Style */
+.text-label {
+    font-size: var(--text-small);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.191em; /* 1/φ² ≈ 0.382, halved for subtlety */
+}
+
+/* Line height utilities - Golden Ratio based */
+.leading-tight {
+    line-height: 1;
+}
+.leading-snug {
+    line-height: 1.272;
+} /* √φ */
+.leading-normal {
+    line-height: 1.618;
+} /* φ */
+.leading-relaxed {
+    line-height: 1.854;
+} /* φ × 1.146 */
+.leading-loose {
+    line-height: 2;
+}
+
+/* ========================================
+   Spacing Utilities
+   ======================================== */
+
+.section-padding {
+    padding: var(--space-2xl) var(--space-lg);
+}
+
+.section-padding-lg {
+    padding: var(--space-3xl) var(--space-lg);
+}
+
+.container {
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+    .section-padding {
+        padding: var(--space-3xl) var(--space-xl);
+    }
+    .section-padding-lg {
+        padding: var(--space-4xl) var(--space-xl);
+    }
+    .container {
+        padding: 0 var(--space-xl);
+    }
+}
+
+/* Desktop and up */
+@media (min-width: 1024px) {
+    .section-padding {
+        padding: var(--space-3xl) var(--space-2xl);
+    }
+    .section-padding-lg {
+        padding: var(--space-4xl) var(--space-2xl);
+    }
+    .container {
+        padding: 0 var(--space-2xl);
+    }
+}
+
+/* Gap utilities */
+.gap-xs {
+    gap: var(--space-xs);
+}
+.gap-sm {
+    gap: var(--space-sm);
+}
+.gap-md {
+    gap: var(--space-md);
+}
+.gap-lg {
+    gap: var(--space-lg);
+}
+.gap-xl {
+    gap: var(--space-xl);
+}
+.gap-2xl {
+    gap: var(--space-2xl);
+}
+
+/* Margin bottom utilities */
+.mb-xs {
+    margin-bottom: var(--space-xs);
+}
+.mb-sm {
+    margin-bottom: var(--space-sm);
+}
+.mb-md {
+    margin-bottom: var(--space-md);
+}
+.mb-lg {
+    margin-bottom: var(--space-lg);
+}
+.mb-xl {
+    margin-bottom: var(--space-xl);
+}
+.mb-2xl {
+    margin-bottom: var(--space-2xl);
+}
+
+/* Padding left utilities */
+.pl-xl {
+    padding-left: var(--space-xl);
+}
+.pl-2xl {
+    padding-left: var(--space-2xl);
+}
+
+/* ========================================
+   Colour Utilities
+   ======================================== */
+
+.text-primary {
+    color: var(--color-primary);
+}
+.text-secondary {
+    color: var(--color-secondary);
+}
+.text-tertiary {
+    color: var(--color-tertiary);
+}
+.text-muted {
+    color: var(--color-text-muted);
+}
+
+.bg-light {
+    background-color: var(--color-bg-light);
+}
+.bg-mid {
+    background-color: var(--color-bg-mid);
+}
+.bg-dark {
+    background-color: var(--color-bg-dark);
+}
+
+/* ========================================
+   Component Styles
+   ======================================== */
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-xl);
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: var(--text-body);
+    transition: transform 0.2s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+.btn-primary {
+    background-color: var(--color-text);
+    color: var(--color-bg);
+}
+
+.btn-accent {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.btn-lg {
+    padding: var(--space-lg) var(--space-2xl);
+    font-size: var(--text-h6);
+}
+
+/* Cards */
+.card {
+    padding: var(--space-xl);
+    border-radius: var(--space-lg);
+    background-color: var(--color-bg-light);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(calc(var(--space-sm) * -1));
+}
+
+/* Icon containers */
+.icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--space-md);
+}
+
+.icon-box-sm {
+    width: var(--space-xl);
+    height: var(--space-xl);
+}
+
+.icon-box-md {
+    width: var(--space-2xl);
+    height: var(--space-2xl);
+}
+
+.icon-box-lg {
+    width: var(--space-3xl);
+    height: var(--space-3xl);
+}

@@ -1,0 +1,626 @@
+/**
+ * ERP Experts Support Page
+ */
+
+import { Link } from "react-router-dom";
+import {
+  ArrowRight,
+  HeartHandshake,
+  Headphones,
+  GraduationCap,
+  Settings,
+  Puzzle,
+  Check,
+  X,
+  MessageSquareQuote,
+  Users,
+  Clock,
+  Shield,
+  Zap,
+} from "lucide-react";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import BackToTop from "./BackToTop";
+
+const plans = [
+  {
+    name: "Bronze",
+    tagline: "Everyday support",
+    desc: "Help-desk support and technical assistance to keep your NetSuite system running smoothly. Essential maintenance and timely updates.",
+    color: "bronze",
+    features: {
+      helpdesk: true,
+      maintenance: true,
+      consulting: false,
+      training: false,
+      apps: false,
+    },
+    highlights: [
+      "Technical help-desk support",
+      "System maintenance & updates",
+      "Security patches applied",
+      "Issue tracking & resolution",
+    ],
+  },
+  {
+    name: "Silver",
+    tagline: "Learn as you grow",
+    desc: "Perfect for teams looking to master NetSuite quickly. Ideal for onboarding new employees or refreshing your team's knowledge.",
+    color: "silver",
+    featured: false,
+    features: {
+      helpdesk: true,
+      maintenance: true,
+      consulting: false,
+      training: true,
+      apps: false,
+    },
+    highlights: [
+      "Everything in Bronze",
+      "Role-specific training sessions",
+      "New starter onboarding",
+      "Knowledge base access",
+    ],
+  },
+  {
+    name: "Gold",
+    tagline: "Your extended team",
+    desc: "More than just support - our business analysts and developers become an extension of your team, driving innovation and growth.",
+    color: "gold",
+    featured: true,
+    features: {
+      helpdesk: true,
+      maintenance: true,
+      consulting: true,
+      training: true,
+      apps: true,
+    },
+    highlights: [
+      "Everything in Silver",
+      "Ongoing consultancy",
+      "Development resources",
+      "Apps & enhancements",
+    ],
+  },
+];
+
+const featureLabels = [
+  {
+    key: "helpdesk",
+    label: "NetSuite Helpdesk",
+    icon: Headphones,
+    desc: "Unused hours roll over",
+    bronze: "10 hrs/month",
+    silver: "20 hrs/month",
+    gold: "50 hrs/month",
+  },
+  {
+    key: "maintenance",
+    label: "NetSuite Maintenance",
+    icon: Settings,
+    desc: "Updates, patches & security",
+    bronze: "Included",
+    silver: "Included",
+    gold: "Priority",
+  },
+  {
+    key: "consulting",
+    label: "NetSuite Consulting",
+    icon: Users,
+    desc: "Strategic guidance & advice",
+    bronze: null,
+    silver: null,
+    gold: "8 hrs/month",
+  },
+  {
+    key: "training",
+    label: "NetSuite Training",
+    icon: GraduationCap,
+    desc: "Upskill your team",
+    bronze: null,
+    silver: "4 sessions/year",
+    gold: "8 sessions/year",
+  },
+  {
+    key: "apps",
+    label: "Apps & Enhancements",
+    icon: Puzzle,
+    desc: "Custom development & integrations",
+    bronze: null,
+    silver: null,
+    gold: "16 hrs/month",
+  },
+];
+
+const benefits = [
+  {
+    icon: Clock,
+    title: "Fast response times",
+    desc: "UK-based support team with quick turnaround on all requests.",
+  },
+  {
+    icon: Shield,
+    title: "Regular updates",
+    desc: "Always kept informed of status, actions taken, and resolution times.",
+  },
+  {
+    icon: Users,
+    title: "Dedicated support",
+    desc: "Your case is managed with honesty, integrity, and clear communication.",
+  },
+  {
+    icon: Zap,
+    title: "Proactive approach",
+    desc: "We help you take advantage of opportunities, not just fix problems.",
+  },
+];
+
+const stats = [
+  { value: "4hr", label: "Avg response" },
+  { value: "98%", label: "Satisfaction" },
+  { value: "500+", label: "Tickets/year" },
+  { value: "24/5", label: "Availability" },
+];
+
+const processSteps = [
+  {
+    num: "01",
+    title: "Raise a ticket",
+    desc: "Submit your request via email, phone, or our client portal. We'll acknowledge it immediately.",
+  },
+  {
+    num: "02",
+    title: "We assess",
+    desc: "Our team reviews the issue, assigns the right specialist, and provides an initial response.",
+  },
+  {
+    num: "03",
+    title: "We resolve",
+    desc: "We work on your request, keeping you updated at every step until it's fully resolved.",
+  },
+  {
+    num: "04",
+    title: "We follow up",
+    desc: "After resolution, we check in to ensure everything's working and document any learnings.",
+  },
+];
+
+export default function Support() {
+  return (
+    <div className="min-h-screen overflow-x-hidden">
+      <Navbar />
+
+      {/* Hero */}
+      <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
+        {/* Offset purple triangle */}
+        <div
+          className="absolute top-1/2 hidden md:block"
+          style={{
+            left: "75%",
+            transform: "translateX(calc(-50% + 80px)) translateY(calc(-50% + 30px))",
+            width: "900px",
+            height: "772px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-secondary)",
+            opacity: 0.2,
+          }}
+        />
+        {/* Main triangle */}
+        <div
+          className="absolute top-1/2 hidden md:block"
+          style={{
+            left: "75%",
+            transform: "translateX(-50%) translateY(-50%)",
+            width: "920px",
+            height: "789px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            overflow: "hidden",
+          }}
+        >
+          <img
+            src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1000&q=80"
+            alt=""
+            className="w-full h-full object-cover"
+            style={{ opacity: 0.5 }}
+          />
+        </div>
+        <div className="container relative z-10">
+          <div className="max-w-5xl">
+            <p className="text-label text-secondary mb-md">Aftercare Support</p>
+            <h1 className="text-hero mb-xl md:mb-2xl">
+              Support that
+              <br />
+              <span className="text-secondary">propels success.</span>
+            </h1>
+            <p className="text-lg md:text-xl text-muted leading-relaxed max-w-[800px] mb-2xl">
+              Your business deserves more than basic support. Our Aftercare plans are built with
+              flexibility in mind, tailored to fit any need or budget. From day-to-day assistance to
+              ongoing development, we've got you covered.
+            </p>
+            <Link
+              to="#plans"
+              className="btn btn-lg w-full sm:w-auto justify-center"
+              style={{ backgroundColor: "var(--color-secondary)", color: "white" }}
+            >
+              View plans
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Spacer */}
+      <div className="h-3xl" />
+
+      {/* Stats */}
+      <section className="py-(--space-xl) md:py-(--space-2xl) border-y border-(--color-text)/10">
+        <div className="container">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-md md:gap-xl">
+            {stats.map((stat, i) => (
+              <div key={i} className="text-center">
+                <p
+                  className={`font-heading text-stat mb-xs ${i % 2 === 1 ? "text-secondary" : ""}`}
+                >
+                  {stat.value}
+                </p>
+                <p className="text-label text-muted">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Intro */}
+      <section className="section-padding-lg border-t border-(--color-text)/10">
+        <div className="container">
+          <div className="grid lg:grid-cols-2 gap-2xl items-center">
+            <div>
+              <p className="text-label text-secondary mb-md">Why aftercare?</p>
+              <h2 className="mb-xl">
+                NetSuite support,
+                <br />
+                <span className="text-secondary">turned on its head.</span>
+              </h2>
+              <p className="text-lg text-muted leading-relaxed mb-lg">
+                Think of NetSuite Aftercare as support reimagined: instead of just dealing with
+                problems that occur, we help you take advantage of the opportunities that NetSuite
+                brings.
+              </p>
+              <p className="text-lg text-muted leading-relaxed">
+                Our support plans are designed to be as unique as your business. From basic
+                help-desk services to advanced consultancy and training, we've created options to
+                suit businesses at every stage. The only limit? Your ambition.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-lg">
+              {benefits.map((benefit, i) => (
+                <div key={i} className="card border-2 border-(--color-text)/10 p-xl">
+                  <div className="icon-box icon-box-md rounded-xl bg-(--color-secondary)/10 mb-lg">
+                    <benefit.icon className="w-5 h-5 text-secondary" />
+                  </div>
+                  <h6 className="mb-sm">{benefit.title}</h6>
+                  <p className="text-sm text-muted">{benefit.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="section-padding-lg border-t border-(--color-text)/10">
+        <div className="container">
+          <div className="text-center mb-2xl md:mb-3xl">
+            <p className="text-label text-secondary mb-md">How it works</p>
+            <h2 className="mb-lg">
+              Simple, transparent <span className="text-secondary">support.</span>
+            </h2>
+            <p className="text-lg text-muted mx-auto max-w-[600px]">
+              From first contact to resolution, we keep things straightforward.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-lg md:gap-xl">
+            {processSteps.map((step, i) => (
+              <div key={i} className="relative">
+                {/* Connector line */}
+                {i < processSteps.length - 1 && (
+                  <div
+                    className="hidden lg:block absolute top-8 left-full w-full h-0.5 bg-(--color-secondary)/20"
+                    style={{ transform: "translateX(-50%)" }}
+                  />
+                )}
+                <div className="text-center">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-(--color-secondary)/10 relative mb-lg">
+                    <span className="font-heading text-2xl text-secondary">{step.num}</span>
+                  </div>
+                  <h5 className="mb-md">{step.title}</h5>
+                  <p className="text-base text-muted">{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonial */}
+      <section className="section-padding-lg border-t border-(--color-text)/10">
+        <div className="container">
+          <div className="max-w-4xl mx-auto text-center">
+            <MessageSquareQuote className="w-16 h-16 md:w-20 md:h-20 text-secondary mx-auto mb-2xl" />
+            <blockquote className="font-heading text-2xl md:text-3xl lg:text-4xl leading-snug mb-2xl">
+              "The support team feels like an extension of our own. They're proactive,
+              knowledgeable, and always <span className="text-secondary">one step ahead</span>."
+            </blockquote>
+            <div className="flex items-center justify-center gap-lg">
+              <div
+                className="relative flex items-end justify-center"
+                style={{
+                  width: "64px",
+                  height: "56px",
+                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                  backgroundColor: "var(--color-secondary)",
+                }}
+              >
+                <HeartHandshake className="w-6 h-6 text-white mb-2" />
+              </div>
+              <div className="text-left">
+                <p className="text-xl font-bold">James Crawford</p>
+                <p className="text-base text-muted">IT Director, Reynolds Distribution</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Plans */}
+      <section id="plans" className="section-padding-lg border-t border-(--color-text)/10">
+        <div className="container">
+          <div className="text-center mb-2xl md:mb-3xl">
+            <p className="text-label text-secondary mb-md">Our plans</p>
+            <h2 className="mb-lg">
+              Gold, Silver, Bronze.
+              <br />
+              <span className="text-secondary">Find your fit.</span>
+            </h2>
+            <p className="text-lg text-muted mx-auto">
+              Whichever plan you choose, you get great service, fast response times, and regular
+              updates from our UK-based support team.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-xl">
+            {plans.map((plan, i) => {
+              const icons = {
+                bronze: Shield,
+                silver: GraduationCap,
+                gold: HeartHandshake,
+              };
+              const PlanIcon = icons[plan.color];
+              return (
+                <div
+                  key={i}
+                  className={`card relative overflow-hidden transition-all duration-300 hover:-translate-y-2 p-2xl ${
+                    plan.featured
+                      ? "border-2 border-(--color-secondary)/40 shadow-xl"
+                      : "border-2 border-(--color-text)/10 hover:border-(--color-secondary)/30"
+                  }`}
+                >
+                  {/* Background number */}
+                  <span
+                    className="absolute -top-6 -right-4 font-heading text-[10rem] leading-none pointer-events-none text-(--color-secondary)"
+                    style={{ opacity: plan.featured ? 0.08 : 0.04 }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+
+                  {plan.featured && (
+                    <div
+                      className="absolute top-0 left-0 right-0 text-center text-sm font-bold text-white py-2"
+                      style={{ backgroundColor: "var(--color-secondary)" }}
+                    >
+                      Most Popular
+                    </div>
+                  )}
+
+                  <div
+                    className="relative z-10"
+                    style={{ marginTop: plan.featured ? "16px" : "0" }}
+                  >
+                    <div
+                      className={`icon-box icon-box-lg rounded-2xl mb-xl ${
+                        plan.featured ? "bg-(--color-secondary)/15" : "bg-(--color-secondary)/10"
+                      }`}
+                    >
+                      <PlanIcon
+                        className={`w-8 h-8 ${plan.featured ? "text-secondary" : "text-secondary"}`}
+                      />
+                    </div>
+
+                    <h3 className={`mb-sm ${plan.featured ? "text-secondary" : ""}`}>
+                      {plan.name}
+                    </h3>
+                    <p className="text-secondary font-medium text-lg mb-lg">{plan.tagline}</p>
+                    <p className="text-base text-muted leading-relaxed">{plan.desc}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Table */}
+      <section className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden">
+        {/* Background triangle */}
+        <div
+          className="absolute hidden md:block pointer-events-none"
+          style={{
+            left: "-300px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: "900px",
+            height: "772px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-secondary)",
+            opacity: 0.06,
+          }}
+        />
+        <div className="container relative z-10">
+          <div className="text-center mb-2xl md:mb-3xl">
+            <p className="text-label text-secondary mb-md">Compare plans</p>
+            <h3 className="mb-lg">
+              See what's included in <span className="text-secondary">each plan.</span>
+            </h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full" style={{ minWidth: "700px" }}>
+              <thead>
+                <tr>
+                  <th className="text-left py-lg pr-lg" style={{ width: "40%" }}></th>
+                  {plans.map((plan, i) => (
+                    <th
+                      key={i}
+                      className="text-center px-lg"
+                      style={{
+                        padding: "28px 24px",
+                        width: "20%",
+                        backgroundColor: plan.featured ? "var(--color-secondary)" : "transparent",
+                        color: plan.featured ? "white" : "inherit",
+                        borderRadius: plan.featured ? "12px 12px 0 0" : "0",
+                      }}
+                    >
+                      <span className="font-heading text-2xl">{plan.name}</span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {featureLabels.map((feature, i) => (
+                  <tr key={i} className="border-b border-(--color-text)/10">
+                    <td className="py-xl pr-xl">
+                      <div className="flex items-center gap-xl">
+                        <div className="icon-box rounded-xl bg-(--color-secondary)/10 shrink-0 w-[56px] h-[56px]">
+                          <feature.icon className="w-6 h-6 text-secondary" />
+                        </div>
+                        <div>
+                          <span className="font-bold text-lg block mb-xs">{feature.label}</span>
+                          <span className="text-base text-muted">{feature.desc}</span>
+                        </div>
+                      </div>
+                    </td>
+                    {plans.map((plan, j) => {
+                      const value = feature[plan.color];
+                      return (
+                        <td
+                          key={j}
+                          className={`text-center py-xl px-lg ${plan.featured ? "bg-[rgba(113,41,123,0.05)]" : ""}`}
+                        >
+                          {value ? (
+                            <span className={`font-bold ${plan.featured ? "text-secondary" : ""}`}>
+                              {value}
+                            </span>
+                          ) : (
+                            <span className="text-muted/40">—</span>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+                {/* Summary row */}
+                <tr>
+                  <td className="py-lg pr-xl">
+                    <span className="font-bold text-base">Total features</span>
+                  </td>
+                  {plans.map((plan, j) => {
+                    const count = Object.values(plan.features).filter(Boolean).length;
+                    return (
+                      <td
+                        key={j}
+                        className={`text-center py-lg px-lg ${plan.featured ? "bg-[rgba(113,41,123,0.05)] rounded-b-xl" : ""}`}
+                      >
+                        <span
+                          className={`font-heading text-2xl ${plan.featured ? "text-secondary" : ""}`}
+                        >
+                          {count}/{featureLabels.length}
+                        </span>
+                      </td>
+                    );
+                  })}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Hours rollover info */}
+          <div className="card bg-(--color-text)/5 border-0 p-xl mt-2xl">
+            <div className="flex items-start gap-lg">
+              <Clock className="w-5 h-5 text-secondary shrink-0 mt-1" />
+              <div>
+                <p className="font-bold mb-sm">Unused hours roll over</p>
+                <p className="text-muted text-sm">
+                  Any unused hours remain valid after your contract ends for up to 6 months. For
+                  more details, see our{" "}
+                  <Link to="/terms" className="text-secondary underline hover:no-underline">
+                    terms and conditions
+                  </Link>
+                  .
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Let's talk callout */}
+          <div className="card border-2 border-(--color-secondary)/30 p-xl mt-lg">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-lg">
+              <div className="flex items-center gap-lg">
+                <div className="icon-box icon-box-lg rounded-2xl bg-(--color-secondary)/10">
+                  <MessageSquareQuote className="w-8 h-8 text-secondary" />
+                </div>
+                <div>
+                  <h5 className="text-secondary mb-xs">Let's talk</h5>
+                  <p className="text-muted">
+                    Not sure which plan fits? Most clients choose Gold for the flexibility —
+                    dedicated consulting, development hours, and training that scales with your
+                    team. We'll help you find the right fit.
+                  </p>
+                </div>
+              </div>
+              <Link
+                to="/contact"
+                className="btn justify-center shrink-0"
+                style={{ backgroundColor: "var(--color-secondary)", color: "white" }}
+              >
+                Get in touch
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="section-padding-lg border-t border-(--color-text)/10">
+        <div className="container text-center">
+          <h3 className="mb-lg">
+            Ready to get <span className="text-secondary">started?</span>
+          </h3>
+          <p className="text-lg text-muted mx-auto max-w-[500px] mb-2xl">
+            Join the businesses already benefiting from proactive NetSuite support.
+          </p>
+          <Link
+            to="/contact"
+            className="btn justify-center"
+            style={{ backgroundColor: "var(--color-secondary)", color: "white" }}
+          >
+            Start your journey
+            <ArrowRight className="w-5 h-5" />
+          </Link>
+        </div>
+      </section>
+
+      <Footer />
+      <BackToTop />
+    </div>
+  );
+}
