@@ -18,12 +18,12 @@
     --color-text-muted: #333333;
     --color-text-on-dark: #ffffff;
     --color-text-on-dark-muted: #a0a0a0;
-    --color-primary: #e6307d;
+    --color-primary: #e83a7a;
     --color-primary-hover: #d42a71;
-    --color-secondary: #6d28d9;
-    --color-secondary-hover: #5b21b6;
-    --color-tertiary: #1e40af;
-    --color-tertiary-hover: #1e3a8a;
+    --color-secondary: #8b3fd9;
+    --color-secondary-hover: #7a32c4;
+    --color-tertiary: #3a7ae8;
+    --color-tertiary-hover: #2d6ad4;
 
     /* Typography Scale - Change --type-ratio to adjust entire scale */
     --type-ratio: 1.5; /* Perfect Fifth. Try: 1.25 (Major Third), 1.333 (Perfect Thirds), 1.414 (Augmented Fourth), 1.618 (Golden) */

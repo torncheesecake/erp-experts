@@ -36,13 +36,7 @@ const coreServices = [
     icon: Rocket,
     title: "Implementation",
     tagline: "Start strong with NetSuite",
-    desc: "Launch your NetSuite system smoothly, without downtime or chaos. Every step - from migrating your data to setting up custom features - is handled for you, so your workflow stays on track.",
-    benefits: [
-      "Full system setup & configuration",
-      "Data migration from any system",
-      "Custom workflows built in",
-      "Team trained and confident",
-    ],
+    desc: "End-to-end NetSuite deployment",
     color: "tertiary",
   },
   {
@@ -50,13 +44,7 @@ const coreServices = [
     icon: Lightbulb,
     title: "Consultancy",
     tagline: "Smarter systems start here",
-    desc: "Every business has unique challenges. We get to the heart of your operations, uncovering inefficiencies and aligning NetSuite with your goals. Clarity, optimised workflows, and long-term success.",
-    benefits: [
-      "Business process analysis",
-      "System architecture design",
-      "Roadmap & strategy planning",
-      "ROI-focused recommendations",
-    ],
+    desc: "Strategic guidance and process optimisation",
     color: "primary",
   },
   {
@@ -64,13 +52,7 @@ const coreServices = [
     icon: Code2,
     title: "Development",
     tagline: "NetSuite, built your way",
-    desc: "No two businesses are the same. We create custom workflows, automate repetitive tasks, and build bespoke solutions that make NetSuite work perfectly for you.",
-    benefits: [
-      "Custom SuiteScripts & workflows",
-      "Bespoke reports & dashboards",
-      "Process automation",
-      "Third-party integrations",
-    ],
+    desc: "Custom scripts, workflows and integrations",
     color: "primary",
   },
   {
@@ -78,13 +60,7 @@ const coreServices = [
     icon: Puzzle,
     title: "Integrations",
     tagline: "Extend your capabilities",
-    desc: "Connect NetSuite with your essential business applications. From Salesforce to Stripe to Zendesk, we create a unified system that enhances efficiency and data accuracy.",
-    benefits: [
-      "eCommerce platforms",
-      "CRM & sales tools",
-      "Payment gateways",
-      "Warehouse & logistics",
-    ],
+    desc: "Connect NetSuite with your business tools",
     color: "primary",
   },
   {
@@ -92,13 +68,7 @@ const coreServices = [
     icon: GraduationCap,
     title: "Training",
     tagline: "The right skills for results",
-    desc: "NetSuite is powerful, but the right training makes all the difference. Tailored programmes designed to fit your team's needs, from one-on-one sessions to group workshops.",
-    benefits: [
-      "Role-specific training",
-      "One-on-one & group sessions",
-      "Documentation & guides",
-      "Ongoing refresher courses",
-    ],
+    desc: "Empower your team to use NetSuite confidently",
     color: "primary",
   },
   {
@@ -106,13 +76,7 @@ const coreServices = [
     icon: HeartHandshake,
     title: "Aftercare",
     tagline: "Success beyond go-live",
-    desc: "Your ERP journey doesn't stop at go-live. Flexible support plans covering troubleshooting, proactive reviews, and performance optimisation as your business evolves.",
-    benefits: [
-      "Fast, expert support",
-      "Proactive system reviews",
-      "Performance optimisation",
-      "Continuous improvements",
-    ],
+    desc: "Ongoing support and optimisation",
     color: "secondary",
   },
 ];
@@ -221,8 +185,7 @@ export default function Services() {
               <span className="text-primary">smarter growth.</span>
             </h1>
             <p className="text-lg md:text-xl text-muted leading-relaxed max-w-[800px] mb-2xl">
-              From first steps to full mastery. Implementation, consultancy, development, and beyond
-              - everything you need to make NetSuite work for you.
+              Everything you need to make NetSuite work for you.
             </p>
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Start a conversation
@@ -243,10 +206,6 @@ export default function Services() {
             <h2 className="mb-lg">
               Six services. <span className="text-primary">One focus.</span>
             </h2>
-            <p className="text-lg text-muted">
-              Whether you're new to NetSuite or refining your current setup, we have the expertise
-              to help you unlock its full potential.
-            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-lg md:gap-xl">
@@ -368,15 +327,8 @@ export default function Services() {
               <h2 className="mb-xl">
                 Start strong with <span className="text-tertiary">NetSuite.</span>
               </h2>
-              <p className="text-lg text-muted leading-relaxed mb-lg">
-                Launch your NetSuite system smoothly, without downtime or chaos. Every step - from
-                migrating your data to setting up custom features - is handled for you, so your
-                workflow stays on track.
-              </p>
               <p className="text-lg text-muted leading-relaxed mb-2xl">
-                Your team starts working confidently from day one, with a solution built for real
-                results. Senior consultants, fixed pricing, and a proven process that's delivered
-                230+ successful go-lives.
+                Senior consultants, fixed pricing, 230+ successful go-lives.
               </p>
               <Link
                 to="/contact"
@@ -467,14 +419,8 @@ export default function Services() {
               <h2 className="mb-xl">
                 Extend your <span className="text-primary">capabilities.</span>
               </h2>
-              <p className="text-lg text-muted leading-relaxed mb-lg">
-                To maximise your NetSuite investment, integrating it with other essential business
-                applications is key. We connect NetSuite with platforms like Salesforce, Stripe, and
-                Zendesk, ensuring a unified system.
-              </p>
               <p className="text-lg text-muted leading-relaxed mb-2xl">
-                By leveraging leading integration platforms such as Celigo and Cyclr, we provide
-                tailored solutions that streamline your operations and support your business growth.
+                Connect NetSuite with Salesforce, Stripe, Zendesk and more.
               </p>
               <Link
                 to="/integrations"
@@ -504,14 +450,8 @@ export default function Services() {
               <h2 className="mb-xl">
                 The right skills for <span className="text-primary">the right results.</span>
               </h2>
-              <p className="text-lg text-muted leading-relaxed mb-lg">
-                NetSuite is powerful, but the right training makes all the difference. Our tailored
-                programmes are designed to fit your team's needs, whether through one-on-one
-                sessions or group workshops.
-              </p>
               <p className="text-lg text-muted leading-relaxed">
-                We'll equip your people with the skills to work confidently, improve productivity,
-                and deliver results. Training that actually sticks.
+                Tailored programmes. Training that actually sticks.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-lg">
@@ -602,14 +542,8 @@ export default function Services() {
               <h2 className="mb-xl">
                 Success beyond <span className="text-secondary whitespace-nowrap">go-live.</span>
               </h2>
-              <p className="text-lg text-muted leading-relaxed mb-lg">
-                Your ERP journey doesn't stop at go-live, and neither does our support. Flexible
-                plans covering everything from troubleshooting and proactive system reviews to
-                performance optimisation.
-              </p>
               <p className="text-lg text-muted leading-relaxed mb-2xl">
-                Whatever your needs, we're here to help every step of the way. Your system grows and
-                evolves alongside your business.
+                Flexible support plans that grow with your business.
               </p>
               <Link
                 to="/support"

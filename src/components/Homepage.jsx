@@ -238,15 +238,20 @@ export default function Homepage() {
         <div className="container">
           <div className="grid lg:grid-cols-3 gap-xl lg:gap-2xl items-center">
             <h2 className="lg:col-span-2">
-              Your ERP shouldn't feel like a<span className="text-primary"> problem</span>. It
-              should feel like a<span className="text-primary"> superpower</span>.
+              Together, we'll make your ERP feel like a
+              <span className="text-primary"> superpower</span>.
             </h2>
             <div className="flex justify-center lg:justify-end">
-              <Zap
-                className="w-32 h-32 md:w-48 md:h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64 text-primary"
-                fill="currentColor"
-                strokeWidth={1}
-              />
+              <div className="w-full aspect-video rounded-2xl overflow-hidden">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/ibCnN1PRpkc"
+                  title="Introduction"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -256,66 +261,30 @@ export default function Homepage() {
       <section className="section-padding-lg">
         <div className="container">
           <div className="text-center mb-xl md:mb-2xl">
-            <p className="text-label text-primary mb-md">Where are you?</p>
-            <h3 className="mb-lg">
-              Two paths. <span className="text-primary">One destination.</span>
-            </h3>
-            <div className="flex justify-center">
-              <Split
-                className="w-12 h-12 md:w-16 md:h-16 text-primary"
-                style={{ transform: "rotate(180deg)" }}
-              />
-            </div>
+            <h3>Which one are you?</h3>
           </div>
 
           <div className="grid md:grid-cols-2 gap-lg md:gap-xl relative">
-            {/* Path 1: Drowning in systems */}
+            {/* Path 1: No ERP yet */}
             <Link
               to="/services#implementation"
               className="group block card p-(--space-xl) md:p-(--space-2xl) relative overflow-hidden border-2 border-(--color-tertiary) hover:border-(--color-tertiary) transition-colors"
             >
               <div className="relative z-10">
-                <div className="flex gap-1 mb-lg">
-                  <div className="icon-box icon-box-sm rounded-xl bg-(--color-tertiary)/10">
-                    <Boxes className="w-4 h-4 text-tertiary" />
-                  </div>
-                  <div className="icon-box icon-box-sm rounded-xl bg-(--color-tertiary)/10 -ml-2 mt-2">
-                    <Boxes className="w-4 h-4 text-tertiary" />
-                  </div>
-                  <div className="icon-box icon-box-sm rounded-xl bg-(--color-tertiary)/10 -ml-2">
-                    <Boxes className="w-4 h-4 text-tertiary" />
-                  </div>
+                <div className="icon-box icon-box-md rounded-2xl bg-(--color-tertiary)/10 mb-lg">
+                  <Boxes className="w-6 h-6 text-tertiary" />
                 </div>
-                <p className="text-label text-tertiary mb-sm">Drowning in systems</p>
-                <h4 className="mb-md">
-                  Five systems. <span className="text-tertiary">Zero visibility.</span>
-                </h4>
-                <p className="text-muted text-base mb-md">
-                  Sales has their CRM. Warehouse has theirs. Finance is somewhere else. Nothing
-                  talks to anything.
-                </p>
-                <ul className="text-base text-muted space-y-sm mb-lg">
-                  <li className="flex items-start gap-sm">
-                    <X className="w-4 h-4 text-tertiary shrink-0 mt-0.5" />
-                    <span>Overselling because stock data is wrong</span>
-                  </li>
-                  <li className="flex items-start gap-sm">
-                    <X className="w-4 h-4 text-tertiary shrink-0 mt-0.5" />
-                    <span>Hours wasted reconciling spreadsheets</span>
-                  </li>
-                  <li className="flex items-start gap-sm">
-                    <X className="w-4 h-4 text-tertiary shrink-0 mt-0.5" />
-                    <span>Customers getting different answers</span>
-                  </li>
-                </ul>
-                <div className="flex items-center gap-sm font-bold text-tertiary">
-                  Get everything in one place
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                <h3 className="mb-lg">
+                  I don't have <span className="text-tertiary">NetSuite</span> yet.
+                </h3>
+                <div className="flex items-center gap-md font-bold text-tertiary text-xl">
+                  Implementation
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
                 </div>
               </div>
             </Link>
 
-            {/* Path 2: NetSuite isn't working */}
+            {/* Path 2: Already have NetSuite */}
             <Link
               to="/services#aftercare"
               className="group block card p-(--space-xl) md:p-(--space-2xl) relative overflow-hidden border-2 border-(--color-secondary) hover:border-(--color-secondary) transition-colors"
@@ -324,29 +293,12 @@ export default function Homepage() {
                 <div className="icon-box icon-box-md rounded-2xl bg-(--color-secondary)/10 mb-lg">
                   <Network className="w-6 h-6 text-secondary" />
                 </div>
-                <p className="text-label text-secondary mb-sm">Got NetSuite, but...</p>
-                <h4 className="mb-md">It's not delivering.</h4>
-                <p className="text-muted text-base mb-md">
-                  You made the investment. But adoption is low, processes are clunky, and you're not
-                  seeing the ROI.
-                </p>
-                <ul className="text-base text-muted space-y-sm mb-lg">
-                  <li className="flex items-start gap-sm">
-                    <X className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
-                    <span>Team still using workarounds</span>
-                  </li>
-                  <li className="flex items-start gap-sm">
-                    <X className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
-                    <span>Reports that don't make sense</span>
-                  </li>
-                  <li className="flex items-start gap-sm">
-                    <X className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
-                    <span>No one to call when things break</span>
-                  </li>
-                </ul>
-                <div className="flex items-center gap-sm font-bold text-secondary">
-                  Get the support you need
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                <h3 className="mb-lg">
+                  I already have <span className="text-secondary">NetSuite</span>.
+                </h3>
+                <div className="flex items-center gap-md font-bold text-secondary text-xl">
+                  Aftercare
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
                 </div>
               </div>
             </Link>
@@ -371,7 +323,8 @@ export default function Homepage() {
                 className="icon-box icon-box-lg rounded-full"
                 style={{
                   background:
-                    "linear-gradient(135deg, var(--color-tertiary), var(--color-secondary))",
+                    "linear-gradient(135deg, var(--color-tertiary) 0%, var(--color-primary) 50%, var(--color-secondary) 100%)",
+                  backgroundSize: "200% 200%",
                 }}
               >
                 <Signpost className="w-8 h-8 text-white" />
@@ -399,63 +352,18 @@ export default function Homepage() {
             className="card p-(--space-xl) md:p-(--space-2xl) lg:p-(--space-3xl) border-2 relative overflow-hidden"
             style={{
               borderImage:
-                "linear-gradient(to right, var(--color-tertiary), var(--color-secondary)) 1",
+                "linear-gradient(to right, var(--color-tertiary), var(--color-primary), var(--color-secondary)) 1",
             }}
           >
-            <div className="grid lg:grid-cols-2 gap-xl lg:gap-2xl items-center">
-              <div>
-                <h3 className="mb-lg">
-                  One platform. <span className="text-primary">Complete clarity.</span>
-                </h3>
-                <p className="text-base md:text-lg text-muted mb-lg leading-relaxed">
-                  NetSuite puts everything in one place. Stock, orders, financials, customers - all
-                  live, all accurate. Your sales team sees what the warehouse sees. No more chasing.
-                  No more "let me check."
-                </p>
-                <div className="flex flex-col sm:flex-row gap-md">
-                  <Link
-                    to="/contact"
-                    className="btn btn-primary btn-lg w-full sm:w-auto justify-center"
-                  >
-                    Start a conversation
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                </div>
-              </div>
-              <div className="flex flex-col gap-lg md:gap-xl">
-                {[
-                  {
-                    icon: Database,
-                    title: "One source of truth",
-                    desc: "Everyone works from the same live data. No more chasing colleagues for updates or reconciling conflicting spreadsheets.",
-                  },
-                  {
-                    icon: Sparkles,
-                    title: "Everything built in",
-                    desc: "CRM, inventory, financials, e-commerce - all native to one platform. No integrations to break, no data to sync.",
-                  },
-                  {
-                    icon: Globe,
-                    title: "Room to grow",
-                    desc: "Add new channels, locations, or subsidiaries without adding systems. NetSuite scales with your ambition.",
-                  },
-                  {
-                    icon: TrendingUp,
-                    title: "Real-time visibility",
-                    desc: "Dashboards that actually mean something. See your whole business at a glance, make decisions with confidence.",
-                  },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-md">
-                    <div className="icon-box icon-box-sm rounded-xl bg-(--color-primary)/10 shrink-0">
-                      <item.icon className="w-4 h-4 text-primary" />
-                    </div>
-                    <div>
-                      <h6 className="mb-xs">{item.title}</h6>
-                      <p className="text-base text-muted">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="text-center">
+              <p className="text-label text-muted mb-md">Both paths lead here</p>
+              <h3 className="mb-2xl">
+                One platform. <span className="text-primary">Complete clarity.</span>
+              </h3>
+              <Link to="/contact" className="btn btn-primary btn-lg justify-center">
+                Start a conversation
+                <ArrowRight className="w-5 h-5" />
+              </Link>
             </div>
           </div>
         </div>
