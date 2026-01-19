@@ -287,9 +287,9 @@ export default function CaseStudyDetail() {
       {/* CTA */}
       <section className="section-padding-lg">
         <div className="container text-center">
-          <h3 className="mb-lg">
-            Ready to unlock <span className="text-primary">similar results?</span>
-          </h3>
+          <h1 className="text-hero" style={{ marginBottom: "var(--space-xl)" }}>
+            Ready for <span className="text-primary">similar results?</span>
+          </h1>
           <p className="text-lg text-muted mx-auto max-w-[500px] mb-2xl">
             Let's discuss how we can help transform your business.
           </p>

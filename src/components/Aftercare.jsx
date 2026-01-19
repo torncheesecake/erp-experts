@@ -103,15 +103,11 @@ export default function Aftercare() {
       <section className="pt-(--space-4xl) pb-(--space-2xl) md:pb-(--space-3xl)">
         <div className="container">
           <p className="text-label text-secondary mb-md md:mb-lg">Aftercare & Support</p>
-          <h1 className="text-hero mb-xl md:mb-2xl">
+          <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
             We're here
             <br />
             <span className="text-secondary">for the long haul.</span>
           </h1>
-          <p className="text-lg md:text-xl text-muted max-w-2xl mb-xl md:mb-2xl">
-            Go-live is just the beginning. Our aftercare services keep your NetSuite running
-            smoothly, your team supported, and your system evolving with your business.
-          </p>
           <button
             className="btn btn-lg text-white w-full sm:w-auto justify-center"
             style={{ backgroundColor: "var(--color-secondary)" }}
@@ -167,15 +163,7 @@ export default function Aftercare() {
           <div className="grid lg:grid-cols-2 gap-xl md:gap-2xl items-center">
             <div>
               <p className="text-label text-secondary mb-sm md:mb-md">Why Aftercare?</p>
-              <h2 className="mb-lg md:mb-xl">Your system needs ongoing care</h2>
-              <p className="text-base md:text-lg text-muted mb-md md:mb-lg">
-                NetSuite is powerful, but it needs attention. Updates, user questions, workflow
-                tweaks, new starters to train - there's always something.
-              </p>
-              <p className="text-base md:text-lg text-muted mb-lg md:mb-xl">
-                Without proper support, small issues become big problems. Staff find workarounds
-                instead of solutions. The system drifts from how your business actually works.
-              </p>
+              <h2 style={{ marginBottom: "var(--space-3xl)" }}>Your system needs ongoing care</h2>
               <div className="flex flex-col gap-3 md:gap-5">
                 {[
                   "Expert help when you need it",

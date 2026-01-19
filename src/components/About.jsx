@@ -65,20 +65,14 @@ export default function About() {
       <section className="pt-(--space-4xl) pb-(--space-2xl) md:pb-(--space-3xl)">
         <div className="container">
           <div className="max-w-5xl">
-            <p className="text-label text-primary mb-md md:mb-lg">About Us</p>
-            <h1 className="text-hero mb-xl md:mb-2xl">
+            <p className="text-label text-primary" style={{ marginBottom: "var(--space-lg)" }}>
+              About Us
+            </p>
+            <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
               Empowering
               <br />
               <span className="text-primary">businesses.</span>
             </h1>
-            <p
-              className="text-lg md:text-xl text-muted mb-xl md:mb-2xl"
-              style={{ maxWidth: "800px" }}
-            >
-              At ERP Experts, we don't just implement ERP systems – we unlock your business's
-              potential. As an accredited NetSuite 3* Solutions Provider, we've successfully
-              delivered over 230 tailored ERP projects.
-            </p>
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Work with us
               <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
@@ -88,7 +82,10 @@ export default function About() {
       </section>
 
       {/* Stats */}
-      <section className="py-(--space-xl) md:py-(--space-2xl) border-y border-(--color-text)/10">
+      <section
+        style={{ padding: "var(--space-2xl) 0" }}
+        className="border-y border-(--color-text)/10"
+      >
         <div className="container">
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-md md:gap-xl">
             {stats.map((stat, i) => (
@@ -106,19 +103,19 @@ export default function About() {
       {/* Solutions as Unique */}
       <section className="section-padding-lg">
         <div className="container">
-          <div className="grid lg:grid-cols-2 gap-xl md:gap-2xl items-center">
+          <div className="grid lg:grid-cols-2 gap-2xl items-center">
             <div>
-              <p className="text-label text-primary mb-sm md:mb-md">Our Approach</p>
-              <h2 className="mb-lg md:mb-xl">Solutions as unique as your business</h2>
-              <p className="text-base md:text-lg text-muted mb-md md:mb-lg">
-                Your business is one of a kind, and so are its challenges. We understand that no two
-                companies have the same needs.
+              <p className="text-label text-primary" style={{ marginBottom: "var(--space-lg)" }}>
+                Our Approach
               </p>
-              <p className="text-base md:text-lg text-muted">
-                That's why we design tailored NetSuite solutions, not cookie-cutter implementations.
-                Whether it's addressing operational pain points, providing ongoing support, or
-                helping your team with bespoke training, our focus is always on solutions that align
-                with your goals.
+              <h3 style={{ marginBottom: "var(--space-xl)" }}>
+                Solutions as unique as your business
+              </h3>
+              <p className="text-base text-muted leading-relaxed">
+                We understand that no two businesses are alike. That's why we take the time to
+                understand your specific challenges, workflows, and goals before designing a
+                NetSuite solution that fits your needs perfectly. Our consultants work alongside
+                your team to ensure every implementation delivers real, measurable results.
               </p>
             </div>
             <div className="relative">
@@ -138,21 +135,19 @@ export default function About() {
       {/* Our Process */}
       <section className="section-padding-lg">
         <div className="container">
-          <div className="grid lg:grid-cols-2 gap-xl md:gap-2xl items-center">
+          <div className="grid lg:grid-cols-2 gap-2xl items-center">
             <div className="lg:order-2">
-              <p className="text-label text-primary mb-sm md:mb-md">Our Process</p>
-              <h2 className="mb-lg md:mb-xl">Driven by passion, backed by expertise</h2>
-              <p className="text-base md:text-lg text-muted mb-md md:mb-lg">
-                We've developed a proprietary implementation process that blends the latest software
-                engineering techniques with proven change management strategies.
+              <p className="text-label text-primary" style={{ marginBottom: "var(--space-lg)" }}>
+                Our Process
               </p>
-              <p className="text-base md:text-lg text-muted mb-md md:mb-lg">
-                Our NetSuite aftercare and advanced support plans ensure your system stays optimised
-                as your business grows and evolves.
-              </p>
-              <p className="text-base md:text-lg text-muted">
-                When you work with us, you're not just upgrading your systems – you're unlocking the
-                full potential of your business.
+              <h3 style={{ marginBottom: "var(--space-xl)" }}>
+                Driven by passion, backed by expertise
+              </h3>
+              <p className="text-base text-muted leading-relaxed">
+                Our team brings together decades of ERP experience with a genuine enthusiasm for
+                helping businesses succeed. From initial discovery through to go-live and beyond, we
+                combine proven methodologies with innovative thinking to deliver implementations
+                that transform the way you work.
               </p>
             </div>
             <div className="lg:order-1">
@@ -174,19 +169,24 @@ export default function About() {
       </section>
 
       {/* Values */}
-      <section className="section-padding border-t border-(--color-text)/10">
+      <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
-          <div className="text-center mb-xl md:mb-2xl">
-            <p className="text-label text-primary mb-sm md:mb-md">Why Us</p>
-            <h2>Why businesses choose ERP Experts</h2>
+          <div className="text-center" style={{ marginBottom: "var(--space-3xl)" }}>
+            <p className="text-label text-primary" style={{ marginBottom: "var(--space-lg)" }}>
+              Why Us
+            </p>
+            <h3>Why businesses choose ERP Experts</h3>
           </div>
-          <div className="grid md:grid-cols-2 gap-md md:gap-xl">
+          <div className="grid md:grid-cols-2 gap-lg">
             {values.map((value, i) => (
-              <div key={i} className="card p-(--space-xl) md:p-(--space-2xl)">
-                <div className="icon-box icon-box-md rounded-2xl bg-(--color-primary)/10 mb-lg md:mb-xl">
+              <div key={i} className="card" style={{ padding: "var(--space-2xl)" }}>
+                <div
+                  className="icon-box icon-box-md rounded-2xl bg-(--color-primary)/10"
+                  style={{ marginBottom: "var(--space-xl)" }}
+                >
                   <value.icon className="w-6 md:w-8 h-6 md:h-8 text-primary" />
                 </div>
-                <h5 className="mb-md md:mb-lg">{value.title}</h5>
+                <h5 style={{ marginBottom: "var(--space-lg)" }}>{value.title}</h5>
                 <p className="text-base text-muted leading-relaxed">{value.desc}</p>
               </div>
             ))}
@@ -195,26 +195,30 @@ export default function About() {
       </section>
 
       {/* Team Expertise */}
-      <section className="section-padding">
+      <section className="section-padding-lg">
         <div className="container">
-          <div className="text-center mb-xl md:mb-2xl">
-            <p className="text-label text-primary mb-sm md:mb-md">Our Team</p>
+          <div className="text-center" style={{ marginBottom: "var(--space-3xl)" }}>
+            <p className="text-label text-primary" style={{ marginBottom: "var(--space-lg)" }}>
+              Our Team
+            </p>
             <h3>NetSuite-certified specialists</h3>
           </div>
-          <p className="text-base md:text-lg text-muted text-center mb-xl md:mb-2xl max-w-3xl mx-auto">
-            From business consultants and process analysts to software engineers, we bring a deep
-            understanding of technology and business operations to every project.
-          </p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-md md:gap-xl">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg">
             {teamRoles.map((role, i) => (
               <div
                 key={i}
-                className="bg-(--color-bg-light) rounded-2xl p-(--space-lg) md:p-(--space-xl) text-center"
+                className="bg-(--color-bg-light) rounded-2xl text-center"
+                style={{ padding: "var(--space-xl)" }}
               >
-                <div className="icon-box icon-box-md rounded-full bg-(--color-primary) mx-auto mb-md md:mb-lg">
+                <div
+                  className="icon-box icon-box-md rounded-full bg-(--color-primary) mx-auto"
+                  style={{ marginBottom: "var(--space-lg)" }}
+                >
                   <role.icon className="w-5 md:w-6 h-5 md:h-6 text-white" />
                 </div>
-                <p className="text-base font-bold mb-xs md:mb-sm">{role.title}</p>
+                <p className="text-base font-bold" style={{ marginBottom: "var(--space-sm)" }}>
+                  {role.title}
+                </p>
                 <p className="text-base text-muted">{role.desc}</p>
               </div>
             ))}
@@ -223,21 +227,20 @@ export default function About() {
       </section>
 
       {/* Clients */}
-      <section className="section-padding border-t border-(--color-text)/10">
+      <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
-          <div className="text-center mb-xl md:mb-2xl">
-            <p className="text-label text-primary mb-sm md:mb-md">Our Clients</p>
+          <div className="text-center" style={{ marginBottom: "var(--space-3xl)" }}>
+            <p className="text-label text-primary" style={{ marginBottom: "var(--space-lg)" }}>
+              Our Clients
+            </p>
             <h3>Join our satisfied clients</h3>
           </div>
-          <p className="text-base md:text-lg text-muted text-center mb-xl md:mb-2xl max-w-2xl mx-auto">
-            We've supported businesses across various industries, helping them unlock the power of
-            NetSuite to drive growth and efficiency.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-md md:gap-xl">
+          <div className="flex flex-wrap items-center justify-center gap-lg">
             {clients.map((client, i) => (
               <div
                 key={i}
-                className="h-12 md:h-16 px-lg md:px-2xl rounded-2xl flex items-center justify-center bg-(--color-bg-light)"
+                className="rounded-2xl flex items-center justify-center bg-(--color-bg-light)"
+                style={{ height: "4rem", padding: "0 var(--space-2xl)" }}
               >
                 <span className="text-base font-bold text-muted">{client}</span>
               </div>
@@ -249,12 +252,9 @@ export default function About() {
       {/* CTA */}
       <section className="section-padding-lg">
         <div className="container text-center">
-          <h3 className="mb-lg">
-            Ready to unlock your <span className="text-primary">business potential?</span>
-          </h3>
-          <p className="text-lg text-muted mx-auto max-w-[500px] mb-2xl">
-            Let's have a conversation about your NetSuite journey.
-          </p>
+          <h1 className="text-hero" style={{ marginBottom: "var(--space-3xl)" }}>
+            Unlock your <span className="text-primary">business potential.</span>
+          </h1>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Start a conversation

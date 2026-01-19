@@ -44,10 +44,6 @@ export default function Contact() {
               <br />
               <span className="text-primary">talk.</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted" style={{ maxWidth: "800px" }}>
-              Ready to transform your business with NetSuite? Have questions about our services?
-              We'd love to hear from you.
-            </p>
           </div>
         </div>
       </section>
@@ -95,10 +91,7 @@ export default function Contact() {
 
             {/* Contact Info */}
             <div>
-              <h2 className="mb-lg md:mb-xl">Get in touch</h2>
-              <p className="text-base md:text-lg text-muted mb-xl md:mb-2xl">
-                Prefer to reach out directly? Here's how you can contact us.
-              </p>
+              <h2 style={{ marginBottom: "var(--space-3xl)" }}>Get in touch</h2>
               <div className="flex flex-col gap-lg md:gap-xl">
                 {contactMethods.map((method, i) => (
                   <div key={i} className="flex gap-lg md:gap-xl">
@@ -120,10 +113,6 @@ export default function Contact() {
                   <Clock className="w-5 h-5 text-primary" />
                   <p className="text-label">Response Time</p>
                 </div>
-                <p className="text-base md:text-lg text-muted">
-                  We aim to respond to all enquiries within 24 hours during business days. For
-                  urgent matters, give us a call.
-                </p>
               </div>
             </div>
           </div>
@@ -135,11 +124,12 @@ export default function Contact() {
         <div className="container">
           <div className="rounded-3xl bg-dark p-(--space-xl) md:p-(--space-3xl) text-center">
             <p className="text-label text-primary mb-sm md:mb-md">Free Assessment</p>
-            <h3 className="text-(--color-text-on-dark) mb-lg md:mb-xl">Not sure where to start?</h3>
-            <p className="text-base md:text-lg text-(--color-text-on-dark-muted) mb-xl md:mb-2xl max-w-2xl mx-auto">
-              Get your free NETscore assessment. We'll analyse your current systems and show you
-              exactly how NetSuite could transform your business.
-            </p>
+            <h3
+              className="text-(--color-text-on-dark)"
+              style={{ marginBottom: "var(--space-3xl)" }}
+            >
+              Not sure where to start?
+            </h3>
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Get your free NETscore
               <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
@@ -151,13 +141,10 @@ export default function Contact() {
       {/* Final CTA */}
       <section className="section-padding-lg">
         <div className="container text-center">
-          <h1 className="text-hero mb-xl md:mb-2xl">
+          <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
             Ready to unlock your
             <span className="block text-primary">business potential?</span>
           </h1>
-          <p className="text-lg md:text-xl text-muted mb-2xl md:mb-3xl max-w-xl mx-auto">
-            Let's have a conversation about how we can help.
-          </p>
           <div className="flex flex-col sm:flex-row gap-md md:gap-lg justify-center">
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Book a call

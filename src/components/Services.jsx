@@ -179,14 +179,11 @@ export default function Services() {
         <div className="container relative z-10">
           <div>
             <p className="text-label text-primary mb-md">Our Services</p>
-            <h1 className="text-hero max-w-[1000px] mb-xl md:mb-2xl">
+            <h1 className="text-hero max-w-[1000px]" style={{ marginBottom: "var(--space-4xl)" }}>
               Tailored services for
               <br />
               <span className="text-primary">smarter growth.</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted leading-relaxed max-w-[800px] mb-2xl">
-              Everything you need to make NetSuite work for you.
-            </p>
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Start a conversation
               <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
@@ -203,7 +200,7 @@ export default function Services() {
         <div className="container">
           <div className="mb-2xl md:mb-3xl">
             <p className="text-label text-primary mb-sm md:mb-md">What we do</p>
-            <h2 className="mb-lg">
+            <h2>
               Six services. <span className="text-primary">One focus.</span>
             </h2>
           </div>
@@ -272,17 +269,13 @@ export default function Services() {
           }}
         />
         <div className="container relative z-10">
-          <div className="text-center mb-3xl">
+          <div className="text-center" style={{ marginBottom: "var(--space-4xl)" }}>
             <p className="text-label text-primary mb-md">Our methodology</p>
-            <h2 className="mb-xl">
+            <h2>
               The <span className="text-primary">5C</span>
               <br />
               Implementation Process
             </h2>
-            <p className="text-lg text-muted mx-auto max-w-[1100px]">
-              Developed from 230+ successful implementations, our proprietary process combines
-              software engineering with change management best practice and agile methodologies.
-            </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-lg md:gap-xl">
             {processSteps.map((step, i) => (
@@ -295,7 +288,7 @@ export default function Services() {
                   />
                 )}
                 <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-(--color-primary)/10 mb-xl relative mt-xl">
+                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-(--color-primary)/10 mb-xl relative">
                     <step.icon className="w-8 h-8 text-primary" />
                     <span className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-(--color-primary) text-white text-sm font-bold flex items-center justify-center">
                       {step.num.replace("0", "")}
@@ -324,12 +317,9 @@ export default function Services() {
           <div className="grid lg:grid-cols-2 gap-2xl lg:gap-3xl items-center">
             <div>
               <p className="text-label text-tertiary mb-md">Implementation</p>
-              <h2 className="mb-xl">
+              <h2 style={{ marginBottom: "var(--space-3xl)" }}>
                 Start strong with <span className="text-tertiary">NetSuite.</span>
               </h2>
-              <p className="text-lg text-muted leading-relaxed mb-2xl">
-                Senior consultants, fixed pricing, 230+ successful go-lives.
-              </p>
               <Link
                 to="/contact"
                 className="btn btn-lg w-full sm:w-auto justify-center bg-(--color-tertiary) text-white hover:opacity-90"
@@ -386,50 +376,57 @@ export default function Services() {
         id="integrations"
         className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden"
       >
-        <Puzzle
-          className="absolute left-0 top-1/2 -translate-y-1/2 w-[25rem] h-[25rem] text-primary opacity-[0.04] pointer-events-none hidden lg:block"
-          strokeWidth={0.5}
-          style={{ transform: "translateX(-30%) translateY(-50%)" }}
-        />
         <div className="container relative z-10">
-          <div className="grid lg:grid-cols-2 gap-2xl lg:gap-3xl items-center">
-            <div className="order-2 lg:order-1">
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-md">
-                {[
-                  "Shopify",
-                  "Salesforce",
-                  "Stripe",
-                  "Zendesk",
-                  "Magento",
-                  "HubSpot",
-                  "Celigo",
-                  "Cyclr",
-                ].map((platform, i) => (
-                  <div
-                    key={i}
-                    className="card border-2 border-(--color-text)/10 text-center hover:border-(--color-primary)/30 hover:-translate-y-1 transition-all p-lg"
-                  >
-                    <p className="font-bold text-base">{platform}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="order-1 lg:order-2">
-              <p className="text-label text-primary mb-md">Integrations</p>
-              <h2 className="mb-xl">
-                Extend your <span className="text-primary">capabilities.</span>
-              </h2>
-              <p className="text-lg text-muted leading-relaxed mb-2xl">
-                Connect NetSuite with Salesforce, Stripe, Zendesk and more.
-              </p>
-              <Link
-                to="/integrations"
-                className="btn btn-primary btn-lg w-full sm:w-auto justify-center"
+          <div className="text-center mb-2xl">
+            <p className="text-label text-primary mb-md">Integrations</p>
+            <h3>
+              Connect NetSuite to <span className="text-primary">everything.</span>
+            </h3>
+          </div>
+        </div>
+
+        {/* Marquee banner */}
+        <div className="relative overflow-hidden py-2xl">
+          <div
+            className="flex gap-xl animate-marquee"
+            style={{
+              animation: "marquee 30s linear infinite",
+            }}
+          >
+            {[
+              "Shopify",
+              "Salesforce",
+              "Stripe",
+              "Zendesk",
+              "Magento",
+              "HubSpot",
+              "Celigo",
+              "Cyclr",
+              "PayPal",
+              "WooCommerce",
+              "BigCommerce",
+              "Xero",
+              "Shopify",
+              "Salesforce",
+              "Stripe",
+              "Zendesk",
+              "Magento",
+              "HubSpot",
+              "Celigo",
+              "Cyclr",
+              "PayPal",
+              "WooCommerce",
+              "BigCommerce",
+              "Xero",
+            ].map((platform, i) => (
+              <div
+                key={i}
+                className="shrink-0 rounded-xl bg-(--color-primary)/5 border border-(--color-primary)/10"
+                style={{ padding: "var(--space-lg) var(--space-2xl)" }}
               >
-                Explore integrations
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
+                <p className="font-bold text-lg whitespace-nowrap">{platform}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -447,12 +444,9 @@ export default function Services() {
           <div className="grid lg:grid-cols-2 gap-2xl lg:gap-3xl items-center">
             <div>
               <p className="text-label text-primary mb-md">Training</p>
-              <h2 className="mb-xl">
+              <h2>
                 The right skills for <span className="text-primary">the right results.</span>
               </h2>
-              <p className="text-lg text-muted leading-relaxed">
-                Tailored programmes. Training that actually sticks.
-              </p>
             </div>
             <div className="grid grid-cols-2 gap-lg">
               {[
@@ -539,12 +533,9 @@ export default function Services() {
             </div>
             <div className="order-1 lg:order-2">
               <p className="text-label text-secondary mb-md">Aftercare</p>
-              <h2 className="mb-xl">
+              <h2 style={{ marginBottom: "var(--space-3xl)" }}>
                 Success beyond <span className="text-secondary whitespace-nowrap">go-live.</span>
               </h2>
-              <p className="text-lg text-muted leading-relaxed mb-2xl">
-                Flexible support plans that grow with your business.
-              </p>
               <Link
                 to="/support"
                 className="btn btn-lg w-full sm:w-auto justify-center bg-(--color-secondary) text-white hover:opacity-90"
@@ -572,14 +563,9 @@ export default function Services() {
         <div className="container relative z-10">
           <div className="mb-2xl md:mb-3xl">
             <p className="text-label text-primary mb-md">Beyond NetSuite</p>
-            <h2 className="mb-lg">
+            <h2>
               Oracle Fusion <span className="text-primary">Consulting</span>
             </h2>
-            <p className="text-lg text-muted max-w-[800px]">
-              Take your business further with Oracle Fusion. Expert consulting across the full
-              suite, helping you streamline operations, empower your people, and unlock deeper
-              insights.
-            </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-lg">
             {oracleFusionServices.map((service, i) => (
@@ -632,12 +618,9 @@ export default function Services() {
       {/* Final CTA */}
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container text-center">
-          <h3 className="mb-lg">
-            Not sure where to <span className="text-primary">start?</span>
-          </h3>
-          <p className="text-lg text-muted mx-auto max-w-[500px] mb-2xl">
-            Let's have a conversation. We'll help you figure out the best path forward.
-          </p>
+          <h1 className="text-hero" style={{ marginBottom: "var(--space-3xl)" }}>
+            Ready to<span className="text-primary"> get started?</span>
+          </h1>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
             <Link to="/contact" className="btn btn-primary justify-center">
               Book a call

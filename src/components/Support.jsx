@@ -227,16 +227,11 @@ export default function Support() {
         <div className="container relative z-10">
           <div className="max-w-5xl">
             <p className="text-label text-secondary mb-md">Aftercare Support</p>
-            <h1 className="text-hero mb-xl md:mb-2xl">
+            <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
               Support that
               <br />
               <span className="text-secondary">propels success.</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted leading-relaxed max-w-[800px] mb-2xl">
-              Your business deserves more than basic support. Our Aftercare plans are built with
-              flexibility in mind, tailored to fit any need or budget. From day-to-day assistance to
-              ongoing development, we've got you covered.
-            </p>
             <Link
               to="#plans"
               className="btn btn-lg w-full sm:w-auto justify-center"
@@ -276,21 +271,9 @@ export default function Support() {
           <div className="grid lg:grid-cols-2 gap-2xl items-center">
             <div>
               <p className="text-label text-secondary mb-md">Why aftercare?</p>
-              <h2 className="mb-xl">
-                NetSuite support,
-                <br />
-                <span className="text-secondary">turned on its head.</span>
-              </h2>
-              <p className="text-lg text-muted leading-relaxed mb-lg">
-                Think of NetSuite Aftercare as support reimagined: instead of just dealing with
-                problems that occur, we help you take advantage of the opportunities that NetSuite
-                brings.
-              </p>
-              <p className="text-lg text-muted leading-relaxed">
-                Our support plans are designed to be as unique as your business. From basic
-                help-desk services to advanced consultancy and training, we've created options to
-                suit businesses at every stage. The only limit? Your ambition.
-              </p>
+              <h3>
+                NetSuite support, <span className="text-secondary">turned on its head.</span>
+              </h3>
             </div>
             <div className="grid grid-cols-2 gap-lg">
               {benefits.map((benefit, i) => (
@@ -312,12 +295,9 @@ export default function Support() {
         <div className="container">
           <div className="text-center mb-2xl md:mb-3xl">
             <p className="text-label text-secondary mb-md">How it works</p>
-            <h2 className="mb-lg">
+            <h3>
               Simple, transparent <span className="text-secondary">support.</span>
-            </h2>
-            <p className="text-lg text-muted mx-auto max-w-[600px]">
-              From first contact to resolution, we keep things straightforward.
-            </p>
+            </h3>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-lg md:gap-xl">
             {processSteps.map((step, i) => (
@@ -333,7 +313,7 @@ export default function Support() {
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-(--color-secondary)/10 relative mb-lg">
                     <span className="font-heading text-2xl text-secondary">{step.num}</span>
                   </div>
-                  <h5 className="mb-md">{step.title}</h5>
+                  <h6 className="mb-md">{step.title}</h6>
                   <p className="text-base text-muted">{step.desc}</p>
                 </div>
               </div>
@@ -375,247 +355,83 @@ export default function Support() {
       {/* Plans */}
       <section id="plans" className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
-          <div className="text-center mb-2xl md:mb-3xl">
+          <div className="text-center" style={{ marginBottom: "var(--space-3xl)" }}>
             <p className="text-label text-secondary mb-md">Our plans</p>
-            <h2 className="mb-lg">
-              Gold, Silver, Bronze.
-              <br />
-              <span className="text-secondary">Find your fit.</span>
-            </h2>
-            <p className="text-lg text-muted mx-auto">
-              Whichever plan you choose, you get great service, fast response times, and regular
-              updates from our UK-based support team.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-xl">
-            {plans.map((plan, i) => {
-              const icons = {
-                bronze: Shield,
-                silver: GraduationCap,
-                gold: HeartHandshake,
-              };
-              const PlanIcon = icons[plan.color];
-              return (
-                <div
-                  key={i}
-                  className={`card relative overflow-hidden transition-all duration-300 hover:-translate-y-2 p-2xl ${
-                    plan.featured
-                      ? "border-2 border-(--color-secondary)/40 shadow-xl"
-                      : "border-2 border-(--color-text)/10 hover:border-(--color-secondary)/30"
-                  }`}
-                >
-                  {/* Background number */}
-                  <span
-                    className="absolute -top-6 -right-4 font-heading text-[10rem] leading-none pointer-events-none text-(--color-secondary)"
-                    style={{ opacity: plan.featured ? 0.08 : 0.04 }}
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-
-                  {plan.featured && (
-                    <div
-                      className="absolute top-0 left-0 right-0 text-center text-sm font-bold text-white py-2"
-                      style={{ backgroundColor: "var(--color-secondary)" }}
-                    >
-                      Most Popular
-                    </div>
-                  )}
-
-                  <div
-                    className="relative z-10"
-                    style={{ marginTop: plan.featured ? "16px" : "0" }}
-                  >
-                    <div
-                      className={`icon-box icon-box-lg rounded-2xl mb-xl ${
-                        plan.featured ? "bg-(--color-secondary)/15" : "bg-(--color-secondary)/10"
-                      }`}
-                    >
-                      <PlanIcon
-                        className={`w-8 h-8 ${plan.featured ? "text-secondary" : "text-secondary"}`}
-                      />
-                    </div>
-
-                    <h3 className={`mb-sm ${plan.featured ? "text-secondary" : ""}`}>
-                      {plan.name}
-                    </h3>
-                    <p className="text-secondary font-medium text-lg mb-lg">{plan.tagline}</p>
-                    <p className="text-base text-muted leading-relaxed">{plan.desc}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Comparison Table */}
-      <section className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden">
-        {/* Background triangle */}
-        <div
-          className="absolute hidden md:block pointer-events-none"
-          style={{
-            left: "-300px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            width: "900px",
-            height: "772px",
-            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-            backgroundColor: "var(--color-secondary)",
-            opacity: 0.06,
-          }}
-        />
-        <div className="container relative z-10">
-          <div className="text-center mb-2xl md:mb-3xl">
-            <p className="text-label text-secondary mb-md">Compare plans</p>
-            <h3 className="mb-lg">
-              See what's included in <span className="text-secondary">each plan.</span>
+            <h3>
+              Bronze, Silver, Gold. <span className="text-secondary">Find your fit.</span>
             </h3>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full" style={{ minWidth: "700px" }}>
-              <thead>
-                <tr>
-                  <th className="text-left py-lg pr-lg" style={{ width: "40%" }}></th>
-                  {plans.map((plan, i) => (
-                    <th
-                      key={i}
-                      className="text-center px-lg"
-                      style={{
-                        padding: "28px 24px",
-                        width: "20%",
-                        backgroundColor: plan.featured ? "var(--color-secondary)" : "transparent",
-                        color: plan.featured ? "white" : "inherit",
-                        borderRadius: plan.featured ? "12px 12px 0 0" : "0",
-                      }}
-                    >
-                      <span className="font-heading text-2xl">{plan.name}</span>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {featureLabels.map((feature, i) => (
-                  <tr key={i} className="border-b border-(--color-text)/10">
-                    <td className="py-xl pr-xl">
-                      <div className="flex items-center gap-xl">
-                        <div className="icon-box rounded-xl bg-(--color-secondary)/10 shrink-0 w-[56px] h-[56px]">
-                          <feature.icon className="w-6 h-6 text-secondary" />
-                        </div>
-                        <div>
-                          <span className="font-bold text-lg block mb-xs">{feature.label}</span>
-                          <span className="text-base text-muted">{feature.desc}</span>
-                        </div>
-                      </div>
-                    </td>
-                    {plans.map((plan, j) => {
-                      const value = feature[plan.color];
-                      return (
-                        <td
-                          key={j}
-                          className={`text-center py-xl px-lg ${plan.featured ? "bg-[rgba(113,41,123,0.05)]" : ""}`}
-                        >
-                          {value ? (
-                            <span className={`font-bold ${plan.featured ? "text-secondary" : ""}`}>
-                              {value}
-                            </span>
-                          ) : (
-                            <span className="text-muted/40">—</span>
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-                {/* Summary row */}
-                <tr>
-                  <td className="py-lg pr-xl">
-                    <span className="font-bold text-base">Total features</span>
-                  </td>
-                  {plans.map((plan, j) => {
-                    const count = Object.values(plan.features).filter(Boolean).length;
-                    return (
-                      <td
-                        key={j}
-                        className={`text-center py-lg px-lg ${plan.featured ? "bg-[rgba(113,41,123,0.05)] rounded-b-xl" : ""}`}
-                      >
-                        <span
-                          className={`font-heading text-2xl ${plan.featured ? "text-secondary" : ""}`}
-                        >
-                          {count}/{featureLabels.length}
-                        </span>
-                      </td>
-                    );
-                  })}
-                </tr>
-              </tbody>
-            </table>
-          </div>
 
-          {/* Hours rollover info */}
-          <div className="card bg-(--color-text)/5 border-0 p-xl mt-2xl">
-            <div className="flex items-start gap-lg">
-              <Clock className="w-5 h-5 text-secondary shrink-0 mt-1" />
-              <div>
-                <p className="font-bold mb-sm">Unused hours roll over</p>
-                <p className="text-muted text-sm">
-                  Any unused hours remain valid after your contract ends for up to 6 months. For
-                  more details, see our{" "}
-                  <Link to="/terms" className="text-secondary underline hover:no-underline">
-                    terms and conditions
-                  </Link>
-                  .
-                </p>
-              </div>
+          {/* Comparison table */}
+          <div>
+            {/* Header row */}
+            <div
+              className="grid items-end"
+              style={{
+                gridTemplateColumns: "2fr 1fr 1fr 1fr",
+                gap: "var(--space-sm)",
+              }}
+            >
+              <div></div>
+              {plans.map((plan, i) => {
+                const colorVars = {
+                  bronze: "--color-bronze",
+                  silver: "--color-silver",
+                  gold: "--color-gold",
+                };
+                const colorVar = colorVars[plan.color];
+                return (
+                  <div
+                    key={i}
+                    className="text-center rounded-lg"
+                    style={{
+                      padding: "var(--space-lg) var(--space-md)",
+                      backgroundColor: `var(${colorVar})`,
+                    }}
+                  >
+                    <h6 style={{ color: "#ffffff", marginBottom: 0 }}>{plan.name}</h6>
+                  </div>
+                );
+              })}
             </div>
-          </div>
 
-          {/* Let's talk callout */}
-          <div className="card border-2 border-(--color-secondary)/30 p-xl mt-lg">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-lg">
-              <div className="flex items-center gap-lg">
-                <div className="icon-box icon-box-lg rounded-2xl bg-(--color-secondary)/10">
-                  <MessageSquareQuote className="w-8 h-8 text-secondary" />
-                </div>
-                <div>
-                  <h5 className="text-secondary mb-xs">Let's talk</h5>
-                  <p className="text-muted">
-                    Not sure which plan fits? Most clients choose Gold for the flexibility —
-                    dedicated consulting, development hours, and training that scales with your
-                    team. We'll help you find the right fit.
-                  </p>
-                </div>
-              </div>
-              <Link
-                to="/contact"
-                className="btn justify-center shrink-0"
-                style={{ backgroundColor: "var(--color-secondary)", color: "white" }}
+            {/* Feature rows */}
+            {featureLabels.map((feature, i) => (
+              <div
+                key={i}
+                className="grid items-center"
+                style={{
+                  gridTemplateColumns: "2fr 1fr 1fr 1fr",
+                  borderBottom: "1px solid rgba(26,26,26,0.06)",
+                }}
               >
-                Get in touch
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
+                <div style={{ padding: "var(--space-lg) var(--space-lg) var(--space-lg) 0" }}>
+                  <span className="font-medium">{feature.label}</span>
+                </div>
+                {plans.map((plan, j) => {
+                  const value = feature[plan.color];
+                  return (
+                    <div key={j} className="text-center" style={{ padding: "var(--space-lg)" }}>
+                      {value ? (
+                        <span className="font-semibold">{value}</span>
+                      ) : (
+                        <span style={{ color: "rgba(26,26,26,0.25)" }}>—</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
           </div>
-        </div>
-      </section>
 
-      {/* Final CTA */}
-      <section className="section-padding-lg border-t border-(--color-text)/10">
-        <div className="container text-center">
-          <h3 className="mb-lg">
-            Ready to get <span className="text-secondary">started?</span>
-          </h3>
-          <p className="text-lg text-muted mx-auto max-w-[500px] mb-2xl">
-            Join the businesses already benefiting from proactive NetSuite support.
+          {/* Footer note */}
+          <p className="text-muted text-sm" style={{ paddingTop: "var(--space-xl)" }}>
+            Unused hours roll over for up to 6 months.{" "}
+            <Link to="/terms" className="underline hover:no-underline">
+              Terms apply
+            </Link>
+            .
           </p>
-          <Link
-            to="/contact"
-            className="btn justify-center"
-            style={{ backgroundColor: "var(--color-secondary)", color: "white" }}
-          >
-            Start your journey
-            <ArrowRight className="w-5 h-5" />
-          </Link>
         </div>
       </section>
 

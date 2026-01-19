@@ -134,15 +134,11 @@ export default function CaseStudies() {
       <section className="pt-(--space-4xl) pb-(--space-2xl) md:pb-(--space-3xl)">
         <div className="container">
           <p className="text-label text-primary mb-md md:mb-lg">Case Studies</p>
-          <h1 className="text-hero mb-xl md:mb-2xl">
+          <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
             Real results.
             <br />
             <span className="text-primary">Real businesses.</span>
           </h1>
-          <p className="text-lg md:text-xl text-muted max-w-xl mb-xl md:mb-2xl">
-            See how we've helped UK businesses transform their operations with expert NetSuite
-            implementation.
-          </p>
           <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
             Start a project
             <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
@@ -183,8 +179,7 @@ export default function CaseStudies() {
             {/* Content */}
             <div>
               <p className="text-label text-primary mb-sm md:mb-md">{caseStudies[0].industry}</p>
-              <h3 className="mb-md md:mb-lg">{caseStudies[0].title}</h3>
-              <p className="text-lg text-muted mb-xl md:mb-2xl">{caseStudies[0].challenge}</p>
+              <h3 style={{ marginBottom: "var(--space-3xl)" }}>{caseStudies[0].title}</h3>
 
               {/* Results */}
               <div className="grid grid-cols-3 gap-md md:gap-lg mb-xl md:mb-2xl p-(--space-lg) md:p-(--space-xl) border border-(--color-text)/10 rounded-xl">
@@ -230,10 +225,18 @@ export default function CaseStudies() {
 
                 {/* Content */}
                 <p className="text-label text-primary mb-sm">{study.industry}</p>
-                <h6 className="mb-md group-hover:text-primary transition-colors">{study.title}</h6>
+                <h6
+                  className="group-hover:text-primary transition-colors"
+                  style={{ marginBottom: "var(--space-xl)" }}
+                >
+                  {study.title}
+                </h6>
 
                 {/* Key Result */}
-                <div className="flex items-center gap-lg pt-md border-t border-(--color-text)/10">
+                <div
+                  className="flex items-center gap-lg border-t border-(--color-text)/10"
+                  style={{ paddingTop: "var(--space-lg)" }}
+                >
                   <div>
                     <p className="font-heading text-xl text-primary">{study.results[0].metric}</p>
                     <p className="text-sm text-muted">{study.results[0].label}</p>
@@ -282,12 +285,9 @@ export default function CaseStudies() {
       {/* CTA */}
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container text-center">
-          <h3 className="mb-lg">
-            Ready to be our next <span className="text-primary">success story?</span>
-          </h3>
-          <p className="text-lg text-muted mx-auto max-w-[500px] mb-2xl">
-            Let's talk about how we can transform your operations.
-          </p>
+          <h1 className="text-hero" style={{ marginBottom: "var(--space-3xl)" }}>
+            Be our next <span className="text-primary">success story.</span>
+          </h1>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Start a project

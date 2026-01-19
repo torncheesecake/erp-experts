@@ -140,14 +140,11 @@ export default function Resources() {
         <div className="container relative z-10">
           <div className="max-w-5xl">
             <p className="text-label text-primary mb-md">Resources</p>
-            <h1 className="text-hero mb-xl md:mb-2xl">
+            <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
               Learn from
               <br />
               <span className="text-primary">the experts.</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted max-w-xl mb-2xl">
-              Guides, webinars, and videos to help you get the most from NetSuite.
-            </p>
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Browse resources
               <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
@@ -198,8 +195,7 @@ export default function Resources() {
             </div>
             <div>
               <p className="text-label text-primary mb-md">Featured Guide</p>
-              <h3 className="mb-lg">{featuredResource.title}</h3>
-              <p className="text-lg text-muted mb-xl">{featuredResource.desc}</p>
+              <h3 style={{ marginBottom: "var(--space-2xl)" }}>{featuredResource.title}</h3>
               <div className="flex items-center gap-md mb-2xl">
                 <div className="flex items-center gap-sm text-muted">
                   <Clock className="w-5 h-5" />
@@ -336,13 +332,9 @@ export default function Resources() {
             <div className="relative z-10">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-xl md:gap-2xl">
                 <div className="flex-1">
-                  <h4 className="mb-lg text-(--color-text-on-dark)">
+                  <h4 className="text-(--color-text-on-dark)">
                     Get NetSuite insights delivered weekly
                   </h4>
-                  <p className="text-lg text-(--color-text-on-dark-muted)">
-                    Practical tips, guides, and updates. No spam, just useful content for NetSuite
-                    users.
-                  </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-md flex-1">
                   <input
@@ -364,12 +356,9 @@ export default function Resources() {
       {/* CTA */}
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container text-center">
-          <h3 className="mb-lg">
-            Ready to talk <span className="text-primary">NetSuite?</span>
-          </h3>
-          <p className="text-lg text-muted mx-auto max-w-[500px] mb-2xl">
-            Let's discuss how we can help your business.
-          </p>
+          <h1 className="text-hero" style={{ marginBottom: "var(--space-3xl)" }}>
+            Let's talk <span className="text-primary">NetSuite.</span>
+          </h1>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Start a conversation

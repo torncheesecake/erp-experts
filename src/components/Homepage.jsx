@@ -163,16 +163,13 @@ export default function Homepage() {
         <div className="container section-padding-lg relative z-10">
           <div className="max-w-5xl">
             <p className="text-label text-primary mb-md md:mb-lg">NetSuite Partner</p>
-            <h1 className="text-hero mb-xl md:mb-2xl">
+            <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
               We make
               <br />
               <span className="text-primary">NetSuite</span>
               <br />
               work.
             </h1>
-            <p className="text-lg md:text-xl text-muted max-w-xl mb-xl md:mb-2xl">
-              Implementation experts for UK businesses. 100+ projects delivered. No fluff.
-            </p>
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Start a project
               <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
@@ -264,107 +261,58 @@ export default function Homepage() {
             <h3>Which one are you?</h3>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-lg md:gap-xl relative">
+          <div className="grid md:grid-cols-2 gap-md md:gap-lg relative">
             {/* Path 1: No ERP yet */}
             <Link
               to="/services#implementation"
-              className="group block card p-(--space-xl) md:p-(--space-2xl) relative overflow-hidden border-2 border-(--color-tertiary) hover:border-(--color-tertiary) transition-colors"
+              className="group block relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1"
+              style={{
+                backgroundColor: "var(--color-tertiary)",
+                padding: "var(--space-2xl)",
+              }}
             >
               <div className="relative z-10">
-                <div className="icon-box icon-box-md rounded-2xl bg-(--color-tertiary)/10 mb-lg">
-                  <Boxes className="w-6 h-6 text-tertiary" />
-                </div>
-                <h3 className="mb-lg">
-                  I don't have <span className="text-tertiary">NetSuite</span> yet.
-                </h3>
-                <div className="flex items-center gap-md font-bold text-tertiary text-xl">
+                <p className="text-white/70 text-sm uppercase tracking-wider mb-md">
+                  New to NetSuite?
+                </p>
+                <h4 className="text-white mb-lg">Let's get you started.</h4>
+                <div className="flex items-center gap-md font-bold text-white">
                   Implementation
-                  <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                 </div>
               </div>
+              {/* Decorative */}
+              <Boxes
+                className="absolute -right-8 -bottom-8 w-48 h-48 text-white opacity-10"
+                strokeWidth={0.5}
+              />
             </Link>
 
             {/* Path 2: Already have NetSuite */}
             <Link
               to="/services#aftercare"
-              className="group block card p-(--space-xl) md:p-(--space-2xl) relative overflow-hidden border-2 border-(--color-secondary) hover:border-(--color-secondary) transition-colors"
+              className="group block relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1"
+              style={{
+                backgroundColor: "var(--color-secondary)",
+                padding: "var(--space-2xl)",
+              }}
             >
               <div className="relative z-10">
-                <div className="icon-box icon-box-md rounded-2xl bg-(--color-secondary)/10 mb-lg">
-                  <Network className="w-6 h-6 text-secondary" />
-                </div>
-                <h3 className="mb-lg">
-                  I already have <span className="text-secondary">NetSuite</span>.
-                </h3>
-                <div className="flex items-center gap-md font-bold text-secondary text-xl">
+                <p className="text-white/70 text-sm uppercase tracking-wider mb-md">
+                  Already on NetSuite?
+                </p>
+                <h4 className="text-white mb-lg">Let's make it better.</h4>
+                <div className="flex items-center gap-md font-bold text-white">
                   Aftercare
-                  <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                 </div>
               </div>
-            </Link>
-          </div>
-
-          {/* Path visualization - arrows under each card, signpost in middle, connecting to solution */}
-          <div className="hidden md:block mt-lg">
-            {/* Row with arrows */}
-            <div className="grid grid-cols-2 gap-lg md:gap-xl">
-              {/* Left arrow - centered under navy card */}
-              <div className="flex justify-center">
-                <CornerDownRight className="w-18 h-18 text-tertiary" />
-              </div>
-              {/* Right arrow - centered under purple card */}
-              <div className="flex justify-center">
-                <CornerDownLeft className="w-18 h-18 text-secondary" />
-              </div>
-            </div>
-            {/* Signpost below arrows, centered */}
-            <div className="flex justify-center -mt-[60px]">
-              <div
-                className="icon-box icon-box-lg rounded-full"
-                style={{
-                  background:
-                    "linear-gradient(135deg, var(--color-tertiary) 0%, var(--color-primary) 50%, var(--color-secondary) 100%)",
-                  backgroundSize: "200% 200%",
-                }}
-              >
-                <Signpost className="w-8 h-8 text-white" />
-              </div>
-            </div>
-            {/* Vertical line from signpost to card below */}
-            <div className="flex justify-center">
-              <div
-                style={{
-                  width: "3px",
-                  height: "40px",
-                  background:
-                    "linear-gradient(to bottom, var(--color-secondary), var(--color-tertiary))",
-                  borderRadius: "2px",
-                }}
+              {/* Decorative */}
+              <Network
+                className="absolute -right-8 -bottom-8 w-48 h-48 text-white opacity-10"
+                strokeWidth={0.5}
               />
-            </div>
-          </div>
-
-          {/* Mobile spacer */}
-          <div className="md:hidden h-xl" />
-
-          {/* The Solution - One Platform */}
-          <div
-            className="card p-(--space-xl) md:p-(--space-2xl) lg:p-(--space-3xl) border-2 relative overflow-hidden"
-            style={{
-              borderImage:
-                "linear-gradient(to right, var(--color-tertiary), var(--color-primary), var(--color-secondary)) 1",
-            }}
-          >
-            <div className="text-center">
-              <p className="text-label text-muted mb-md">Both paths lead here</p>
-              <h3 className="mb-2xl">
-                One platform. <span className="text-primary">Complete clarity.</span>
-              </h3>
-              <Link to="/contact" className="btn btn-primary btn-lg justify-center">
-                Start a conversation
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
+            </Link>
           </div>
         </div>
       </section>
@@ -434,10 +382,6 @@ export default function Homepage() {
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading leading-tight mb-lg">
               Six services. <span className="text-primary">One focus.</span>
             </h2>
-            <p className="text-lg text-muted leading-relaxed max-w-3xl">
-              From first steps to full mastery, we guide your NetSuite journey with expertise forged
-              through 100+ implementations.
-            </p>
           </div>
 
           {/* Cards - Option 5 style with enhancements */}
@@ -498,9 +442,6 @@ export default function Homepage() {
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading leading-tight mb-lg">
               Built for <span className="text-primary">your sector.</span>
             </h2>
-            <p className="text-lg text-muted">
-              Deep industry knowledge built through 100+ implementations
-            </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-md md:gap-lg">
             {industries.map((industry, i) => (
@@ -554,13 +495,9 @@ export default function Homepage() {
             </div>
             <div className="flex flex-col justify-center">
               <p className="text-label text-primary mb-md">Precision Manufacturing Ltd</p>
-              <h3 className="mb-lg md:mb-xl">
+              <h3 style={{ marginBottom: "var(--space-3xl)" }}>
                 From chaos to <span className="text-primary">clarity</span>
               </h3>
-              <p className="text-base md:text-lg text-muted mb-xl md:mb-2xl">
-                Orders took days. Stock was invisible. The finance team spent weeks reconciling
-                data. We implemented NetSuite and transformed their operations in just 12 weeks.
-              </p>
               <div className="grid grid-cols-3 gap-md md:gap-xl mb-xl md:mb-2xl">
                 <div>
                   <p className="font-heading text-3xl md:text-4xl mb-xs">40%</p>
@@ -717,7 +654,7 @@ export default function Homepage() {
       {/* Final CTA */}
       <section className="section-padding-lg">
         <div className="container text-center">
-          <h1 className="mb-2xl md:mb-3xl">
+          <h1 className="text-hero mb-2xl md:mb-3xl">
             Let's build
             <span className="block text-primary">something great.</span>
           </h1>

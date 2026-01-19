@@ -20,10 +20,13 @@
     --color-text-on-dark-muted: #a0a0a0;
     --color-primary: #e83a7a;
     --color-primary-hover: #d42a71;
-    --color-secondary: #8b3fd9;
-    --color-secondary-hover: #7a32c4;
-    --color-tertiary: #3a7ae8;
-    --color-tertiary-hover: #2d6ad4;
+    --color-secondary: #7a32c4;
+    --color-secondary-hover: #6828a8;
+    --color-tertiary: #2d6ad4;
+    --color-tertiary-hover: #2358b0;
+    --color-bronze: #cd7f32;
+    --color-silver: #6b7280;
+    --color-gold: #d4a012;
 
     /* Typography Scale - Change --type-ratio to adjust entire scale */
     --type-ratio: 1.5; /* Perfect Fifth. Try: 1.25 (Major Third), 1.333 (Perfect Thirds), 1.414 (Augmented Fourth), 1.618 (Golden) */
@@ -438,4 +441,14 @@ h6 {
 .icon-box-lg {
     width: var(--space-3xl);
     height: var(--space-3xl);
+}
+
+/* Marquee animation */
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
 }
