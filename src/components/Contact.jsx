@@ -107,12 +107,25 @@ export default function Contact() {
                 ))}
               </div>
 
-              {/* Response Time */}
-              <div className="mt-xl md:mt-2xl p-(--space-xl) md:p-(--space-2xl) rounded-3xl bg-(--color-bg-light)">
-                <div className="flex items-center gap-md mb-md">
+              {/* Book a Call */}
+              <div className="mt-xl md:mt-2xl p-(--space-xl) md:p-(--space-2xl) rounded-3xl bg-(--color-primary)/5 border-2 border-(--color-primary)/20">
+                <div className="flex items-center gap-md mb-lg">
                   <Clock className="w-5 h-5 text-primary" />
-                  <p className="text-label">Response Time</p>
+                  <p className="text-label text-primary">Prefer to talk?</p>
                 </div>
+                <h5 className="mb-md">Book a discovery call</h5>
+                <p className="text-base text-muted mb-xl">
+                  Schedule a 30-minute call with one of our NetSuite experts.
+                </p>
+                <a
+                  href="https://calendly.com/erp-experts"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-primary w-full justify-center"
+                >
+                  Book a slot
+                  <ArrowRight className="w-5 h-5" />
+                </a>
               </div>
             </div>
           </div>

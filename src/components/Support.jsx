@@ -322,30 +322,49 @@ export default function Support() {
         </div>
       </section>
 
-      {/* Testimonial */}
+      {/* Testimonial + Video */}
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
-          <div className="max-w-4xl mx-auto text-center">
-            <MessageSquareQuote className="w-16 h-16 md:w-20 md:h-20 text-secondary mx-auto mb-2xl" />
-            <blockquote className="font-heading text-2xl md:text-3xl lg:text-4xl leading-snug mb-2xl">
-              "The support team feels like an extension of our own. They're proactive,
-              knowledgeable, and always <span className="text-secondary">one step ahead</span>."
-            </blockquote>
-            <div className="flex items-center justify-center gap-lg">
-              <div
-                className="relative flex items-end justify-center"
-                style={{
-                  width: "64px",
-                  height: "56px",
-                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                  backgroundColor: "var(--color-secondary)",
-                }}
-              >
-                <HeartHandshake className="w-6 h-6 text-white mb-2" />
+          <div className="grid lg:grid-cols-2 gap-2xl lg:gap-3xl items-center">
+            {/* Testimonial */}
+            <div>
+              <MessageSquareQuote className="w-12 h-12 md:w-16 md:h-16 text-secondary mb-xl" />
+              <blockquote className="font-heading text-xl md:text-2xl lg:text-3xl leading-snug mb-xl">
+                "The support team feels like an extension of our own. They're proactive,
+                knowledgeable, and always <span className="text-secondary">one step ahead</span>."
+              </blockquote>
+              <div className="flex items-center gap-lg">
+                <div
+                  className="relative flex items-end justify-center shrink-0"
+                  style={{
+                    width: "56px",
+                    height: "48px",
+                    clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                    backgroundColor: "var(--color-secondary)",
+                  }}
+                >
+                  <HeartHandshake className="w-5 h-5 text-white mb-2" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold">James Crawford</p>
+                  <p className="text-base text-muted">IT Director, Reynolds Distribution</p>
+                </div>
               </div>
-              <div className="text-left">
-                <p className="text-xl font-bold">James Crawford</p>
-                <p className="text-base text-muted">IT Director, Reynolds Distribution</p>
+            </div>
+
+            {/* Video */}
+            <div className="aspect-video rounded-2xl md:rounded-3xl overflow-hidden bg-(--color-secondary)/10 flex items-center justify-center relative">
+              <div className="text-center">
+                <div className="icon-box icon-box-lg rounded-2xl border-2 border-(--color-secondary)/20 mx-auto mb-lg">
+                  <HeartHandshake className="w-10 h-10 text-secondary/40" />
+                </div>
+                <p className="text-label text-muted">Support Plans Explainer Video</p>
+              </div>
+              {/* Play button overlay */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="icon-box icon-box-lg rounded-full bg-white shadow-lg cursor-pointer hover:scale-110 transition-transform">
+                  <ArrowRight className="w-6 h-6 text-(--color-secondary) ml-1" />
+                </div>
               </div>
             </div>
           </div>

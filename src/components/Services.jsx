@@ -283,13 +283,13 @@ export default function Services() {
                 {/* Connector line */}
                 {i < processSteps.length - 1 && (
                   <div
-                    className="hidden lg:block absolute top-10 left-full w-full h-0.5 bg-(--color-primary)/20"
+                    className="hidden lg:block absolute top-10 left-full w-full h-0.5 bg-(--color-tertiary)/20"
                     style={{ transform: "translateX(-50%)" }}
                   />
                 )}
                 <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-(--color-primary)/10 mb-xl relative">
-                    <step.icon className="w-8 h-8 text-primary" />
+                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-(--color-tertiary)/10 mb-xl relative">
+                    <step.icon className="w-8 h-8 text-tertiary" />
                     <span className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-(--color-primary) text-white text-sm font-bold flex items-center justify-center">
                       {step.num.replace("0", "")}
                     </span>

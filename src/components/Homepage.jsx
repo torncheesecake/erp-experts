@@ -176,11 +176,6 @@ export default function Homepage() {
             </button>
           </div>
         </div>
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-sm text-(--color-text) animate-bounce hidden md:flex">
-          <span className="text-sm font-medium">Scroll</span>
-          <ArrowRight className="w-4 h-4 rotate-90" />
-        </div>
       </section>
 
       {/* Logos */}
@@ -254,6 +249,39 @@ export default function Homepage() {
         </div>
       </section>
 
+      {/* Why Us */}
+      <section className="section-padding">
+        <div className="container">
+          <div className="text-center mb-xl md:mb-2xl">
+            <p className="text-label text-primary mb-md">Why us</p>
+            <h3>
+              NetSuite. <span className="text-muted">That's it.</span>
+            </h3>
+          </div>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-md md:gap-lg">
+            {whyUsItems.map((item, i) => (
+              <div key={i} className="card relative overflow-hidden">
+                <div className="relative z-10">
+                  <div
+                    className="mb-md md:mb-lg relative flex items-end justify-center"
+                    style={{
+                      width: "40px",
+                      height: "35px",
+                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                      backgroundColor: "var(--color-primary)",
+                    }}
+                  >
+                    <Check className="w-4 h-4 text-white mb-1" />
+                  </div>
+                  <h5 className="mb-sm md:mb-md">{item.title}</h5>
+                  <p className="text-base text-muted">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Where Are You? - Consolidated Path + Problem */}
       <section className="section-padding-lg">
         <div className="container">
@@ -290,7 +318,7 @@ export default function Homepage() {
 
             {/* Path 2: Already have NetSuite */}
             <Link
-              to="/services#aftercare"
+              to="/support"
               className="group block relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1"
               style={{
                 backgroundColor: "var(--color-secondary)",
@@ -313,6 +341,75 @@ export default function Homepage() {
                 strokeWidth={0.5}
               />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Scorecards */}
+      <section className="section-padding-lg border-t border-(--color-text)/10">
+        <div className="container">
+          <div className="text-center mb-xl md:mb-2xl">
+            <p className="text-label text-primary mb-md">Free Assessment</p>
+            <h3>
+              Find out where you <span className="text-primary">stand.</span>
+            </h3>
+          </div>
+          <div className="grid md:grid-cols-2 gap-md md:gap-lg">
+            {/* 1 Minute Scorecard */}
+            <div className="rounded-2xl bg-(--color-bg-dark) p-(--space-xl) md:p-(--space-2xl) text-center relative overflow-hidden">
+              <div
+                className="absolute top-0 right-0 opacity-10"
+                style={{
+                  width: "150px",
+                  height: "130px",
+                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                  backgroundColor: "var(--color-primary)",
+                  transform: "translateX(30px) translateY(-30px)",
+                }}
+              />
+              <div className="relative z-10">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-(--color-primary)/20 mb-lg">
+                  <Clock className="w-8 h-8 text-primary" />
+                </div>
+                <p className="text-label text-primary mb-sm">Quick Check</p>
+                <h4 className="text-(--color-text-on-dark) mb-md">1-Minute Scorecard</h4>
+                <p className="text-(--color-text-on-dark-muted) mb-xl">
+                  Get a quick snapshot of your NetSuite health in just 60 seconds.
+                </p>
+                <button className="btn btn-accent btn-lg w-full sm:w-auto justify-center">
+                  Start quick assessment
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* 10 Minute Scorecard */}
+            <div className="rounded-2xl bg-(--color-bg-dark) p-(--space-xl) md:p-(--space-2xl) text-center relative overflow-hidden">
+              <div
+                className="absolute top-0 right-0 opacity-10"
+                style={{
+                  width: "150px",
+                  height: "130px",
+                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                  backgroundColor: "var(--color-primary)",
+                  transform: "translateX(30px) translateY(-30px)",
+                }}
+              />
+              <div className="relative z-10">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-(--color-primary)/20 mb-lg">
+                  <FileSpreadsheet className="w-8 h-8 text-primary" />
+                </div>
+                <p className="text-label text-primary mb-sm">Deep Dive</p>
+                <h4 className="text-(--color-text-on-dark) mb-md">10-Minute NETscore</h4>
+                <p className="text-(--color-text-on-dark-muted) mb-xl">
+                  Get a comprehensive analysis with personalised recommendations.
+                </p>
+                <button className="btn btn-accent btn-lg w-full sm:w-auto justify-center">
+                  Get your NETscore
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -384,44 +481,67 @@ export default function Homepage() {
             </h2>
           </div>
 
-          {/* Cards - Option 5 style with enhancements */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-md md:gap-lg">
-            {services.map((service, i) => {
-              const isTertiary = i === 0; // Implementation (index 0) is navy blue
-              const isSecondary = i === 1; // Aftercare (index 1) is purple
-              const colorVar = isTertiary
-                ? "--color-tertiary"
-                : isSecondary
-                  ? "--color-secondary"
-                  : "--color-primary";
-              const textClass = isTertiary
-                ? "text-tertiary"
-                : isSecondary
-                  ? "text-secondary"
-                  : "text-primary";
+          {/* Featured Services - Implementation & Aftercare */}
+          <div className="grid md:grid-cols-2 gap-md md:gap-lg mb-md md:mb-lg">
+            {services.slice(0, 2).map((service, i) => {
+              const isTertiary = i === 0;
+              const colorVar = isTertiary ? "--color-tertiary" : "--color-secondary";
+              const textClass = isTertiary ? "text-tertiary" : "text-secondary";
+              const linkTo = isTertiary ? "/services#implementation" : "/support";
+              return (
+                <Link
+                  key={i}
+                  to={linkTo}
+                  className={`group relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1`}
+                  style={{
+                    backgroundColor: `var(${colorVar})`,
+                    padding: "var(--space-2xl)",
+                  }}
+                >
+                  <span
+                    className="absolute -top-4 -right-2 font-heading text-[6rem] md:text-[10rem] leading-none pointer-events-none text-white"
+                    style={{ opacity: 0.1 }}
+                  >
+                    {service.num}
+                  </span>
+                  <div className="relative z-10">
+                    <div className="icon-box icon-box-md md:icon-box-lg rounded-2xl mb-lg bg-white/10">
+                      <service.icon className="w-8 h-8 md:w-10 md:h-10 text-white" />
+                    </div>
+                    <h4 className="text-white mb-sm">{service.title}</h4>
+                    <p className="text-white/70 text-lg mb-xl">{service.desc}</p>
+                    <div className="flex items-center gap-sm text-base font-bold text-white">
+                      Learn more{" "}
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Other Services */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-md md:gap-lg">
+            {services.slice(2).map((service, i) => {
               return (
                 <Link
                   key={i}
                   to="#"
-                  className={`card group relative overflow-hidden border-2 border-(--color-text)/10 hover:border-(${colorVar})/50 hover:shadow-xl transition-all duration-300`}
+                  className="card group relative overflow-hidden border-2 border-(--color-text)/10 hover:border-(--color-primary)/50 hover:shadow-xl transition-all duration-300"
                 >
                   <span
-                    className={`absolute -top-4 -right-2 font-heading text-[5rem] md:text-[8rem] leading-none pointer-events-none text-(${colorVar})`}
+                    className="absolute -top-4 -right-2 font-heading text-[5rem] md:text-[6rem] leading-none pointer-events-none text-(--color-primary)"
                     style={{ opacity: 0.05 }}
                   >
                     {service.num}
                   </span>
                   <div className="relative z-10">
-                    <div
-                      className={`icon-box icon-box-md rounded-2xl mb-md md:mb-lg bg-(${colorVar})/10`}
-                    >
-                      <service.icon className={`w-6 h-6 md:w-8 md:h-8 ${textClass}`} />
+                    <div className="icon-box icon-box-md rounded-2xl mb-md md:mb-lg bg-(--color-primary)/10">
+                      <service.icon className="w-6 h-6 md:w-7 md:h-7 text-primary" />
                     </div>
                     <h5 className="mb-xs md:mb-sm">{service.title}</h5>
                     <p className="text-base text-muted mb-md">{service.desc}</p>
-                    <div
-                      className={`flex items-center gap-sm text-base font-bold opacity-0 group-hover:opacity-100 transition-opacity ${textClass}`}
-                    >
+                    <div className="flex items-center gap-sm text-base font-bold opacity-0 group-hover:opacity-100 transition-opacity text-primary">
                       Learn more <ArrowUpRight className="w-5 h-5" />
                     </div>
                   </div>
@@ -554,39 +674,6 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* Why Us */}
-      <section className="section-padding">
-        <div className="container">
-          <div className="text-center mb-xl md:mb-2xl">
-            <p className="text-label text-primary mb-md">Why us</p>
-            <h3>
-              NetSuite. <span className="text-muted">That's it.</span>
-            </h3>
-          </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-md md:gap-lg">
-            {whyUsItems.map((item, i) => (
-              <div key={i} className="card relative overflow-hidden">
-                <div className="relative z-10">
-                  <div
-                    className="mb-md md:mb-lg relative flex items-end justify-center"
-                    style={{
-                      width: "40px",
-                      height: "35px",
-                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                      backgroundColor: "var(--color-primary)",
-                    }}
-                  >
-                    <Check className="w-4 h-4 text-white mb-1" />
-                  </div>
-                  <h5 className="mb-sm md:mb-md">{item.title}</h5>
-                  <p className="text-base text-muted">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Resources */}
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
@@ -647,6 +734,45 @@ export default function Homepage() {
                 </div>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Signup */}
+      <section className="section-padding-lg">
+        <div className="container">
+          <div className="rounded-2xl md:rounded-[2rem] p-(--space-xl) md:p-12 lg:p-16 bg-(--color-bg-dark) relative overflow-hidden">
+            <div
+              className="absolute top-1/2 w-0 h-0 opacity-20 hidden md:block"
+              style={{
+                right: "-50px",
+                transform: "translateY(-50%)",
+                borderLeft: "150px solid transparent",
+                borderRight: "150px solid transparent",
+                borderBottom: "250px solid white",
+              }}
+            />
+            <div className="relative z-10">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-xl md:gap-2xl">
+                <div className="flex-1">
+                  <p className="text-label text-primary mb-sm">Stay Updated</p>
+                  <h4 className="text-(--color-text-on-dark)">
+                    Get NetSuite insights and guides delivered weekly
+                  </h4>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-md flex-1">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="flex-1 px-(--space-xl) py-(--space-md) rounded-full border border-(--color-text)/15 bg-white text-base focus:outline-none focus:border-(--color-primary)"
+                  />
+                  <button className="btn btn-lg justify-center shrink-0 bg-white text-(--color-text)">
+                    Subscribe
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
