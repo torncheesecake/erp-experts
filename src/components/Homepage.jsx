@@ -211,13 +211,17 @@ export default function Homepage() {
                 <p className="text-base text-muted">Trusted by Oracle NetSuite since 2013</p>
               </div>
             </div>
-            <div className="flex gap-xl md:gap-2xl">
+            <div className="flex gap-xl md:gap-3xl">
               <div className="text-center">
-                <p className="font-heading text-2xl md:text-3xl text-primary mb-xs">100%</p>
+                <p className="font-heading text-4xl md:text-5xl lg:text-6xl text-primary mb-xs">
+                  100%
+                </p>
                 <p className="text-label text-muted">Success Rate</p>
               </div>
               <div className="text-center">
-                <p className="font-heading text-2xl md:text-3xl text-primary mb-xs">10+</p>
+                <p className="font-heading text-4xl md:text-5xl lg:text-6xl text-primary mb-xs">
+                  10+
+                </p>
                 <p className="text-label text-muted">Years Partner</p>
               </div>
             </div>
