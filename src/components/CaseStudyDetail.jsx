@@ -288,7 +288,7 @@ export default function CaseStudyDetail() {
       <section className="section-padding-lg">
         <div className="container text-center">
           <h1 className="text-hero" style={{ marginBottom: "var(--space-xl)" }}>
-            Ready for <span className="text-primary">similar results?</span>
+            Ready for <span className="text-primary">similar results</span>?
           </h1>
           <p className="text-lg text-muted mx-auto max-w-[500px] mb-2xl">
             Let's discuss how we can help transform your business.

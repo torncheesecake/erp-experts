@@ -5,6 +5,8 @@
 import {
   ArrowRight,
   ArrowUpRight,
+  ArrowDown,
+  ChevronDown,
   Rocket,
   HeartHandshake,
   Stethoscope,
@@ -43,6 +45,7 @@ import {
   CornerDownRight,
   CornerDownLeft,
   Signpost,
+  Mouse,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
@@ -127,8 +130,21 @@ export default function Homepage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="min-h-[60vh] md:min-h-[75vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
-        {/* Offset pink triangle - behind main */}
+      <section className="min-h-[55vh] md:min-h-[75vh] flex items-center relative overflow-hidden pt-(--space-2xl) md:pt-(--space-4xl)">
+        {/* Mobile triangle - smaller, positioned top right */}
+        <div
+          className="absolute md:hidden"
+          style={{
+            top: "10%",
+            right: "-20%",
+            width: "280px",
+            height: "240px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-primary)",
+            opacity: 0.15,
+          }}
+        />
+        {/* Offset pink triangle - behind main (desktop) */}
         <div
           className="absolute top-1/2 hidden md:block"
           style={{
@@ -141,7 +157,7 @@ export default function Homepage() {
             opacity: 0.3,
           }}
         />
-        {/* Main triangle with image */}
+        {/* Main triangle with image (desktop) */}
         <div
           className="absolute top-1/2 hidden md:block"
           style={{
@@ -160,30 +176,46 @@ export default function Homepage() {
             style={{ opacity: 0.7 }}
           />
         </div>
-        <div className="container section-padding-lg relative z-10">
+        <div className="container relative z-10">
           <div className="max-w-5xl">
             <p className="text-label text-primary mb-md md:mb-lg">NetSuite Partner</p>
-            <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
+            <h1 className="text-hero mb-lg md:mb-2xl">
               We make
               <br />
               <span className="text-primary">NetSuite</span>
               <br />
               work.
             </h1>
+            <p className="text-lg md:text-xl text-muted mb-xl md:mb-2xl max-w-md md:hidden">
+              UK's trusted NetSuite implementation partner for growing businesses.
+            </p>
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Start a project
               <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
             </button>
           </div>
         </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-6 md:bottom-4 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
+          <span className="text-sm font-medium text-(--color-text)">Scroll</span>
+          <div className="w-8 h-12 rounded-full border-2 border-(--color-primary) flex items-start justify-center p-2">
+            <div className="w-1.5 h-3 bg-(--color-primary) rounded-full animate-bounce" />
+          </div>
+        </div>
       </section>
 
-      {/* Logos */}
-      <section className="py-(--space-xl) md:py-(--space-2xl) border-y border-(--color-text)/10">
+      {/* Logos + Partner Badge Combined */}
+      <section className="mt-8 md:mt-12 py-8 md:py-12 border-b border-(--color-text)/10">
         <div className="container">
-          <div className="flex flex-col md:flex-row flex-wrap items-center justify-between gap-lg">
-            <p className="text-label text-muted">Trusted by</p>
-            <div className="flex flex-wrap items-center justify-center gap-md md:gap-xl">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-lg">
+            <div className="flex items-center gap-md">
+              <Shield className="w-6 h-6 text-primary" />
+              <span className="text-sm font-bold">NetSuite Certified Partner</span>
+              <span className="text-muted">•</span>
+              <span className="text-sm text-muted">Since 2013</span>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-md md:gap-lg">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div
                   key={i}
@@ -197,46 +229,48 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* Partner Badge */}
-      <section className="section-padding">
-        <div className="container">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-xl lg:gap-2xl">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-lg md:gap-xl">
-              <div className="icon-box icon-box-md md:icon-box-lg rounded-2xl md:rounded-3xl bg-(--color-primary)/10 shrink-0">
-                <Shield className="w-8 h-8 md:w-16 md:h-16 text-primary" />
-              </div>
-              <div>
-                <p className="text-label text-primary mb-xs md:mb-sm">Certified Partner</p>
-                <h4 className="mb-xs md:mb-sm">NetSuite Solution Provider</h4>
-                <p className="text-base text-muted">Trusted by Oracle NetSuite since 2013</p>
+      {/* Big Statement + Why Us Combined */}
+      <section className="section-padding-lg relative overflow-hidden">
+        {/* Decorative triangle */}
+        <div
+          className="absolute -left-32 top-1/2 -translate-y-1/2 opacity-[0.04] hidden lg:block pointer-events-none"
+          style={{
+            width: "700px",
+            height: "600px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-primary)",
+          }}
+        />
+        <div className="container relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-2xl md:mb-3xl">
+            <div>
+              <h2 style={{ marginBottom: "2.5rem" }}>
+                Together, we'll make your ERP feel like a
+                <span className="text-primary"> superpower</span>.
+              </h2>
+              <p className="text-lg text-muted mb-8 md:mb-10">
+                We're NetSuite specialists - it's all we do. That focus means deeper expertise,
+                faster delivery, and teams that actually use the system.
+              </p>
+              <div className="flex flex-wrap gap-lg">
+                {whyUsItems.map((item, i) => (
+                  <div key={i} className="flex items-start gap-md">
+                    <div
+                      className="shrink-0 flex items-end justify-center"
+                      style={{
+                        width: "28px",
+                        height: "24px",
+                        clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                        backgroundColor: "var(--color-primary)",
+                      }}
+                    >
+                      <Check className="w-3 h-3 text-white mb-0.5" />
+                    </div>
+                    <span className="text-sm font-bold">{item.title}</span>
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="flex gap-xl md:gap-3xl">
-              <div className="text-center">
-                <p className="font-heading text-4xl md:text-5xl lg:text-6xl text-primary mb-xs">
-                  100%
-                </p>
-                <p className="text-label text-muted">Success Rate</p>
-              </div>
-              <div className="text-center">
-                <p className="font-heading text-4xl md:text-5xl lg:text-6xl text-primary mb-xs">
-                  10+
-                </p>
-                <p className="text-label text-muted">Years Partner</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Big Statement */}
-      <section className="section-padding-lg border-t border-(--color-text)/10">
-        <div className="container">
-          <div className="grid lg:grid-cols-3 gap-xl lg:gap-2xl items-center">
-            <h2 className="lg:col-span-2">
-              Together, we'll make your ERP feel like a
-              <span className="text-primary"> superpower</span>.
-            </h2>
             <div className="flex justify-center lg:justify-end">
               <div className="w-full aspect-video rounded-2xl overflow-hidden">
                 <iframe
@@ -253,209 +287,166 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* Why Us */}
-      <section className="section-padding">
-        <div className="container">
-          <div className="text-center mb-xl md:mb-2xl">
-            <p className="text-label text-primary mb-md">Why us</p>
-            <h3>
-              NetSuite. <span className="text-muted">That's it.</span>
-            </h3>
-          </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-md md:gap-lg">
-            {whyUsItems.map((item, i) => (
-              <div key={i} className="card relative overflow-hidden">
-                <div className="relative z-10">
-                  <div
-                    className="mb-md md:mb-lg relative flex items-end justify-center"
-                    style={{
-                      width: "40px",
-                      height: "35px",
-                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                      backgroundColor: "var(--color-primary)",
-                    }}
-                  >
-                    <Check className="w-4 h-4 text-white mb-1" />
-                  </div>
-                  <h5 className="mb-sm md:mb-md">{item.title}</h5>
-                  <p className="text-base text-muted">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Where Are You? - Consolidated Path + Problem */}
-      <section className="section-padding-lg">
-        <div className="container">
-          <div className="text-center mb-xl md:mb-2xl">
-            <h3>Which one are you?</h3>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-md md:gap-lg relative">
-            {/* Path 1: No ERP yet */}
-            <Link
-              to="/services#implementation"
-              className="group block relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1"
-              style={{
-                backgroundColor: "var(--color-tertiary)",
-                padding: "var(--space-2xl)",
-              }}
-            >
-              <div className="relative z-10">
-                <p className="text-white/70 text-sm uppercase tracking-wider mb-md">
-                  New to NetSuite?
-                </p>
-                <h4 className="text-white mb-lg">Let's get you started.</h4>
-                <div className="flex items-center gap-md font-bold text-white">
-                  Implementation
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-                </div>
-              </div>
-              {/* Decorative */}
-              <Boxes
-                className="absolute -right-8 -bottom-8 w-48 h-48 text-white opacity-10"
-                strokeWidth={0.5}
-              />
-            </Link>
-
-            {/* Path 2: Already have NetSuite */}
-            <Link
-              to="/support"
-              className="group block relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1"
-              style={{
-                backgroundColor: "var(--color-secondary)",
-                padding: "var(--space-2xl)",
-              }}
-            >
-              <div className="relative z-10">
-                <p className="text-white/70 text-sm uppercase tracking-wider mb-md">
-                  Already on NetSuite?
-                </p>
-                <h4 className="text-white mb-lg">Let's make it better.</h4>
-                <div className="flex items-center gap-md font-bold text-white">
-                  Aftercare
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-                </div>
-              </div>
-              {/* Decorative */}
-              <Network
-                className="absolute -right-8 -bottom-8 w-48 h-48 text-white opacity-10"
-                strokeWidth={0.5}
-              />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Scorecards */}
-      <section className="section-padding-lg border-t border-(--color-text)/10">
-        <div className="container">
-          <div className="text-center mb-xl md:mb-2xl">
-            <p className="text-label text-primary mb-md">Free Assessment</p>
-            <h3>
-              Find out where you <span className="text-primary">stand.</span>
-            </h3>
-          </div>
-          <div className="grid md:grid-cols-2 gap-md md:gap-lg">
-            {/* 1 Minute Scorecard */}
-            <div className="rounded-2xl bg-(--color-bg-dark) p-(--space-xl) md:p-(--space-2xl) text-center relative overflow-hidden">
-              <div
-                className="absolute top-0 right-0 opacity-10"
-                style={{
-                  width: "150px",
-                  height: "130px",
-                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                  backgroundColor: "var(--color-primary)",
-                  transform: "translateX(30px) translateY(-30px)",
-                }}
-              />
-              <div className="relative z-10">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-(--color-primary)/20 mb-lg">
-                  <Clock className="w-8 h-8 text-primary" />
-                </div>
-                <p className="text-label text-primary mb-sm">Quick Check</p>
-                <h4 className="text-(--color-text-on-dark) mb-md">1-Minute Scorecard</h4>
-                <p className="text-(--color-text-on-dark-muted) mb-xl">
-                  Get a quick snapshot of your NetSuite health in just 60 seconds.
-                </p>
-                <button className="btn btn-accent btn-lg w-full sm:w-auto justify-center">
-                  Start quick assessment
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-
-            {/* 10 Minute Scorecard */}
-            <div className="rounded-2xl bg-(--color-bg-dark) p-(--space-xl) md:p-(--space-2xl) text-center relative overflow-hidden">
-              <div
-                className="absolute top-0 right-0 opacity-10"
-                style={{
-                  width: "150px",
-                  height: "130px",
-                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                  backgroundColor: "var(--color-primary)",
-                  transform: "translateX(30px) translateY(-30px)",
-                }}
-              />
-              <div className="relative z-10">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-(--color-primary)/20 mb-lg">
-                  <FileSpreadsheet className="w-8 h-8 text-primary" />
-                </div>
-                <p className="text-label text-primary mb-sm">Deep Dive</p>
-                <h4 className="text-(--color-text-on-dark) mb-md">10-Minute NETscore</h4>
-                <p className="text-(--color-text-on-dark-muted) mb-xl">
-                  Get a comprehensive analysis with personalised recommendations.
-                </p>
-                <button className="btn btn-accent btn-lg w-full sm:w-auto justify-center">
-                  Get your NETscore
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats - Massive Numbers */}
-      <section className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden">
-        {/* Decorative triangles */}
+      {/* Get Started - Paths + Scorecards Combined */}
+      <section
+        className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden"
+        style={{ backgroundColor: "#fafafa" }}
+      >
+        {/* Decorative triangle for whole section */}
         <div
-          className="absolute top-8 left-8 opacity-10 hidden lg:block"
+          className="absolute -right-48 top-1/2 -translate-y-1/2 opacity-[0.04] hidden lg:block pointer-events-none"
           style={{
-            width: "60px",
-            height: "52px",
-            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-            backgroundColor: "var(--color-primary)",
-          }}
-        />
-        <div
-          className="absolute bottom-12 right-16 opacity-10 hidden lg:block"
-          style={{
-            width: "100px",
-            height: "87px",
+            width: "800px",
+            height: "700px",
             clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
             backgroundColor: "var(--color-primary)",
           }}
         />
         <div className="container relative z-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-xl md:gap-2xl">
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center lg:text-left">
-                <p
-                  className={`font-heading text-[clamp(3.5rem,10vw,7rem)] leading-none mb-sm ${i % 2 === 0 ? "" : "text-primary"}`}
-                >
-                  {stat.value}
+          <div className="text-center mb-xl md:mb-2xl">
+            <p className="text-label text-primary mb-md">Get Started</p>
+            <h3>Where are you on your journey?</h3>
+          </div>
+
+          {/* Two paths */}
+          <div className="grid md:grid-cols-2 gap-md md:gap-lg mb-xl md:mb-2xl">
+            <Link
+              to="/services#implementation"
+              className="group block relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1"
+              style={{
+                backgroundColor: "var(--color-tertiary)",
+                padding: "var(--space-xl)",
+              }}
+            >
+              <div className="relative z-10">
+                <p className="text-white/70 text-sm uppercase tracking-wider mb-sm">
+                  New to NetSuite?
                 </p>
-                <p className="text-label text-muted">{stat.label}</p>
+                <h5 className="text-white mb-md">Let's get you started.</h5>
+                <div className="flex items-center gap-sm text-sm font-bold text-white">
+                  Implementation{" "}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
               </div>
+              <Boxes
+                className="absolute -right-6 -bottom-6 w-32 h-32 text-white opacity-10"
+                strokeWidth={0.5}
+              />
+            </Link>
+
+            <Link
+              to="/support"
+              className="group block relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1"
+              style={{
+                backgroundColor: "var(--color-secondary)",
+                padding: "var(--space-xl)",
+              }}
+            >
+              <div className="relative z-10">
+                <p className="text-white/70 text-sm uppercase tracking-wider mb-sm">
+                  Already on NetSuite?
+                </p>
+                <h5 className="text-white mb-md">Let's make it better.</h5>
+                <div className="flex items-center gap-sm text-sm font-bold text-white">
+                  Aftercare{" "}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+              <Network
+                className="absolute -right-6 -bottom-6 w-32 h-32 text-white opacity-10"
+                strokeWidth={0.5}
+              />
+            </Link>
+          </div>
+
+          {/* Assessments */}
+          <div className="mt-12 md:mt-16 pt-12 md:pt-16">
+            <div className="text-center mb-lg">
+              <p className="text-label text-primary mb-sm">Free Assessments</p>
+              <p className="text-lg">Not sure where to start? Take a quick scorecard</p>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-md">
+              <a
+                href="https://netscore-mini.scoreapp.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col items-center text-center p-6 rounded-2xl bg-white border-2 border-(--color-text)/10 hover:border-(--color-primary) hover:shadow-lg transition-all"
+              >
+                <div className="w-12 h-12 rounded-full bg-(--color-primary)/10 flex items-center justify-center mb-md">
+                  <Zap className="w-6 h-6 text-primary" />
+                </div>
+                <p className="font-bold mb-xs">1-Min Quick Check</p>
+                <p className="text-sm text-muted mb-md">Quick health snapshot</p>
+                <span className="text-sm font-bold text-primary group-hover:underline">
+                  Take assessment →
+                </span>
+              </a>
+              <a
+                href="https://ric-snwikqbv.scoreapp.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col items-center text-center p-6 rounded-2xl bg-(--color-primary) text-white hover:scale-[1.02] hover:shadow-lg transition-all relative overflow-hidden"
+              >
+                <div className="absolute top-2 right-2 px-2 py-1 bg-white/20 rounded-full text-xs font-bold">
+                  Popular
+                </div>
+                <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mb-md">
+                  <FileSpreadsheet className="w-6 h-6 text-white" />
+                </div>
+                <p className="font-bold mb-xs">10-Min NETscore</p>
+                <p className="text-sm text-white/80 mb-md">Full analysis & recommendations</p>
+                <span className="text-sm font-bold group-hover:underline">Get your score →</span>
+              </a>
+              <a
+                href="https://one-score-to-rule-them-all.scoreapp.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col items-center text-center p-6 rounded-2xl bg-white border-2 border-(--color-text)/10 hover:border-(--color-secondary) hover:shadow-lg transition-all"
+              >
+                <div className="w-12 h-12 rounded-full bg-(--color-secondary)/10 flex items-center justify-center mb-md">
+                  <TrendingUp className="w-6 h-6 text-secondary" />
+                </div>
+                <p className="font-bold mb-xs">ERP Readiness</p>
+                <p className="text-sm text-muted mb-md">Is your business ready?</p>
+                <span className="text-sm font-bold text-secondary group-hover:underline">
+                  Check readiness →
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Industries */}
+      <section className="section-padding-lg border-b border-(--color-text)/10">
+        <div className="container relative z-10">
+          <div className="mb-2xl md:mb-3xl">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-md mb-lg">
+              <p className="text-label text-primary">Industries</p>
+            </div>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading leading-tight mb-lg">
+              Built for <span className="text-primary">your sector.</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-md md:gap-lg">
+            {industries.map((industry, i) => (
+              <Link key={i} to="#" className="group text-center">
+                <div className="aspect-square rounded-2xl md:rounded-3xl mb-md flex items-center justify-center border-2 border-(--color-text)/10 bg-white hover:border-(--color-primary)/50 hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1">
+                  <industry.icon
+                    className="w-8 h-8 md:w-10 md:h-10 text-primary"
+                    strokeWidth={1.5}
+                  />
+                </div>
+                <p className="text-base md:text-lg font-bold group-hover:text-primary transition-colors">
+                  {industry.name}
+                </p>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Services */}
+      {/* Services + Stats Combined */}
       <section className="section-padding-lg relative overflow-hidden">
         {/* Decorative triangle */}
         <div
@@ -469,8 +460,22 @@ export default function Homepage() {
           }}
         />
         <div className="container relative z-10">
+          {/* Stats row */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg md:gap-xl mb-xl md:mb-2xl pb-8 md:pb-12 border-b border-(--color-text)/10">
+            {stats.map((stat, i) => (
+              <div key={i} className="text-center">
+                <p
+                  className={`font-heading text-4xl md:text-5xl leading-none mb-xs ${i % 2 === 1 ? "text-primary" : ""}`}
+                >
+                  {stat.value}
+                </p>
+                <p className="text-sm text-muted">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+
           {/* Header section */}
-          <div className="mb-2xl md:mb-3xl">
+          <div className="mb-xl md:mb-2xl">
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-md mb-lg">
               <p className="text-label text-primary">What we do</p>
               <Link
@@ -480,7 +485,7 @@ export default function Homepage() {
                 View all services <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading leading-tight mb-lg">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading leading-tight">
               Six services. <span className="text-primary">One focus.</span>
             </h2>
           </div>
@@ -556,35 +561,6 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* Industries */}
-      <section className="section-padding-lg border-b border-(--color-text)/10">
-        <div className="container relative z-10">
-          <div className="mb-2xl md:mb-3xl">
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-md mb-lg">
-              <p className="text-label text-primary">Industries</p>
-            </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading leading-tight mb-lg">
-              Built for <span className="text-primary">your sector.</span>
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-md md:gap-lg">
-            {industries.map((industry, i) => (
-              <Link key={i} to="#" className="group text-center">
-                <div className="aspect-square rounded-2xl md:rounded-3xl mb-md flex items-center justify-center border-2 border-(--color-text)/10 bg-white hover:border-(--color-primary)/50 hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1">
-                  <industry.icon
-                    className="w-8 h-8 md:w-10 md:h-10 text-primary"
-                    strokeWidth={1.5}
-                  />
-                </div>
-                <p className="text-base md:text-lg font-bold group-hover:text-primary transition-colors">
-                  {industry.name}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Case Study */}
       <section className="section-padding-lg">
         <div className="container">
@@ -619,9 +595,14 @@ export default function Homepage() {
             </div>
             <div className="flex flex-col justify-center">
               <p className="text-label text-primary mb-md">Precision Manufacturing Ltd</p>
-              <h3 style={{ marginBottom: "var(--space-3xl)" }}>
+              <h3 style={{ marginBottom: "var(--space-lg)" }}>
                 From chaos to <span className="text-primary">clarity</span>
               </h3>
+              <p className="text-lg text-muted mb-xl md:mb-2xl">
+                A UK manufacturer drowning in disconnected systems and manual processes. We
+                implemented NetSuite to unify their operations and unlock real-time visibility
+                across the business.
+              </p>
               <div className="grid grid-cols-3 gap-md md:gap-xl mb-xl md:mb-2xl">
                 <div>
                   <p className="font-heading text-3xl md:text-4xl mb-xs">40%</p>
@@ -679,7 +660,7 @@ export default function Homepage() {
       </section>
 
       {/* Resources */}
-      <section className="section-padding-lg border-t border-(--color-text)/10">
+      <section className="section-padding border-t border-(--color-text)/10">
         <div className="container">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-md md:gap-lg mb-xl md:mb-2xl">
             <div>
@@ -742,56 +723,89 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* Newsletter Signup */}
-      <section className="section-padding-lg">
+      {/* Final CTA + Newsletter */}
+      <section className="pt-8 md:pt-12 pb-16 md:pb-24 px-4 md:px-8">
         <div className="container">
-          <div className="rounded-2xl md:rounded-[2rem] p-(--space-xl) md:p-12 lg:p-16 bg-(--color-bg-dark) relative overflow-hidden">
+          <div className="rounded-3xl md:rounded-[3rem] overflow-hidden relative">
+            {/* Background with gradient */}
             <div
-              className="absolute top-1/2 w-0 h-0 opacity-20 hidden md:block"
+              className="absolute inset-0"
               style={{
-                right: "-50px",
-                transform: "translateY(-50%)",
-                borderLeft: "150px solid transparent",
-                borderRight: "150px solid transparent",
-                borderBottom: "250px solid white",
+                background:
+                  "linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%)",
               }}
             />
-            <div className="relative z-10">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-xl md:gap-2xl">
-                <div className="flex-1">
-                  <p className="text-label text-primary mb-sm">Stay Updated</p>
-                  <h4 className="text-(--color-text-on-dark)">
-                    Get NetSuite insights and guides delivered weekly
-                  </h4>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-md flex-1">
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="flex-1 px-(--space-xl) py-(--space-md) rounded-full border border-(--color-text)/15 bg-white text-base focus:outline-none focus:border-(--color-primary)"
-                  />
-                  <button className="btn btn-lg justify-center shrink-0 bg-white text-(--color-text)">
-                    Subscribe
-                    <ArrowRight className="w-5 h-5" />
+            {/* Decorative triangles */}
+            <div
+              className="absolute top-0 left-0 opacity-10 hidden md:block"
+              style={{
+                width: "300px",
+                height: "260px",
+                clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                backgroundColor: "white",
+                transform: "translateX(-80px) translateY(-80px)",
+              }}
+            />
+            <div
+              className="absolute bottom-0 right-0 opacity-10 hidden md:block"
+              style={{
+                width: "400px",
+                height: "350px",
+                clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                backgroundColor: "white",
+                transform: "translateX(100px) translateY(100px)",
+              }}
+            />
+
+            {/* Content */}
+            <div className="relative z-10 p-8 md:p-12 lg:p-16">
+              <div className="text-center">
+                <h2
+                  className="text-white mb-lg md:mb-xl"
+                  style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}
+                >
+                  Let's build
+                  <br />
+                  <span className="text-white/90">something great.</span>
+                </h2>
+                <p className="text-white/80 text-lg md:text-xl mb-xl md:mb-2xl max-w-3xl mx-auto">
+                  Ready to transform your business? Get in touch to start your NetSuite journey, or
+                  subscribe for weekly insights.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-md justify-center mb-xl md:mb-2xl">
+                  <button className="btn btn-lg justify-center bg-white text-(--color-primary) hover:scale-105 transition-transform">
+                    Start a project
+                    <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
                   </button>
+                  <Link
+                    to="/contact"
+                    className="btn btn-lg justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"
+                  >
+                    Book a call
+                  </Link>
+                </div>
+
+                {/* Newsletter */}
+                <div className="pt-10 md:pt-16 mt-8 border-t border-white/20">
+                  <p className="text-white/70 text-base mb-lg">
+                    Or subscribe to our newsletter for NetSuite tips & insights
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-md max-w-2xl mx-auto">
+                    <input
+                      type="email"
+                      placeholder="Enter your email"
+                      className="flex-1 px-(--space-xl) py-(--space-md) rounded-full border-2 border-white/20 bg-white/10 text-white placeholder-white/50 text-base focus:outline-none focus:border-white/50 focus:bg-white/20 transition-all"
+                    />
+                    <button className="btn justify-center shrink-0 bg-white text-(--color-primary) hover:scale-105 transition-transform">
+                      Subscribe
+                      <ArrowRight className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="section-padding-lg">
-        <div className="container text-center">
-          <h1 className="text-hero mb-2xl md:mb-3xl">
-            Let's build
-            <span className="block text-primary">something great.</span>
-          </h1>
-          <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
-            Start a project
-            <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
-          </button>
         </div>
       </section>
 

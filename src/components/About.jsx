@@ -71,7 +71,7 @@ export default function About() {
             <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
               Empowering
               <br />
-              <span className="text-primary">businesses.</span>
+              <span className="text-primary">businesses</span>.
             </h1>
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Work with us
@@ -83,17 +83,19 @@ export default function About() {
 
       {/* Stats */}
       <section
-        style={{ padding: "var(--space-2xl) 0" }}
+        style={{ padding: "var(--space-xl) 0" }}
         className="border-y border-(--color-text)/10"
       >
         <div className="container">
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-md md:gap-xl">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-md md:gap-xl">
             {stats.map((stat, i) => (
               <div key={i} className="text-center">
-                <p className={`font-heading text-stat mb-xs ${i % 2 === 1 ? "text-primary" : ""}`}>
+                <p
+                  className={`font-heading text-3xl md:text-4xl lg:text-stat mb-xs ${i % 2 === 1 ? "text-primary" : ""}`}
+                >
                   {stat.value}
                 </p>
-                <p className="text-label text-muted">{stat.label}</p>
+                <p className="text-label text-muted text-xs md:text-sm">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -203,23 +205,26 @@ export default function About() {
             </p>
             <h3>NetSuite-certified specialists</h3>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-md md:gap-lg">
             {teamRoles.map((role, i) => (
               <div
                 key={i}
-                className="bg-(--color-bg-light) rounded-2xl text-center"
-                style={{ padding: "var(--space-xl)" }}
+                className="bg-(--color-bg-light) rounded-xl md:rounded-2xl text-center"
+                style={{ padding: "var(--space-lg)" }}
               >
                 <div
-                  className="icon-box icon-box-md rounded-full bg-(--color-primary) mx-auto"
-                  style={{ marginBottom: "var(--space-lg)" }}
+                  className="icon-box icon-box-sm md:icon-box-md rounded-full bg-(--color-primary) mx-auto"
+                  style={{ marginBottom: "var(--space-md)" }}
                 >
-                  <role.icon className="w-5 md:w-6 h-5 md:h-6 text-white" />
+                  <role.icon className="w-4 md:w-6 h-4 md:h-6 text-white" />
                 </div>
-                <p className="text-base font-bold" style={{ marginBottom: "var(--space-sm)" }}>
+                <p
+                  className="text-sm md:text-base font-bold"
+                  style={{ marginBottom: "var(--space-xs)" }}
+                >
                   {role.title}
                 </p>
-                <p className="text-base text-muted">{role.desc}</p>
+                <p className="text-xs md:text-base text-muted">{role.desc}</p>
               </div>
             ))}
           </div>
@@ -253,7 +258,7 @@ export default function About() {
       <section className="section-padding-lg">
         <div className="container text-center">
           <h1 className="text-hero" style={{ marginBottom: "var(--space-3xl)" }}>
-            Unlock your <span className="text-primary">business potential.</span>
+            Unlock your <span className="text-primary">business potential</span>.
           </h1>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">

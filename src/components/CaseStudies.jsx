@@ -137,7 +137,7 @@ export default function CaseStudies() {
           <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
             Real results.
             <br />
-            <span className="text-primary">Real businesses.</span>
+            <span className="text-primary">Real businesses</span>.
           </h1>
           <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
             Start a project
@@ -149,13 +149,15 @@ export default function CaseStudies() {
       {/* Stats */}
       <section className="py-(--space-xl) md:py-(--space-2xl) border-y border-(--color-text)/10">
         <div className="container">
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-md md:gap-xl">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-md md:gap-xl">
             {stats.map((stat, i) => (
               <div key={i} className="text-center">
-                <p className={`font-heading text-stat mb-xs ${i % 2 === 1 ? "text-primary" : ""}`}>
+                <p
+                  className={`font-heading text-3xl md:text-4xl lg:text-stat mb-xs ${i % 2 === 1 ? "text-primary" : ""}`}
+                >
                   {stat.value}
                 </p>
-                <p className="text-label text-muted">{stat.label}</p>
+                <p className="text-label text-muted text-xs md:text-sm">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -286,7 +288,7 @@ export default function CaseStudies() {
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container text-center">
           <h1 className="text-hero" style={{ marginBottom: "var(--space-3xl)" }}>
-            Be our next <span className="text-primary">success story.</span>
+            Be our next <span className="text-primary">success story</span>.
           </h1>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">

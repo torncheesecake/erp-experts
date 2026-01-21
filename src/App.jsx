@@ -1,4 +1,5 @@
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import Homepage from "./components/Homepage";
 import Services from "./components/Services";
 import NetSuiteServices from "./components/NetSuiteServices";
@@ -11,9 +12,20 @@ import Contact from "./components/Contact";
 import Support from "./components/Support";
 import DesignGuide from "./components/DesignGuide";
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/services" element={<Services />} />

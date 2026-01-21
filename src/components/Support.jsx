@@ -227,10 +227,10 @@ export default function Support() {
         <div className="container relative z-10">
           <div className="max-w-5xl">
             <p className="text-label text-secondary mb-md">Aftercare Support</p>
-            <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
+            <h1 className="text-hero" style={{ marginBottom: "var(--space-2xl)" }}>
               Support that
               <br />
-              <span className="text-secondary">propels success.</span>
+              <span className="text-secondary">propels success</span>.
             </h1>
             <Link
               to="#plans"
@@ -275,14 +275,14 @@ export default function Support() {
                 NetSuite support, <span className="text-secondary">turned on its head.</span>
               </h3>
             </div>
-            <div className="grid grid-cols-2 gap-lg">
+            <div className="grid grid-cols-2 gap-md md:gap-lg">
               {benefits.map((benefit, i) => (
-                <div key={i} className="card border-2 border-(--color-text)/10 p-xl">
-                  <div className="icon-box icon-box-md rounded-xl bg-(--color-secondary)/10 mb-lg">
-                    <benefit.icon className="w-5 h-5 text-secondary" />
+                <div key={i} className="card border-2 border-(--color-text)/10 p-lg md:p-xl">
+                  <div className="icon-box icon-box-md rounded-xl bg-(--color-secondary)/10 mb-md md:mb-lg">
+                    <benefit.icon className="w-5 h-5 md:w-6 md:h-6 text-secondary" />
                   </div>
                   <h6 className="mb-sm">{benefit.title}</h6>
-                  <p className="text-sm text-muted">{benefit.desc}</p>
+                  <p className="text-base text-muted">{benefit.desc}</p>
                 </div>
               ))}
             </div>
@@ -381,8 +381,53 @@ export default function Support() {
             </h3>
           </div>
 
-          {/* Comparison table */}
-          <div>
+          {/* Mobile: Stacked plan cards */}
+          <div className="md:hidden flex flex-col gap-lg">
+            {plans.map((plan, i) => {
+              const colorVars = {
+                bronze: "--color-bronze",
+                silver: "--color-silver",
+                gold: "--color-gold",
+              };
+              const colorVar = colorVars[plan.color];
+              return (
+                <div
+                  key={i}
+                  className="rounded-2xl overflow-hidden border border-(--color-text)/10"
+                >
+                  <div
+                    className="text-center py-lg px-md"
+                    style={{ backgroundColor: `var(${colorVar})` }}
+                  >
+                    <h5 style={{ color: "#ffffff", marginBottom: 0 }}>{plan.name}</h5>
+                  </div>
+                  <div className="p-lg">
+                    {featureLabels.map((feature, j) => {
+                      const value = feature[plan.color];
+                      return (
+                        <div
+                          key={j}
+                          className="flex justify-between items-center py-md border-b border-(--color-text)/5 last:border-0"
+                        >
+                          <span className="text-sm text-muted">{feature.label}</span>
+                          {value ? (
+                            <span className="text-sm font-semibold">{value}</span>
+                          ) : (
+                            <span className="text-sm" style={{ color: "rgba(26,26,26,0.25)" }}>
+                              —
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop: Comparison table */}
+          <div className="hidden md:block">
             {/* Header row */}
             <div
               className="grid items-end"

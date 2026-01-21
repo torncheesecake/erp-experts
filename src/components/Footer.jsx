@@ -73,18 +73,18 @@ export default function Footer() {
         />
 
         <div className="container relative z-10">
-          <div className="grid lg:grid-cols-12 gap-2xl mb-2xl md:mb-3xl">
+          <div className="grid md:grid-cols-2 lg:grid-cols-12 gap-xl md:gap-2xl mb-xl md:mb-3xl">
             {/* Brand & CTA */}
-            <div className="lg:col-span-5">
-              <span className="text-2xl md:text-3xl font-heading font-bold mb-lg block">
+            <div className="md:col-span-2 lg:col-span-5">
+              <span className="text-xl md:text-2xl lg:text-3xl font-heading font-bold mb-md md:mb-lg block">
                 ERP Experts
               </span>
-              <p className="text-lg text-white/60 mb-xl max-w-sm">
+              <p className="text-base md:text-lg text-white/60 mb-lg md:mb-xl max-w-sm">
                 NetSuite implementation partner helping UK businesses transform their operations.
               </p>
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-sm bg-(--color-primary) text-white py-3 px-6 text-base font-bold rounded-full hover:scale-105 transition-transform"
+                className="inline-flex items-center gap-sm bg-(--color-primary) text-white py-3 px-6 text-sm md:text-base font-bold rounded-full hover:scale-105 transition-transform"
               >
                 Start a conversation
                 <ArrowRight className="w-4 h-4" />
@@ -92,16 +92,16 @@ export default function Footer() {
             </div>
 
             {/* Links */}
-            <div className="lg:col-span-4 grid grid-cols-2 gap-xl">
+            <div className="lg:col-span-4 grid grid-cols-2 gap-lg md:gap-xl">
               {footerLinks.map((col, i) => (
                 <div key={i}>
-                  <h6 className="text-label text-white/40 mb-lg">{col.title}</h6>
-                  <ul className="flex flex-col gap-md">
+                  <h6 className="text-label text-white/40 mb-md md:mb-lg">{col.title}</h6>
+                  <ul className="flex flex-col gap-sm md:gap-md">
                     {col.links.map((link, j) => (
                       <li key={j}>
                         <Link
                           to={link.href}
-                          className="text-base text-white/80 hover:text-primary transition-colors"
+                          className="text-sm md:text-base text-white/80 hover:text-primary transition-colors"
                         >
                           {link.label}
                         </Link>
@@ -114,34 +114,34 @@ export default function Footer() {
 
             {/* Contact info */}
             <div className="lg:col-span-3">
-              <h6 className="text-label text-white/40 mb-lg">Get in touch</h6>
-              <div className="flex flex-col gap-lg">
+              <h6 className="text-label text-white/40 mb-md md:mb-lg">Get in touch</h6>
+              <div className="flex flex-col gap-md md:gap-lg">
                 <a
-                  href="tel:+441onal234567890"
-                  className="flex items-center gap-md text-base text-white/80 hover:text-primary transition-colors"
+                  href="tel:+441785336253"
+                  className="flex items-center gap-md text-sm md:text-base text-white/80 hover:text-primary transition-colors"
                 >
                   <div
                     className="shrink-0 flex items-end justify-center"
                     style={{
-                      width: "32px",
-                      height: "28px",
+                      width: "28px",
+                      height: "24px",
                       clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
                       backgroundColor: "var(--color-primary)",
                     }}
                   >
                     <Phone className="w-3 h-3 text-white mb-1" />
                   </div>
-                  +44 (0) 123 456 7890
+                  01785 336 253
                 </a>
                 <a
                   href="mailto:hello@erpexperts.co.uk"
-                  className="flex items-center gap-md text-base text-white/80 hover:text-primary transition-colors"
+                  className="flex items-center gap-md text-sm md:text-base text-white/80 hover:text-primary transition-colors"
                 >
                   <div
                     className="shrink-0 flex items-end justify-center"
                     style={{
-                      width: "32px",
-                      height: "28px",
+                      width: "28px",
+                      height: "24px",
                       clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
                       backgroundColor: "var(--color-primary)",
                     }}
@@ -150,12 +150,12 @@ export default function Footer() {
                   </div>
                   hello@erpexperts.co.uk
                 </a>
-                <div className="flex items-start gap-md text-base text-white/60">
+                <div className="flex items-start gap-md text-sm md:text-base text-white/60">
                   <div
                     className="shrink-0 flex items-end justify-center mt-1"
                     style={{
-                      width: "32px",
-                      height: "28px",
+                      width: "28px",
+                      height: "24px",
                       clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
                       backgroundColor: "var(--color-primary)",
                       opacity: 0.5,
@@ -168,7 +168,7 @@ export default function Footer() {
               </div>
 
               {/* Social */}
-              <div className="flex gap-6 mt-2xl">
+              <div className="flex gap-4 md:gap-6" style={{ marginTop: "40px" }}>
                 {[
                   { Icon: Linkedin, href: "#" },
                   { Icon: Instagram, href: "#" },
@@ -177,9 +177,9 @@ export default function Footer() {
                   <a
                     key={i}
                     href={href}
-                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-(--color-primary) flex items-center justify-center transition-colors"
+                    className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-(--color-primary) flex items-center justify-center transition-colors"
                   >
-                    <Icon className="w-5 h-5 text-white" />
+                    <Icon className="w-4 h-4 md:w-5 md:h-5 text-white" />
                   </a>
                 ))}
               </div>
@@ -187,7 +187,10 @@ export default function Footer() {
           </div>
 
           {/* Bottom bar */}
-          <div className="border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-md text-sm text-white/40 pt-xl mt-xl">
+          <div
+            className="border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-md text-sm text-white/40 mt-xl"
+            style={{ paddingTop: "30px" }}
+          >
             <p>© {new Date().getFullYear()} ERP Experts. All rights reserved.</p>
             <div className="flex items-center gap-lg">
               <Link to="/privacy" className="hover:text-white transition-colors">

@@ -182,7 +182,7 @@ export default function Services() {
             <h1 className="text-hero max-w-[1000px]" style={{ marginBottom: "var(--space-4xl)" }}>
               Tailored services for
               <br />
-              <span className="text-primary">smarter growth.</span>
+              <span className="text-primary">smarter growth</span>.
             </h1>
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Start a conversation
@@ -277,9 +277,9 @@ export default function Services() {
               Implementation Process
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-lg md:gap-xl">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-md md:gap-xl">
             {processSteps.map((step, i) => (
-              <div key={i} className="relative">
+              <div key={i} className={`relative ${i === 4 ? "col-span-2 sm:col-span-1" : ""}`}>
                 {/* Connector line */}
                 {i < processSteps.length - 1 && (
                   <div
@@ -288,14 +288,14 @@ export default function Services() {
                   />
                 )}
                 <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-(--color-tertiary)/10 mb-xl relative">
-                    <step.icon className="w-8 h-8 text-tertiary" />
-                    <span className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-(--color-primary) text-white text-sm font-bold flex items-center justify-center">
+                  <div className="inline-flex items-center justify-center w-14 h-14 md:w-20 md:h-20 rounded-full bg-(--color-tertiary)/10 mb-md md:mb-xl relative">
+                    <step.icon className="w-6 h-6 md:w-8 md:h-8 text-tertiary" />
+                    <span className="absolute -top-2 -right-2 md:-top-3 md:-right-3 w-7 h-7 md:w-9 md:h-9 rounded-full bg-(--color-primary) text-white text-xs md:text-sm font-bold flex items-center justify-center">
                       {step.num.replace("0", "")}
                     </span>
                   </div>
-                  <h5 className="mb-md">{step.title}</h5>
-                  <p className="text-base text-muted">{step.desc}</p>
+                  <h5 className="mb-sm md:mb-md text-sm md:text-base">{step.title}</h5>
+                  <p className="text-sm md:text-base text-muted">{step.desc}</p>
                 </div>
               </div>
             ))}
@@ -328,7 +328,7 @@ export default function Services() {
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
-            <div className="grid grid-cols-2 gap-lg">
+            <div className="grid grid-cols-2 gap-md md:gap-lg">
               {[
                 {
                   icon: Shield,
@@ -355,15 +355,18 @@ export default function Services() {
                   desc: "No scope creep charges",
                 },
               ].map((stat, i) => (
-                <div key={i} className="card border-2 border-(--color-text)/10 text-center p-xl">
-                  <div className="icon-box icon-box-md rounded-xl bg-(--color-tertiary)/10 mx-auto mb-lg">
-                    <stat.icon className="w-5 h-5 text-tertiary" />
+                <div
+                  key={i}
+                  className="card border-2 border-(--color-text)/10 text-center p-md md:p-xl"
+                >
+                  <div className="icon-box icon-box-sm md:icon-box-md rounded-xl bg-(--color-tertiary)/10 mx-auto mb-md md:mb-lg">
+                    <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-tertiary" />
                   </div>
-                  <p className="font-heading text-3xl md:text-4xl text-tertiary mb-sm">
+                  <p className="font-heading text-2xl md:text-4xl text-tertiary mb-xs md:mb-sm">
                     {stat.value}
                   </p>
-                  <p className="font-bold text-base mb-xs">{stat.label}</p>
-                  <p className="text-sm text-muted">{stat.desc}</p>
+                  <p className="font-bold text-sm md:text-base mb-xs">{stat.label}</p>
+                  <p className="text-xs md:text-sm text-muted">{stat.desc}</p>
                 </div>
               ))}
             </div>
@@ -492,7 +495,7 @@ export default function Services() {
         />
         <div className="container relative z-10">
           <div className="grid lg:grid-cols-2 gap-2xl lg:gap-3xl items-center">
-            <div className="order-2 lg:order-1 grid grid-cols-2 gap-lg">
+            <div className="order-2 lg:order-1 grid grid-cols-2 gap-md md:gap-lg">
               {[
                 {
                   icon: Headphones,
@@ -519,15 +522,18 @@ export default function Services() {
                   desc: "Your system keeps evolving",
                 },
               ].map((stat, i) => (
-                <div key={i} className="card border-2 border-(--color-text)/10 text-center p-xl">
-                  <div className="icon-box icon-box-md rounded-xl bg-(--color-secondary)/10 mx-auto mb-lg">
-                    <stat.icon className="w-5 h-5 text-secondary" />
+                <div
+                  key={i}
+                  className="card border-2 border-(--color-text)/10 text-center p-md md:p-xl"
+                >
+                  <div className="icon-box icon-box-sm md:icon-box-md rounded-xl bg-(--color-secondary)/10 mx-auto mb-md md:mb-lg">
+                    <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
                   </div>
-                  <p className="font-heading text-3xl md:text-4xl text-secondary mb-sm">
+                  <p className="font-heading text-2xl md:text-4xl text-secondary mb-xs md:mb-sm">
                     {stat.value}
                   </p>
-                  <p className="font-bold text-base mb-xs">{stat.label}</p>
-                  <p className="text-sm text-muted">{stat.desc}</p>
+                  <p className="font-bold text-sm md:text-base mb-xs">{stat.label}</p>
+                  <p className="text-xs md:text-sm text-muted">{stat.desc}</p>
                 </div>
               ))}
             </div>
@@ -619,7 +625,7 @@ export default function Services() {
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container text-center">
           <h1 className="text-hero" style={{ marginBottom: "var(--space-3xl)" }}>
-            Ready to<span className="text-primary"> get started?</span>
+            Ready to<span className="text-primary"> get started</span>?
           </h1>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
             <Link to="/contact" className="btn btn-primary justify-center">

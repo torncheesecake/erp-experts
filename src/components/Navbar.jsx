@@ -21,13 +21,13 @@ export default function Navbar() {
         scrolled ? "shadow-sm" : ""
       }`}
     >
-      <nav className="container py-(--space-lg) md:py-(--space-xl) flex items-center justify-between">
+      <nav className="container py-(--space-md) md:py-(--space-lg) lg:py-(--space-xl) flex items-center justify-between">
         <Link to="/" className="block shrink-0">
-          <img src={logoImage} alt="ERP Experts" className="h-10 md:h-16" />
+          <img src={logoImage} alt="ERP Experts" className="h-12 md:h-14 lg:h-16" />
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-xl lg:gap-2xl">
+        <div className="hidden lg:flex items-center gap-xl xl:gap-2xl">
           <Link
             to="/services"
             className="text-base font-medium text-(--color-text) opacity-70 hover:opacity-100 transition-opacity"
@@ -53,14 +53,14 @@ export default function Navbar() {
         </div>
 
         {/* Mobile menu button */}
-        <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        <button className="lg:hidden p-3" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          {mobileMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
         </button>
       </nav>
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-(--color-bg) border-t border-(--color-text)/10 py-(--space-xl)">
+        <div className="lg:hidden bg-(--color-bg) border-t border-(--color-text)/10 py-(--space-xl)">
           <div className="container flex flex-col gap-lg">
             <Link
               to="/services"

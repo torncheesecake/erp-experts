@@ -109,7 +109,7 @@ export default function NetSuiteServices() {
             <h1 className="text-hero mb-xl md:mb-2xl">
               NetSuite
               <br />
-              <span className="text-primary">done right.</span>
+              <span className="text-primary">done right</span>.
             </h1>
             <p
               className="text-lg md:text-xl text-muted mb-xl md:mb-2xl"
@@ -311,7 +311,7 @@ export default function NetSuiteServices() {
         <div className="container text-center">
           <h1 className="text-hero mb-xl md:mb-2xl">
             Ready to start your
-            <span className="block text-primary">NetSuite journey?</span>
+            <span className="text-primary">NetSuite journey</span>?
           </h1>
           <div className="flex flex-col sm:flex-row gap-md md:gap-lg justify-center">
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">

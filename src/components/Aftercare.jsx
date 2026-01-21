@@ -106,7 +106,7 @@ export default function Aftercare() {
           <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
             We're here
             <br />
-            <span className="text-secondary">for the long haul.</span>
+            <span className="text-secondary">for the long haul</span>.
           </h1>
           <button
             className="btn btn-lg text-white w-full sm:w-auto justify-center"
@@ -257,7 +257,7 @@ export default function Aftercare() {
         <div className="container text-center">
           <h1 className="text-hero mb-xl md:mb-2xl">
             Ready for ongoing
-            <span className="block text-secondary">peace of mind?</span>
+            <span className="text-secondary">peace of mind</span>?
           </h1>
           <div className="flex flex-col sm:flex-row gap-md md:gap-lg justify-center">
             <button

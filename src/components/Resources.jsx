@@ -143,7 +143,7 @@ export default function Resources() {
             <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
               Learn from
               <br />
-              <span className="text-primary">the experts.</span>
+              <span className="text-primary">the experts</span>.
             </h1>
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Browse resources
@@ -357,7 +357,7 @@ export default function Resources() {
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container text-center">
           <h1 className="text-hero" style={{ marginBottom: "var(--space-3xl)" }}>
-            Let's talk <span className="text-primary">NetSuite.</span>
+            Let's talk <span className="text-primary">NetSuite</span>.
           </h1>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">

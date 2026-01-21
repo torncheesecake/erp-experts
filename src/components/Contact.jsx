@@ -1,31 +1,28 @@
 /**
  * ERP Experts Contact Page
- * "Let's Talk" - Main contact/enquiry page
  */
 
-import { ArrowRight, Mail, Phone, MapPin, Clock } from "lucide-react";
+import { ArrowRight, Mail, Phone, MapPin, ExternalLink } from "lucide-react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import BackToTop from "./BackToTop";
 
-const contactMethods = [
+const locations = [
   {
-    icon: Phone,
-    title: "Call us",
-    value: "+44 (0) 123 456 7890",
-    desc: "Mon-Fri, 9am-5pm GMT",
+    name: "Stafford (HQ Europe)",
+    address: "Dalton House, Lakhpur Court, Staffordshire Technology Park, Stafford. ST18 0FX.",
+    mapUrl:
+      "https://maps.google.com/?q=Dalton+House+Lakhpur+Court+Staffordshire+Technology+Park+Stafford+ST18+0FX",
   },
   {
-    icon: Mail,
-    title: "Email us",
-    value: "hello@erpexperts.co.uk",
-    desc: "We'll respond within 24 hours",
+    name: "Manchester",
+    address: "Pepper House, Pepper Rd, Hazel Grove, Stockport SK7 5DP.",
+    mapUrl: "https://maps.google.com/?q=Pepper+House+Pepper+Rd+Hazel+Grove+Stockport+SK7+5DP",
   },
   {
-    icon: MapPin,
-    title: "Visit us",
-    value: "London, UK",
-    desc: "By appointment only",
+    name: "Dubai (HQ MENA)",
+    address: "552-0, Al Goze First, Dubai, United Arab Emirates.",
+    mapUrl: "https://maps.google.com/?q=Al+Goze+First+Dubai",
   },
 ];
 
@@ -35,15 +32,49 @@ export default function Contact() {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-(--space-4xl) pb-(--space-2xl) md:pb-(--space-3xl)">
-        <div className="container">
-          <div className="max-w-5xl">
-            <p className="text-label text-primary mb-md md:mb-lg">Contact</p>
-            <h1 className="text-hero mb-xl md:mb-2xl">
-              Let's
-              <br />
-              <span className="text-primary">talk.</span>
+      <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
+        {/* Offset triangle */}
+        <div
+          className="absolute top-1/2 hidden md:block"
+          style={{
+            left: "75%",
+            transform: "translateX(calc(-50% + 80px)) translateY(calc(-50% + 30px))",
+            width: "900px",
+            height: "772px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-primary)",
+            opacity: 0.2,
+          }}
+        />
+        {/* Main triangle */}
+        <div
+          className="absolute top-1/2 hidden md:block"
+          style={{
+            left: "75%",
+            transform: "translateX(-50%) translateY(-50%)",
+            width: "920px",
+            height: "789px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            overflow: "hidden",
+          }}
+        >
+          <img
+            src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1000&q=80"
+            alt=""
+            className="w-full h-full object-cover"
+            style={{ opacity: 0.5 }}
+          />
+        </div>
+        <div className="container relative z-10">
+          <div className="max-w-3xl">
+            <p className="text-label text-primary mb-md">Contact</p>
+            <h1 className="text-hero" style={{ marginBottom: "var(--space-xl)" }}>
+              Let's <span className="text-primary">talk</span>.
             </h1>
+            <p className="text-lg md:text-xl text-muted">
+              Not sure where to start with ERP Software? Fill in your details and one of our experts
+              will get back to you to help find the right solution for your business.
+            </p>
           </div>
         </div>
       </section>
@@ -51,80 +82,125 @@ export default function Contact() {
       {/* Main Content */}
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
-          <div className="grid lg:grid-cols-2 gap-2xl md:gap-3xl">
-            {/* Form */}
-            <div>
-              <h2 className="mb-lg md:mb-xl">Send us a message</h2>
-              <form className="flex flex-col gap-lg md:gap-xl">
-                <div className="grid sm:grid-cols-2 gap-lg md:gap-xl">
-                  <div>
-                    <label className="text-label mb-sm block">First name</label>
-                    <div className="h-14 md:h-16 rounded-2xl border border-(--color-text)/10 bg-(--color-bg-light)" />
-                  </div>
-                  <div>
-                    <label className="text-label mb-sm block">Last name</label>
-                    <div className="h-14 md:h-16 rounded-2xl border border-(--color-text)/10 bg-(--color-bg-light)" />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-label mb-sm block">Email</label>
-                  <div className="h-14 md:h-16 rounded-2xl border border-(--color-text)/10 bg-(--color-bg-light)" />
-                </div>
-                <div>
-                  <label className="text-label mb-sm block">Company</label>
-                  <div className="h-14 md:h-16 rounded-2xl border border-(--color-text)/10 bg-(--color-bg-light)" />
-                </div>
-                <div>
-                  <label className="text-label mb-sm block">What can we help with?</label>
-                  <div className="h-14 md:h-16 rounded-2xl border border-(--color-text)/10 bg-(--color-bg-light)" />
-                </div>
-                <div>
-                  <label className="text-label mb-sm block">Message</label>
-                  <div className="h-40 md:h-48 rounded-2xl border border-(--color-text)/10 bg-(--color-bg-light)" />
-                </div>
-                <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
-                  Send message
-                  <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
-                </button>
-              </form>
-            </div>
-
-            {/* Contact Info */}
-            <div>
-              <h2 style={{ marginBottom: "var(--space-3xl)" }}>Get in touch</h2>
-              <div className="flex flex-col gap-lg md:gap-xl">
-                {contactMethods.map((method, i) => (
-                  <div key={i} className="flex gap-lg md:gap-xl">
-                    <div className="icon-box icon-box-md rounded-2xl bg-(--color-primary)/10 shrink-0">
-                      <method.icon className="w-6 h-6 text-primary" />
+          <div className="grid lg:grid-cols-5 gap-2xl md:gap-3xl">
+            {/* Form - Takes more space */}
+            <div className="lg:col-span-3">
+              <div className="p-(--space-xl) md:p-(--space-2xl) rounded-2xl md:rounded-3xl border border-(--color-text)/10">
+                <h4 style={{ marginBottom: "var(--space-xl)" }}>Send us a message</h4>
+                <form className="flex flex-col gap-lg">
+                  <div className="grid sm:grid-cols-2 gap-lg">
+                    <div>
+                      <label className="text-base font-bold mb-sm block">First name *</label>
+                      <input
+                        type="text"
+                        required
+                        className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary)"
+                      />
                     </div>
                     <div>
-                      <p className="text-label text-muted mb-xs">{method.title}</p>
-                      <p className="text-lg md:text-xl font-bold mb-xs">{method.value}</p>
-                      <p className="text-base text-muted">{method.desc}</p>
+                      <label className="text-base font-bold mb-sm block">Last name *</label>
+                      <input
+                        type="text"
+                        required
+                        className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary)"
+                      />
                     </div>
                   </div>
-                ))}
+                  <div className="grid sm:grid-cols-2 gap-lg">
+                    <div>
+                      <label className="text-base font-bold mb-sm block">Email *</label>
+                      <input
+                        type="email"
+                        required
+                        className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary)"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-base font-bold mb-sm block">Phone</label>
+                      <input
+                        type="tel"
+                        className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary)"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-base font-bold mb-sm block">Company</label>
+                    <input
+                      type="text"
+                      className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary)"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-base font-bold mb-sm block">Message *</label>
+                    <textarea
+                      required
+                      rows={5}
+                      className="w-full p-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary) resize-none"
+                    />
+                  </div>
+                  <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
+                    Submit
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                </form>
               </div>
+            </div>
 
-              {/* Book a Call */}
-              <div className="mt-xl md:mt-2xl p-(--space-xl) md:p-(--space-2xl) rounded-3xl bg-(--color-primary)/5 border-2 border-(--color-primary)/20">
+            {/* Contact Info Sidebar */}
+            <div className="lg:col-span-2 flex flex-col gap-lg">
+              {/* Email Card */}
+              <div className="p-(--space-xl) rounded-2xl bg-(--color-primary)/5 border border-(--color-primary)/20">
                 <div className="flex items-center gap-md mb-lg">
-                  <Clock className="w-5 h-5 text-primary" />
-                  <p className="text-label text-primary">Prefer to talk?</p>
+                  <div
+                    className="shrink-0 flex items-end justify-center"
+                    style={{
+                      width: "40px",
+                      height: "35px",
+                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                      backgroundColor: "var(--color-primary)",
+                    }}
+                  >
+                    <Mail className="w-4 h-4 text-white mb-1" />
+                  </div>
+                  <h6>Email</h6>
                 </div>
-                <h5 className="mb-md">Book a discovery call</h5>
-                <p className="text-base text-muted mb-xl">
-                  Schedule a 30-minute call with one of our NetSuite experts.
+                <p className="text-base text-muted mb-md">
+                  Drop us an email with your project details and our team will get back to you with
+                  tailored advice.
                 </p>
                 <a
-                  href="https://calendly.com/erp-experts"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-primary w-full justify-center"
+                  href="mailto:hello@erpexperts.co.uk"
+                  className="text-lg font-bold text-primary hover:underline"
                 >
-                  Book a slot
-                  <ArrowRight className="w-5 h-5" />
+                  hello@erpexperts.co.uk
+                </a>
+              </div>
+
+              {/* Phone Card */}
+              <div className="p-(--space-xl) rounded-2xl bg-(--color-primary)/5 border border-(--color-primary)/20">
+                <div className="flex items-center gap-md mb-lg">
+                  <div
+                    className="shrink-0 flex items-end justify-center"
+                    style={{
+                      width: "40px",
+                      height: "35px",
+                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                      backgroundColor: "var(--color-primary)",
+                    }}
+                  >
+                    <Phone className="w-4 h-4 text-white mb-1" />
+                  </div>
+                  <h6>Call</h6>
+                </div>
+                <p className="text-base text-muted mb-md">
+                  Prefer to chat? Give us a call. Our team is ready to listen and provide expert
+                  advice.
+                </p>
+                <a
+                  href="tel:+441785336253"
+                  className="text-lg font-bold text-primary hover:underline"
+                >
+                  01785 336 253
                 </a>
               </div>
             </div>
@@ -132,37 +208,78 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* NETscore CTA */}
-      <section className="section-padding border-t border-(--color-text)/10">
+      {/* Locations */}
+      <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
-          <div className="rounded-3xl bg-dark p-(--space-xl) md:p-(--space-3xl) text-center">
-            <p className="text-label text-primary mb-sm md:mb-md">Free Assessment</p>
-            <h3
-              className="text-(--color-text-on-dark)"
-              style={{ marginBottom: "var(--space-3xl)" }}
-            >
-              Not sure where to start?
-            </h3>
-            <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
-              Get your free NETscore
-              <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
-            </button>
+          <div className="text-center mb-xl md:mb-2xl">
+            <p className="text-label text-primary mb-md">Our Offices</p>
+            <h3>Locations</h3>
+          </div>
+          <div className="grid md:grid-cols-3 gap-lg">
+            {locations.map((location, i) => (
+              <div
+                key={i}
+                className="p-(--space-xl) md:p-(--space-2xl) rounded-2xl border border-(--color-text)/10 hover:border-(--color-primary)/30 transition-colors"
+              >
+                <div className="flex items-center gap-md mb-lg">
+                  <div
+                    className="shrink-0 flex items-end justify-center"
+                    style={{
+                      width: "40px",
+                      height: "35px",
+                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                      backgroundColor: "var(--color-primary)",
+                    }}
+                  >
+                    <MapPin className="w-4 h-4 text-white mb-1" />
+                  </div>
+                  <h6>{location.name}</h6>
+                </div>
+                <p className="text-base text-muted mb-lg">{location.address}</p>
+                <p className="text-sm text-muted mb-md">Visits by appointment only</p>
+                <a
+                  href={location.mapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-sm text-base font-bold text-primary hover:underline"
+                >
+                  View on map
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
+      {/* CTA */}
       <section className="section-padding-lg">
-        <div className="container text-center">
-          <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
-            Ready to unlock your
-            <span className="block text-primary">business potential?</span>
-          </h1>
-          <div className="flex flex-col sm:flex-row gap-md md:gap-lg justify-center">
-            <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
-              Book a call
-              <ArrowRight className="w-6 h-6" />
-            </button>
+        <div className="container">
+          <div className="rounded-2xl md:rounded-3xl p-(--space-xl) md:p-(--space-3xl) bg-(--color-bg-dark) text-center relative overflow-hidden">
+            {/* Decorative triangle */}
+            <div
+              className="absolute top-0 right-0 opacity-10 hidden md:block"
+              style={{
+                width: "300px",
+                height: "260px",
+                clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                backgroundColor: "var(--color-primary)",
+                transform: "translateX(80px) translateY(-80px)",
+              }}
+            />
+            <div className="relative z-10">
+              <p className="text-label text-primary mb-md">Free Assessment</p>
+              <h3
+                className="text-(--color-text-on-dark)"
+                style={{ marginBottom: "var(--space-2xl)" }}
+              >
+                Not sure where to start?
+              </h3>
+              <button className="btn btn-accent btn-lg w-full sm:w-auto justify-center">
+                Get your free NETscore
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
       </section>
