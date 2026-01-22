@@ -11,6 +11,7 @@ import Resources from "./components/Resources";
 import Contact from "./components/Contact";
 import Support from "./components/Support";
 import DesignGuide from "./components/DesignGuide";
+import Terms from "./components/Terms";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -38,6 +39,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/support" element={<Support />} />
         <Route path="/design-guide" element={<DesignGuide />} />
+        <Route path="/terms" element={<Terms />} />
       </Routes>
     </Router>
   );
