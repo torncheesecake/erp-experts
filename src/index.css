@@ -24,6 +24,8 @@
     --color-secondary-hover: #6828a8;
     --color-tertiary: #2d6ad4;
     --color-tertiary-hover: #2358b0;
+    --color-quaternary: #2a9d63;
+    --color-quaternary-hover: #238553;
     --color-bronze: #cd7f32;
     --color-silver: #6b7280;
     --color-gold: #d4a012;
@@ -349,6 +351,19 @@ h6 {
 .mb-2xl {
     margin-bottom: var(--space-2xl);
 }
+.mb-3xl {
+    margin-bottom: var(--space-3xl);
+}
+
+/* Responsive margin bottom */
+@media (min-width: 768px) {
+    .md\:mb-2xl {
+        margin-bottom: var(--space-2xl);
+    }
+    .md\:mb-3xl {
+        margin-bottom: var(--space-3xl);
+    }
+}
 
 /* Padding left utilities */
 .pl-xl {
@@ -356,6 +371,66 @@ h6 {
 }
 .pl-2xl {
     padding-left: var(--space-2xl);
+}
+
+/* Padding utilities */
+.p-sm {
+    padding: var(--space-sm);
+}
+.p-md {
+    padding: var(--space-md);
+}
+.p-lg {
+    padding: var(--space-lg);
+}
+.p-xl {
+    padding: var(--space-xl);
+}
+.p-2xl {
+    padding: var(--space-2xl);
+}
+
+/* Padding top utilities */
+.pt-lg {
+    padding-top: var(--space-lg);
+}
+.pt-xl {
+    padding-top: var(--space-xl);
+}
+
+/* Padding bottom utilities */
+.pb-lg {
+    padding-bottom: var(--space-lg);
+}
+.pb-xl {
+    padding-bottom: var(--space-xl);
+}
+
+/* Margin top utilities */
+.mt-lg {
+    margin-top: var(--space-lg);
+}
+.mt-xl {
+    margin-top: var(--space-xl);
+}
+
+/* Responsive padding - tablet and up */
+@media (min-width: 768px) {
+    .md\:p-lg {
+        padding: var(--space-lg);
+    }
+    .md\:p-xl {
+        padding: var(--space-xl);
+    }
+    .md\:p-2xl {
+        padding: var(--space-2xl);
+    }
+    .md\:pt-xl {
+        padding-top: var(--space-xl);
+    }
+    .md\:pb-xl {
+        padding-bottom: var(--space-xl);
+    }
 }
 
 /* ========================================
@@ -370,6 +445,9 @@ h6 {
 }
 .text-tertiary {
     color: var(--color-tertiary);
+}
+.text-quaternary {
+    color: var(--color-quaternary);
 }
 .text-muted {
     color: var(--color-text-muted);

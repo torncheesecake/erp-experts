@@ -179,7 +179,7 @@ export default function Services() {
         <div className="container relative z-10">
           <div>
             <p className="text-label text-primary mb-md">Our Services</p>
-            <h1 className="text-hero max-w-[1000px]" style={{ marginBottom: "var(--space-4xl)" }}>
+            <h1 className="text-hero max-w-[1000px]" style={{ marginBottom: "var(--space-2xl)" }}>
               Tailored services for
               <br />
               <span className="text-primary">smarter growth</span>.
@@ -294,8 +294,8 @@ export default function Services() {
                       {step.num.replace("0", "")}
                     </span>
                   </div>
-                  <h5 className="mb-sm md:mb-md text-sm md:text-base">{step.title}</h5>
-                  <p className="text-sm md:text-base text-muted">{step.desc}</p>
+                  <h4 className="mb-sm md:mb-md text-lg md:text-xl">{step.title}</h4>
+                  <p className="text-base md:text-lg text-muted">{step.desc}</p>
                 </div>
               </div>
             ))}
@@ -365,8 +365,8 @@ export default function Services() {
                   <p className="font-heading text-2xl md:text-4xl text-tertiary mb-xs md:mb-sm">
                     {stat.value}
                   </p>
-                  <p className="font-bold text-sm md:text-base mb-xs">{stat.label}</p>
-                  <p className="text-xs md:text-sm text-muted">{stat.desc}</p>
+                  <p className="font-bold text-base md:text-lg mb-xs">{stat.label}</p>
+                  <p className="text-sm md:text-base text-muted">{stat.desc}</p>
                 </div>
               ))}
             </div>
@@ -447,9 +447,16 @@ export default function Services() {
           <div className="grid lg:grid-cols-2 gap-2xl lg:gap-3xl items-center">
             <div>
               <p className="text-label text-primary mb-md">Training</p>
-              <h2>
+              <h2 style={{ marginBottom: "var(--space-xl)" }}>
                 The right skills for <span className="text-primary">the right results.</span>
               </h2>
+              <Link
+                to="/contact"
+                className="btn btn-lg w-full sm:w-auto justify-center bg-(--color-primary) text-white hover:opacity-90"
+              >
+                Book a training session
+                <ArrowRight className="w-5 h-5" />
+              </Link>
             </div>
             <div className="grid grid-cols-2 gap-lg">
               {[
@@ -487,15 +494,35 @@ export default function Services() {
       <section
         id="aftercare"
         className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden"
+        style={{ backgroundColor: "rgba(109, 40, 217, 0.06)" }}
       >
+        {/* Decorative hands icon */}
         <HeartHandshake
-          className="absolute left-0 top-1/2 w-[28rem] h-[28rem] text-secondary opacity-[0.06] pointer-events-none hidden lg:block"
+          className="absolute -right-16 top-1/2 -translate-y-1/2 w-[32rem] h-[32rem] text-secondary opacity-[0.08] pointer-events-none hidden lg:block"
           strokeWidth={0.5}
-          style={{ transform: "translateX(-30%) translateY(-50%)" }}
         />
         <div className="container relative z-10">
-          <div className="grid lg:grid-cols-2 gap-2xl lg:gap-3xl items-center">
-            <div className="order-2 lg:order-1 grid grid-cols-2 gap-md md:gap-lg">
+          <div className="grid lg:grid-cols-2 gap-2xl lg:gap-4xl items-center">
+            <div>
+              <p className="text-label text-secondary mb-md">Aftercare</p>
+              <h2 style={{ marginBottom: "var(--space-xl)" }}>
+                Success beyond
+                <br />
+                <span className="text-secondary">go-live.</span>
+              </h2>
+              <p className="text-lg text-muted mb-xl max-w-lg">
+                Your NetSuite journey doesn't end at launch. Our aftercare team ensures your system
+                evolves with your business.
+              </p>
+              <Link
+                to="/support"
+                className="btn btn-lg w-full sm:w-auto justify-center bg-(--color-secondary) text-white hover:opacity-90"
+              >
+                Find your support plan
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-md md:gap-lg">
               {[
                 {
                   icon: Headphones,
@@ -524,31 +551,18 @@ export default function Services() {
               ].map((stat, i) => (
                 <div
                   key={i}
-                  className="card border-2 border-(--color-text)/10 text-center p-md md:p-xl"
+                  className="card text-center p-lg md:p-xl bg-white border-2 border-(--color-text)/10"
                 >
-                  <div className="icon-box icon-box-sm md:icon-box-md rounded-xl bg-(--color-secondary)/10 mx-auto mb-md md:mb-lg">
+                  <div className="icon-box icon-box-sm md:icon-box-md rounded-xl mx-auto mb-md md:mb-lg bg-(--color-secondary)/10">
                     <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
                   </div>
                   <p className="font-heading text-2xl md:text-4xl text-secondary mb-xs md:mb-sm">
                     {stat.value}
                   </p>
-                  <p className="font-bold text-sm md:text-base mb-xs">{stat.label}</p>
-                  <p className="text-xs md:text-sm text-muted">{stat.desc}</p>
+                  <p className="font-bold text-base md:text-lg mb-xs">{stat.label}</p>
+                  <p className="text-sm md:text-base text-muted">{stat.desc}</p>
                 </div>
               ))}
-            </div>
-            <div className="order-1 lg:order-2">
-              <p className="text-label text-secondary mb-md">Aftercare</p>
-              <h2 style={{ marginBottom: "var(--space-3xl)" }}>
-                Success beyond <span className="text-secondary whitespace-nowrap">go-live.</span>
-              </h2>
-              <Link
-                to="/support"
-                className="btn btn-lg w-full sm:w-auto justify-center bg-(--color-secondary) text-white hover:opacity-90"
-              >
-                Find your support plan
-                <ArrowRight className="w-5 h-5" />
-              </Link>
             </div>
           </div>
         </div>

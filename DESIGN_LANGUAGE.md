@@ -166,6 +166,11 @@ Use borders (border-top: 1px solid rgba(26,26,26,0.1)) not background changes.
 Or generous whitespace - sections should breathe.
 ```
 
+**Under content**
+...
+Make sure to have a space under text if it prceeds with a line or border. There should be equal distance between the line and the copy above it. 
+...
+
 ---
 
 ## Component Specifications

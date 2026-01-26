@@ -62,24 +62,59 @@ export default function About() {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-(--space-4xl) pb-(--space-2xl) md:pb-(--space-3xl)">
-        <div className="container">
-          <div className="max-w-5xl">
-            <p className="text-label text-primary" style={{ marginBottom: "var(--space-lg)" }}>
+      <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
+        {/* Offset triangle */}
+        <div
+          className="absolute top-1/2 hidden md:block"
+          style={{
+            left: "75%",
+            transform: "translateX(calc(-50% + 80px)) translateY(calc(-50% + 30px))",
+            width: "900px",
+            height: "772px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-primary)",
+            opacity: 0.2,
+          }}
+        />
+        {/* Main triangle */}
+        <div
+          className="absolute top-1/2 hidden md:block"
+          style={{
+            left: "75%",
+            transform: "translateX(-50%) translateY(-50%)",
+            width: "920px",
+            height: "789px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            overflow: "hidden",
+          }}
+        >
+          <img
+            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1000&q=80"
+            alt=""
+            className="w-full h-full object-cover"
+            style={{ opacity: 0.5 }}
+          />
+        </div>
+        <div className="container relative z-10">
+          <div className="max-w-3xl">
+            <p className="text-label text-primary" style={{ marginBottom: "var(--space-md)" }}>
               About Us
             </p>
-            <h1 className="text-hero" style={{ marginBottom: "var(--space-4xl)" }}>
+            <h1 className="text-hero" style={{ marginBottom: "var(--space-2xl)" }}>
               Empowering
               <br />
               <span className="text-primary">businesses</span>.
             </h1>
             <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Work with us
-              <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
+              <ArrowRight className="w-5 h-5" />
             </button>
           </div>
         </div>
       </section>
+
+      {/* Spacer */}
+      <div className="h-3xl" />
 
       {/* Stats */}
       <section

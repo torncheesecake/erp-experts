@@ -1,9 +1,10 @@
 /**
  * ERP Experts Case Study Detail Page
+ * Green themed to match Case Studies listing
  */
 
 import { useParams, Link } from "react-router-dom";
-import { ArrowRight, ArrowLeft, MessageSquareQuote, Check } from "lucide-react";
+import { ArrowRight, ArrowLeft, MessageSquareQuote, Check, Factory } from "lucide-react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import BackToTop from "./BackToTop";
@@ -100,98 +101,109 @@ export default function CaseStudyDetail() {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-(--space-4xl) pb-(--space-2xl) md:pb-(--space-3xl) relative overflow-hidden">
-        {/* Large background triangle with image */}
+      <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
+        {/* Offset green triangle */}
         <div
-          className="absolute top-1/2 hidden md:block pointer-events-none"
+          className="absolute top-1/2 hidden md:block"
           style={{
-            left: "55%",
-            transform: "translateX(-50%) translateY(-50%)",
-            width: "1200px",
-            height: "1000px",
+            left: "75%",
+            transform: "translateX(calc(-50% + 80px)) translateY(calc(-50% + 30px))",
+            width: "900px",
+            height: "772px",
             clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-            opacity: 0.55,
+            backgroundColor: "var(--color-quaternary)",
+            opacity: 0.2,
+          }}
+        />
+        {/* Main triangle with image */}
+        <div
+          className="absolute top-1/2 hidden md:block"
+          style={{
+            left: "75%",
+            transform: "translateX(-50%) translateY(-50%)",
+            width: "920px",
+            height: "789px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            overflow: "hidden",
           }}
         >
-          <img src={caseStudy.heroImage} alt="" className="w-full h-full object-cover" />
+          <img
+            src={caseStudy.heroImage}
+            alt=""
+            className="w-full h-full object-cover"
+            style={{ opacity: 0.5 }}
+          />
         </div>
         <div className="container relative z-10">
           <Link
             to="/case-studies"
-            className="inline-flex items-center gap-sm text-base font-bold text-muted hover:text-primary mb-xl transition-colors"
+            className="inline-flex items-center gap-sm text-base font-bold text-muted hover:text-quaternary transition-colors"
+            style={{ marginBottom: "var(--space-xl)" }}
           >
             <ArrowLeft className="w-4 h-4" />
             Back to case studies
           </Link>
 
-          <div className="grid lg:grid-cols-5 gap-xl md:gap-2xl items-start">
-            {/* Main content */}
-            <div className="lg:col-span-3">
-              {/* Logo placeholder */}
-              <div className="h-16 md:h-20 w-48 md:w-56 rounded-xl bg-(--color-text)/5 flex items-center justify-center mb-xl">
-                <img src={caseStudy.logo} alt={caseStudy.client} className="h-8 md:h-10 w-auto" />
-              </div>
-              <p className="text-label text-primary mb-md">{caseStudy.industry}</p>
-              <h1 className="text-hero mb-lg md:mb-xl">{caseStudy.title}</h1>
-              <p className="text-lg md:text-xl text-muted max-w-2xl">{caseStudy.subtitle}</p>
-            </div>
+          <div className="max-w-3xl">
+            <p className="text-label text-quaternary" style={{ marginBottom: "var(--space-md)" }}>
+              {caseStudy.industry}
+            </p>
+            <h1 className="text-hero" style={{ marginBottom: "var(--space-xl)" }}>
+              {caseStudy.title}
+            </h1>
+            <p className="text-xl md:text-2xl text-muted leading-relaxed max-w-2xl">
+              {caseStudy.subtitle}
+            </p>
+          </div>
+        </div>
+      </section>
 
-            {/* Project details sidebar */}
-            <div className="lg:col-span-2 p-(--space-xl) md:p-(--space-2xl) bg-white/[0.95] rounded-2xl md:rounded-3xl border border-(--color-text)/5">
-              <h4 className="mb-xl md:mb-2xl">Project details</h4>
-              <div className="space-y-xl md:space-y-2xl">
-                <div className="flex justify-between items-center">
-                  <span className="text-base text-muted">Client</span>
-                  <span className="text-base md:text-lg font-bold text-right">
-                    {caseStudy.client}
-                  </span>
-                </div>
-                <div className="border-t border-(--color-text)/10" />
-                <div className="flex justify-between items-center">
-                  <span className="text-base text-muted">Industry</span>
-                  <span className="text-base md:text-lg font-bold">{caseStudy.industry}</span>
-                </div>
-                <div className="border-t border-(--color-text)/10" />
-                <div className="flex justify-between items-center">
-                  <span className="text-base text-muted">Timeline</span>
-                  <span className="text-base md:text-lg font-bold">{caseStudy.timeline}</span>
-                </div>
-                <div className="border-t border-(--color-text)/10" />
-                <div className="flex justify-between items-center">
-                  <span className="text-base text-muted">Team</span>
-                  <span className="text-base md:text-lg font-bold">{caseStudy.teamSize}</span>
-                </div>
-                <div className="border-t border-(--color-text)/10" />
-                <div className="flex justify-between items-start">
-                  <span className="text-base text-muted">Services</span>
-                  <div className="flex flex-wrap gap-sm justify-end">
-                    {caseStudy.services.map((service, i) => (
-                      <span
-                        key={i}
-                        className="text-base font-bold px-lg py-sm bg-white rounded-full"
-                      >
-                        {service}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
+      {/* Spacer */}
+      <div className="h-3xl" />
+
+      {/* Project Details Bar */}
+      <section
+        className="border-b border-(--color-text)/10"
+        style={{ padding: "var(--space-xl) 0" }}
+      >
+        <div className="container">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-lg md:gap-xl">
+            <div className="text-center md:text-left">
+              <p className="text-sm text-muted mb-xs">Client</p>
+              <p className="font-bold">{caseStudy.client}</p>
+            </div>
+            <div className="text-center md:text-left">
+              <p className="text-sm text-muted mb-xs">Timeline</p>
+              <p className="font-bold text-quaternary">{caseStudy.timeline}</p>
+            </div>
+            <div className="text-center md:text-left">
+              <p className="text-sm text-muted mb-xs">Team</p>
+              <p className="font-bold">{caseStudy.teamSize}</p>
+            </div>
+            <div className="text-center md:text-left">
+              <p className="text-sm text-muted mb-xs">Services</p>
+              <p className="font-bold text-quaternary">{caseStudy.services.length} services</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Results */}
-      <section className="py-(--space-xl) md:py-(--space-2xl) border-y border-(--color-text)/10">
+      <section
+        className="border-b border-(--color-text)/10"
+        style={{ padding: "var(--space-xl) 0" }}
+      >
         <div className="container">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-md md:gap-xl">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg md:gap-xl">
             {caseStudy.results.map((result, i) => (
               <div key={i} className="text-center">
-                <p className={`font-heading text-stat mb-xs ${i % 2 === 1 ? "text-primary" : ""}`}>
+                <p
+                  className={`font-heading text-stat ${i % 2 === 1 ? "text-quaternary" : ""}`}
+                  style={{ marginBottom: "var(--space-md)" }}
+                >
                   {result.metric}
                 </p>
-                <p className="text-base md:text-lg font-bold mb-xs">{result.label}</p>
-                <p className="text-base text-muted">{result.context}</p>
+                <p className="text-label text-muted">{result.label}</p>
               </div>
             ))}
           </div>
@@ -199,26 +211,29 @@ export default function CaseStudyDetail() {
       </section>
 
       {/* Challenge */}
-      <section className="section-padding-lg">
+      <section style={{ padding: "var(--space-3xl) 0" }}>
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-2xl lg:gap-3xl items-start">
             <div>
-              <p className="text-label text-primary mb-sm md:mb-md">The Challenge</p>
-              <h2 className="mb-lg md:mb-xl">{caseStudy.challenge.summary}</h2>
-              <p className="text-lg md:text-xl text-muted leading-relaxed">
-                {caseStudy.challenge.detail}
+              <p className="text-label text-quaternary" style={{ marginBottom: "var(--space-md)" }}>
+                The Challenge
               </p>
+              <h3 style={{ marginBottom: "var(--space-lg)" }}>{caseStudy.challenge.summary}</h3>
+              <p className="text-lg text-muted leading-relaxed">{caseStudy.challenge.detail}</p>
             </div>
             <div>
-              <p className="text-label text-muted mb-lg md:mb-xl">Pain points</p>
-              <div className="flex flex-col gap-8 md:gap-12">
+              <p className="text-label text-muted" style={{ marginBottom: "var(--space-xl)" }}>
+                Pain points
+              </p>
+              <div className="flex flex-col gap-md">
                 {caseStudy.challenge.painPoints.map((point, i) => (
                   <div
                     key={i}
-                    className="p-(--space-xl) md:p-(--space-2xl) bg-(--color-text)/5 rounded-2xl md:rounded-3xl flex items-center gap-xl"
+                    className="flex items-center gap-lg rounded-xl border-2 border-(--color-text)/10"
+                    style={{ padding: "var(--space-lg)" }}
                   >
-                    <span className="text-primary font-heading text-3xl md:text-4xl">0{i + 1}</span>
-                    <p className="text-lg md:text-xl">{point}</p>
+                    <span className="text-quaternary font-heading text-2xl">0{i + 1}</span>
+                    <p className="text-base">{point}</p>
                   </div>
                 ))}
               </div>
@@ -228,33 +243,38 @@ export default function CaseStudyDetail() {
       </section>
 
       {/* Solution */}
-      <section className="section-padding-lg border-t border-(--color-text)/10">
+      <section
+        className="border-t border-(--color-text)/10"
+        style={{ padding: "var(--space-3xl) 0" }}
+      >
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-2xl lg:gap-3xl items-start">
             <div>
-              <p className="text-label text-primary mb-sm md:mb-md">The Solution</p>
-              <h2 className="mb-lg md:mb-xl">{caseStudy.solution.summary}</h2>
-              <p className="text-lg md:text-xl text-muted leading-relaxed">
-                {caseStudy.solution.detail}
+              <p className="text-label text-quaternary" style={{ marginBottom: "var(--space-md)" }}>
+                The Solution
               </p>
+              <h3 style={{ marginBottom: "var(--space-lg)" }}>{caseStudy.solution.summary}</h3>
+              <p className="text-lg text-muted leading-relaxed">{caseStudy.solution.detail}</p>
             </div>
             <div>
-              <p className="text-label text-muted mb-lg md:mb-xl">Our approach</p>
-              <div className="flex flex-col gap-8 md:gap-12">
+              <p className="text-label text-muted" style={{ marginBottom: "var(--space-xl)" }}>
+                Our approach
+              </p>
+              <div className="flex flex-col gap-lg">
                 {caseStudy.solution.approach.map((step, i) => (
-                  <div key={i} className="flex items-center gap-xl md:gap-2xl">
+                  <div key={i} className="flex items-center gap-lg">
                     <div
                       className="shrink-0 relative flex items-end justify-center"
                       style={{
-                        width: "80px",
-                        height: "70px",
+                        width: "48px",
+                        height: "42px",
                         clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                        backgroundColor: "var(--color-primary)",
+                        backgroundColor: "var(--color-quaternary)",
                       }}
                     >
-                      <Check className="w-8 h-8 text-white mb-3" />
+                      <Check className="w-5 h-5 text-white mb-2" />
                     </div>
-                    <p className="text-lg md:text-xl">{step}</p>
+                    <p className="text-base">{step}</p>
                   </div>
                 ))}
               </div>
@@ -264,18 +284,37 @@ export default function CaseStudyDetail() {
       </section>
 
       {/* Testimonial */}
-      <section className="section-padding-lg border-t border-(--color-text)/10">
+      <section
+        className="border-t border-(--color-text)/10"
+        style={{ padding: "var(--space-3xl) 0" }}
+      >
         <div className="container">
-          <div className="max-w-4xl mx-auto text-center">
-            <MessageSquareQuote className="w-12 h-12 md:w-16 md:h-16 text-primary mx-auto mb-xl md:mb-2xl" />
-            <blockquote className="font-heading text-2xl md:text-3xl lg:text-4xl leading-snug mb-xl md:mb-2xl">
+          <div className="max-w-3xl mx-auto text-center">
+            <MessageSquareQuote
+              className="w-10 h-10 md:w-12 md:h-12 text-quaternary mx-auto"
+              style={{ marginBottom: "var(--space-xl)" }}
+            />
+            <blockquote
+              className="font-heading text-xl md:text-2xl lg:text-3xl leading-snug"
+              style={{ marginBottom: "var(--space-xl)" }}
+            >
               "{caseStudy.testimonial.quote}"
             </blockquote>
             <div className="flex items-center justify-center gap-md">
-              <div className="w-14 h-14 rounded-full bg-(--color-text)/10" />
+              <div
+                className="shrink-0 relative flex items-end justify-center"
+                style={{
+                  width: "48px",
+                  height: "42px",
+                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                  backgroundColor: "var(--color-quaternary)",
+                }}
+              >
+                <Factory className="w-5 h-5 text-white mb-2" />
+              </div>
               <div className="text-left">
-                <p className="text-base md:text-lg font-bold">{caseStudy.testimonial.name}</p>
-                <p className="text-base text-muted">
+                <p className="font-bold">{caseStudy.testimonial.name}</p>
+                <p className="text-sm text-muted">
                   {caseStudy.testimonial.role}, {caseStudy.testimonial.company}
                 </p>
               </div>
@@ -285,22 +324,33 @@ export default function CaseStudyDetail() {
       </section>
 
       {/* CTA */}
-      <section className="section-padding-lg">
+      <section
+        className="border-t border-(--color-text)/10"
+        style={{ padding: "var(--space-3xl) 0 var(--space-4xl)" }}
+      >
         <div className="container text-center">
-          <h1 className="text-hero" style={{ marginBottom: "var(--space-xl)" }}>
-            Ready for <span className="text-primary">similar results</span>?
-          </h1>
-          <p className="text-lg text-muted mx-auto max-w-[500px] mb-2xl">
+          <h2 style={{ marginBottom: "var(--space-lg)" }}>
+            Ready for <span className="text-quaternary">similar results</span>?
+          </h2>
+          <p
+            className="text-lg text-muted mx-auto max-w-[500px]"
+            style={{ marginBottom: "var(--space-xl)" }}
+          >
             Let's discuss how we can help transform your business.
           </p>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
-            <Link to="/contact" className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
+            <Link
+              to="/contact"
+              className="btn btn-lg w-full sm:w-auto justify-center text-white hover:scale-105 transition-transform"
+              style={{ backgroundColor: "var(--color-quaternary)" }}
+            >
               Start a conversation
-              <ArrowRight className="w-6 h-6" />
+              <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
               to="/case-studies"
-              className="btn btn-lg border-2 border-(--color-text) text-(--color-text) w-full sm:w-auto justify-center"
+              className="btn btn-lg border-2 w-full sm:w-auto justify-center"
+              style={{ borderColor: "var(--color-quaternary)", color: "var(--color-quaternary)" }}
             >
               View more case studies
             </Link>

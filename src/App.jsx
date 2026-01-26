@@ -4,6 +4,7 @@ import Homepage from "./components/Homepage";
 import Services from "./components/Services";
 import NetSuiteServices from "./components/NetSuiteServices";
 import Aftercare from "./components/Aftercare";
+import Implementation from "./components/Implementation";
 import CaseStudies from "./components/CaseStudies";
 import CaseStudyDetail from "./components/CaseStudyDetail";
 import About from "./components/About";
@@ -31,6 +32,7 @@ function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/services/netsuite" element={<NetSuiteServices />} />
         <Route path="/services/aftercare" element={<Aftercare />} />
+        <Route path="/implementation" element={<Implementation />} />
         <Route path="/case-studies" element={<CaseStudies />} />
         <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
         <Route path="/about" element={<About />} />
