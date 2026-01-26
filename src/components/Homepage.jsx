@@ -45,7 +45,6 @@ import {
   CornerDownRight,
   CornerDownLeft,
   Signpost,
-  Mouse,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
