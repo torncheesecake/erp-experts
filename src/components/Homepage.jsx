@@ -749,25 +749,22 @@ export default function Homepage() {
             />
 
             {/* Content */}
-            <div className="relative z-10 p-lg md:p-xl lg:p-2xl">
+            <div className="relative z-10" style={{ padding: "var(--space-3xl) var(--space-xl)" }}>
               <div className="text-center">
-                <h2
-                  className="text-white mb-lg md:mb-xl"
-                  style={{ fontSize: "clamp(2rem, 6vw, 5rem)" }}
-                >
-                  Let's build
-                  <br />
-                  <span className="text-white/90">something great.</span>
+                <h2 className="text-white" style={{ marginBottom: "var(--space-xl)" }}>
+                  Let's build <span className="text-white/90">something great.</span>
                 </h2>
-                <p className="text-white/80 text-base md:text-xl mb-xl md:mb-2xl max-w-3xl mx-auto">
-                  Ready to transform your business? Get in touch to start your NetSuite journey, or
-                  subscribe for weekly insights.
+                <p
+                  className="text-white text-lg max-w-2xl mx-auto"
+                  style={{ marginBottom: "var(--space-2xl)" }}
+                >
+                  Ready to transform your business? Get in touch to start your NetSuite journey.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-md justify-center mb-xl md:mb-2xl">
+                <div className="flex flex-col sm:flex-row gap-md justify-center">
                   <button className="btn btn-lg justify-center bg-white text-(--color-primary) hover:scale-105 transition-transform">
                     Start a project
-                    <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
+                    <ArrowRight className="w-5 h-5" />
                   </button>
                   <Link
                     to="/contact"
@@ -778,19 +775,28 @@ export default function Homepage() {
                 </div>
 
                 {/* Newsletter */}
-                <div className="pt-lg md:pt-xl mt-lg border-t border-white/20">
-                  <p className="text-white/70 text-sm md:text-base mb-md md:mb-lg">
+                <div
+                  style={{
+                    paddingTop: "var(--space-2xl)",
+                    marginTop: "var(--space-2xl)",
+                    borderTop: "1px solid rgba(255,255,255,0.2)",
+                  }}
+                >
+                  <p
+                    className="text-white/70 text-base"
+                    style={{ marginBottom: "var(--space-lg)" }}
+                  >
                     Or subscribe to our newsletter for NetSuite tips & insights
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-md max-w-2xl mx-auto">
+                  <div className="relative max-w-md mx-auto">
                     <input
                       type="email"
                       placeholder="Enter your email"
-                      className="flex-1 px-lg py-md rounded-full border-2 border-white/20 bg-white/10 text-white placeholder-white/50 text-sm md:text-base focus:outline-none focus:border-white/50 focus:bg-white/20 transition-all"
+                      className="w-full pl-6 pr-36 py-4 rounded-full border-2 border-white/40 bg-white/20 text-white placeholder-white/70 text-base font-medium focus:outline-none focus:border-white/70 focus:bg-white/30 transition-all"
                     />
-                    <button className="btn justify-center shrink-0 bg-white text-(--color-primary) hover:scale-105 transition-transform">
+                    <button className="absolute right-1.5 top-1/2 -translate-y-1/2 btn btn-sm justify-center bg-white text-(--color-primary) hover:scale-105 transition-transform rounded-full">
                       Subscribe
-                      <ArrowRight className="w-5 h-5" />
+                      <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
