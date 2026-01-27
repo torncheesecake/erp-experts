@@ -157,21 +157,18 @@ export default function CaseStudies() {
       <div className="h-3xl" />
 
       {/* Stats Bar */}
-      <section
-        className="border-b border-(--color-text)/10"
-        style={{ padding: "var(--space-xl) 0" }}
-      >
+      <section className="section-padding" style={{ backgroundColor: "rgba(42, 157, 99, 0.05)" }}>
         <div className="container">
+          <p className="text-label text-quaternary text-center mb-xl">Our Track Record</p>
           <div className="grid grid-cols-3 gap-lg md:gap-xl">
             {stats.map((stat, i) => (
               <div key={i} className="text-center">
                 <p
-                  className={`font-heading text-stat ${i === 1 ? "text-quaternary" : ""}`}
-                  style={{ marginBottom: "var(--space-md)" }}
+                  className={`font-heading text-4xl md:text-stat leading-none mb-sm ${i === 1 ? "text-quaternary" : ""}`}
                 >
                   {stat.value}
                 </p>
-                <p className="text-label text-muted">{stat.label}</p>
+                <p className="text-base text-muted">{stat.label}</p>
               </div>
             ))}
           </div>

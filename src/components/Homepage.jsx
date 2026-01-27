@@ -394,10 +394,9 @@ export default function Homepage() {
                   isMore: true,
                 },
               ].map((service, i) => (
-                <Link
+                <div
                   key={i}
-                  to="/implementation"
-                  className={`card group relative overflow-hidden hover:shadow-xl transition-all duration-300 p-lg md:p-xl border-2 ${service.isMore ? "border-dashed border-(--color-tertiary)/30 hover:border-(--color-tertiary)/50" : "border-(--color-tertiary)/20 hover:border-(--color-tertiary)/50"}`}
+                  className={`relative overflow-hidden p-lg md:p-xl border-2 rounded-2xl bg-(--color-bg-light) ${service.isMore ? "border-dashed border-(--color-tertiary)/30" : "border-(--color-tertiary)/20"}`}
                 >
                   <div className="relative z-10">
                     <div
@@ -410,15 +409,9 @@ export default function Homepage() {
                       />
                     </div>
                     <h5 className="mb-sm">{service.title}</h5>
-                    <p className="text-base text-muted mb-md">{service.desc}</p>
-                    <div
-                      className="flex items-center gap-xs text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity"
-                      style={{ color: "var(--color-tertiary)" }}
-                    >
-                      Learn more <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5" />
-                    </div>
+                    <p className="text-base text-muted">{service.desc}</p>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </div>
@@ -471,10 +464,9 @@ export default function Homepage() {
                   isMore: true,
                 },
               ].map((service, i) => (
-                <Link
+                <div
                   key={i}
-                  to="/support"
-                  className={`card group relative overflow-hidden hover:shadow-xl transition-all duration-300 p-lg md:p-xl border-2 ${service.isMore ? "border-dashed border-(--color-secondary)/30 hover:border-(--color-secondary)/50" : "border-(--color-secondary)/20 hover:border-(--color-secondary)/50"}`}
+                  className={`relative overflow-hidden p-lg md:p-xl border-2 rounded-2xl bg-(--color-bg-light) ${service.isMore ? "border-dashed border-(--color-secondary)/30" : "border-(--color-secondary)/20"}`}
                 >
                   <div className="relative z-10">
                     <div
@@ -487,15 +479,9 @@ export default function Homepage() {
                       />
                     </div>
                     <h5 className="mb-sm">{service.title}</h5>
-                    <p className="text-base text-muted mb-md">{service.desc}</p>
-                    <div
-                      className="flex items-center gap-xs text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity"
-                      style={{ color: "var(--color-secondary)" }}
-                    >
-                      Learn more <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5" />
-                    </div>
+                    <p className="text-base text-muted">{service.desc}</p>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </div>
@@ -503,68 +489,132 @@ export default function Homepage() {
       </section>
 
       {/* Case Study */}
-      <section className="section-padding border-t border-(--color-text)/10">
-        <div className="container">
-          <div className="mb-2xl">
-            <p className="text-label text-primary mb-md">Case study</p>
-            <h3>Real results</h3>
-          </div>
-          <div className="grid lg:grid-cols-2 gap-xl lg:gap-2xl items-stretch">
-            <div className="aspect-[4/3] lg:aspect-auto rounded-2xl md:rounded-3xl bg-dark relative overflow-hidden">
-              <img
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80"
-                alt="Manufacturing case study"
-                className="w-full h-full object-cover"
-              />
-              {/* Triangle accent */}
-              <div
-                className="absolute bottom-0 right-0 opacity-50 hidden md:block z-10"
-                style={{
-                  width: "500px",
-                  height: "430px",
-                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                  backgroundColor: "white",
-                  transform: "translateX(120px) translateY(120px)",
-                }}
-              />
-              <div
-                className="absolute bottom-0 left-0 w-full h-1/3 z-10"
-                style={{
-                  background: "linear-gradient(to top, var(--color-primary)/30, transparent)",
-                }}
-              />
+      <section className="section-padding border-t border-(--color-text)/10 relative overflow-hidden">
+        {/* Background decorative triangle */}
+        <div
+          className="absolute -right-64 top-1/2 -translate-y-1/2 opacity-[0.03] hidden lg:block pointer-events-none"
+          style={{
+            width: "900px",
+            height: "770px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-primary)",
+          }}
+        />
+        <div className="container relative z-10">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-md mb-xl md:mb-2xl">
+            <div>
+              <p className="text-label text-primary mb-md">Case Study</p>
+              <h2>
+                Real results for <span className="text-primary">real businesses</span>
+              </h2>
             </div>
-            <div className="flex flex-col justify-center">
-              <p className="text-label text-primary mb-sm md:mb-md">Precision Manufacturing Ltd</p>
-              <h3 className="mb-md md:mb-lg">
-                From chaos to <span className="text-primary">clarity</span>
-              </h3>
-              <p className="text-base md:text-lg text-muted mb-lg md:mb-xl">
-                A UK manufacturer drowning in disconnected systems and manual processes. We
-                implemented NetSuite to unify their operations and unlock real-time visibility
-                across the business.
-              </p>
-              <div className="grid grid-cols-3 gap-md md:gap-xl mb-lg md:mb-xl">
+            <Link
+              to="/case-studies"
+              className="group text-base font-bold inline-flex items-center gap-sm text-primary whitespace-nowrap"
+            >
+              See how we've helped businesses like yours
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+
+          {/* Featured Case Study Card */}
+          <div className="relative rounded-2xl md:rounded-3xl overflow-hidden border-2 border-(--color-text)/10 hover:border-(--color-primary)/30 transition-colors">
+            {/* Triangle Accents */}
+            <div
+              className="absolute -bottom-20 -right-20 opacity-[0.06] hidden md:block pointer-events-none"
+              style={{
+                width: "450px",
+                height: "386px",
+                clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                backgroundColor: "var(--color-primary)",
+              }}
+            />
+            <div
+              className="absolute -top-16 -left-16 opacity-[0.04] hidden lg:block pointer-events-none"
+              style={{
+                width: "280px",
+                height: "240px",
+                clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                backgroundColor: "var(--color-primary)",
+              }}
+            />
+
+            {/* Content */}
+            <div className="relative z-10 p-lg md:p-xl lg:p-2xl">
+              <div className="grid lg:grid-cols-[1.2fr_1fr] gap-xl lg:gap-2xl items-center">
+                {/* Left: Story */}
                 <div>
-                  <p className="font-heading text-2xl md:text-4xl mb-xs">40%</p>
-                  <p className="text-sm text-muted">Faster processing</p>
+                  <div className="inline-flex items-center gap-sm bg-(--color-primary)/10 px-4 py-2 rounded-full mb-lg">
+                    <Factory className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-bold">Manufacturing</span>
+                  </div>
+                  <h3
+                    className="mb-md md:mb-lg"
+                    style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}
+                  >
+                    From chaos to <span className="text-primary">clarity</span>
+                  </h3>
+                  <p className="text-base md:text-lg text-muted mb-lg md:mb-xl leading-relaxed">
+                    Precision Manufacturing was drowning in disconnected systems and manual
+                    processes. We implemented NetSuite to unify their operations and unlock
+                    real-time visibility across the entire business.
+                  </p>
+
+                  {/* Testimonial Quote */}
+                  <div
+                    className="flex items-start gap-md mb-lg md:mb-xl p-lg rounded-xl"
+                    style={{ backgroundColor: "rgba(232, 58, 122, 0.05)" }}
+                  >
+                    <MessageSquareQuote className="w-8 h-8 text-primary shrink-0 mt-1" />
+                    <div>
+                      <p className="text-base md:text-lg italic mb-sm">
+                        "ERP Experts transformed our operations. We went live on time, on budget."
+                      </p>
+                      <p className="text-muted text-sm font-bold">
+                        — Sarah Mitchell, Operations Director
+                      </p>
+                    </div>
+                  </div>
+
+                  <Link
+                    to="/case-studies/1"
+                    className="inline-flex items-center gap-sm bg-(--color-primary) text-white py-3 px-6 md:py-4 md:px-8 text-base font-bold rounded-full hover:scale-105 hover:shadow-lg hover:shadow-primary/30 transition-all"
+                  >
+                    Read the full story
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
                 </div>
-                <div>
-                  <p className="font-heading text-2xl md:text-4xl text-primary mb-xs">3x</p>
-                  <p className="text-sm text-muted">Accuracy gain</p>
-                </div>
-                <div>
-                  <p className="font-heading text-2xl md:text-4xl mb-xs">12wk</p>
-                  <p className="text-sm text-muted">Go-live</p>
+
+                {/* Right: Stats */}
+                <div className="grid grid-cols-2 gap-md md:gap-lg">
+                  {[
+                    { value: "40%", label: "Faster order processing", highlight: false },
+                    { value: "3x", label: "Inventory accuracy", highlight: true },
+                    { value: "60%", label: "Less manual data entry", highlight: true },
+                    { value: "12wk", label: "Implementation time", highlight: false },
+                  ].map((stat, i) => (
+                    <div
+                      key={i}
+                      className="relative p-lg md:p-xl rounded-2xl overflow-hidden text-center border-2 transition-colors"
+                      style={{
+                        backgroundColor: stat.highlight
+                          ? "rgba(232, 58, 122, 0.08)"
+                          : "rgba(0,0,0,0.02)",
+                        borderColor: stat.highlight
+                          ? "rgba(232, 58, 122, 0.2)"
+                          : "rgba(0,0,0,0.05)",
+                      }}
+                    >
+                      <p
+                        className={`font-heading text-3xl md:text-5xl leading-none mb-sm ${stat.highlight ? "text-primary" : ""}`}
+                      >
+                        {stat.value}
+                      </p>
+                      <p className="text-sm md:text-base text-muted">{stat.label}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <Link
-                to="/case-studies/1"
-                className="inline-flex items-center gap-sm bg-(--color-primary) text-white py-2 px-4 md:py-3 md:px-6 text-sm md:text-base font-bold rounded-full w-fit hover:scale-105 transition-transform"
-              >
-                Read case study
-                <ArrowRight className="w-4 h-4" />
-              </Link>
             </div>
           </div>
         </div>

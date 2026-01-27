@@ -175,17 +175,18 @@ export default function Implementation() {
       <div className="h-3xl" />
 
       {/* Stats */}
-      <section className="py-(--space-xl) md:py-(--space-2xl) border-y border-(--color-text)/10">
+      <section className="section-padding" style={{ backgroundColor: "rgba(59, 130, 246, 0.05)" }}>
         <div className="container">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-md md:gap-xl">
+          <p className="text-label text-tertiary text-center mb-xl">Our Track Record</p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg md:gap-xl">
             {stats.map((stat, i) => (
               <div key={i} className="text-center">
                 <p
-                  className={`font-heading text-stat mb-xs ${i % 2 === 1 ? "text-tertiary" : ""}`}
+                  className={`font-heading text-4xl md:text-stat leading-none mb-sm ${i % 2 === 1 ? "text-tertiary" : ""}`}
                 >
                   {stat.value}
                 </p>
-                <p className="text-label text-muted">{stat.label}</p>
+                <p className="text-base text-muted">{stat.label}</p>
               </div>
             ))}
           </div>

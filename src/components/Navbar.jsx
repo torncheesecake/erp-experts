@@ -45,21 +45,31 @@ export default function Navbar() {
               />
             </button>
             {servicesOpen && (
-              <div className="absolute top-full left-0 pt-2">
-                <div className="bg-white rounded-xl shadow-lg border border-(--color-text)/10 overflow-hidden min-w-[220px]">
+              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3">
+                <div className="bg-white rounded-2xl shadow-xl border border-(--color-text)/10 overflow-hidden min-w-[280px] p-2">
                   <Link
                     to="/implementation"
-                    className="block px-5 py-3 text-base font-medium hover:bg-(--color-tertiary)/10 transition-colors border-l-3 border-transparent hover:border-(--color-tertiary)"
-                    style={{ borderLeftWidth: "3px" }}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium hover:bg-(--color-tertiary)/10 transition-colors"
                   >
-                    <span className="text-(--color-tertiary)">NetSuite Implementation</span>
+                    <div
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: "var(--color-tertiary)" }}
+                    />
+                    <span className="text-(--color-tertiary) whitespace-nowrap">
+                      NetSuite Implementation
+                    </span>
                   </Link>
                   <Link
                     to="/support"
-                    className="block px-5 py-3 text-base font-medium hover:bg-(--color-secondary)/10 transition-colors border-l-3 border-transparent hover:border-(--color-secondary)"
-                    style={{ borderLeftWidth: "3px" }}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium hover:bg-(--color-secondary)/10 transition-colors"
                   >
-                    <span className="text-(--color-secondary)">NetSuite Support</span>
+                    <div
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: "var(--color-secondary)" }}
+                    />
+                    <span className="text-(--color-secondary) whitespace-nowrap">
+                      NetSuite Support
+                    </span>
                   </Link>
                 </div>
               </div>

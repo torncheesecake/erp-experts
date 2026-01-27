@@ -245,10 +245,10 @@ h6 {
 
 /* Label Style */
 .text-label {
-    font-size: var(--text-small);
+    font-size: 1.15rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.191em; /* 1/φ² ≈ 0.382, halved for subtlety */
+    letter-spacing: 0.13em;
 }
 
 /* Line height utilities - Golden Ratio based */
