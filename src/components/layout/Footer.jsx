@@ -9,6 +9,7 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
+import TrackedLink from "../ui/TrackedLink";
 
 const footerLinks = [
   {
@@ -82,13 +83,15 @@ export default function Footer() {
               <p className="text-base md:text-lg text-white/60 mb-lg md:mb-xl max-w-sm">
                 NetSuite implementation partner helping UK businesses transform their operations.
               </p>
-              <Link
+              <TrackedLink
                 to="/contact"
+                trackingName="footer_start_conversation"
+                trackingPage="footer"
                 className="inline-flex items-center gap-sm bg-(--color-primary) text-white py-3 px-6 text-sm md:text-base font-bold rounded-full hover:scale-105 transition-transform"
               >
                 Start a conversation
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </TrackedLink>
             </div>
 
             {/* Links */}
@@ -170,16 +173,27 @@ export default function Footer() {
               {/* Social */}
               <div className="flex gap-4 md:gap-6" style={{ marginTop: "40px" }}>
                 {[
-                  { Icon: Linkedin, href: "#" },
-                  { Icon: Instagram, href: "#" },
-                  { Icon: Youtube, href: "#" },
-                ].map(({ Icon, href }, i) => (
+                  {
+                    Icon: Linkedin,
+                    href: "https://www.linkedin.com/company/erp-experts",
+                    label: "LinkedIn",
+                  },
+                  {
+                    Icon: Instagram,
+                    href: "https://www.instagram.com/erpexperts",
+                    label: "Instagram",
+                  },
+                  { Icon: Youtube, href: "https://www.youtube.com/@erpexperts", label: "YouTube" },
+                ].map(({ Icon, href, label }, i) => (
                   <a
                     key={i}
                     href={href}
-                    className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-(--color-primary) flex items-center justify-center transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="w-11 h-11 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-(--color-primary) flex items-center justify-center transition-colors"
                   >
-                    <Icon className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                    <Icon className="w-5 h-5 text-white" />
                   </a>
                 ))}
               </div>

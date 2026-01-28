@@ -22,9 +22,9 @@ import {
   Target,
   FileCheck,
 } from "lucide-react";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import BackToTop from "./BackToTop";
+import AnimatedStats from "../../components/ui/AnimatedStats";
+import SEO from "../../components/ui/SEO";
+import TrackedLink from "../../components/ui/TrackedLink";
 
 const stats = [
   { value: "100%", label: "Success rate" },
@@ -114,14 +114,19 @@ const services = [
 
 export default function Implementation() {
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <Navbar />
+    <main id="main-content">
+      <SEO
+        title="NetSuite Implementation"
+        description="Start strong with NetSuite. 100% success rate, 12-week average go-live. Fixed pricing, senior consultants, guaranteed results."
+        path="/implementation"
+        keywords="NetSuite implementation UK, ERP implementation, NetSuite deployment, NetSuite go-live"
+      />
 
       {/* Hero */}
       <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
         {/* Offset blue triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(calc(-50% + 80px)) translateY(calc(-50% + 30px))",
@@ -134,7 +139,7 @@ export default function Implementation() {
         />
         {/* Main triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(-50%) translateY(-50%)",
@@ -159,14 +164,16 @@ export default function Implementation() {
               <br />
               <span className="text-tertiary">NetSuite</span>.
             </h1>
-            <Link
+            <TrackedLink
               to="#process"
+              trackingName="implementation_hero_see_process"
+              trackingPage="implementation"
               className="btn btn-lg w-full sm:w-auto justify-center"
               style={{ backgroundColor: "var(--color-tertiary)", color: "white" }}
             >
               See our process
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </TrackedLink>
           </div>
         </div>
       </section>
@@ -178,18 +185,7 @@ export default function Implementation() {
       <section className="section-padding" style={{ backgroundColor: "rgba(59, 130, 246, 0.05)" }}>
         <div className="container">
           <p className="text-label text-tertiary text-center mb-xl">Our Track Record</p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg md:gap-xl">
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center">
-                <p
-                  className={`font-heading text-4xl md:text-stat leading-none mb-sm ${i % 2 === 1 ? "text-tertiary" : ""}`}
-                >
-                  {stat.value}
-                </p>
-                <p className="text-base text-muted">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+          <AnimatedStats stats={stats} color="tertiary" />
         </div>
       </section>
 
@@ -339,23 +335,27 @@ export default function Implementation() {
             project and provide a fixed-price quote.
           </p>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
-            <Link
+            <TrackedLink
               to="/contact"
+              trackingName="implementation_footer_book_call"
+              trackingPage="implementation"
               className="btn btn-lg justify-center"
               style={{ backgroundColor: "var(--color-tertiary)", color: "white" }}
             >
               Book a call
               <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link to="/case-studies" className="btn btn-lg btn-outline justify-center">
+            </TrackedLink>
+            <TrackedLink
+              to="/case-studies"
+              trackingName="implementation_footer_see_work"
+              trackingPage="implementation"
+              className="btn btn-lg btn-outline justify-center"
+            >
               See our work
-            </Link>
+            </TrackedLink>
           </div>
         </div>
       </section>
-
-      <Footer />
-      <BackToTop />
-    </div>
+    </main>
   );
 }

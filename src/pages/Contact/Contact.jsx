@@ -2,10 +2,19 @@
  * ERP Experts Contact Page
  */
 
-import { ArrowRight, Mail, Phone, MapPin, ExternalLink } from "lucide-react";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import BackToTop from "./BackToTop";
+import { useState } from "react";
+import {
+  ArrowRight,
+  Mail,
+  Phone,
+  MapPin,
+  ExternalLink,
+  Check,
+  AlertCircle,
+  Loader2,
+} from "lucide-react";
+import SEO from "../../components/ui/SEO";
+import { trackCTAClick } from "../../components/Analytics";
 
 const locations = [
   {
@@ -27,15 +36,82 @@ const locations = [
 ];
 
 export default function Contact() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    company: "",
+    message: "",
+  });
+  const [status, setStatus] = useState("idle"); // idle, submitting, success, error
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus("submitting");
+    setErrorMessage("");
+
+    try {
+      // Web3Forms - free form backend with CORS support
+      const submitData = new FormData();
+      submitData.append("access_key", "391757e6-186e-43f4-adac-d26415a290e8");
+      submitData.append("subject", `New Contact Form: ${formData.firstName} ${formData.lastName}`);
+      submitData.append("from_name", "ERP Experts Website");
+      submitData.append("name", `${formData.firstName} ${formData.lastName}`);
+      submitData.append("email", formData.email);
+      submitData.append("phone", formData.phone || "Not provided");
+      submitData.append("company", formData.company || "Not provided");
+      submitData.append("message", formData.message);
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: submitData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setStatus("success");
+        trackCTAClick("contact_form_submit", "contact");
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          company: "",
+          message: "",
+        });
+      } else {
+        throw new Error(result.message || "Failed to submit form");
+      }
+    } catch (error) {
+      setStatus("error");
+      setErrorMessage(
+        "Failed to send message. Please try again or email us directly at hello@erpexperts.co.uk",
+      );
+    }
+  };
+
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <Navbar />
+    <main id="main-content">
+      <SEO
+        title="Contact Us"
+        description="Get in touch with ERP Experts. Our NetSuite specialists are ready to help transform your business. Offices in Stafford, Manchester, and Dubai."
+        path="/contact"
+        keywords="contact ERP Experts, NetSuite consultation, NetSuite support UK"
+      />
 
       {/* Hero */}
       <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
         {/* Offset triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(calc(-50% + 80px)) translateY(calc(-50% + 30px))",
@@ -48,7 +124,7 @@ export default function Contact() {
         />
         {/* Main triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(-50%) translateY(-50%)",
@@ -87,60 +163,146 @@ export default function Contact() {
             <div className="lg:col-span-3">
               <div className="p-(--space-xl) md:p-(--space-2xl) rounded-2xl md:rounded-3xl border border-(--color-text)/10">
                 <h4 style={{ marginBottom: "var(--space-xl)" }}>Send us a message</h4>
-                <form className="flex flex-col gap-lg">
+
+                {/* Success Message */}
+                {status === "success" && (
+                  <div className="mb-xl p-lg rounded-xl bg-green-50 border border-green-200 flex items-start gap-md">
+                    <Check className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold text-green-800">Message sent successfully!</p>
+                      <p className="text-sm text-green-700">
+                        Thank you for reaching out. One of our experts will get back to you shortly.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Error Message */}
+                {status === "error" && (
+                  <div className="mb-xl p-lg rounded-xl bg-red-50 border border-red-200 flex items-start gap-md">
+                    <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold text-red-800">Failed to send message</p>
+                      <p className="text-sm text-red-700">{errorMessage}</p>
+                      <p className="text-sm text-red-700 mt-sm">
+                        You can also reach us directly at{" "}
+                        <a href="mailto:hello@erpexperts.co.uk" className="underline font-bold">
+                          hello@erpexperts.co.uk
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="flex flex-col gap-lg">
                   <div className="grid sm:grid-cols-2 gap-lg">
                     <div>
-                      <label className="text-base font-bold mb-sm block">First name *</label>
+                      <label htmlFor="firstName" className="text-base font-bold mb-sm block">
+                        First name *
+                      </label>
                       <input
                         type="text"
+                        id="firstName"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
                         required
-                        className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary)"
+                        disabled={status === "submitting"}
+                        className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary) disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                     </div>
                     <div>
-                      <label className="text-base font-bold mb-sm block">Last name *</label>
+                      <label htmlFor="lastName" className="text-base font-bold mb-sm block">
+                        Last name *
+                      </label>
                       <input
                         type="text"
+                        id="lastName"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
                         required
-                        className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary)"
+                        disabled={status === "submitting"}
+                        className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary) disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                     </div>
                   </div>
                   <div className="grid sm:grid-cols-2 gap-lg">
                     <div>
-                      <label className="text-base font-bold mb-sm block">Email *</label>
+                      <label htmlFor="email" className="text-base font-bold mb-sm block">
+                        Email *
+                      </label>
                       <input
                         type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
                         required
-                        className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary)"
+                        disabled={status === "submitting"}
+                        className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary) disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                     </div>
                     <div>
-                      <label className="text-base font-bold mb-sm block">Phone</label>
+                      <label htmlFor="phone" className="text-base font-bold mb-sm block">
+                        Phone
+                      </label>
                       <input
                         type="tel"
-                        className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary)"
+                        id="phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        disabled={status === "submitting"}
+                        className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary) disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="text-base font-bold mb-sm block">Company</label>
+                    <label htmlFor="company" className="text-base font-bold mb-sm block">
+                      Company
+                    </label>
                     <input
                       type="text"
-                      className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary)"
+                      id="company"
+                      name="company"
+                      value={formData.company}
+                      onChange={handleChange}
+                      disabled={status === "submitting"}
+                      className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary) disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                   </div>
                   <div>
-                    <label className="text-base font-bold mb-sm block">Message *</label>
+                    <label htmlFor="message" className="text-base font-bold mb-sm block">
+                      Message *
+                    </label>
                     <textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
                       required
                       rows={5}
-                      className="w-full p-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary) resize-none"
+                      disabled={status === "submitting"}
+                      className="w-full p-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary) resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                   </div>
-                  <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
-                    Submit
-                    <ArrowRight className="w-5 h-5" />
+                  <button
+                    type="submit"
+                    disabled={status === "submitting"}
+                    className="btn btn-primary btn-lg w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {status === "submitting" ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        Submit
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
                   </button>
                 </form>
               </div>
@@ -275,17 +437,20 @@ export default function Contact() {
               >
                 Not sure where to start?
               </h3>
-              <button className="btn btn-accent btn-lg w-full sm:w-auto justify-center">
+              <a
+                href="https://ric-snwikqbv.scoreapp.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-accent btn-lg w-full sm:w-auto justify-center"
+                onClick={() => trackCTAClick("contact_netscore_cta", "contact")}
+              >
                 Get your free NETscore
                 <ArrowRight className="w-5 h-5" />
-              </button>
+              </a>
             </div>
           </div>
         </div>
       </section>
-
-      <Footer />
-      <BackToTop />
-    </div>
+    </main>
   );
 }

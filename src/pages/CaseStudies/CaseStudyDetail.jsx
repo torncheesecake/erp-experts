@@ -14,15 +14,13 @@ import {
   Users,
   Briefcase,
 } from "lucide-react";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import BackToTop from "./BackToTop";
+import SEO from "../../components/ui/SEO";
 
 // Case study data
 const caseStudy = {
   id: 1,
   client: "Precision Manufacturing Ltd",
-  logo: "https://placehold.co/200x80/1a1a1a/ffffff?text=PRECISION",
+  logo: null, // Client logo - to be provided
   industry: "Manufacturing",
   services: ["NetSuite Implementation", "Data Migration", "Training"],
   timeline: "12 weeks",
@@ -90,30 +88,31 @@ export default function CaseStudyDetail() {
 
   if (parseInt(id) !== 1) {
     return (
-      <div className="min-h-screen overflow-x-hidden">
-        <Navbar />
-        <section className="section-padding-lg">
-          <div className="container text-center">
-            <h2 className="mb-lg">Case study not found</h2>
-            <Link to="/case-studies" className="btn btn-primary">
-              Back to case studies
-            </Link>
-          </div>
-        </section>
-        <Footer />
-      </div>
+      <main id="main-content" className="section-padding-lg">
+        <div className="container text-center">
+          <h2 className="mb-lg">Case study not found</h2>
+          <Link to="/case-studies" className="btn btn-primary">
+            Back to case studies
+          </Link>
+        </div>
+      </main>
     );
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <Navbar />
+    <main id="main-content">
+      <SEO
+        title={`${caseStudy.client} - Case Study`}
+        description={caseStudy.subtitle}
+        path={`/case-studies/${id}`}
+        keywords="NetSuite case study, ERP implementation success, NetSuite results"
+      />
 
       {/* Hero */}
       <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
         {/* Offset green triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(calc(-50% + 80px)) translateY(calc(-50% + 30px))",
@@ -126,7 +125,7 @@ export default function CaseStudyDetail() {
         />
         {/* Main triangle with image */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(-50%) translateY(-50%)",
@@ -357,9 +356,6 @@ export default function CaseStudyDetail() {
           </div>
         </div>
       </section>
-
-      <Footer />
-      <BackToTop />
-    </div>
+    </main>
   );
 }

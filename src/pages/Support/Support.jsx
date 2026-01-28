@@ -18,9 +18,9 @@ import {
   Shield,
   Zap,
 } from "lucide-react";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import BackToTop from "./BackToTop";
+import AnimatedStats from "../../components/ui/AnimatedStats";
+import SEO from "../../components/ui/SEO";
+import TrackedLink from "../../components/ui/TrackedLink";
 
 const plans = [
   {
@@ -187,14 +187,19 @@ const processSteps = [
 
 export default function Support() {
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <Navbar />
+    <main id="main-content">
+      <SEO
+        title="Support Plans"
+        description="NetSuite support that propels success. Bronze, Silver, and Gold plans with fast response times and dedicated teams. Choose your level of support."
+        path="/support"
+        keywords="NetSuite support plans, NetSuite helpdesk, ERP support UK, NetSuite maintenance"
+      />
 
       {/* Hero */}
       <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
         {/* Offset purple triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(calc(-50% + 80px)) translateY(calc(-50% + 30px))",
@@ -207,7 +212,7 @@ export default function Support() {
         />
         {/* Main triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(-50%) translateY(-50%)",
@@ -226,20 +231,22 @@ export default function Support() {
         </div>
         <div className="container relative z-10">
           <div className="max-w-5xl">
-            <p className="text-label text-secondary mb-md">Aftercare Support</p>
+            <p className="text-label text-secondary mb-md">Aftercare</p>
             <h1 className="text-hero" style={{ marginBottom: "var(--space-2xl)" }}>
               Support that
               <br />
               <span className="text-secondary">propels success</span>.
             </h1>
-            <Link
+            <TrackedLink
               to="#plans"
+              trackingName="support_hero_view_plans"
+              trackingPage="support"
               className="btn btn-lg w-full sm:w-auto justify-center"
               style={{ backgroundColor: "var(--color-secondary)", color: "white" }}
             >
               View plans
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </TrackedLink>
           </div>
         </div>
       </section>
@@ -251,18 +258,7 @@ export default function Support() {
       <section className="section-padding" style={{ backgroundColor: "rgba(126, 34, 206, 0.05)" }}>
         <div className="container">
           <p className="text-label text-secondary text-center mb-xl">Our Track Record</p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg md:gap-xl">
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center">
-                <p
-                  className={`font-heading text-4xl md:text-stat leading-none mb-sm ${i % 2 === 1 ? "text-secondary" : ""}`}
-                >
-                  {stat.value}
-                </p>
-                <p className="text-base text-muted">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+          <AnimatedStats stats={stats} color="secondary" />
         </div>
       </section>
 
@@ -382,8 +378,8 @@ export default function Support() {
             </h3>
           </div>
 
-          {/* Mobile: Stacked plan cards */}
-          <div className="md:hidden flex flex-col gap-lg">
+          {/* Plan Cards */}
+          <div className="grid md:grid-cols-3 gap-lg md:gap-xl">
             {plans.map((plan, i) => {
               const colorVars = {
                 bronze: "--color-bronze",
@@ -394,103 +390,54 @@ export default function Support() {
               return (
                 <div
                   key={i}
-                  className="rounded-2xl overflow-hidden border border-(--color-text)/10"
+                  className={`card p-(--space-xl) md:p-(--space-2xl) relative ${
+                    plan.featured ? "border-2" : ""
+                  }`}
+                  style={{
+                    borderColor: plan.featured ? `var(${colorVar})` : undefined,
+                  }}
                 >
+                  {plan.featured && (
+                    <div
+                      className="absolute -top-3 left-1/2 -translate-x-1/2 text-white text-xs md:text-sm font-bold px-3 md:px-4 py-1 rounded-full"
+                      style={{ backgroundColor: `var(${colorVar})` }}
+                    >
+                      Most Popular
+                    </div>
+                  )}
                   <div
-                    className="text-center py-lg px-md"
+                    className="inline-block px-4 py-1.5 rounded-full mb-lg"
                     style={{ backgroundColor: `var(${colorVar})` }}
                   >
-                    <h5 style={{ color: "#ffffff", marginBottom: 0 }}>{plan.name}</h5>
+                    <span className="text-white font-bold text-sm">{plan.name}</span>
                   </div>
-                  <div className="p-lg">
-                    {featureLabels.map((feature, j) => {
-                      const value = feature[plan.color];
-                      return (
-                        <div
-                          key={j}
-                          className="flex justify-between items-center py-md border-b border-(--color-text)/5 last:border-0"
-                        >
-                          <span className="text-sm text-muted">{feature.label}</span>
-                          {value ? (
-                            <span className="text-sm font-semibold">{value}</span>
-                          ) : (
-                            <span className="text-sm" style={{ color: "rgba(26,26,26,0.25)" }}>
-                              —
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
+                  <p className="text-lg font-bold mb-sm">{plan.tagline}</p>
+                  <p className="text-base text-muted mb-xl">{plan.desc}</p>
+                  <div className="flex flex-col gap-md">
+                    {plan.highlights.map((highlight, j) => (
+                      <div key={j} className="flex items-center gap-md">
+                        <Check className="w-5 h-5 shrink-0" style={{ color: `var(${colorVar})` }} />
+                        <span className="text-base">{highlight}</span>
+                      </div>
+                    ))}
                   </div>
+                  <TrackedLink
+                    to="/contact"
+                    trackingName={`support_plan_${plan.name.toLowerCase()}_get_started`}
+                    trackingPage="support"
+                    className="btn btn-lg w-full justify-center mt-xl text-white"
+                    style={{ backgroundColor: `var(${colorVar})` }}
+                  >
+                    Get started
+                    <ArrowRight className="w-5 h-5" />
+                  </TrackedLink>
                 </div>
               );
             })}
           </div>
 
-          {/* Desktop: Comparison table */}
-          <div className="hidden md:block">
-            {/* Header row */}
-            <div
-              className="grid items-end"
-              style={{
-                gridTemplateColumns: "2fr 1fr 1fr 1fr",
-                gap: "var(--space-sm)",
-              }}
-            >
-              <div></div>
-              {plans.map((plan, i) => {
-                const colorVars = {
-                  bronze: "--color-bronze",
-                  silver: "--color-silver",
-                  gold: "--color-gold",
-                };
-                const colorVar = colorVars[plan.color];
-                return (
-                  <div
-                    key={i}
-                    className="text-center rounded-lg"
-                    style={{
-                      padding: "var(--space-lg) var(--space-md)",
-                      backgroundColor: `var(${colorVar})`,
-                    }}
-                  >
-                    <h6 style={{ color: "#ffffff", marginBottom: 0 }}>{plan.name}</h6>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Feature rows */}
-            {featureLabels.map((feature, i) => (
-              <div
-                key={i}
-                className="grid items-center"
-                style={{
-                  gridTemplateColumns: "2fr 1fr 1fr 1fr",
-                  borderBottom: "1px solid rgba(26,26,26,0.06)",
-                }}
-              >
-                <div style={{ padding: "var(--space-lg) var(--space-lg) var(--space-lg) 0" }}>
-                  <span className="font-medium">{feature.label}</span>
-                </div>
-                {plans.map((plan, j) => {
-                  const value = feature[plan.color];
-                  return (
-                    <div key={j} className="text-center" style={{ padding: "var(--space-lg)" }}>
-                      {value ? (
-                        <span className="font-semibold">{value}</span>
-                      ) : (
-                        <span style={{ color: "rgba(26,26,26,0.25)" }}>—</span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-
           {/* Footer note */}
-          <p className="text-muted text-sm" style={{ paddingTop: "var(--space-xl)" }}>
+          <p className="text-muted text-sm text-center" style={{ paddingTop: "var(--space-xl)" }}>
             Unused hours roll over for up to 6 months.{" "}
             <Link to="/terms" className="underline hover:no-underline">
               Terms apply
@@ -500,8 +447,77 @@ export default function Support() {
         </div>
       </section>
 
-      <Footer />
-      <BackToTop />
-    </div>
+      {/* Final CTA */}
+      <section className="section-padding-lg">
+        <div className="container">
+          <div className="rounded-3xl md:rounded-[3rem] overflow-hidden relative">
+            {/* Background with gradient */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%)",
+              }}
+            />
+            {/* Decorative triangles */}
+            <div
+              className="absolute top-0 left-0 opacity-10 hidden md:block"
+              style={{
+                width: "300px",
+                height: "260px",
+                clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                backgroundColor: "white",
+                transform: "translateX(-80px) translateY(-80px)",
+              }}
+            />
+            <div
+              className="absolute bottom-0 right-0 opacity-10 hidden md:block"
+              style={{
+                width: "400px",
+                height: "350px",
+                clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                backgroundColor: "white",
+                transform: "translateX(100px) translateY(100px)",
+              }}
+            />
+
+            <div className="relative z-10" style={{ padding: "var(--space-3xl) var(--space-xl)" }}>
+              <div className="text-center">
+                <h2 className="text-white" style={{ marginBottom: "var(--space-xl)" }}>
+                  Ready to get <span className="text-white/90">started?</span>
+                </h2>
+                <p
+                  className="text-white/80 text-lg max-w-2xl mx-auto"
+                  style={{ marginBottom: "var(--space-2xl)" }}
+                >
+                  Let's find the right support plan for your business. Book a call with our team to
+                  discuss your needs.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-md justify-center">
+                  <TrackedLink
+                    to="/contact"
+                    trackingName="support_footer_get_support"
+                    trackingPage="support"
+                    className="btn btn-lg justify-center bg-white text-(--color-secondary) hover:scale-105 transition-transform"
+                  >
+                    Get support
+                    <ArrowRight className="w-5 h-5" />
+                  </TrackedLink>
+                  <TrackedLink
+                    to="/contact"
+                    trackingName="support_footer_book_call"
+                    trackingPage="support"
+                    className="btn btn-lg justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"
+                  >
+                    Book a call
+                  </TrackedLink>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }

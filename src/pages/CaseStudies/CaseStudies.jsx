@@ -17,9 +17,10 @@ import {
   Clock,
   Target,
 } from "lucide-react";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import BackToTop from "./BackToTop";
+import AnimatedStats from "../../components/ui/AnimatedStats";
+import SEO from "../../components/ui/SEO";
+import TrackedLink from "../../components/ui/TrackedLink";
+import { trackCTAClick } from "../../components/Analytics";
 
 // Case Studies Data
 const caseStudies = [
@@ -88,6 +89,7 @@ const stats = [
   { value: "50+", label: "Implementations", icon: Target },
   { value: "100%", label: "Success rate", icon: TrendingUp },
   { value: "12wk", label: "Avg go-live", icon: Clock },
+  { value: "94%", label: "On-time", icon: Target },
 ];
 
 export default function CaseStudies() {
@@ -99,14 +101,19 @@ export default function CaseStudies() {
       : caseStudies.filter((cs) => cs.industry === selectedIndustry);
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <Navbar />
+    <main id="main-content">
+      <SEO
+        title="Case Studies"
+        description="Real results from real businesses. See how we've helped UK companies transform their operations with NetSuite. 50+ implementations, 100% success rate."
+        path="/case-studies"
+        keywords="NetSuite case studies, ERP success stories, NetSuite implementation examples"
+      />
 
       {/* Hero */}
       <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
         {/* Offset green triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(calc(-50% + 80px)) translateY(calc(-50% + 30px))",
@@ -119,7 +126,7 @@ export default function CaseStudies() {
         />
         {/* Main triangle with image */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(-50%) translateY(-50%)",
@@ -160,18 +167,7 @@ export default function CaseStudies() {
       <section className="section-padding" style={{ backgroundColor: "rgba(42, 157, 99, 0.05)" }}>
         <div className="container">
           <p className="text-label text-quaternary text-center mb-xl">Our Track Record</p>
-          <div className="grid grid-cols-3 gap-lg md:gap-xl">
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center">
-                <p
-                  className={`font-heading text-4xl md:text-stat leading-none mb-sm ${i === 1 ? "text-quaternary" : ""}`}
-                >
-                  {stat.value}
-                </p>
-                <p className="text-base text-muted">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+          <AnimatedStats stats={stats} color="quaternary" />
         </div>
       </section>
 
@@ -181,13 +177,13 @@ export default function CaseStudies() {
         style={{ padding: "var(--space-xl) 0" }}
       >
         <div className="container">
-          <div className="flex items-center gap-sm md:gap-md overflow-x-auto pb-2 -mb-2">
+          <div className="flex items-center gap-sm md:gap-md flex-wrap">
             <span className="text-sm font-medium text-muted shrink-0 mr-sm">Filter:</span>
             {industries.map((industry) => (
               <button
                 key={industry}
                 onClick={() => setSelectedIndustry(industry)}
-                className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
+                className={`px-3 md:px-4 py-1.5 md:py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
                   selectedIndustry === industry
                     ? "bg-(--color-quaternary) text-white"
                     : "bg-(--color-text)/5 hover:bg-(--color-text)/10"
@@ -284,29 +280,29 @@ export default function CaseStudies() {
             results.
           </p>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
-            <Link
+            <TrackedLink
               to="/contact"
+              trackingName="case_studies_footer_start_project"
+              trackingPage="case_studies"
               className="btn btn-lg justify-center text-white hover:scale-105 transition-transform"
               style={{ backgroundColor: "var(--color-quaternary)" }}
             >
               Start a project
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </TrackedLink>
             <a
               href="https://ric-snwikqbv.scoreapp.com"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-lg border-2 w-full sm:w-auto justify-center"
               style={{ borderColor: "var(--color-quaternary)", color: "var(--color-quaternary)" }}
+              onClick={() => trackCTAClick("case_studies_netscore_cta", "case_studies")}
             >
               Get your free NETscore
             </a>
           </div>
         </div>
       </section>
-
-      <Footer />
-      <BackToTop />
-    </div>
+    </main>
   );
 }

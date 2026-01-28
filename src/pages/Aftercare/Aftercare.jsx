@@ -16,9 +16,9 @@ import {
   Zap,
   Calendar,
 } from "lucide-react";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import BackToTop from "./BackToTop";
+import { Link } from "react-router-dom";
+import AnimatedStats from "../../components/ui/AnimatedStats";
+import SEO from "../../components/ui/SEO";
 
 const supportPlans = [
   {
@@ -96,8 +96,13 @@ const stats = [
 
 export default function Aftercare() {
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <Navbar />
+    <main id="main-content">
+      <SEO
+        title="Aftercare & Support"
+        description="Ongoing NetSuite support and optimisation. 4hr average response time, 98% first-call resolution. We're here for the long haul."
+        path="/services/aftercare"
+        keywords="NetSuite support, NetSuite maintenance, ERP aftercare, ongoing support"
+      />
 
       {/* Hero */}
       <section className="pt-(--space-4xl) pb-(--space-2xl) md:pb-(--space-3xl)">
@@ -108,13 +113,14 @@ export default function Aftercare() {
             <br />
             <span className="text-secondary">for the long haul</span>.
           </h1>
-          <button
+          <Link
+            to="/contact"
             className="btn btn-lg text-white w-full sm:w-auto justify-center"
             style={{ backgroundColor: "var(--color-secondary)" }}
           >
             Get support
             <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
-          </button>
+          </Link>
         </div>
       </section>
 
@@ -122,18 +128,7 @@ export default function Aftercare() {
       <section className="section-padding" style={{ backgroundColor: "rgba(126, 34, 206, 0.05)" }}>
         <div className="container">
           <p className="text-label text-secondary text-center mb-xl">Our Track Record</p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg md:gap-xl">
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center">
-                <p
-                  className={`font-heading text-4xl md:text-stat leading-none mb-sm ${i % 2 === 1 ? "text-secondary" : ""}`}
-                >
-                  {stat.value}
-                </p>
-                <p className="text-base text-muted">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+          <AnimatedStats stats={stats} color="secondary" />
         </div>
       </section>
 
@@ -142,7 +137,7 @@ export default function Aftercare() {
         <div className="container">
           <div className="text-center mb-xl md:mb-2xl">
             <p className="text-label text-secondary mb-sm md:mb-md">What's Included</p>
-            <h2>Complete ongoing support</h2>
+            <h3>Complete ongoing support</h3>
           </div>
           <div className="grid md:grid-cols-2 gap-md md:gap-xl">
             {services.map((service, i) => (
@@ -164,7 +159,7 @@ export default function Aftercare() {
           <div className="grid lg:grid-cols-2 gap-xl md:gap-2xl items-center">
             <div>
               <p className="text-label text-secondary mb-sm md:mb-md">Why Aftercare?</p>
-              <h2 style={{ marginBottom: "var(--space-3xl)" }}>Your system needs ongoing care</h2>
+              <h3 style={{ marginBottom: "var(--space-3xl)" }}>Your system needs ongoing care</h3>
               <div className="flex flex-col gap-3 md:gap-5">
                 {[
                   "Expert help when you need it",
@@ -198,7 +193,7 @@ export default function Aftercare() {
         <div className="container">
           <div className="text-center mb-xl md:mb-2xl">
             <p className="text-label text-secondary mb-sm md:mb-md">Support Plans</p>
-            <h2>Choose your level of support</h2>
+            <h3>Choose your level of support</h3>
           </div>
           <div className="grid md:grid-cols-3 gap-md md:gap-xl">
             {supportPlans.map((plan, i) => (
@@ -234,7 +229,7 @@ export default function Aftercare() {
         <div className="container">
           <div className="text-center mb-xl md:mb-2xl">
             <p className="text-label text-secondary mb-sm md:mb-md">Why Us</p>
-            <h2>The ERP Experts difference</h2>
+            <h3>The ERP Experts difference</h3>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-md md:gap-xl">
             {benefits.map((benefit, i) => (
@@ -256,27 +251,27 @@ export default function Aftercare() {
       {/* CTA */}
       <section className="section-padding-lg">
         <div className="container text-center">
-          <h1 className="text-hero mb-xl md:mb-2xl">
-            Ready for ongoing
-            <span className="text-secondary">peace of mind</span>?
-          </h1>
+          <h2 className="mb-xl md:mb-2xl">
+            Ready for ongoing <span className="text-secondary">peace of mind</span>?
+          </h2>
           <div className="flex flex-col sm:flex-row gap-md md:gap-lg justify-center">
-            <button
+            <Link
+              to="/contact"
               className="btn btn-lg text-white w-full sm:w-auto justify-center"
               style={{ backgroundColor: "var(--color-secondary)" }}
             >
               Talk to us about support
               <ArrowRight className="w-6 h-6" />
-            </button>
-            <button className="btn btn-lg border-2 border-(--color-text) text-(--color-text) w-full sm:w-auto justify-center">
+            </Link>
+            <Link
+              to="/support"
+              className="btn btn-lg border-2 border-(--color-text) text-(--color-text) w-full sm:w-auto justify-center"
+            >
               View support plans
-            </button>
+            </Link>
           </div>
         </div>
       </section>
-
-      <Footer />
-      <BackToTop />
-    </div>
+    </main>
   );
 }

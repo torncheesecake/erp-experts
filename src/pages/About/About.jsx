@@ -14,9 +14,10 @@ import {
   HeadphonesIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import BackToTop from "./BackToTop";
+import AnimatedStats from "../../components/ui/AnimatedStats";
+import SEO from "../../components/ui/SEO";
+import TrackedLink from "../../components/ui/TrackedLink";
+import { trackCTAClick } from "../../components/Analytics";
 
 const stats = [
   { value: "230+", label: "Projects Delivered" },
@@ -59,14 +60,19 @@ const clients = ["TK Maxx", "Rebellion", "Stiltz", "Kynetec", "Carallon"];
 
 export default function About() {
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <Navbar />
+    <main id="main-content">
+      <SEO
+        title="About Us"
+        description="We're NetSuite specialists helping UK businesses transform their operations since 2013. 230+ projects delivered with a 100% client focus."
+        path="/about"
+        keywords="NetSuite consultants UK, ERP experts, NetSuite partner, business transformation"
+      />
 
       {/* Hero */}
       <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
         {/* Offset triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(calc(-50% + 80px)) translateY(calc(-50% + 30px))",
@@ -79,7 +85,7 @@ export default function About() {
         />
         {/* Main triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(-50%) translateY(-50%)",
@@ -96,12 +102,11 @@ export default function About() {
             style={{ opacity: 0.5 }}
           />
         </div>
-        <div className="container relative z-10">
+        <div className="container relative z-10 overflow-hidden">
           <div className="max-w-3xl">
             <p className="text-label text-primary mb-md">About Us</p>
             <h1 className="text-hero mb-xl">
-              Empowering
-              <br />
+              <span className="block">Empowering</span>
               <span className="text-primary">businesses</span>.
             </h1>
             <p className="text-xl md:text-2xl text-muted leading-relaxed max-w-2xl">
@@ -118,18 +123,7 @@ export default function About() {
         style={{ padding: "var(--space-2xl) 0", marginTop: "var(--space-xl)" }}
       >
         <div className="container">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-xl md:gap-2xl">
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center">
-                <p
-                  className={`font-heading text-4xl md:text-stat leading-none mb-sm ${i % 2 === 1 ? "text-primary" : ""}`}
-                >
-                  {stat.value}
-                </p>
-                <p className="text-base md:text-lg text-muted">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+          <AnimatedStats stats={stats} color="primary" />
         </div>
       </section>
 
@@ -268,24 +262,27 @@ export default function About() {
             Let's discuss how we can help transform your business with NetSuite.
           </p>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
-            <Link to="/contact" className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
+            <TrackedLink
+              to="/contact"
+              trackingName="about_footer_start_conversation"
+              trackingPage="about"
+              className="btn btn-primary btn-lg w-full sm:w-auto justify-center"
+            >
               Start a conversation
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </TrackedLink>
             <a
               href="https://ric-snwikqbv.scoreapp.com"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-lg border-2 border-(--color-primary) text-primary w-full sm:w-auto justify-center"
+              onClick={() => trackCTAClick("about_netscore_cta", "about")}
             >
               Get your free NETscore
             </a>
           </div>
         </div>
       </section>
-
-      <Footer />
-      <BackToTop />
-    </div>
+    </main>
   );
 }

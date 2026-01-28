@@ -26,9 +26,7 @@ import {
   UserCog,
   Truck,
 } from "lucide-react";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import BackToTop from "./BackToTop";
+import SEO from "../../components/ui/SEO";
 
 const coreServices = [
   {
@@ -139,14 +137,19 @@ const processSteps = [
 
 export default function Services() {
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <Navbar />
+    <main id="main-content">
+      <SEO
+        title="Our Services"
+        description="Tailored NetSuite services for smarter growth. Implementation, consultancy, development, integrations, training, and aftercare support."
+        path="/services"
+        keywords="NetSuite services, ERP implementation, NetSuite consultancy, NetSuite development, NetSuite training"
+      />
 
       {/* Hero */}
       <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
         {/* Offset pink triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(calc(-50% + 80px)) translateY(calc(-50% + 30px))",
@@ -159,7 +162,7 @@ export default function Services() {
         />
         {/* Main triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(-50%) translateY(-50%)",
@@ -184,10 +187,10 @@ export default function Services() {
               <br />
               <span className="text-primary">smarter growth</span>.
             </h1>
-            <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
+            <Link to="/contact" className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Start a conversation
               <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -200,9 +203,9 @@ export default function Services() {
         <div className="container">
           <div className="mb-2xl md:mb-3xl">
             <p className="text-label text-primary mb-sm md:mb-md">What we do</p>
-            <h2>
+            <h3>
               Six services. <span className="text-primary">One focus.</span>
-            </h2>
+            </h3>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-lg md:gap-xl">
@@ -271,11 +274,11 @@ export default function Services() {
         <div className="container relative z-10">
           <div className="text-center" style={{ marginBottom: "var(--space-4xl)" }}>
             <p className="text-label text-primary mb-md">Our methodology</p>
-            <h2>
+            <h3>
               The <span className="text-primary">5C</span>
               <br />
               Implementation Process
-            </h2>
+            </h3>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-md md:gap-xl">
             {processSteps.map((step, i) => (
@@ -317,9 +320,9 @@ export default function Services() {
           <div className="grid lg:grid-cols-2 gap-2xl lg:gap-3xl items-center">
             <div>
               <p className="text-label text-tertiary mb-md">Implementation</p>
-              <h2 style={{ marginBottom: "var(--space-3xl)" }}>
+              <h3 style={{ marginBottom: "var(--space-3xl)" }}>
                 Start strong with <span className="text-tertiary">NetSuite.</span>
-              </h2>
+              </h3>
               <Link
                 to="/contact"
                 className="btn btn-lg w-full sm:w-auto justify-center bg-(--color-tertiary) text-white hover:opacity-90"
@@ -447,9 +450,9 @@ export default function Services() {
           <div className="grid lg:grid-cols-2 gap-2xl lg:gap-3xl items-center">
             <div>
               <p className="text-label text-primary mb-md">Training</p>
-              <h2 style={{ marginBottom: "var(--space-xl)" }}>
+              <h3 style={{ marginBottom: "var(--space-xl)" }}>
                 The right skills for <span className="text-primary">the right results.</span>
-              </h2>
+              </h3>
               <Link
                 to="/contact"
                 className="btn btn-lg w-full sm:w-auto justify-center bg-(--color-primary) text-white hover:opacity-90"
@@ -505,11 +508,11 @@ export default function Services() {
           <div className="grid lg:grid-cols-2 gap-2xl lg:gap-4xl items-center">
             <div>
               <p className="text-label text-secondary mb-md">Aftercare</p>
-              <h2 style={{ marginBottom: "var(--space-xl)" }}>
+              <h3 style={{ marginBottom: "var(--space-xl)" }}>
                 Success beyond
                 <br />
                 <span className="text-secondary">go-live.</span>
-              </h2>
+              </h3>
               <p className="text-lg text-muted mb-xl max-w-lg">
                 Your NetSuite journey doesn't end at launch. Our aftercare team ensures your system
                 evolves with your business.
@@ -583,9 +586,9 @@ export default function Services() {
         <div className="container relative z-10">
           <div className="mb-2xl md:mb-3xl">
             <p className="text-label text-primary mb-md">Beyond NetSuite</p>
-            <h2>
+            <h3>
               Oracle Fusion <span className="text-primary">Consulting</span>
-            </h2>
+            </h3>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-lg">
             {oracleFusionServices.map((service, i) => (
@@ -652,9 +655,6 @@ export default function Services() {
           </div>
         </div>
       </section>
-
-      <Footer />
-      <BackToTop />
-    </div>
+    </main>
   );
 }

@@ -17,9 +17,9 @@ import {
   Zap,
   Shield,
 } from "lucide-react";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import BackToTop from "./BackToTop";
+import { Link } from "react-router-dom";
+import AnimatedStats from "../../components/ui/AnimatedStats";
+import SEO from "../../components/ui/SEO";
 
 const services = [
   {
@@ -98,8 +98,13 @@ const stats = [
 
 export default function NetSuiteServices() {
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <Navbar />
+    <main id="main-content">
+      <SEO
+        title="NetSuite Services"
+        description="Complete NetSuite expertise. Implementation, configuration, integrations, training, health audits, and rescue projects. Partner-led, fixed-price, guaranteed."
+        path="/services/netsuite"
+        keywords="NetSuite services UK, NetSuite implementation, NetSuite integrations, NetSuite training"
+      />
 
       {/* Hero */}
       <section className="pt-(--space-4xl) pb-(--space-2xl) md:pb-(--space-3xl)">
@@ -129,16 +134,7 @@ export default function NetSuiteServices() {
       {/* Stats */}
       <section className="py-(--space-xl) md:py-(--space-2xl) border-y border-(--color-text)/10">
         <div className="container">
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-md md:gap-xl">
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center">
-                <p className={`font-heading text-stat mb-xs ${i % 2 === 1 ? "text-primary" : ""}`}>
-                  {stat.value}
-                </p>
-                <p className="text-label text-muted">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+          <AnimatedStats stats={stats} color="primary" />
         </div>
       </section>
 
@@ -147,7 +143,7 @@ export default function NetSuiteServices() {
         <div className="container">
           <div className="text-center mb-xl md:mb-2xl">
             <p className="text-label text-primary mb-sm md:mb-md">What We Do</p>
-            <h2>Complete NetSuite expertise</h2>
+            <h3>Complete NetSuite expertise</h3>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-md md:gap-xl">
             {services.map((service, i) => (
@@ -168,7 +164,7 @@ export default function NetSuiteServices() {
         <div className="container">
           <div className="text-center mb-xl md:mb-2xl">
             <p className="text-label text-primary mb-sm md:mb-md">Our Process</p>
-            <h2>How we deliver</h2>
+            <h3>How we deliver</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-md md:gap-lg">
             {processSteps.map((step, i) => (
@@ -190,7 +186,7 @@ export default function NetSuiteServices() {
           <div className="grid lg:grid-cols-2 gap-xl md:gap-2xl items-center">
             <div>
               <p className="text-label text-primary mb-sm md:mb-md">Implementation</p>
-              <h2 className="mb-lg md:mb-xl">Your first NetSuite project</h2>
+              <h3 className="mb-lg md:mb-xl">Your first NetSuite project</h3>
               <p className="text-base md:text-lg text-muted mb-md md:mb-lg">
                 Starting with NetSuite is a big decision. We make it straightforward. Our proven
                 methodology has delivered 230+ successful implementations across every industry.
@@ -232,7 +228,7 @@ export default function NetSuiteServices() {
           <div className="grid lg:grid-cols-2 gap-xl md:gap-2xl items-center">
             <div className="lg:order-2">
               <p className="text-label text-primary mb-sm md:mb-md">Integrations</p>
-              <h2 className="mb-lg md:mb-xl">Connect everything</h2>
+              <h3 className="mb-lg md:mb-xl">Connect everything</h3>
               <p className="text-base md:text-lg text-muted mb-md md:mb-lg">
                 NetSuite becomes even more powerful when it talks to your other systems. We build
                 robust integrations that sync data automatically and eliminate manual work.
@@ -258,7 +254,7 @@ export default function NetSuiteServices() {
           <div className="grid lg:grid-cols-2 gap-xl md:gap-2xl items-center">
             <div>
               <p className="text-label text-primary mb-sm md:mb-md">Rescue Projects</p>
-              <h2 className="mb-lg md:mb-xl">We fix broken implementations</h2>
+              <h3 className="mb-lg md:mb-xl">We fix broken implementations</h3>
               <p className="text-base md:text-lg text-muted mb-md md:mb-lg">
                 Not every NetSuite project goes to plan. Maybe your original partner disappeared.
                 Maybe the system doesn't work as promised. Maybe you've been stuck in "phase 2" for
@@ -287,7 +283,7 @@ export default function NetSuiteServices() {
         <div className="container">
           <div className="text-center mb-xl md:mb-2xl">
             <p className="text-label text-primary mb-sm md:mb-md">Why Us</p>
-            <h2>The ERP Experts difference</h2>
+            <h3>The ERP Experts difference</h3>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-md md:gap-xl">
             {benefits.map((benefit, i) => (
@@ -309,24 +305,25 @@ export default function NetSuiteServices() {
       {/* CTA */}
       <section className="section-padding-lg">
         <div className="container text-center">
-          <h1 className="text-hero mb-xl md:mb-2xl">
-            Ready to start your
-            <span className="text-primary">NetSuite journey</span>?
-          </h1>
+          <h2 className="mb-xl md:mb-2xl">
+            Ready to start your <span className="text-primary">NetSuite journey</span>?
+          </h2>
           <div className="flex flex-col sm:flex-row gap-md md:gap-lg justify-center">
-            <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
+            <Link to="/contact" className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Start a conversation
               <ArrowRight className="w-6 h-6" />
-            </button>
-            <button className="btn btn-lg border-2 border-(--color-text) text-(--color-text) w-full sm:w-auto justify-center">
+            </Link>
+            <a
+              href="https://ric-snwikqbv.scoreapp.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-lg border-2 border-(--color-text) text-(--color-text) w-full sm:w-auto justify-center"
+            >
               Get your free NETscore
-            </button>
+            </a>
           </div>
         </div>
       </section>
-
-      <Footer />
-      <BackToTop />
-    </div>
+    </main>
   );
 }

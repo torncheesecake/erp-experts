@@ -3,10 +3,10 @@
  * Guides, Webinars, Videos - educational content hub
  */
 
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, Video, Play, Download, Clock } from "lucide-react";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import BackToTop from "./BackToTop";
+import SEO from "../../components/ui/SEO";
 
 const categories = [
   { label: "All", value: "all" },
@@ -99,15 +99,31 @@ const topics = [
 ];
 
 export default function Resources() {
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [activeTopic, setActiveTopic] = useState(null);
+
+  // Filter resources based on active category and topic
+  const filteredResources = resources.filter((resource) => {
+    const categoryMatch =
+      activeCategory === "all" || resource.type.toLowerCase() === activeCategory.replace(/s$/, "");
+    const topicMatch = !activeTopic || resource.topics?.includes(activeTopic);
+    return categoryMatch && topicMatch;
+  });
+
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <Navbar />
+    <main id="main-content">
+      <SEO
+        title="Resources"
+        description="Learn from the experts. Guides, webinars, and videos to help you get the most from NetSuite. Free educational content."
+        path="/resources"
+        keywords="NetSuite guides, NetSuite webinars, ERP resources, NetSuite training materials"
+      />
 
       {/* Hero */}
       <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
         {/* Offset pink triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(calc(-50% + 80px)) translateY(calc(-50% + 30px))",
@@ -120,7 +136,7 @@ export default function Resources() {
         />
         {/* Main triangle */}
         <div
-          className="absolute top-1/2 hidden md:block"
+          className="absolute top-1/2 hidden lg:block"
           style={{
             left: "75%",
             transform: "translateX(-50%) translateY(-50%)",
@@ -221,7 +237,7 @@ export default function Resources() {
                 Find what you <span className="text-primary">need.</span>
               </h4>
             </div>
-            <p className="text-base text-muted">{resources.length} resources available</p>
+            <p className="text-base text-muted">{filteredResources.length} resources available</p>
           </div>
 
           {/* Category filters */}
@@ -229,8 +245,9 @@ export default function Resources() {
             {categories.map((cat, i) => (
               <button
                 key={i}
+                onClick={() => setActiveCategory(cat.value)}
                 className={`px-xl py-md rounded-full text-base font-bold whitespace-nowrap transition-all ${
-                  i === 0
+                  activeCategory === cat.value
                     ? "bg-(--color-primary) text-white"
                     : "border-2 border-(--color-text)/10 hover:border-(--color-primary) hover:text-primary"
                 }`}
@@ -243,14 +260,26 @@ export default function Resources() {
           {/* Topic tags */}
           <div className="flex flex-wrap items-center gap-sm">
             <span className="text-sm text-muted mr-sm">Topics:</span>
+            {activeTopic && (
+              <button
+                onClick={() => setActiveTopic(null)}
+                className="px-lg py-xs rounded-full text-sm font-medium bg-red-100 text-red-600 hover:bg-red-200 transition-all"
+              >
+                Clear filter
+              </button>
+            )}
             {topics.map((topic, i) => (
-              <a
+              <button
                 key={i}
-                href="#"
-                className="px-lg py-xs rounded-full text-sm font-medium bg-(--color-text)/5 hover:bg-(--color-primary)/10 hover:text-primary transition-all"
+                onClick={() => setActiveTopic(activeTopic === topic ? null : topic)}
+                className={`px-lg py-xs rounded-full text-sm font-medium transition-all ${
+                  activeTopic === topic
+                    ? "bg-(--color-primary) text-white"
+                    : "bg-(--color-text)/5 hover:bg-(--color-primary)/10 hover:text-primary"
+                }`}
               >
                 {topic}
-              </a>
+              </button>
             ))}
           </div>
         </div>
@@ -270,48 +299,65 @@ export default function Resources() {
           }}
         />
         <div className="container relative z-10">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-md md:gap-xl">
-            {resources.map((resource, i) => (
-              <a
-                key={i}
-                href="#"
-                className="card group border border-(--color-text)/5 hover:border-(--color-primary)/20 transition-all hover:-translate-y-2"
+          {filteredResources.length === 0 ? (
+            <div className="text-center py-3xl">
+              <p className="text-lg text-muted">No resources found matching your filters.</p>
+              <button
+                onClick={() => {
+                  setActiveCategory("all");
+                  setActiveTopic(null);
+                }}
+                className="mt-lg text-primary font-bold hover:underline"
               >
-                {/* Thumbnail */}
-                <div className="aspect-video rounded-xl bg-(--color-text)/5 mb-lg flex items-center justify-center relative overflow-hidden">
-                  <resource.icon className="w-10 h-10 text-(--color-text)/20" />
-                  {resource.type === "Video" && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="icon-box icon-box-md rounded-full bg-white shadow-lg">
-                        <Play className="w-5 h-5 text-(--color-text) ml-0.5" fill="currentColor" />
+                Clear all filters
+              </button>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-md md:gap-xl">
+              {filteredResources.map((resource, i) => (
+                <div
+                  key={i}
+                  className="card group border border-(--color-text)/5 hover:border-(--color-primary)/20 transition-all hover:-translate-y-2 cursor-pointer"
+                >
+                  {/* Thumbnail */}
+                  <div className="aspect-video rounded-xl bg-(--color-text)/5 mb-lg flex items-center justify-center relative overflow-hidden">
+                    <resource.icon className="w-10 h-10 text-(--color-text)/20" />
+                    {resource.type === "Video" && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="icon-box icon-box-md rounded-full bg-white shadow-lg">
+                          <Play
+                            className="w-5 h-5 text-(--color-text) ml-0.5"
+                            fill="currentColor"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {/* Triangle accent on thumbnails */}
-                  <div
-                    className="absolute bottom-0 right-0 opacity-30"
-                    style={{
-                      width: "60px",
-                      height: "52px",
-                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                      backgroundColor: "var(--color-primary)",
-                      transform: "translateX(15px) translateY(15px)",
-                    }}
-                  />
+                    )}
+                    {/* Triangle accent on thumbnails */}
+                    <div
+                      className="absolute bottom-0 right-0 opacity-30"
+                      style={{
+                        width: "60px",
+                        height: "52px",
+                        clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                        backgroundColor: "var(--color-primary)",
+                        transform: "translateX(15px) translateY(15px)",
+                      }}
+                    />
+                  </div>
+                  {/* Content */}
+                  <div className="flex items-center gap-sm mb-md">
+                    <span className="text-label text-primary">{resource.type}</span>
+                    <span className="text-muted">•</span>
+                    <span className="text-sm text-muted">{resource.meta}</span>
+                  </div>
+                  <h6 className="mb-md group-hover:text-primary transition-colors">
+                    {resource.title}
+                  </h6>
+                  <p className="text-base text-muted">{resource.desc}</p>
                 </div>
-                {/* Content */}
-                <div className="flex items-center gap-sm mb-md">
-                  <span className="text-label text-primary">{resource.type}</span>
-                  <span className="text-muted">•</span>
-                  <span className="text-sm text-muted">{resource.meta}</span>
-                </div>
-                <h6 className="mb-md group-hover:text-primary transition-colors">
-                  {resource.title}
-                </h6>
-                <p className="text-base text-muted">{resource.desc}</p>
-              </a>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -356,23 +402,25 @@ export default function Resources() {
       {/* CTA */}
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container text-center">
-          <h1 className="text-hero" style={{ marginBottom: "var(--space-3xl)" }}>
+          <h2 style={{ marginBottom: "var(--space-3xl)" }}>
             Let's talk <span className="text-primary">NetSuite</span>.
-          </h1>
+          </h2>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
-            <button className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
+            <Link to="/contact" className="btn btn-primary btn-lg w-full sm:w-auto justify-center">
               Start a conversation
               <ArrowRight className="w-6 h-6" />
-            </button>
-            <button className="btn btn-lg border-2 border-(--color-text) text-(--color-text) w-full sm:w-auto justify-center">
+            </Link>
+            <a
+              href="https://ric-snwikqbv.scoreapp.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-lg border-2 border-(--color-text) text-(--color-text) w-full sm:w-auto justify-center"
+            >
               Get your free NETscore
-            </button>
+            </a>
           </div>
         </div>
       </section>
-
-      <Footer />
-      <BackToTop />
-    </div>
+    </main>
   );
 }

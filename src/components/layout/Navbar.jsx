@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Menu, X, ChevronDown } from "lucide-react";
-import logoImage from "../assets/ERP Experts Europe Transparent.png";
+import logoImage from "../../assets/ERP Experts Europe Transparent.png";
+import TrackedLink from "../ui/TrackedLink";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -22,9 +23,17 @@ export default function Navbar() {
         scrolled ? "shadow-sm" : ""
       }`}
     >
+      {/* Skip to main content link for accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:bg-(--color-primary) focus:text-white focus:rounded-lg focus:font-bold"
+      >
+        Skip to main content
+      </a>
       <nav
         className="container flex items-center justify-between"
         style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-lg)" }}
+        aria-label="Main navigation"
       >
         <Link to="/" className="block shrink-0">
           <img src={logoImage} alt="ERP Experts" className="h-14 md:h-16 lg:h-18" />
@@ -87,10 +96,15 @@ export default function Navbar() {
           >
             About
           </Link>
-          <Link to="/contact" className="btn btn-accent">
+          <TrackedLink
+            to="/contact"
+            trackingName="navbar_lets_talk"
+            trackingPage="navbar"
+            className="btn btn-accent"
+          >
             Let's Talk
             <ArrowRight className="w-4 h-4" />
-          </Link>
+          </TrackedLink>
         </div>
 
         {/* Mobile menu button */}
@@ -165,15 +179,17 @@ export default function Navbar() {
             >
               About
             </Link>
-            <Link
+            <TrackedLink
               to="/contact"
+              trackingName="navbar_mobile_lets_talk"
+              trackingPage="navbar"
               className="btn btn-accent btn-lg w-full justify-center"
               style={{ marginTop: "var(--space-lg)", minHeight: "56px" }}
               onClick={() => setMobileMenuOpen(false)}
             >
               Let's Talk
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </TrackedLink>
           </div>
         </div>
       )}
