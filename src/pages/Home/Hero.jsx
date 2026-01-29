@@ -52,7 +52,7 @@ export default function Hero() {
         }}
       >
         <img
-          src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80"
+          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80"
           alt=""
           className="w-full h-full object-cover"
           style={{ opacity: 0.5 }}
