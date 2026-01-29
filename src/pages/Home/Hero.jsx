@@ -65,7 +65,7 @@ export default function Hero() {
             className="text-hero animate-hero-delay-1"
             style={{ marginBottom: "var(--space-2xl)" }}
           >
-            NetSuite, <span className="text-primary">done right.</span>
+            We Make NetSuite <span className="text-primary">Work.</span>
           </h1>
           <p
             className="text-lg md:text-xl text-muted animate-hero-delay-2"
