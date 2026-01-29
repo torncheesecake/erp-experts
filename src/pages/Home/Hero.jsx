@@ -29,10 +29,10 @@ export default function Hero() {
       <div
         className="absolute top-1/2 hidden lg:block"
         style={{
-          left: "68%",
+          left: "75%",
           transform: "translateX(calc(-50% + 100px)) translateY(calc(-50% + 40px))",
-          width: "1440px",
-          height: "1235px",
+          width: "1000px",
+          height: "858px",
           clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
           backgroundColor: "var(--color-primary)",
           opacity: 0.2,
@@ -43,10 +43,10 @@ export default function Hero() {
       <div
         className="absolute top-1/2 hidden lg:block"
         style={{
-          left: "68%",
+          left: "75%",
           transform: "translateX(-50%) translateY(-50%)",
-          width: "1400px",
-          height: "1200px",
+          width: "950px",
+          height: "815px",
           clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
           overflow: "hidden",
         }}
