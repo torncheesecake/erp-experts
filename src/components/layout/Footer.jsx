@@ -15,12 +15,9 @@ const footerLinks = [
   {
     title: "Services",
     links: [
-      { label: "Implementation", href: "/services#implementation" },
-      { label: "Consultancy", href: "/services#consultancy" },
-      { label: "Development", href: "/services#development" },
-      { label: "Integrations", href: "/services#integrations" },
-      { label: "Training", href: "/services#training" },
-      { label: "Aftercare", href: "/support" },
+      { label: "Implementation", href: "/implementation" },
+      { label: "Support", href: "/support" },
+      { label: "What is NetSuite?", href: "/what-is-netsuite" },
     ],
   },
   {
@@ -209,6 +206,9 @@ export default function Footer() {
             <div className="flex items-center gap-lg">
               <Link to="/privacy" className="hover:text-white transition-colors">
                 Privacy Policy
+              </Link>
+              <Link to="/cookies" className="hover:text-white transition-colors">
+                Cookie Policy
               </Link>
               <Link to="/terms" className="hover:text-white transition-colors">
                 Terms of Service

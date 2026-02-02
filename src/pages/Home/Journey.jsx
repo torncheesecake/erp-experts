@@ -22,9 +22,9 @@ const implementationServices = [
     desc: "Tailoring NetSuite to fit your unique business processes",
   },
   {
-    icon: Database,
-    title: "Data Migration",
-    desc: "Moving your data safely and accurately into NetSuite",
+    icon: Link2,
+    title: "Integration",
+    desc: "Connect NetSuite with your other business tools seamlessly",
   },
   {
     icon: Sparkles,
@@ -38,17 +38,17 @@ const supportServices = [
   {
     icon: Stethoscope,
     title: "Health Audits",
-    desc: "System reviews to identify improvements and optimisations",
+    desc: "System reviews to identify improvements",
   },
   {
-    icon: Link2,
-    title: "Integrations",
-    desc: "Connect NetSuite with your other business tools seamlessly",
+    icon: Database,
+    title: "Training",
+    desc: "Upskill your team to get the most from NetSuite",
   },
   {
     icon: Sparkles,
     title: "And more...",
-    desc: "Training, reporting, enhancements, and ongoing support",
+    desc: "Reporting, enhancements, and ongoing support",
     isMore: true,
   },
 ];
@@ -93,12 +93,11 @@ export default function Journey() {
               </div>
               <div>
                 <p className="text-label text-tertiary">Starting fresh</p>
-                <h5>I need NetSuite</h5>
+                <h5>Let's get you started</h5>
               </div>
             </div>
             <p className="text-base text-muted mb-xl">
-              Ready to transform your business with a modern ERP? We'll guide you from discovery to
-              go-live and beyond.
+              Built right the first time, ensuring no surprises or rework.
             </p>
 
             {/* Implementation Services */}
@@ -155,12 +154,11 @@ export default function Journey() {
               </div>
               <div>
                 <p className="text-label text-secondary">Already live</p>
-                <h5>I have NetSuite</h5>
+                <h5>Let's make it better</h5>
               </div>
             </div>
             <p className="text-base text-muted mb-xl">
-              Get more from your existing investment. Whether you need ongoing support, a health
-              check, or rescue from a troubled implementation.
+              Without hidden cost, performance drift, or wasted capability.
             </p>
 
             {/* Support Services */}

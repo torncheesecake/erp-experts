@@ -135,53 +135,52 @@ const featureLabels = [
 const benefits = [
   {
     icon: Clock,
-    title: "Fast response times",
-    desc: "UK-based support team with quick turnaround on all requests.",
-  },
-  {
-    icon: Shield,
-    title: "Regular updates",
-    desc: "Always kept informed of status, actions taken, and resolution times.",
+    title: "UK-based team",
+    desc: "Same time zone. Quick turnaround. No offshore ticket queues.",
   },
   {
     icon: Users,
-    title: "Dedicated support",
-    desc: "Your case is managed with honesty, integrity, and clear communication.",
+    title: "Single point of contact",
+    desc: "Tell us the problem, and we'll figure out the rest. One head to pat, one ass to kick.",
   },
   {
     icon: Zap,
-    title: "Proactive approach",
-    desc: "We help you take advantage of opportunities, not just fix problems.",
+    title: "Hours roll over",
+    desc: "Unused hours roll over. If you don't use them, you don't lose them.",
+  },
+  {
+    icon: Shield,
+    title: "Fixed rate",
+    desc: "One hourly rate, whether you need an architect or consultant. No calculating blended rates or surprise invoices.",
   },
 ];
 
 const stats = [
-  { value: "4hr", label: "Avg response" },
-  { value: "98%", label: "Satisfaction" },
-  { value: "500+", label: "Tickets/year" },
-  { value: "24/5", label: "Availability" },
+  { value: "33,000+", label: "Support tickets handled" },
+  { value: "577", label: "Custom Solutions" },
+  { value: "<30 min", label: "Average response time" },
 ];
 
 const processSteps = [
   {
     num: "01",
-    title: "Raise a ticket",
-    desc: "Submit your request via email, phone, or our client portal. We'll acknowledge it immediately.",
+    title: "Tell us what's wrong",
+    desc: "Describe the problem in your own words. We figure out what's needed.",
   },
   {
     num: "02",
-    title: "We assess",
-    desc: "Our team reviews the issue, assigns the right specialist, and provides an initial response.",
+    title: "We assess it",
+    desc: "We provide a clear explanation of what's needed and how long it'll take. You approve before we start. You're in control.",
   },
   {
     num: "03",
-    title: "We resolve",
-    desc: "We work on your request, keeping you updated at every step until it's fully resolved.",
+    title: "We fix it",
+    desc: "Right specialist assigned, fixed properly, keeping you updated. No surprises.",
   },
   {
     num: "04",
-    title: "We follow up",
-    desc: "After resolution, we check in to ensure everything's working and document any learnings.",
+    title: "You learn from it",
+    desc: "We document what happened and why. Your team gets smarter, not more dependent on us.",
   },
 ];
 
@@ -233,9 +232,9 @@ export default function Support() {
           <div className="max-w-5xl">
             <p className="text-label text-secondary mb-md">Aftercare</p>
             <h1 className="text-hero" style={{ marginBottom: "var(--space-2xl)" }}>
-              Support that
+              We make NetSuite
               <br />
-              <span className="text-secondary">propels success</span>.
+              <span className="text-secondary">easier</span>.
             </h1>
             <TrackedLink
               to="#plans"
@@ -258,7 +257,7 @@ export default function Support() {
       <section className="section-padding" style={{ backgroundColor: "rgba(126, 34, 206, 0.05)" }}>
         <div className="container">
           <p className="text-label text-secondary text-center mb-xl">Our Track Record</p>
-          <AnimatedStats stats={stats} color="secondary" />
+          <AnimatedStats stats={stats} color="secondary" columns={3} />
         </div>
       </section>
 
@@ -269,7 +268,8 @@ export default function Support() {
             <div>
               <p className="text-label text-secondary mb-md">Why aftercare?</p>
               <h3>
-                NetSuite support, <span className="text-secondary">turned on its head.</span>
+                Support done the way{" "}
+                <span className="text-secondary">we'd want it for ourselves.</span>
               </h3>
             </div>
             <div className="grid grid-cols-2 gap-md md:gap-lg">
@@ -319,16 +319,23 @@ export default function Support() {
         </div>
       </section>
 
-      {/* Testimonial + Video */}
-      <section className="section-padding-lg border-t border-(--color-text)/10">
+      {/* Testimonial */}
+      <section
+        className="section-padding-lg border-t border-(--color-text)/10"
+        style={{ backgroundColor: "rgba(42, 157, 99, 0.05)" }}
+      >
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-2xl lg:gap-3xl items-center">
             {/* Testimonial */}
             <div>
-              <MessageSquareQuote className="w-12 h-12 md:w-16 md:h-16 text-secondary mb-xl" />
+              <MessageSquareQuote className="w-12 h-12 md:w-16 md:h-16 text-quaternary mb-xl opacity-50" />
               <blockquote className="font-heading text-xl md:text-2xl lg:text-3xl leading-snug mb-xl">
-                "The support team feels like an extension of our own. They're proactive,
-                knowledgeable, and always <span className="text-secondary">one step ahead</span>."
+                "We now have a stable system with reliable ongoing support. They quickly gave us
+                <span className="text-quaternary">
+                  {" "}
+                  clear choices and explained the time and cost for each.
+                </span>
+                "
               </blockquote>
               <div className="flex items-center gap-lg">
                 <div
@@ -337,32 +344,25 @@ export default function Support() {
                     width: "56px",
                     height: "48px",
                     clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                    backgroundColor: "var(--color-secondary)",
+                    backgroundColor: "var(--color-quaternary)",
                   }}
                 >
                   <HeartHandshake className="w-5 h-5 text-white mb-2" />
                 </div>
                 <div>
-                  <p className="text-lg font-bold">James Crawford</p>
-                  <p className="text-base text-muted">IT Director, Reynolds Distribution</p>
+                  <p className="text-lg font-bold">Tom Mayho</p>
+                  <p className="text-base text-muted">FD, Kynetec</p>
                 </div>
               </div>
             </div>
 
-            {/* Video */}
-            <div className="aspect-video rounded-2xl md:rounded-3xl overflow-hidden bg-(--color-secondary)/10 flex items-center justify-center relative">
-              <div className="text-center">
-                <div className="icon-box icon-box-lg rounded-2xl border-2 border-(--color-secondary)/20 mx-auto mb-lg">
-                  <HeartHandshake className="w-10 h-10 text-secondary/40" />
-                </div>
-                <p className="text-label text-muted">Support Plans Explainer Video</p>
-              </div>
-              {/* Play button overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="icon-box icon-box-lg rounded-full bg-white shadow-lg cursor-pointer hover:scale-110 transition-transform">
-                  <ArrowRight className="w-6 h-6 text-(--color-secondary) ml-1" />
-                </div>
-              </div>
+            {/* Image */}
+            <div className="aspect-video rounded-2xl md:rounded-3xl overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80"
+                alt="Team collaboration"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         </div>

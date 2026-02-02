@@ -21,7 +21,6 @@ function PageLoader() {
 // Lazy loaded pages
 const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About/About"));
-const Services = lazy(() => import("./pages/Services/Services"));
 const NetSuiteServices = lazy(() => import("./pages/NetSuiteServices/NetSuiteServices"));
 
 const Implementation = lazy(() => import("./pages/Implementation/Implementation"));
@@ -30,10 +29,12 @@ const CaseStudyDetail = lazy(() => import("./pages/CaseStudies/CaseStudyDetail")
 const Resources = lazy(() => import("./pages/Resources/Resources"));
 const Contact = lazy(() => import("./pages/Contact/Contact"));
 const Support = lazy(() => import("./pages/Support/Support"));
+const WhatIsNetSuite = lazy(() => import("./pages/WhatIsNetSuite/WhatIsNetSuite"));
 const DesignGuide = lazy(() => import("./pages/DesignGuide"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
+const Cookies = lazy(() => import("./pages/Cookies"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -54,9 +55,26 @@ function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/services" element={<Services />} />
+            <Route path="/services" element={<Navigate to="/implementation" replace />} />
             <Route path="/services/netsuite" element={<NetSuiteServices />} />
             <Route path="/services/aftercare" element={<Navigate to="/support" replace />} />
+            <Route
+              path="/services/implementation"
+              element={<Navigate to="/implementation" replace />}
+            />
+            <Route
+              path="/services/consultancy"
+              element={<Navigate to="/implementation" replace />}
+            />
+            <Route
+              path="/services/development"
+              element={<Navigate to="/implementation" replace />}
+            />
+            <Route
+              path="/services/integrations"
+              element={<Navigate to="/implementation" replace />}
+            />
+            <Route path="/services/training" element={<Navigate to="/implementation" replace />} />
             <Route path="/implementation" element={<Implementation />} />
             <Route path="/case-studies" element={<CaseStudies />} />
             <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
@@ -64,9 +82,11 @@ function App() {
             <Route path="/resources" element={<Resources />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/support" element={<Support />} />
+            <Route path="/what-is-netsuite" element={<WhatIsNetSuite />} />
             <Route path="/design-guide" element={<DesignGuide />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/cookies" element={<Cookies />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

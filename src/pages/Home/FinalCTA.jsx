@@ -47,7 +47,7 @@ export default function FinalCTA() {
   };
 
   return (
-    <section className="section-padding-lg">
+    <section style={{ padding: "var(--space-xl) var(--space-lg)" }}>
       <div className="container">
         <div className="rounded-3xl md:rounded-[3rem] overflow-hidden relative">
           {/* Background with gradient */}

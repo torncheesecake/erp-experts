@@ -72,7 +72,7 @@ function AnimatedStat({ value, label, highlight = false, color = "primary" }) {
   const colorClass = highlight ? `text-${color}` : "";
 
   return (
-    <div ref={ref} className="text-center">
+    <div ref={ref} className="text-center flex flex-col items-center">
       <p className={`font-heading text-4xl md:text-stat leading-none mb-sm ${colorClass}`}>
         {displayValue}
       </p>
@@ -84,9 +84,19 @@ function AnimatedStat({ value, label, highlight = false, color = "primary" }) {
 /**
  * Stats grid with animated counting
  */
-export default function AnimatedStats({ stats, color = "primary", highlightAlternate = true }) {
+export default function AnimatedStats({
+  stats,
+  color = "primary",
+  highlightAlternate = true,
+  columns = 4,
+}) {
+  const gridClass =
+    columns === 3
+      ? "grid grid-cols-3 gap-lg md:gap-xl"
+      : "grid grid-cols-2 lg:grid-cols-4 gap-lg md:gap-xl";
+
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg md:gap-xl">
+    <div className={gridClass}>
       {stats.map((stat, i) => (
         <AnimatedStat
           key={i}

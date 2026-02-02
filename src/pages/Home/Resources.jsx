@@ -41,15 +41,12 @@ export default function Resources() {
               Resources & <span className="text-primary">insights</span>
             </h3>
           </div>
-          <TrackedLink
-            to="/resources"
-            trackingName="resources_view_all"
-            trackingPage="homepage"
-            className="inline-flex items-center gap-sm text-base font-bold text-primary hover:underline"
-          >
+          <span className="inline-flex items-center gap-sm text-base font-bold text-muted/50 cursor-not-allowed">
             View all resources
-            <ArrowRight className="w-4 h-4" />
-          </TrackedLink>
+            <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+              Coming soon
+            </span>
+          </span>
         </div>
 
         <div className="grid md:grid-cols-3 gap-lg md:gap-xl">

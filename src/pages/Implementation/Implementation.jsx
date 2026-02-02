@@ -27,27 +27,26 @@ import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
 
 const stats = [
-  { value: "100%", label: "Success rate" },
-  { value: "12wk", label: "Avg go-live" },
-  { value: "94%", label: "On-time" },
-  { value: "Fixed", label: "Pricing" },
+  { value: "0", label: "Projects abandoned halfway" },
+  { value: "350+", label: "Projects completed" },
+  { value: "100%", label: "Customer retention post go-live" },
 ];
 
 const benefits = [
   {
     icon: Users,
-    title: "Partner-led delivery",
-    desc: "Senior consultants on every project. The people you meet are the people who deliver.",
+    title: "Senior consultant delivery",
+    desc: "The person who scopes it, delivers it. No handoffs, no reexplaining.",
   },
   {
     icon: Shield,
     title: "Fixed pricing",
-    desc: "Transparent costs from day one. No surprises, no scope creep charges.",
+    desc: "One price covers the project and the inevitable curveballs. No extras.",
   },
   {
     icon: Clock,
-    title: "Fast go-live",
-    desc: "Focused methodology gets you live faster without cutting corners.",
+    title: "Proven methodology",
+    desc: "Keeps budgets and timelines steady at every stage, so you know what's happening and why.",
   },
   {
     icon: TrendingUp,
@@ -59,56 +58,56 @@ const benefits = [
 const processSteps = [
   {
     num: "01",
-    title: "Consultancy",
-    desc: "We understand your business, processes, and market. A comprehensive review ensures NetSuite integrates perfectly.",
+    title: "Consult",
+    desc: "We document how you actually work, not theory. Requirements agreed and signed before any technical work begins. No moving targets.",
     icon: Lightbulb,
   },
   {
     num: "02",
-    title: "Configuration",
-    desc: "Our analysts align NetSuite with your business map, including full data migration from your existing systems.",
+    title: "Configure",
+    desc: "Data migration is where projects die. We design, cleanse, and test everything in a sandbox before it touches your live system.",
     icon: Settings,
   },
   {
     num: "03",
-    title: "Customisation",
-    desc: "Where needed, our engineers build bespoke features using agile sprints to rapidly prototype and deliver.",
+    title: "Customise",
+    desc: "Custom features tested in the sandbox and signed off by your team. Built to survive NetSuite updates, not break with them.",
     icon: Code2,
   },
   {
     num: "04",
-    title: "Coaching",
-    desc: "Before go-live, we train key personnel in a sandbox environment as part of customer acceptance testing.",
+    title: "Coach",
+    desc: "Your team learns in a safe environment with real scenarios. They go live confident, not guessing their way through month-end.",
     icon: GraduationCap,
   },
   {
     num: "05",
     title: "Care",
-    desc: "Tailored aftercare plans with consultancy, development, coaching, and technical support as your business grows.",
+    desc: "Most consultants vanish after go-live. We stay, keeping NetSuite working as you grow, from helpdesk to full development.",
     icon: HeartHandshake,
   },
 ];
 
 const services = [
   {
-    icon: Zap,
-    title: "Customisation",
-    desc: "Tailoring NetSuite to fit your unique business processes and workflows.",
+    icon: Users,
+    title: "A system your team trusts",
+    desc: "Not just configured but tested by the people who'll use it daily. Confidence from day one.",
   },
   {
     icon: Database,
-    title: "Data Migration",
-    desc: "Moving your data safely and accurately into NetSuite from any system.",
+    title: "Clean data you can rely on",
+    desc: "Every record verified, every migration tested. One source of truth, not multiple versions.",
   },
   {
-    icon: Target,
-    title: "Discovery",
-    desc: "Understanding your business needs and mapping the perfect solution.",
+    icon: Settings,
+    title: "Processes that work",
+    desc: "Workflows built around how you operate now. No forcing your business into generic templates.",
   },
   {
-    icon: FileCheck,
-    title: "Testing",
-    desc: "Rigorous testing to ensure everything works perfectly before go-live.",
+    icon: GraduationCap,
+    title: "Knowledge that stays",
+    desc: "Documentation, training records, and a team that knows how to use it. Not dependent on one person.",
   },
 ];
 
@@ -160,18 +159,17 @@ export default function Implementation() {
           <div className="max-w-5xl">
             <p className="text-label text-tertiary mb-md">NetSuite Implementation</p>
             <h1 className="text-hero" style={{ marginBottom: "var(--space-2xl)" }}>
-              Start strong with
-              <br />
-              <span className="text-tertiary">NetSuite</span>.
+              Implemented right.
+              <span className="text-tertiary"> Works right.</span>
             </h1>
             <TrackedLink
-              to="#process"
-              trackingName="implementation_hero_see_process"
+              to="/what-is-netsuite"
+              trackingName="implementation_hero_whats_netsuite"
               trackingPage="implementation"
               className="btn btn-lg w-full sm:w-auto justify-center"
               style={{ backgroundColor: "var(--color-tertiary)", color: "white" }}
             >
-              See our process
+              What's NetSuite?
               <ArrowRight className="w-5 h-5" />
             </TrackedLink>
           </div>
@@ -185,7 +183,7 @@ export default function Implementation() {
       <section className="section-padding" style={{ backgroundColor: "rgba(59, 130, 246, 0.05)" }}>
         <div className="container">
           <p className="text-label text-tertiary text-center mb-xl">Our Track Record</p>
-          <AnimatedStats stats={stats} color="tertiary" />
+          <AnimatedStats stats={stats} color="tertiary" columns={3} />
         </div>
       </section>
 
@@ -215,13 +213,29 @@ export default function Implementation() {
       </section>
 
       {/* Process */}
-      <section id="process" className="section-padding-lg border-t border-(--color-text)/10">
-        <div className="container">
+      <section
+        id="process"
+        className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden"
+      >
+        {/* Decorative triangle */}
+        <div
+          className="absolute -right-64 top-1/2 -translate-y-1/2 opacity-[0.03] hidden lg:block pointer-events-none"
+          style={{
+            width: "800px",
+            height: "686px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-tertiary)",
+          }}
+        />
+        <div className="container relative z-10">
           <div className="text-center mb-2xl md:mb-3xl">
             <p className="text-label text-tertiary mb-md">Our methodology</p>
             <h3>
               The 5C <span className="text-tertiary">Process.</span>
             </h3>
+            <p className="text-lg text-muted mt-lg max-w-2xl mx-auto">
+              ERP implementations fail in predictable ways. This methodology exists to prevent them.
+            </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-lg md:gap-xl">
             {processSteps.map((step, i) => (
@@ -250,12 +264,23 @@ export default function Implementation() {
       </section>
 
       {/* What's Included */}
-      <section className="section-padding-lg border-t border-(--color-text)/10">
-        <div className="container">
+      <section className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden">
+        {/* Decorative triangle */}
+        <div
+          className="absolute bottom-0 right-0 opacity-10 hidden lg:block pointer-events-none"
+          style={{
+            width: "350px",
+            height: "300px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-tertiary)",
+            transform: "translateX(30%) translateY(40%)",
+          }}
+        />
+        <div className="container relative z-10">
           <div className="text-center mb-2xl md:mb-3xl">
             <p className="text-label text-tertiary mb-md">What's included</p>
             <h3>
-              Everything you need to <span className="text-tertiary">go live.</span>
+              Everything you'll have when you <span className="text-tertiary">go live.</span>
             </h3>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-lg">
@@ -276,49 +301,76 @@ export default function Implementation() {
       </section>
 
       {/* Testimonial + Video */}
-      <section className="section-padding-lg border-t border-(--color-text)/10">
-        <div className="container">
+      <section className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden">
+        {/* Decorative triangle */}
+        <div
+          className="absolute top-0 left-0 opacity-10 hidden lg:block pointer-events-none"
+          style={{
+            width: "280px",
+            height: "240px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-quaternary)",
+            transform: "translateX(-40%) translateY(-50%)",
+          }}
+        />
+        <div className="container relative z-10">
           <div className="grid lg:grid-cols-2 gap-2xl lg:gap-3xl items-center">
             {/* Testimonial */}
             <div>
-              <MessageSquareQuote className="w-12 h-12 md:w-16 md:h-16 text-tertiary mb-xl" />
+              <MessageSquareQuote className="w-12 h-12 md:w-16 md:h-16 text-quaternary mb-xl" />
               <blockquote className="font-heading text-xl md:text-2xl lg:text-3xl leading-snug mb-xl">
-                "From day one, the team was hands-on and genuinely invested. The implementation was
-                <span className="text-tertiary"> smooth, on-time, and on-budget</span>."
+                "You can have the best system in the world. If it's implemented poorly, it's
+                worthless.
+                <span className="text-quaternary"> ERP Experts came in as a saviour.</span>"
               </blockquote>
-              <div className="flex items-center gap-lg">
+              <div className="flex items-center gap-lg mb-lg">
                 <div
                   className="relative flex items-end justify-center shrink-0"
                   style={{
                     width: "56px",
                     height: "48px",
                     clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                    backgroundColor: "var(--color-tertiary)",
+                    backgroundColor: "var(--color-quaternary)",
                   }}
                 >
                   <Rocket className="w-5 h-5 text-white mb-2" />
                 </div>
                 <div>
-                  <p className="text-lg font-bold">Sarah Mitchell</p>
-                  <p className="text-base text-muted">Operations Director, TechParts UK</p>
+                  <p className="text-lg font-bold">David Hall</p>
+                  <p className="text-base text-muted">CEO, Totalkare</p>
                 </div>
+              </div>
+              <div className="flex flex-wrap gap-md">
+                <TrackedLink
+                  to="/case-studies/4"
+                  trackingName="implementation_testimonial_totalkare"
+                  trackingPage="implementation"
+                  className="inline-flex items-center gap-sm text-quaternary font-bold hover:gap-md transition-all"
+                >
+                  Read Totalkare's story
+                  <ArrowRight className="w-4 h-4" />
+                </TrackedLink>
+                <TrackedLink
+                  to="/case-studies"
+                  trackingName="implementation_testimonial_all_cases"
+                  trackingPage="implementation"
+                  className="inline-flex items-center gap-sm text-muted font-bold hover:gap-md hover:text-quaternary transition-all"
+                >
+                  View all case studies
+                  <ArrowRight className="w-4 h-4" />
+                </TrackedLink>
               </div>
             </div>
 
             {/* Video */}
-            <div className="aspect-video rounded-2xl md:rounded-3xl overflow-hidden bg-(--color-tertiary)/10 flex items-center justify-center relative">
-              <div className="text-center">
-                <div className="icon-box icon-box-lg rounded-2xl border-2 border-(--color-tertiary)/20 mx-auto mb-lg">
-                  <Rocket className="w-10 h-10 text-tertiary/40" />
-                </div>
-                <p className="text-label text-muted">Implementation Explainer Video</p>
-              </div>
-              {/* Play button overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="icon-box icon-box-lg rounded-full bg-white shadow-lg cursor-pointer hover:scale-110 transition-transform">
-                  <ArrowRight className="w-6 h-6 text-(--color-tertiary) ml-1" />
-                </div>
-              </div>
+            <div className="aspect-video rounded-2xl md:rounded-3xl overflow-hidden">
+              <iframe
+                src="https://www.youtube.com/embed/QMdmpFEyMN0"
+                title="Totalkare NetSuite Implementation - David Hall"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              />
             </div>
           </div>
         </div>
@@ -331,8 +383,8 @@ export default function Implementation() {
             Ready to <span className="text-tertiary">get started</span>?
           </h2>
           <p className="text-lg text-muted mb-2xl max-w-2xl mx-auto">
-            Book a call with our team to discuss your NetSuite implementation. We'll scope your
-            project and provide a fixed-price quote.
+            Dare to discover your ERP readiness in just 3 minutes? Take this playful quiz to find
+            out!
           </p>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
             <TrackedLink

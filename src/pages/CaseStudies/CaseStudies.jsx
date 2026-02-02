@@ -7,15 +7,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
-  Factory,
-  ShoppingBag,
-  Truck,
-  Building2,
-  Code2,
-  UtensilsCrossed,
+  Lightbulb,
+  Sun,
+  BarChart3,
+  Wrench,
   TrendingUp,
   Clock,
   Target,
+  MessageSquareQuote,
 } from "lucide-react";
 import AnimatedStats from "../../components/ui/AnimatedStats";
 import SEO from "../../components/ui/SEO";
@@ -26,70 +25,74 @@ import { trackCTAClick } from "../../components/Analytics";
 const caseStudies = [
   {
     id: 1,
-    client: "Precision Manufacturing Ltd",
-    industry: "Manufacturing",
-    icon: Factory,
-    size: "£5m - £10m turnover",
-    headline: "40% faster order processing",
+    client: "Carallon",
+    industry: "Technology",
+    icon: Lightbulb,
+    headline: "Entertainment technology leader",
     description:
-      "From chaos to clarity with automated order workflows and real-time inventory tracking.",
+      "Working at the cutting edge of entertainment technology with streamlined operations.",
   },
   {
     id: 2,
-    client: "StyleForward Retail",
-    industry: "Retail",
-    icon: ShoppingBag,
-    size: "£10m - £25m turnover",
-    headline: "99.5% inventory accuracy",
-    description: "Unified online and in-store operations for true omnichannel success.",
+    client: "eco2solar",
+    industry: "Renewable Energy",
+    icon: Sun,
+    headline: "Sustainable growth enabled",
+    description: "Supporting the renewable energy sector with efficient business processes.",
   },
   {
     id: 3,
-    client: "Swift Distribution Co",
-    industry: "Distribution",
-    icon: Truck,
-    size: "£25m+ turnover",
-    headline: "£200k annual savings",
-    description: "Transformed warehouse operations with mobile scanning and automated workflows.",
+    client: "Kynetec",
+    industry: "Market Research",
+    icon: BarChart3,
+    headline: "System replaced in 6 months",
+    description:
+      "Replaced a failing system in half the time of the original project, on schedule and within budget.",
   },
   {
     id: 4,
-    client: "BuildRight Construction",
-    industry: "Construction",
-    icon: Building2,
-    size: "£10m - £25m turnover",
-    headline: "Real-time project visibility",
-    description: "Project profitability insights that transformed decision-making.",
-  },
-  {
-    id: 5,
-    client: "TechScale Software",
-    industry: "Software",
-    icon: Code2,
-    size: "£2m - £5m turnover",
-    headline: "70% faster month-end",
-    description: "Automated revenue recognition and subscription billing at scale.",
-  },
-  {
-    id: 6,
-    client: "FreshMeals Co",
-    industry: "Food & Beverage",
-    icon: UtensilsCrossed,
-    size: "£5m - £10m turnover",
-    headline: "Full lot traceability",
-    description: "Complete supply chain visibility from farm to fork.",
+    client: "Totalkare",
+    industry: "Manufacturing",
+    icon: Wrench,
+    headline: "Reliable, scalable system",
+    description:
+      "A NetSuite solution that improved every aspect of operations and supports continued growth.",
   },
 ];
 
 // Get unique industries for filter
 const industries = ["All", ...new Set(caseStudies.map((cs) => cs.industry))];
 
+// Testimonials
+const testimonials = [
+  {
+    quote:
+      "Working with ERP Experts was a game-changer for Totalkare. Their team understood our business challenges and delivered a NetSuite solution that improved every aspect of our operations. Thanks to their expertise, we now have a reliable, scalable system that supports our continued growth. I'm confident recommending ERP Experts to any business looking to transform their IT and achieve lasting results.",
+    name: "David Hall",
+    role: "CEO",
+    company: "Totalkare",
+  },
+  {
+    quote:
+      "Our NetSuite system wasn't working, so we brought in ERP Experts. They quickly gave us clear choices and explained the time and cost for each. With their help, we replaced the system in just six months - half the time of the original project - by using teams in different time zones for continuous progress. The project finished on schedule and within budget, and we now have a stable system with reliable ongoing support.",
+    name: "Tom Mayho",
+    role: "CFO",
+    company: "Kynetec",
+  },
+  {
+    quote:
+      "ERP Experts didn't just fix our system. They gave us the tools to scale and make an even bigger impact. If you are using NetSuite without them, you are missing out.",
+    name: "Peter Borner",
+    role: "CEO",
+    company: "Coats4Kids",
+  },
+];
+
 // Stats for credibility
 const stats = [
-  { value: "50+", label: "Implementations", icon: Target },
-  { value: "100%", label: "Success rate", icon: TrendingUp },
-  { value: "12wk", label: "Avg go-live", icon: Clock },
-  { value: "94%", label: "On-time", icon: Target },
+  { value: "20+", label: "Years specialising in NetSuite" },
+  { value: "350+", label: "Projects completed" },
+  { value: "33,000+", label: "Support tickets handled" },
 ];
 
 export default function CaseStudies() {
@@ -149,25 +152,50 @@ export default function CaseStudies() {
               Case Studies
             </p>
             <h1 className="text-hero" style={{ marginBottom: "var(--space-xl)" }}>
-              Real results.
+              Your industry. Your challenges.
               <br />
-              <span className="text-quaternary">Real businesses.</span>
+              <span className="text-quaternary">Our results.</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted max-w-2xl leading-relaxed">
-              See how we've helped businesses like yours transform their operations with NetSuite.
+              We've delivered NetSuite across dozens of industries. Whatever your sector, we
+              probably know it already.
             </p>
           </div>
         </div>
       </section>
 
       {/* Spacer */}
-      <div className="h-3xl" />
+      <div style={{ height: "var(--space-3xl)" }} />
 
       {/* Stats Bar */}
-      <section className="section-padding" style={{ backgroundColor: "rgba(42, 157, 99, 0.05)" }}>
-        <div className="container">
+      <section
+        className="section-padding-lg relative overflow-hidden"
+        style={{ backgroundColor: "rgba(42, 157, 99, 0.05)" }}
+      >
+        {/* Decorative triangles */}
+        <div
+          className="absolute top-1/2 left-0 opacity-10 hidden lg:block pointer-events-none"
+          style={{
+            width: "300px",
+            height: "257px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-quaternary)",
+            transform: "translateX(-50%) translateY(-50%)",
+          }}
+        />
+        <div
+          className="absolute top-1/2 right-0 opacity-10 hidden lg:block pointer-events-none"
+          style={{
+            width: "250px",
+            height: "214px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-quaternary)",
+            transform: "translateX(50%) translateY(-30%)",
+          }}
+        />
+        <div className="container relative z-10">
           <p className="text-label text-quaternary text-center mb-xl">Our Track Record</p>
-          <AnimatedStats stats={stats} color="quaternary" />
+          <AnimatedStats stats={stats} color="quaternary" columns={3} />
         </div>
       </section>
 
@@ -225,11 +253,7 @@ export default function CaseStudies() {
                     >
                       {study.client}
                     </h5>
-                    <div className="flex flex-wrap items-center gap-sm">
-                      <span className="text-sm font-medium text-quaternary">{study.industry}</span>
-                      <span className="text-sm text-muted">•</span>
-                      <span className="text-sm text-muted">{study.size}</span>
-                    </div>
+                    <span className="text-sm font-medium text-quaternary">{study.industry}</span>
                   </div>
                 </div>
 
@@ -260,6 +284,43 @@ export default function CaseStudies() {
               <p className="text-lg text-muted">No case studies found for this industry.</p>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden">
+        {/* Decorative triangle */}
+        <div
+          className="absolute bottom-0 left-0 opacity-[0.05] hidden lg:block pointer-events-none"
+          style={{
+            width: "400px",
+            height: "343px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-quaternary)",
+            transform: "translateX(-30%) translateY(40%)",
+          }}
+        />
+        <div className="container relative z-10">
+          <div className="text-center mb-2xl">
+            <p className="text-label text-quaternary mb-md">What our clients say</p>
+            <h3>
+              Real feedback from <span className="text-quaternary">real businesses</span>
+            </h3>
+          </div>
+          <div className="grid md:grid-cols-3 gap-lg">
+            {testimonials.map((testimonial, i) => (
+              <div key={i} className="card border-2 border-(--color-text)/10 p-xl">
+                <MessageSquareQuote className="w-8 h-8 text-quaternary mb-lg" />
+                <p className="text-base text-muted mb-xl leading-relaxed">"{testimonial.quote}"</p>
+                <div>
+                  <p className="font-bold">{testimonial.name}</p>
+                  <p className="text-sm text-muted">
+                    {testimonial.role}, {testimonial.company}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

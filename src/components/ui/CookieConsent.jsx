@@ -42,10 +42,14 @@ export default function CookieConsent() {
             <div className="flex-1">
               <p className="font-bold mb-sm">We value your privacy</p>
               <p className="text-sm text-muted">
-                We use cookies to enhance your browsing experience and analyse site traffic.
-                By clicking "Accept", you consent to our use of cookies.{" "}
+                We use cookies to enhance your browsing experience and analyse site traffic. By
+                clicking "Accept", you consent to our use of cookies.{" "}
+                <Link to="/cookies" className="text-primary hover:underline">
+                  Cookie Policy
+                </Link>
+                {" | "}
                 <Link to="/privacy" className="text-primary hover:underline">
-                  Learn more
+                  Privacy Policy
                 </Link>
               </p>
             </div>
@@ -56,10 +60,7 @@ export default function CookieConsent() {
               >
                 Decline
               </button>
-              <button
-                onClick={handleAccept}
-                className="btn btn-sm btn-primary"
-              >
+              <button onClick={handleAccept} className="btn btn-sm btn-primary">
                 Accept
               </button>
             </div>

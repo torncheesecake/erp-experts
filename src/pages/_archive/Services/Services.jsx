@@ -608,14 +608,17 @@ export default function Services() {
       </section>
 
       {/* Testimonial */}
-      <section className="section-padding-lg border-t border-(--color-text)/10">
+      <section
+        className="section-padding-lg border-t border-(--color-text)/10"
+        style={{ backgroundColor: "rgba(42, 157, 99, 0.05)" }}
+      >
         <div className="container">
           <div className="max-w-4xl mx-auto text-center">
-            <MessageSquareQuote className="w-16 h-16 md:w-20 md:h-20 text-primary mx-auto mb-2xl" />
+            <MessageSquareQuote className="w-16 h-16 md:w-20 md:h-20 text-quaternary mx-auto mb-2xl opacity-50" />
             <blockquote className="font-heading text-2xl md:text-3xl lg:text-4xl leading-snug mb-2xl">
               "From day one, the team was hands-on and genuinely invested. The implementation was
-              <span className="text-primary"> smooth, on-time, and on-budget</span>. They've become
-              an extension of our team."
+              <span className="text-quaternary"> smooth, on-time, and on-budget</span>. They've
+              become an extension of our team."
             </blockquote>
             <div className="flex items-center justify-center gap-lg">
               <div
@@ -624,7 +627,7 @@ export default function Services() {
                   width: "64px",
                   height: "56px",
                   clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                  backgroundColor: "var(--color-primary)",
+                  backgroundColor: "var(--color-quaternary)",
                 }}
               >
                 <Users className="w-6 h-6 text-white mb-2" />

@@ -8,10 +8,10 @@ import TrackedLink from "../../components/ui/TrackedLink";
 
 export default function CaseStudyFeature() {
   return (
-    <section className="section-padding border-t border-(--color-text)/10 relative overflow-hidden">
+    <section className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden">
       {/* Background decorative triangle */}
       <div
-        className="absolute -right-64 top-1/2 -translate-y-1/2 opacity-[0.03] hidden lg:block pointer-events-none"
+        className="absolute -left-64 top-1/2 -translate-y-1/2 opacity-[0.03] hidden lg:block pointer-events-none"
         style={{
           width: "900px",
           height: "770px",
@@ -32,35 +32,15 @@ export default function CaseStudyFeature() {
             to="/case-studies"
             trackingName="case_study_see_all"
             trackingPage="homepage"
-            className="group text-base font-bold inline-flex items-center gap-sm text-quaternary whitespace-nowrap"
+            className="inline-flex items-center gap-sm bg-(--color-quaternary) text-white py-3 px-6 text-base font-bold rounded-full hover:scale-105 transition-all whitespace-nowrap"
           >
-            See how we've helped businesses like yours
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            View all case studies
+            <ArrowRight className="w-5 h-5" />
           </TrackedLink>
         </div>
 
         {/* Featured Case Study Card */}
         <div className="relative rounded-2xl md:rounded-3xl overflow-hidden border-2 border-(--color-text)/10 hover:border-(--color-quaternary)/30 transition-colors">
-          {/* Triangle Accents */}
-          <div
-            className="absolute -bottom-20 -right-20 opacity-[0.06] hidden md:block pointer-events-none"
-            style={{
-              width: "450px",
-              height: "386px",
-              clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-              backgroundColor: "var(--color-quaternary)",
-            }}
-          />
-          <div
-            className="absolute -top-16 -left-16 opacity-[0.04] hidden lg:block pointer-events-none"
-            style={{
-              width: "280px",
-              height: "240px",
-              clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-              backgroundColor: "var(--color-quaternary)",
-            }}
-          />
-
           {/* Content */}
           <div className="relative z-10 p-lg md:p-xl lg:p-2xl">
             <div className="grid lg:grid-cols-[1.2fr_1fr] gap-xl lg:gap-2xl items-center">
@@ -84,14 +64,13 @@ export default function CaseStudyFeature() {
                   className="flex items-start gap-md mb-lg md:mb-xl p-lg rounded-xl"
                   style={{ backgroundColor: "rgba(42, 157, 99, 0.05)" }}
                 >
-                  <MessageSquareQuote className="w-8 h-8 text-quaternary shrink-0 mt-1" />
+                  <MessageSquareQuote className="w-8 h-8 text-quaternary/40 shrink-0 mt-1" />
                   <div>
-                    <p className="text-base md:text-lg italic mb-sm">
-                      "ERP Experts transformed our operations. We went live on time, on budget."
+                    <p className="text-base md:text-lg italic mb-sm text-muted">
+                      "There's no way we could have grown to the size we are today with the old
+                      system. NetSuite has massively enabled us to grow."
                     </p>
-                    <p className="text-muted text-sm font-bold">
-                      — Sarah Mitchell, Operations Director
-                    </p>
+                    <p className="text-muted/50 text-sm font-bold">- David Hall, CEO, Totalkare</p>
                   </div>
                 </div>
 
@@ -99,10 +78,10 @@ export default function CaseStudyFeature() {
                   to="/case-studies/1"
                   trackingName="case_study_read_full_story"
                   trackingPage="homepage"
-                  className="inline-flex items-center gap-sm bg-(--color-quaternary) text-white py-3 px-6 md:py-4 md:px-8 text-base font-bold rounded-full hover:scale-105 hover:shadow-lg hover:shadow-quaternary/30 transition-all"
+                  className="group inline-flex items-center gap-sm text-quaternary text-base font-bold hover:underline"
                 >
                   Read the full story
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </TrackedLink>
               </div>
 

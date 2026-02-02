@@ -18,45 +18,57 @@ import AnimatedStats from "../../components/ui/AnimatedStats";
 import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
 import { trackCTAClick } from "../../components/Analytics";
+import netSuiteLogo from "../../assets/NetSuite-logo-half-light.png";
 
-const stats = [
-  { value: "230+", label: "Projects Delivered" },
-  { value: "20+", label: "Years Experience" },
-  { value: "3*", label: "NetSuite Partner" },
-  { value: "100%", label: "Client Focus" },
-];
+const stats = [{ value: "Oracle Partner", label: "Since 2009 - Hard to get. Harder to keep." }];
 
 const values = [
   {
     icon: Target,
-    title: "Tailored Solutions",
-    desc: "No cookie-cutter implementations. We design ERP solutions as unique as your business.",
+    title: "No surprises",
+    desc: "Fixed pricing, regular communication, and a clear plan from day one.",
   },
   {
     icon: Handshake,
-    title: "Long-term Partnership",
-    desc: "We don't disappear after go-live. We become your trusted NetSuite partner for the long haul.",
+    title: "Genuine partnership",
+    desc: "We stick around for the long haul, becoming part of your team - not a supplier.",
   },
   {
     icon: Zap,
-    title: "Innovation & Expertise",
-    desc: "Cutting-edge software engineering paired with proven change management strategies.",
+    title: "Your team gets stronger",
+    desc: "We train your people to own the system, not rely on us forever.",
   },
   {
     icon: Heart,
-    title: "Passion for Results",
-    desc: "We're driven by a genuine passion for transforming businesses through ERP.",
+    title: "Results that matter",
+    desc: "We measure success by what changes for your business - not just what we deliver.",
   },
 ];
 
 const teamRoles = [
-  { icon: Briefcase, title: "Business Consultants", desc: "Strategic guidance" },
-  { icon: Settings, title: "Process Analysts", desc: "Workflow optimisation" },
-  { icon: Code, title: "Software Engineers", desc: "Technical excellence" },
-  { icon: HeadphonesIcon, title: "Support Specialists", desc: "Ongoing care" },
+  {
+    icon: Briefcase,
+    title: "Business Consultants",
+    desc: "Your single point of contact - they own the project and see it through",
+  },
+  {
+    icon: Settings,
+    title: "Process Analysts",
+    desc: "They map your workflows and make sure the system fits how you actually work",
+  },
+  {
+    icon: Code,
+    title: "Software Engineers",
+    desc: "The people who build your customisations - and stick around to support them",
+  },
+  {
+    icon: HeadphonesIcon,
+    title: "Support Specialists",
+    desc: "Fast, friendly help when you need it - from people who already know your system",
+  },
 ];
 
-const clients = ["TK Maxx", "Rebellion", "Stiltz", "Kynetec", "Carallon"];
+const clients = ["Totalkare", "Rebellion", "Stiltz", "Kynetec", "Carallon", "eco2solar"];
 
 export default function About() {
   return (
@@ -106,39 +118,47 @@ export default function About() {
           <div className="max-w-3xl">
             <p className="text-label text-primary mb-md">About Us</p>
             <h1 className="text-hero mb-xl">
-              <span className="block">Empowering</span>
-              <span className="text-primary">businesses</span>.
+              We use NetSuite to run
+              <br />
+              <span className="text-primary">our own business.</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted leading-relaxed max-w-2xl">
-              We're NetSuite specialists helping UK businesses transform their operations since
-              2013.
+              Every system we build, we'd be proud to use ourselves. That's been the standard since
+              2005, and it's why clients stay for years.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Stats */}
+      {/* Oracle Partner Badge */}
       <section
         className="border-y border-(--color-text)/10"
         style={{ padding: "var(--space-2xl) 0", marginTop: "var(--space-xl)" }}
       >
         <div className="container">
-          <AnimatedStats stats={stats} color="primary" />
+          <div className="flex flex-col md:flex-row items-center justify-center gap-lg md:gap-xl">
+            <img src={netSuiteLogo} alt="NetSuite" className="h-10 md:h-12" />
+            <div className="text-center md:text-left">
+              <p className="font-heading text-2xl md:text-3xl font-bold text-primary">
+                Oracle Partner since 2009
+              </p>
+              <p className="text-base md:text-lg text-muted">Hard to get. Harder to keep.</p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Solutions as Unique */}
-      <section className="section-padding">
+      {/* What makes us different */}
+      <section className="section-padding-lg">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-xl lg:gap-2xl items-center">
             <div>
-              <p className="text-label text-primary mb-md">Our Approach</p>
-              <h3 className="mb-lg">Solutions as unique as your business</h3>
+              <p className="text-label text-primary mb-md">What makes us different</p>
+              <h3 className="mb-lg">We're practitioners, not just consultants</h3>
               <p className="text-lg md:text-xl text-muted leading-relaxed">
-                We understand that no two businesses are alike. That's why we take the time to
-                understand your specific challenges, workflows, and goals before designing a
-                NetSuite solution that fits your needs perfectly. Our consultants work alongside
-                your team to ensure every implementation delivers real, measurable results.
+                We run our own business on NetSuite. We know what it's like to rely on it, wrestle
+                with it, and make it work. That means we understand the real-world pressures you
+                face - and we build systems that actually help.
               </p>
             </div>
             <div className="relative">
@@ -154,18 +174,17 @@ export default function About() {
         </div>
       </section>
 
-      {/* Our Process */}
-      <section className="section-padding border-t border-(--color-text)/10">
+      {/* What we believe */}
+      <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-xl lg:gap-2xl items-center">
             <div className="lg:order-2">
-              <p className="text-label text-primary mb-md">Our Process</p>
-              <h3 className="mb-lg">Driven by passion, backed by expertise</h3>
+              <p className="text-label text-primary mb-md">What we believe</p>
+              <h3 className="mb-lg">ERP should make your life easier - not harder</h3>
               <p className="text-lg md:text-xl text-muted leading-relaxed">
-                Our team brings together decades of ERP experience with a genuine enthusiasm for
-                helping businesses succeed. From initial discovery through to go-live and beyond, we
-                combine proven methodologies with innovative thinking to deliver implementations
-                that transform the way you work.
+                Too many implementations fail because they focus on the technology, not the people.
+                We start with your team - how they work, what slows them down, and what would
+                actually help - and build from there.
               </p>
             </div>
             <div className="lg:order-1">
@@ -187,12 +206,26 @@ export default function About() {
         </div>
       </section>
 
-      {/* Values */}
-      <section className="section-padding" style={{ backgroundColor: "rgba(232, 58, 122, 0.05)" }}>
-        <div className="container">
+      {/* What to expect */}
+      <section
+        className="section-padding-lg relative overflow-hidden"
+        style={{ backgroundColor: "rgba(232, 58, 122, 0.05)" }}
+      >
+        {/* Decorative triangle */}
+        <div
+          className="absolute top-1/2 left-0 opacity-15 hidden lg:block pointer-events-none"
+          style={{
+            width: "500px",
+            height: "429px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-primary)",
+            transform: "translateX(-40%) translateY(-50%)",
+          }}
+        />
+        <div className="container relative z-10">
           <div className="text-center mb-2xl">
-            <p className="text-label text-primary mb-md">Why Us</p>
-            <h3>Why businesses choose ERP Experts</h3>
+            <p className="text-label text-primary mb-md">What to expect</p>
+            <h3>Working with us</h3>
           </div>
           <div className="grid md:grid-cols-2 gap-lg">
             {values.map((value, i) => (
@@ -212,11 +245,11 @@ export default function About() {
       </section>
 
       {/* Team Expertise */}
-      <section className="section-padding">
+      <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
           <div className="text-center mb-2xl">
             <p className="text-label text-primary mb-md">Our Team</p>
-            <h3>NetSuite-certified specialists</h3>
+            <h3>Senior consultants who stay the course</h3>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-md md:gap-lg">
             {teamRoles.map((role, i) => (
@@ -233,19 +266,36 @@ export default function About() {
       </section>
 
       {/* Clients */}
-      <section className="section-padding border-t border-(--color-text)/10">
-        <div className="container">
+      <section
+        className="section-padding-lg relative overflow-hidden"
+        style={{ backgroundColor: "rgba(230, 48, 125, 0.05)" }}
+      >
+        {/* Decorative triangle */}
+        <div
+          className="absolute top-1/2 right-0 opacity-20 hidden lg:block pointer-events-none"
+          style={{
+            width: "600px",
+            height: "514px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-primary)",
+            transform: "translateX(40%) translateY(-50%)",
+          }}
+        />
+
+        <div className="container relative z-10">
           <div className="text-center mb-2xl">
             <p className="text-label text-primary mb-md">Our Clients</p>
-            <h3>Trusted by leading businesses</h3>
+            <h3>
+              Trusted by <span className="text-primary">industry leaders</span>
+            </h3>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-lg">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-md md:gap-lg">
             {clients.map((client, i) => (
               <div
                 key={i}
-                className="rounded-2xl flex items-center justify-center bg-(--color-bg-light) px-xl py-lg"
+                className="bg-white rounded-2xl flex items-center justify-center px-xl py-2xl shadow-sm hover:-translate-y-1 transition-transform"
               >
-                <span className="text-lg font-bold text-muted">{client}</span>
+                <span className="text-lg font-bold">{client}</span>
               </div>
             ))}
           </div>
@@ -253,13 +303,17 @@ export default function About() {
       </section>
 
       {/* CTA */}
-      <section className="section-padding">
+      <section className="section-padding-lg">
         <div className="container text-center">
-          <h2 className="mb-md">
+          <h2 style={{ marginBottom: "var(--space-xl)" }}>
             Ready to <span className="text-primary">work together</span>?
           </h2>
-          <p className="text-lg md:text-xl text-muted mx-auto max-w-2xl mb-xl">
-            Let's discuss how we can help transform your business with NetSuite.
+          <p
+            className="text-lg md:text-xl text-muted mx-auto max-w-2xl"
+            style={{ marginBottom: "var(--space-2xl)" }}
+          >
+            If you're serious about getting NetSuite right, let's have a conversation about your
+            business.
           </p>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
             <TrackedLink

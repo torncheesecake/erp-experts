@@ -6,16 +6,16 @@ import { Check } from "lucide-react";
 
 const whyUsItems = [
   {
-    title: "Partner-led delivery",
-    desc: "Senior consultants on every project. The people you meet are the people who deliver.",
+    title: "Partners, not suppliers",
+    desc: "We stay for the long haul, learning your business and becoming part of your team.",
   },
   {
     title: "Fixed pricing",
-    desc: "Transparent costs from day one. No surprises, no scope creep charges.",
+    desc: "One price covers the project and the inevitable curveballs. No extras.",
   },
   {
-    title: "Training that sticks",
-    desc: "Role-specific training designed around how your team actually works.",
+    title: "Your team independent, not dependent",
+    desc: "We train your people to own the system, not rely on us forever.",
   },
 ];
 
@@ -40,8 +40,8 @@ export default function WhyUs() {
               className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold leading-tight"
               style={{ marginBottom: "var(--space-2xl)" }}
             >
-              <span className="text-primary">"Together</span>, we'll free you from spreadsheets,
-              disconnected systems, and endless manual workarounds."
+              <span className="text-primary">"We use NetSuite</span> to run our own business. Every
+              system we build has to meet one standard: would we be willing to use this ourselves?"
             </p>
 
             {/* Why Us Points under the quote */}
