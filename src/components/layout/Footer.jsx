@@ -1,15 +1,7 @@
 import { Link } from "react-router-dom";
-import {
-  Linkedin,
-  Instagram,
-  Youtube,
-  Mail,
-  ArrowRight,
-  ArrowUp,
-  Phone,
-  MapPin,
-} from "lucide-react";
+import { Linkedin, Instagram, Youtube, Mail, ArrowRight, Phone, MapPin } from "lucide-react";
 import TrackedLink from "../ui/TrackedLink";
+import erpIcon from "../../assets/ERP Experts Icon 500x500.jpg";
 
 const footerLinks = [
   {
@@ -30,12 +22,32 @@ const footerLinks = [
   },
 ];
 
+const locations = [
+  { name: "Stafford", label: "HQ" },
+  { name: "Manchester", label: null },
+  { name: "Dubai", label: "MENA" },
+];
+
+const socialLinks = [
+  {
+    Icon: Linkedin,
+    href: "https://www.linkedin.com/company/erp-experts",
+    label: "LinkedIn",
+  },
+  {
+    Icon: Instagram,
+    href: "https://www.instagram.com/erpexperts",
+    label: "Instagram",
+  },
+  { Icon: Youtube, href: "https://www.youtube.com/@erpexperts", label: "YouTube" },
+];
+
 export default function Footer() {
   return (
     <footer className="relative overflow-hidden">
       {/* Main footer */}
       <div className="bg-(--color-text) text-white pt-(--space-3xl) md:pt-(--space-4xl) pb-(--space-2xl) md:pb-(--space-3xl) relative">
-        {/* Decorative triangles */}
+        {/* Decorative triangle */}
         <div
           className="absolute top-0 right-0 hidden lg:block"
           style={{
@@ -44,174 +56,135 @@ export default function Footer() {
             clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
             backgroundColor: "var(--color-primary)",
             transform: "translateX(200px) translateY(-200px)",
-            opacity: 0.2,
-          }}
-        />
-        {/* Small triangle bottom left */}
-        <div
-          className="absolute bottom-0 left-0 opacity-5 hidden md:block"
-          style={{
-            width: "300px",
-            height: "260px",
-            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-            backgroundColor: "var(--color-primary)",
-            transform: "translateX(-100px) translateY(80px)",
-          }}
-        />
-        {/* Medium triangle center-left */}
-        <div
-          className="absolute top-1/2 left-1/4 opacity-[0.03] hidden lg:block"
-          style={{
-            width: "400px",
-            height: "350px",
-            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-            backgroundColor: "white",
-            transform: "translateY(-50%)",
+            opacity: 0.15,
           }}
         />
 
         <div className="container relative z-10">
-          <div className="grid md:grid-cols-2 lg:grid-cols-12 gap-xl md:gap-2xl mb-xl md:mb-3xl">
-            {/* Brand & CTA */}
-            <div className="md:col-span-2 lg:col-span-5">
-              <span className="text-xl md:text-2xl lg:text-3xl font-heading font-bold mb-md md:mb-lg block">
-                ERP Experts
-              </span>
-              <p className="text-base md:text-lg text-white/60 mb-lg md:mb-xl max-w-sm">
-                NetSuite implementation partner helping UK businesses transform their operations.
-              </p>
-              <TrackedLink
-                to="/contact"
-                trackingName="footer_start_conversation"
-                trackingPage="footer"
-                className="inline-flex items-center gap-sm bg-(--color-primary) text-white py-3 px-6 text-sm md:text-base font-bold rounded-full hover:scale-105 transition-transform"
-              >
-                Start a conversation
-                <ArrowRight className="w-4 h-4" />
-              </TrackedLink>
-            </div>
-
-            {/* Links */}
-            <div className="lg:col-span-4 grid grid-cols-2 gap-lg md:gap-xl">
-              {footerLinks.map((col, i) => (
-                <div key={i}>
-                  <h6 className="text-label text-white/40 mb-md md:mb-lg">{col.title}</h6>
-                  <ul className="flex flex-col gap-sm md:gap-md">
-                    {col.links.map((link, j) => (
-                      <li key={j}>
-                        <Link
-                          to={link.href}
-                          className="text-sm md:text-base text-white/80 hover:text-primary transition-colors"
-                        >
-                          {link.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-
-            {/* Contact info */}
-            <div className="lg:col-span-3">
-              <h6 className="text-label text-white/40 mb-md md:mb-lg">Get in touch</h6>
-              <div className="flex flex-col gap-md md:gap-lg">
-                <a
-                  href="tel:+441785336253"
-                  className="flex items-center gap-md text-sm md:text-base text-white/80 hover:text-primary transition-colors"
-                >
-                  <div
-                    className="shrink-0 flex items-end justify-center"
-                    style={{
-                      width: "28px",
-                      height: "24px",
-                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                      backgroundColor: "var(--color-primary)",
-                    }}
-                  >
-                    <Phone className="w-3 h-3 text-white mb-1" />
-                  </div>
-                  01785 336 253
-                </a>
-                <a
-                  href="mailto:hello@erpexperts.co.uk"
-                  className="flex items-center gap-md text-sm md:text-base text-white/80 hover:text-primary transition-colors"
-                >
-                  <div
-                    className="shrink-0 flex items-end justify-center"
-                    style={{
-                      width: "28px",
-                      height: "24px",
-                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                      backgroundColor: "var(--color-primary)",
-                    }}
-                  >
-                    <Mail className="w-3 h-3 text-white mb-1" />
-                  </div>
-                  hello@erpexperts.co.uk
-                </a>
-                <div className="flex items-start gap-md text-sm md:text-base text-white/60">
-                  <div
-                    className="shrink-0 flex items-end justify-center mt-1"
-                    style={{
-                      width: "28px",
-                      height: "24px",
-                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                      backgroundColor: "var(--color-primary)",
-                      opacity: 0.5,
-                    }}
-                  >
-                    <MapPin className="w-3 h-3 text-white mb-1" />
-                  </div>
-                  <span>Stafford, UK</span>
-                </div>
+          {/* Top section - Brand & CTA */}
+          <div className="flex flex-col lg:flex-row items-center lg:justify-between gap-xl mb-2xl pb-2xl border-b border-white/10 text-center lg:text-left">
+            <div className="flex flex-col lg:flex-row items-center gap-lg pb-md lg:pb-0">
+              <img src={erpIcon} alt="ERP Experts" className="w-16 h-16 rounded-xl" />
+              <div>
+                <span className="text-2xl md:text-3xl font-heading font-bold block mb-sm">
+                  ERP Experts
+                </span>
+                <p className="text-base text-white/50">
+                  NetSuite implementation partner helping businesses transform their operations.
+                </p>
               </div>
+            </div>
+            <TrackedLink
+              to="/contact"
+              trackingName="footer_start_conversation"
+              trackingPage="footer"
+              className="inline-flex items-center gap-sm bg-(--color-primary) text-white py-3 px-8 text-base font-bold rounded-full hover:scale-105 transition-transform w-fit mb-xl lg:mb-0"
+            >
+              Start a conversation
+              <ArrowRight className="w-4 h-4" />
+            </TrackedLink>
+          </div>
 
-              {/* Social */}
-              <div className="flex gap-4 md:gap-6" style={{ marginTop: "40px" }}>
-                {[
-                  {
-                    Icon: Linkedin,
-                    href: "https://www.linkedin.com/company/erp-experts",
-                    label: "LinkedIn",
-                  },
-                  {
-                    Icon: Instagram,
-                    href: "https://www.instagram.com/erpexperts",
-                    label: "Instagram",
-                  },
-                  { Icon: Youtube, href: "https://www.youtube.com/@erpexperts", label: "YouTube" },
-                ].map(({ Icon, href, label }, i) => (
+          {/* Middle section - Links, Contact, Locations */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-xl mb-2xl">
+            {/* Navigation Links */}
+            {footerLinks.map((col, i) => (
+              <div key={i}>
+                <h6 className="text-sm font-bold text-white/40 uppercase tracking-wider mb-lg">
+                  {col.title}
+                </h6>
+                <ul className="flex flex-col gap-md">
+                  {col.links.map((link, j) => (
+                    <li key={j}>
+                      <Link
+                        to={link.href}
+                        className="text-base text-white/70 hover:text-white transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+
+            {/* Contact */}
+            <div>
+              <h6 className="text-sm font-bold text-white/40 uppercase tracking-wider mb-lg">
+                Contact
+              </h6>
+              <ul className="flex flex-col gap-md">
+                <li>
                   <a
-                    key={i}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className="w-11 h-11 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-(--color-primary) flex items-center justify-center transition-colors"
+                    href="tel:+441785336253"
+                    className="flex items-center gap-sm text-base text-white/70 hover:text-white transition-colors"
                   >
-                    <Icon className="w-5 h-5 text-white" />
+                    <Phone className="w-4 h-4 text-primary" />
+                    01785 336 253
                   </a>
+                </li>
+                <li>
+                  <a
+                    href="mailto:hello@erpexperts.co.uk"
+                    className="flex items-center gap-sm text-base text-white/70 hover:text-white transition-colors"
+                  >
+                    <Mail className="w-4 h-4 text-primary" />
+                    hello@erpexperts.co.uk
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Locations */}
+            <div>
+              <h6 className="text-sm font-bold text-white/40 uppercase tracking-wider mb-lg">
+                Locations
+              </h6>
+              <ul className="flex flex-col gap-md">
+                {locations.map((loc, i) => (
+                  <li key={i} className="flex items-center gap-sm text-base text-white/70">
+                    <MapPin className="w-4 h-4 text-primary/50" />
+                    {loc.name}
+                    {loc.label && <span className="text-xs text-white/40 ml-1">({loc.label})</span>}
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           </div>
 
           {/* Bottom bar */}
-          <div
-            className="border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-md text-sm text-white/40 mt-xl"
-            style={{ paddingTop: "30px" }}
-          >
-            <p>© {new Date().getFullYear()} ERP Experts. All rights reserved.</p>
-            <div className="flex items-center gap-lg">
-              <Link to="/privacy" className="hover:text-white transition-colors">
-                Privacy Policy
+          <div className="border-t border-white/10 pt-xl flex flex-col md:flex-row items-center justify-between gap-lg">
+            {/* Social icons */}
+            <div className="flex gap-md order-2 md:order-1">
+              {socialLinks.map(({ Icon, href, label }, i) => (
+                <a
+                  key={i}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-(--color-primary) flex items-center justify-center transition-colors"
+                >
+                  <Icon className="w-5 h-5 text-white" />
+                </a>
+              ))}
+            </div>
+
+            {/* Copyright */}
+            <p className="text-sm text-white/40 order-3 md:order-2">
+              © {new Date().getFullYear()} ERP Experts. All rights reserved.
+            </p>
+
+            {/* Legal links */}
+            <div className="flex items-center gap-lg text-sm order-1 md:order-3">
+              <Link to="/privacy" className="text-white/40 hover:text-white transition-colors">
+                Privacy
               </Link>
-              <Link to="/cookies" className="hover:text-white transition-colors">
-                Cookie Policy
+              <Link to="/cookies" className="text-white/40 hover:text-white transition-colors">
+                Cookies
               </Link>
-              <Link to="/terms" className="hover:text-white transition-colors">
-                Terms of Service
+              <Link to="/terms" className="text-white/40 hover:text-white transition-colors">
+                Terms
               </Link>
             </div>
           </div>

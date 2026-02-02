@@ -67,7 +67,7 @@ const industries = ["All", ...new Set(caseStudies.map((cs) => cs.industry))];
 const testimonials = [
   {
     quote:
-      "Working with ERP Experts was a game-changer for Totalkare. Their team understood our business challenges and delivered a NetSuite solution that improved every aspect of our operations. Thanks to their expertise, we now have a reliable, scalable system that supports our continued growth. I'm confident recommending ERP Experts to any business looking to transform their IT and achieve lasting results.",
+      "Most consultants vanish after go-live. ERP Experts are still here three years later. That tells you everything you need to know.",
     name: "David Hall",
     role: "CEO",
     company: "Totalkare",
@@ -352,7 +352,7 @@ export default function CaseStudies() {
               <ArrowRight className="w-5 h-5" />
             </TrackedLink>
             <a
-              href="https://ric-snwikqbv.scoreapp.com"
+              href="https://one-score-to-rule-them-all.scoreapp.com"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-lg border-2 w-full sm:w-auto justify-center"

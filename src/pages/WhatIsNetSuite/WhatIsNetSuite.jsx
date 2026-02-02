@@ -583,57 +583,63 @@ export default function WhatIsNetSuite() {
             </h2>
           </div>
           <div className="grid md:grid-cols-3 gap-xl">
-            <TrackedLink
-              to="/implementation"
-              trackingName="whatisnetsuite_next_implementation"
-              trackingPage="what-is-netsuite"
-              className="card p-2xl text-center hover:-translate-y-2 transition-transform group"
-            >
-              <div className="icon-box icon-box-lg rounded-2xl bg-(--color-tertiary)/10 mx-auto mb-xl group-hover:bg-(--color-tertiary)/20 transition-colors">
+            <div className="card p-2xl text-center flex flex-col">
+              <div className="icon-box icon-box-lg rounded-2xl bg-(--color-tertiary)/10 mx-auto mb-xl">
                 <Zap className="w-8 h-8 text-tertiary" />
               </div>
               <h4 className="mb-md">Implementation</h4>
-              <p className="text-lg text-muted mb-xl">
+              <p className="text-lg text-muted mb-xl flex-grow">
                 See our 5C methodology and what's included in a NetSuite project.
               </p>
-              <span className="inline-flex items-center gap-sm text-tertiary font-bold text-lg">
-                Learn more <ArrowRight className="w-5 h-5" />
-              </span>
-            </TrackedLink>
-            <TrackedLink
-              to="/support"
-              trackingName="whatisnetsuite_next_support"
-              trackingPage="what-is-netsuite"
-              className="card p-2xl text-center hover:-translate-y-2 transition-transform group"
-            >
-              <div className="icon-box icon-box-lg rounded-2xl bg-(--color-secondary)/10 mx-auto mb-xl group-hover:bg-(--color-secondary)/20 transition-colors">
+              <TrackedLink
+                to="/implementation"
+                trackingName="whatisnetsuite_next_implementation"
+                trackingPage="what-is-netsuite"
+                className="btn btn-lg justify-center w-full"
+                style={{ backgroundColor: "var(--color-tertiary)", color: "white" }}
+              >
+                Learn more
+                <ArrowRight className="w-5 h-5" />
+              </TrackedLink>
+            </div>
+            <div className="card p-2xl text-center flex flex-col">
+              <div className="icon-box icon-box-lg rounded-2xl bg-(--color-secondary)/10 mx-auto mb-xl">
                 <Users className="w-8 h-8 text-secondary" />
               </div>
               <h4 className="mb-md">Support Plans</h4>
-              <p className="text-lg text-muted mb-xl">
+              <p className="text-lg text-muted mb-xl flex-grow">
                 Already on NetSuite? See our Bronze, Silver, and Gold support options.
               </p>
-              <span className="inline-flex items-center gap-sm text-secondary font-bold text-lg">
-                View plans <ArrowRight className="w-5 h-5" />
-              </span>
-            </TrackedLink>
-            <TrackedLink
-              to="/case-studies"
-              trackingName="whatisnetsuite_next_casestudies"
-              trackingPage="what-is-netsuite"
-              className="card p-2xl text-center hover:-translate-y-2 transition-transform group"
-            >
-              <div className="icon-box icon-box-lg rounded-2xl bg-(--color-quaternary)/10 mx-auto mb-xl group-hover:bg-(--color-quaternary)/20 transition-colors">
+              <TrackedLink
+                to="/support"
+                trackingName="whatisnetsuite_next_support"
+                trackingPage="what-is-netsuite"
+                className="btn btn-lg justify-center w-full"
+                style={{ backgroundColor: "var(--color-secondary)", color: "white" }}
+              >
+                View plans
+                <ArrowRight className="w-5 h-5" />
+              </TrackedLink>
+            </div>
+            <div className="card p-2xl text-center flex flex-col">
+              <div className="icon-box icon-box-lg rounded-2xl bg-(--color-quaternary)/10 mx-auto mb-xl">
                 <BarChart3 className="w-8 h-8 text-quaternary" />
               </div>
               <h4 className="mb-md">Case Studies</h4>
-              <p className="text-lg text-muted mb-xl">
+              <p className="text-lg text-muted mb-xl flex-grow">
                 See how UK businesses have transformed with NetSuite.
               </p>
-              <span className="inline-flex items-center gap-sm text-quaternary font-bold text-lg">
-                Read stories <ArrowRight className="w-5 h-5" />
-              </span>
-            </TrackedLink>
+              <TrackedLink
+                to="/case-studies"
+                trackingName="whatisnetsuite_next_casestudies"
+                trackingPage="what-is-netsuite"
+                className="btn btn-lg justify-center w-full"
+                style={{ backgroundColor: "var(--color-quaternary)", color: "white" }}
+              >
+                Read stories
+                <ArrowRight className="w-5 h-5" />
+              </TrackedLink>
+            </div>
           </div>
         </div>
       </section>
@@ -684,7 +690,7 @@ export default function WhatIsNetSuite() {
                   - even if NetSuite isn't the answer.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-md justify-center">
+                <div className="flex flex-col sm:flex-row gap-lg justify-center">
                   <TrackedLink
                     to="/contact"
                     trackingName="whatisnetsuite_footer_talk"
