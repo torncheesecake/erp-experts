@@ -281,7 +281,7 @@ export default function CaseStudyDetail() {
         style={{ padding: "var(--space-2xl) 0" }}
       >
         <div className="container">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-xl md:gap-2xl text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg md:gap-2xl text-center">
             <div>
               <p className="text-base text-muted mb-sm">Company</p>
               <p className="text-xl md:text-2xl font-bold">{caseStudy.client}</p>

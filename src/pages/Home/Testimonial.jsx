@@ -24,7 +24,7 @@ export default function Testimonial() {
             <MessageSquareQuote className="w-6 h-6 text-white mb-2" />
           </div>
           <blockquote
-            className="text-2xl md:text-3xl font-heading font-medium leading-relaxed"
+            className="text-2xl md:text-3xl font-heading font-medium leading-snug"
             style={{ marginBottom: "var(--space-xl)" }}
           >
             "Would I recommend ERP Experts? <span className="text-quaternary">In a heartbeat.</span>
