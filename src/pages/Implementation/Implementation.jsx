@@ -124,7 +124,7 @@ export default function Implementation() {
       {/* Hero */}
       <section
         className="flex items-center relative overflow-hidden"
-        style={{ paddingTop: "160px", paddingBottom: "30px" }}
+        style={{ paddingTop: "140px", paddingBottom: "var(--space-xl)" }}
       >
         {/* Offset blue triangle */}
         <div
@@ -160,17 +160,19 @@ export default function Implementation() {
         </div>
         <div className="container relative z-10">
           <div className="max-w-5xl">
-            <p className="text-label text-tertiary mb-md">NetSuite Implementation</p>
+            <p className="text-label text-tertiary mb-md hidden md:block">
+              NetSuite Implementation
+            </p>
             <h1 className="text-hero mb-xl md:mb-2xl">
               Implemented right.
               <br />
-              <span className="text-tertiary">Works right.</span>
+              <span className="md:text-tertiary">Works right.</span>
             </h1>
             <TrackedLink
               to="/what-is-netsuite"
               trackingName="implementation_hero_whats_netsuite"
               trackingPage="implementation"
-              className="btn sm:btn-lg w-full sm:w-auto justify-center"
+              className="btn w-full sm:w-auto justify-center"
               style={{ backgroundColor: "var(--color-tertiary)", color: "white" }}
             >
               What's NetSuite?
@@ -395,7 +397,7 @@ export default function Implementation() {
               to="/contact"
               trackingName="implementation_footer_book_call"
               trackingPage="implementation"
-              className="btn sm:btn-lg justify-center"
+              className="btn justify-center"
               style={{ backgroundColor: "var(--color-tertiary)", color: "white" }}
             >
               Book a call
@@ -405,7 +407,7 @@ export default function Implementation() {
               to="/case-studies"
               trackingName="implementation_footer_see_work"
               trackingPage="implementation"
-              className="btn sm:btn-lg btn-outline justify-center"
+              className="btn btn-outline justify-center"
             >
               See our work
             </TrackedLink>
