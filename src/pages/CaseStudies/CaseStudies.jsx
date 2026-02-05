@@ -343,18 +343,54 @@ export default function CaseStudies() {
             </h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
-            {testimonials.map((testimonial, i) => (
-              <div key={i} className="card border-2 border-(--color-text)/10 p-lg md:p-xl">
-                <MessageSquareQuote className="w-8 h-8 text-quaternary mb-lg" />
-                <p className="text-base text-muted mb-xl leading-snug">"{testimonial.quote}"</p>
-                <div>
-                  <p className="font-bold">{testimonial.name}</p>
-                  <p className="text-sm text-muted">
-                    {testimonial.role}, {testimonial.company}
-                  </p>
+            {testimonials.map((testimonial, i) =>
+              i === 0 ? (
+                /* Featured first testimonial with green gradient */
+                <div
+                  key={i}
+                  className="rounded-2xl md:rounded-3xl p-lg md:p-xl relative overflow-hidden"
+                  style={{
+                    background: "linear-gradient(135deg, var(--color-quaternary) 0%, #1a5c3a 100%)",
+                  }}
+                >
+                  {/* Decorative triangle */}
+                  <div
+                    className="absolute top-0 right-0 opacity-20"
+                    style={{
+                      width: "150px",
+                      height: "129px",
+                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                      backgroundColor: "white",
+                      transform: "translateX(30px) translateY(-30px)",
+                    }}
+                  />
+                  <div className="relative z-10">
+                    <MessageSquareQuote className="w-8 h-8 text-white/40 mb-lg" />
+                    <p className="text-base text-white font-heading leading-snug mb-xl">
+                      "{testimonial.quote}"
+                    </p>
+                    <div>
+                      <p className="font-bold text-white">{testimonial.name}</p>
+                      <p className="text-sm text-white/70">
+                        {testimonial.role}, {testimonial.company}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ) : (
+                /* Regular testimonial cards */
+                <div key={i} className="card border-2 border-(--color-text)/10 p-lg md:p-xl">
+                  <MessageSquareQuote className="w-8 h-8 text-quaternary mb-lg" />
+                  <p className="text-base text-muted mb-xl leading-snug">"{testimonial.quote}"</p>
+                  <div>
+                    <p className="font-bold">{testimonial.name}</p>
+                    <p className="text-sm text-muted">
+                      {testimonial.role}, {testimonial.company}
+                    </p>
+                  </div>
+                </div>
+              ),
+            )}
           </div>
         </div>
       </section>
