@@ -4,7 +4,7 @@
  */
 
 import { useParams, Link } from "react-router-dom";
-import { ArrowRight, ArrowLeft, MessageSquareQuote, Check, Clock, Globe, Zap } from "lucide-react";
+import { ArrowRight, ArrowLeft, MessageSquareQuote, Check } from "lucide-react";
 import SEO from "../../components/ui/SEO";
 
 // Import images - Carallon
@@ -217,9 +217,9 @@ const caseStudies = {
 };
 
 // ============================================
-// LAYOUT VARIANT 1: Full-width hero with gradient (Carallon)
+// SHARED HERO - Used by all layouts
 // ============================================
-function LayoutVariant1({ caseStudy }) {
+function SharedHero({ caseStudy }) {
   return (
     <>
       {/* Hero with full-width image */}
@@ -258,7 +258,7 @@ function LayoutVariant1({ caseStudy }) {
               <img
                 src={caseStudy.logo}
                 alt={`${caseStudy.client} logo`}
-                className="h-12 md:h-16 mb-xl"
+                className={`mb-xl ${caseStudy.client === "Totalkare" ? "h-16 md:h-20" : "h-12 md:h-16"}`}
               />
             )}
             <p className="text-label text-quaternary mb-md">{caseStudy.industry}</p>
@@ -298,6 +298,17 @@ function LayoutVariant1({ caseStudy }) {
           </div>
         </div>
       </section>
+    </>
+  );
+}
+
+// ============================================
+// LAYOUT VARIANT 1: Numbered sections (Carallon)
+// ============================================
+function LayoutVariant1({ caseStudy }) {
+  return (
+    <>
+      <SharedHero caseStudy={caseStudy} />
 
       {/* Intro + Quote */}
       <section className="section-padding-lg">
@@ -365,83 +376,12 @@ function LayoutVariant1({ caseStudy }) {
 }
 
 // ============================================
-// LAYOUT VARIANT 2: Triangle hero with highlights (eco2solar)
+// LAYOUT VARIANT 2: Highlights bar + card sections (eco2solar)
 // ============================================
 function LayoutVariant2({ caseStudy }) {
   return (
     <>
-      {/* Hero with triangle image */}
-      <section
-        className="relative overflow-hidden"
-        style={{ paddingTop: "160px", paddingBottom: "60px" }}
-      >
-        {/* Mobile background */}
-        <div
-          className="absolute lg:hidden"
-          style={{
-            top: "10%",
-            right: "-15%",
-            width: "300px",
-            height: "260px",
-            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-            backgroundColor: "var(--color-quaternary)",
-            opacity: 0.1,
-          }}
-        />
-
-        {/* Desktop triangle with image */}
-        <div
-          className="absolute top-1/2 hidden lg:block"
-          style={{
-            left: "70%",
-            transform: "translateX(calc(-50% + 60px)) translateY(calc(-50% + 20px))",
-            width: "800px",
-            height: "686px",
-            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-            backgroundColor: "var(--color-quaternary)",
-            opacity: 0.15,
-          }}
-        />
-        <div
-          className="absolute top-1/2 hidden lg:block"
-          style={{
-            left: "70%",
-            transform: "translateX(-50%) translateY(-50%)",
-            width: "750px",
-            height: "643px",
-            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-            overflow: "hidden",
-          }}
-        >
-          <img src={caseStudy.heroImage} alt="" className="w-full h-full object-cover" />
-        </div>
-
-        <div className="container relative z-10">
-          <Link
-            to="/case-studies"
-            className="inline-flex items-center gap-sm text-base font-bold text-muted hover:text-quaternary transition-colors mb-xl"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Back to case studies
-          </Link>
-
-          <div className="max-w-2xl">
-            {caseStudy.logo && (
-              <img
-                src={caseStudy.logo}
-                alt={`${caseStudy.client} logo`}
-                className="h-10 md:h-14 mb-xl"
-                style={{ filter: "brightness(0)" }}
-              />
-            )}
-            <p className="text-label text-quaternary mb-md">{caseStudy.industry}</p>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-xl leading-tight">
-              {caseStudy.title}
-            </h1>
-            <p className="text-lg md:text-xl text-muted leading-relaxed">{caseStudy.subtitle}</p>
-          </div>
-        </div>
-      </section>
+      <SharedHero caseStudy={caseStudy} />
 
       {/* Highlights Bar */}
       {caseStudy.highlights && (
@@ -557,91 +497,12 @@ function LayoutVariant2({ caseStudy }) {
 }
 
 // ============================================
-// LAYOUT VARIANT 3: Split hero with timeline (Kynetec)
+// LAYOUT VARIANT 3: Timeline + alternating sections (Kynetec)
 // ============================================
 function LayoutVariant3({ caseStudy }) {
   return (
     <>
-      {/* Split Hero */}
-      <section className="relative overflow-hidden">
-        <div className="grid lg:grid-cols-2 min-h-[70vh]">
-          {/* Left - Content */}
-          <div
-            className="flex flex-col justify-center relative z-10"
-            style={{ padding: "var(--space-4xl) var(--space-xl)" }}
-          >
-            <div className="max-w-xl mx-auto lg:mx-0 lg:ml-auto lg:mr-2xl">
-              <Link
-                to="/case-studies"
-                className="inline-flex items-center gap-sm text-base font-bold text-muted hover:text-quaternary transition-colors mb-xl"
-              >
-                <ArrowLeft className="w-5 h-5" />
-                Back to case studies
-              </Link>
-
-              {caseStudy.logo && (
-                <img
-                  src={caseStudy.logo}
-                  alt={`${caseStudy.client} logo`}
-                  className="h-10 md:h-12 mb-xl"
-                  style={{ filter: "brightness(0)" }}
-                />
-              )}
-              <p className="text-label text-quaternary mb-md">{caseStudy.industry}</p>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-lg leading-tight">
-                {caseStudy.title}
-              </h1>
-              <p className="text-lg md:text-xl text-muted leading-relaxed mb-xl">
-                {caseStudy.subtitle}
-              </p>
-
-              {/* Key stats inline */}
-              <div className="flex flex-wrap gap-lg">
-                <div className="flex items-center gap-sm">
-                  <Clock className="w-5 h-5 text-quaternary" />
-                  <span className="font-bold">6 months</span>
-                  <span className="text-muted">delivery</span>
-                </div>
-                <div className="flex items-center gap-sm">
-                  <Globe className="w-5 h-5 text-quaternary" />
-                  <span className="font-bold">3 time zones</span>
-                  <span className="text-muted">24/7 work</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right - Image */}
-          <div className="relative hidden lg:block">
-            <img
-              src={caseStudy.heroImage}
-              alt={caseStudy.client}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-transparent" />
-            {/* Decorative triangle */}
-            <div
-              className="absolute bottom-0 left-0 opacity-30"
-              style={{
-                width: "300px",
-                height: "257px",
-                clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                backgroundColor: "var(--color-quaternary)",
-                transform: "translateX(-50%) translateY(30%)",
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Mobile image */}
-        <div className="lg:hidden aspect-video">
-          <img
-            src={caseStudy.heroImage}
-            alt={caseStudy.client}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </section>
+      <SharedHero caseStudy={caseStudy} />
 
       {/* Timeline Section */}
       {caseStudy.timeline && (
@@ -722,45 +583,52 @@ function LayoutVariant3({ caseStudy }) {
         </div>
       </section>
 
-      {/* Content Sections - Alternating */}
+      {/* Content Sections */}
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
-          <div className="flex flex-col" style={{ gap: "var(--space-4xl)" }}>
-            {caseStudy.sections.map((section, i) => (
-              <div
-                key={i}
-                className={`grid lg:grid-cols-2 gap-xl items-center ${i % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
-              >
-                <div className={i % 2 === 1 ? "lg:order-2" : ""}>
-                  <div className="flex items-center gap-md mb-lg">
-                    <div
-                      className="flex items-end justify-center text-white font-heading text-lg font-bold"
-                      style={{
-                        width: "48px",
-                        height: "42px",
-                        clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                        backgroundColor: "var(--color-quaternary)",
-                        paddingBottom: "4px",
-                      }}
-                    >
-                      {i + 1}
+          <div className="grid lg:grid-cols-2 gap-2xl items-start">
+            <div>
+              <div className="flex flex-col" style={{ gap: "var(--space-2xl)" }}>
+                {caseStudy.sections.map((section, i) => (
+                  <div key={i}>
+                    <div className="flex items-center gap-md mb-lg">
+                      <div
+                        className="flex items-end justify-center text-white font-heading text-lg font-bold"
+                        style={{
+                          width: "48px",
+                          height: "42px",
+                          clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                          backgroundColor: "var(--color-quaternary)",
+                          paddingBottom: "4px",
+                        }}
+                      >
+                        {i + 1}
+                      </div>
+                      <h4 className="text-quaternary">{section.title}</h4>
                     </div>
-                    <h3 className="text-quaternary">{section.title}</h3>
+                    <p className="text-muted leading-relaxed">{section.content}</p>
                   </div>
-                  <p className="text-lg text-muted leading-relaxed">{section.content}</p>
-                </div>
-                <div className={`${i % 2 === 1 ? "lg:order-1" : ""} hidden lg:block`}>
-                  <div
-                    className="aspect-video rounded-2xl"
-                    style={{ backgroundColor: "rgba(42, 157, 99, 0.05)" }}
-                  >
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Zap className="w-16 h-16 text-quaternary/20" />
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
-            ))}
+            </div>
+            <div className="relative hidden lg:block">
+              <div className="aspect-[4/3] rounded-2xl md:rounded-3xl overflow-hidden sticky top-32">
+                <img
+                  src={caseStudy.featureImage}
+                  alt={`${caseStudy.client} project`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div
+                className="absolute -bottom-6 -right-6"
+                style={{
+                  width: "120px",
+                  height: "103px",
+                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                  backgroundColor: "var(--color-quaternary)",
+                }}
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -769,72 +637,40 @@ function LayoutVariant3({ caseStudy }) {
 }
 
 // ============================================
-// LAYOUT VARIANT 4: Video-focused (Totalkare)
+// LAYOUT VARIANT 4: Video + quote banner + checkmarks (Totalkare)
 // ============================================
 function LayoutVariant4({ caseStudy }) {
   return (
     <>
-      {/* Hero with video prominent */}
-      <section
-        className="relative overflow-hidden"
-        style={{ paddingTop: "140px", paddingBottom: "0" }}
-      >
-        <div className="container">
-          <Link
-            to="/case-studies"
-            className="inline-flex items-center gap-sm text-base font-bold text-muted hover:text-quaternary transition-colors mb-xl"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Back to case studies
-          </Link>
+      <SharedHero caseStudy={caseStudy} />
 
-          <div className="grid lg:grid-cols-2 gap-2xl items-center">
-            <div>
-              {caseStudy.logo && (
-                <img
-                  src={caseStudy.logo}
-                  alt={`${caseStudy.client} logo`}
-                  className="h-14 md:h-20 mb-xl"
-                  style={{ filter: "brightness(0)" }}
-                />
-              )}
-              <p className="text-label text-quaternary mb-md">{caseStudy.industry}</p>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-lg leading-tight">
-                {caseStudy.title}
-              </h1>
-              <p className="text-lg md:text-xl text-muted leading-relaxed">{caseStudy.subtitle}</p>
+      {/* Video Section */}
+      {caseStudy.videoUrl && (
+        <section className="section-padding-lg border-b border-(--color-text)/10">
+          <div className="container">
+            <div className="text-center mb-2xl">
+              <p className="text-label text-quaternary mb-md">Watch the story</p>
+              <h3>
+                Hear it from <span className="text-quaternary">{caseStudy.client}</span>
+              </h3>
             </div>
-
-            {/* Video */}
-            {caseStudy.videoUrl && (
-              <div className="relative">
-                <div className="aspect-video rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={`https://www.youtube.com/embed/${caseStudy.videoUrl.split("/").pop().split("?")[0]}`}
-                    title={`${caseStudy.client} case study video`}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full"
-                  />
-                </div>
-                {/* Decorative triangle */}
-                <div
-                  className="absolute -bottom-4 -right-4 hidden md:block -z-10"
-                  style={{
-                    width: "150px",
-                    height: "129px",
-                    clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                    backgroundColor: "var(--color-quaternary)",
-                  }}
+            <div className="max-w-4xl mx-auto">
+              <div className="aspect-video rounded-2xl md:rounded-3xl overflow-hidden shadow-xl relative">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={`https://www.youtube.com/embed/${caseStudy.videoUrl.split("/").pop().split("?")[0]}`}
+                  title={`${caseStudy.client} case study video`}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
                 />
               </div>
-            )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Quote banner */}
       <section
