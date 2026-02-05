@@ -76,7 +76,7 @@ export default function Journey() {
         </div>
 
         {/* Two Paths */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-xl md:gap-2xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg md:gap-2xl max-w-5xl mx-auto lg:max-w-none">
           {/* Implementation Path */}
           <div className="p-(--space-xl) md:p-(--space-2xl) rounded-2xl md:rounded-3xl bg-(--color-tertiary)/5 border border-(--color-tertiary)/20">
             <div className="flex items-center gap-md mb-lg">
@@ -105,7 +105,7 @@ export default function Journey() {
               {implementationServices.map((service, i) => (
                 <div
                   key={i}
-                  className={`flex items-center gap-md p-lg rounded-xl bg-white border ${service.isMore ? "border-dashed border-(--color-tertiary)/30" : "border-(--color-tertiary)/10"}`}
+                  className={`flex items-center gap-md p-md sm:p-lg rounded-xl bg-white border ${service.isMore ? "border-dashed border-(--color-tertiary)/30" : "border-(--color-tertiary)/10"}`}
                 >
                   <div
                     className="shrink-0 flex items-end justify-center"
@@ -166,7 +166,7 @@ export default function Journey() {
               {supportServices.map((service, i) => (
                 <div
                   key={i}
-                  className={`flex items-center gap-md p-lg rounded-xl bg-white border ${service.isMore ? "border-dashed border-(--color-secondary)/30" : "border-(--color-secondary)/10"}`}
+                  className={`flex items-center gap-md p-md sm:p-lg rounded-xl bg-white border ${service.isMore ? "border-dashed border-(--color-secondary)/30" : "border-(--color-secondary)/10"}`}
                 >
                   <div
                     className="shrink-0 flex items-end justify-center"
