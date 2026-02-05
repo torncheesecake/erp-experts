@@ -1,18 +1,10 @@
 /**
  * ERP Experts Case Study Detail Page
- * Green themed to match Case Studies listing
+ * Each case study has a unique layout variant
  */
 
 import { useParams, Link } from "react-router-dom";
-import {
-  ArrowRight,
-  ArrowLeft,
-  MessageSquareQuote,
-  Users,
-  Layers,
-  Package,
-  Building2,
-} from "lucide-react";
+import { ArrowRight, ArrowLeft, MessageSquareQuote, Check, Clock, Globe, Zap } from "lucide-react";
 import SEO from "../../components/ui/SEO";
 
 // Import images - Carallon
@@ -39,6 +31,7 @@ import totalkareFeature from "../../assets/totalkare-feature.avif";
 const caseStudies = {
   1: {
     id: 1,
+    layoutVariant: 1, // Full-width hero with gradient overlay
     client: "Carallon",
     industry: "Entertainment Technology",
     users: "50+",
@@ -75,6 +68,7 @@ const caseStudies = {
   },
   2: {
     id: 2,
+    layoutVariant: 2, // Triangle hero with image inside
     client: "eco2solar",
     industry: "Renewable Energy",
     users: "50",
@@ -92,6 +86,11 @@ const caseStudies = {
       "Eco2Solar saw the solar boom coming, but their old systems - Excel, Access, Sage, Gmail - were holding them back. Manual workarounds, scattered data, and no real-time insight meant growth was a struggle, not a strategy. CEO Paul Hutchens knew that to stay ahead, Eco2Solar needed more than another software bolt-on. He chose NetSuite, delivered by ERP Experts, to build processes for a new era and outpace the competition.",
     quote:
       "As well as their clear technical excellence and consultancy skills which enabled a smooth specification and implementation, the team at ERP Experts provided exemplary training in the use of the system and its capabilities, allowing staff to utilise the software to its fullest potential from day one.",
+    highlights: [
+      { label: "Field Capacity", value: "300%", suffix: "increase" },
+      { label: "Systems Replaced", value: "4", suffix: "legacy tools" },
+      { label: "Implementation", value: "On", suffix: "time & budget" },
+    ],
     sections: [
       {
         title: "Optimised Inventory Management Improves Liquidity",
@@ -112,6 +111,7 @@ const caseStudies = {
   },
   3: {
     id: 3,
+    layoutVariant: 3, // Split hero with sidebar
     client: "Kynetec",
     industry: "Agricultural Market Research",
     users: "50",
@@ -128,6 +128,24 @@ const caseStudies = {
       "In 2020, Kynetec had just gone live with a new NetSuite system. Unfortunately, the implementation was not fit for purpose, the system was plagued by multiple issues and simply did not function as required. Kynetec urgently needed expert intervention to diagnose the problems and determine a viable path forward.",
     quote:
       "ERP Experts quickly assessed our failing NetSuite system and gave us clear options. They replaced the system in half the original time by working across three time zones. The project was delivered on time and on budget, and we now have a reliable system with ongoing support.",
+    timeline: [
+      {
+        phase: "Assessment",
+        duration: "48 hours",
+        description: "Full system review and options presented",
+      },
+      {
+        phase: "Decision",
+        duration: "1 week",
+        description: "Replace vs repair analysis completed",
+      },
+      {
+        phase: "Implementation",
+        duration: "6 months",
+        description: "Complete system replacement (half original time)",
+      },
+      { phase: "Ongoing", duration: "5 years", description: "Aftercare contract signed" },
+    ],
     sections: [
       {
         title: "Rapid Assessment",
@@ -153,6 +171,7 @@ const caseStudies = {
   },
   4: {
     id: 4,
+    layoutVariant: 4, // Video-focused hero
     client: "Totalkare",
     industry: "Workshop Equipment",
     users: "3x headcount",
@@ -197,35 +216,14 @@ const caseStudies = {
   },
 };
 
-export default function CaseStudyDetail() {
-  const { id } = useParams();
-  const caseStudy = caseStudies[id];
-
-  if (!caseStudy) {
-    return (
-      <main id="main-content" className="section-padding-lg">
-        <div className="container text-center">
-          <h2 className="mb-lg">Case study not found</h2>
-          <Link to="/case-studies" className="btn btn-primary">
-            Back to case studies
-          </Link>
-        </div>
-      </main>
-    );
-  }
-
+// ============================================
+// LAYOUT VARIANT 1: Full-width hero with gradient (Carallon)
+// ============================================
+function LayoutVariant1({ caseStudy }) {
   return (
-    <main id="main-content">
-      <SEO
-        title={`${caseStudy.client} - Case Study`}
-        description={caseStudy.subtitle}
-        path={`/case-studies/${id}`}
-        keywords="NetSuite case study, ERP implementation success, NetSuite results"
-      />
-
+    <>
       {/* Hero with full-width image */}
       <section className="relative min-h-[60vh] md:min-h-[70vh] flex items-center overflow-hidden">
-        {/* Background image */}
         <div className="absolute inset-0">
           <img
             src={caseStudy.heroImage}
@@ -235,7 +233,6 @@ export default function CaseStudyDetail() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
         </div>
 
-        {/* Decorative triangle */}
         <div
           className="absolute top-1/2 right-0 opacity-25 hidden lg:block pointer-events-none"
           style={{
@@ -261,7 +258,7 @@ export default function CaseStudyDetail() {
               <img
                 src={caseStudy.logo}
                 alt={`${caseStudy.client} logo`}
-                className={`mb-xl ${caseStudy.client === "Totalkare" ? "h-16 md:h-20" : "h-12 md:h-16"}`}
+                className="h-12 md:h-16 mb-xl"
               />
             )}
             <p className="text-label text-quaternary mb-md">{caseStudy.industry}</p>
@@ -329,7 +326,6 @@ export default function CaseStudyDetail() {
                   className="w-full h-full object-cover"
                 />
               </div>
-              {/* Decorative triangle */}
               <div
                 className="absolute -bottom-6 -right-6 hidden md:block"
                 style={{
@@ -347,23 +343,630 @@ export default function CaseStudyDetail() {
       {/* Content Sections */}
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
-          <div>
-            <div className="flex flex-col" style={{ gap: "var(--space-4xl)" }}>
-              {caseStudy.sections.map((section, i) => (
+          <div className="flex flex-col" style={{ gap: "var(--space-4xl)" }}>
+            {caseStudy.sections.map((section, i) => (
+              <div key={i} className="grid md:grid-cols-[250px_1fr] gap-xl md:gap-3xl items-start">
+                <div>
+                  <span className="text-quaternary font-heading text-5xl md:text-6xl opacity-20">
+                    0{i + 1}
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-quaternary mb-lg">{section.title}</h3>
+                  <p className="text-lg md:text-xl text-muted leading-relaxed">{section.content}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+// ============================================
+// LAYOUT VARIANT 2: Triangle hero with highlights (eco2solar)
+// ============================================
+function LayoutVariant2({ caseStudy }) {
+  return (
+    <>
+      {/* Hero with triangle image */}
+      <section
+        className="relative overflow-hidden"
+        style={{ paddingTop: "160px", paddingBottom: "60px" }}
+      >
+        {/* Mobile background */}
+        <div
+          className="absolute lg:hidden"
+          style={{
+            top: "10%",
+            right: "-15%",
+            width: "300px",
+            height: "260px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-quaternary)",
+            opacity: 0.1,
+          }}
+        />
+
+        {/* Desktop triangle with image */}
+        <div
+          className="absolute top-1/2 hidden lg:block"
+          style={{
+            left: "70%",
+            transform: "translateX(calc(-50% + 60px)) translateY(calc(-50% + 20px))",
+            width: "800px",
+            height: "686px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-quaternary)",
+            opacity: 0.15,
+          }}
+        />
+        <div
+          className="absolute top-1/2 hidden lg:block"
+          style={{
+            left: "70%",
+            transform: "translateX(-50%) translateY(-50%)",
+            width: "750px",
+            height: "643px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            overflow: "hidden",
+          }}
+        >
+          <img src={caseStudy.heroImage} alt="" className="w-full h-full object-cover" />
+        </div>
+
+        <div className="container relative z-10">
+          <Link
+            to="/case-studies"
+            className="inline-flex items-center gap-sm text-base font-bold text-muted hover:text-quaternary transition-colors mb-xl"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to case studies
+          </Link>
+
+          <div className="max-w-2xl">
+            {caseStudy.logo && (
+              <img
+                src={caseStudy.logo}
+                alt={`${caseStudy.client} logo`}
+                className="h-10 md:h-14 mb-xl"
+                style={{ filter: "brightness(0)" }}
+              />
+            )}
+            <p className="text-label text-quaternary mb-md">{caseStudy.industry}</p>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-xl leading-tight">
+              {caseStudy.title}
+            </h1>
+            <p className="text-lg md:text-xl text-muted leading-relaxed">{caseStudy.subtitle}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Highlights Bar */}
+      {caseStudy.highlights && (
+        <section
+          className="relative overflow-hidden"
+          style={{ padding: "var(--space-2xl) 0", backgroundColor: "var(--color-quaternary)" }}
+        >
+          <div
+            className="absolute top-0 left-0 opacity-10 hidden md:block"
+            style={{
+              width: "200px",
+              height: "172px",
+              clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+              backgroundColor: "white",
+              transform: "translateX(-50%) translateY(-30%)",
+            }}
+          />
+          <div className="container relative z-10">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-lg text-center">
+              {caseStudy.highlights.map((item, i) => (
+                <div key={i}>
+                  <p className="font-heading text-4xl md:text-5xl text-white mb-sm">{item.value}</p>
+                  <p className="text-white/80 text-lg">{item.label}</p>
+                  <p className="text-white/60 text-sm">{item.suffix}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Intro + Feature Image */}
+      <section className="section-padding-lg">
+        <div className="container">
+          <div className="grid lg:grid-cols-2 gap-2xl items-start">
+            <div className="relative order-2 lg:order-1">
+              <div className="aspect-[4/3] rounded-2xl md:rounded-3xl overflow-hidden">
+                <img
+                  src={caseStudy.featureImage}
+                  alt={`${caseStudy.client} project`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div
+                className="absolute -top-4 -left-4 hidden md:block"
+                style={{
+                  width: "80px",
+                  height: "69px",
+                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                  backgroundColor: "var(--color-quaternary)",
+                }}
+              />
+            </div>
+            <div className="order-1 lg:order-2">
+              <h3 className="text-quaternary mb-lg">{caseStudy.introHeading}</h3>
+              <p className="text-lg md:text-xl text-muted leading-relaxed mb-xl">
+                {caseStudy.intro}
+              </p>
+              <div
+                className="p-xl rounded-2xl border-l-4"
+                style={{
+                  backgroundColor: "rgba(42, 157, 99, 0.05)",
+                  borderColor: "var(--color-quaternary)",
+                }}
+              >
+                <MessageSquareQuote className="w-8 h-8 text-quaternary mb-lg" />
+                <blockquote className="font-heading text-lg md:text-xl leading-snug text-quaternary">
+                  "{caseStudy.quote}"
+                </blockquote>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Content Sections - Card style */}
+      <section
+        className="section-padding-lg"
+        style={{ backgroundColor: "rgba(42, 157, 99, 0.03)" }}
+      >
+        <div className="container">
+          <p className="text-label text-quaternary text-center mb-md">The Journey</p>
+          <h2 className="text-center mb-2xl">
+            How we <span className="text-quaternary">transformed</span> their business
+          </h2>
+          <div className="grid md:grid-cols-3 gap-lg">
+            {caseStudy.sections.map((section, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-2xl p-xl border border-(--color-text)/10 hover:shadow-lg transition-shadow"
+              >
                 <div
-                  key={i}
-                  className="grid md:grid-cols-[250px_1fr] gap-xl md:gap-3xl items-start"
+                  className="flex items-end justify-center text-white font-heading text-lg font-bold mb-lg"
+                  style={{
+                    width: "48px",
+                    height: "42px",
+                    clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                    backgroundColor: "var(--color-quaternary)",
+                    paddingBottom: "4px",
+                  }}
                 >
-                  <div>
-                    <span className="text-quaternary font-heading text-5xl md:text-6xl opacity-20">
-                      0{i + 1}
-                    </span>
+                  {i + 1}
+                </div>
+                <h4 className="text-quaternary mb-md">{section.title}</h4>
+                <p className="text-muted leading-relaxed">{section.content}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+// ============================================
+// LAYOUT VARIANT 3: Split hero with timeline (Kynetec)
+// ============================================
+function LayoutVariant3({ caseStudy }) {
+  return (
+    <>
+      {/* Split Hero */}
+      <section className="relative overflow-hidden">
+        <div className="grid lg:grid-cols-2 min-h-[70vh]">
+          {/* Left - Content */}
+          <div
+            className="flex flex-col justify-center relative z-10"
+            style={{ padding: "var(--space-4xl) var(--space-xl)" }}
+          >
+            <div className="max-w-xl mx-auto lg:mx-0 lg:ml-auto lg:mr-2xl">
+              <Link
+                to="/case-studies"
+                className="inline-flex items-center gap-sm text-base font-bold text-muted hover:text-quaternary transition-colors mb-xl"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                Back to case studies
+              </Link>
+
+              {caseStudy.logo && (
+                <img
+                  src={caseStudy.logo}
+                  alt={`${caseStudy.client} logo`}
+                  className="h-10 md:h-12 mb-xl"
+                  style={{ filter: "brightness(0)" }}
+                />
+              )}
+              <p className="text-label text-quaternary mb-md">{caseStudy.industry}</p>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-lg leading-tight">
+                {caseStudy.title}
+              </h1>
+              <p className="text-lg md:text-xl text-muted leading-relaxed mb-xl">
+                {caseStudy.subtitle}
+              </p>
+
+              {/* Key stats inline */}
+              <div className="flex flex-wrap gap-lg">
+                <div className="flex items-center gap-sm">
+                  <Clock className="w-5 h-5 text-quaternary" />
+                  <span className="font-bold">6 months</span>
+                  <span className="text-muted">delivery</span>
+                </div>
+                <div className="flex items-center gap-sm">
+                  <Globe className="w-5 h-5 text-quaternary" />
+                  <span className="font-bold">3 time zones</span>
+                  <span className="text-muted">24/7 work</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right - Image */}
+          <div className="relative hidden lg:block">
+            <img
+              src={caseStudy.heroImage}
+              alt={caseStudy.client}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-transparent" />
+            {/* Decorative triangle */}
+            <div
+              className="absolute bottom-0 left-0 opacity-30"
+              style={{
+                width: "300px",
+                height: "257px",
+                clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                backgroundColor: "var(--color-quaternary)",
+                transform: "translateX(-50%) translateY(30%)",
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Mobile image */}
+        <div className="lg:hidden aspect-video">
+          <img
+            src={caseStudy.heroImage}
+            alt={caseStudy.client}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </section>
+
+      {/* Timeline Section */}
+      {caseStudy.timeline && (
+        <section
+          className="relative overflow-hidden"
+          style={{ padding: "var(--space-3xl) 0", backgroundColor: "rgba(42, 157, 99, 0.05)" }}
+        >
+          <div className="container">
+            <p className="text-label text-quaternary text-center mb-md">Project Timeline</p>
+            <h3 className="text-center mb-2xl">
+              The <span className="text-quaternary">8/3 Method</span> in action
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg">
+              {caseStudy.timeline.map((item, i) => (
+                <div key={i} className="relative">
+                  <div className="bg-white rounded-2xl p-lg border border-(--color-text)/10">
+                    <div className="flex items-center gap-md mb-md">
+                      <div
+                        className="flex items-end justify-center text-white font-heading text-sm font-bold shrink-0"
+                        style={{
+                          width: "36px",
+                          height: "31px",
+                          clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                          backgroundColor: "var(--color-quaternary)",
+                          paddingBottom: "3px",
+                        }}
+                      >
+                        {i + 1}
+                      </div>
+                      <span className="font-bold text-quaternary">{item.phase}</span>
+                    </div>
+                    <p className="font-heading text-2xl mb-sm">{item.duration}</p>
+                    <p className="text-sm text-muted">{item.description}</p>
                   </div>
-                  <div>
-                    <h3 className="text-quaternary mb-lg">{section.title}</h3>
-                    <p className="text-lg md:text-xl text-muted leading-relaxed">
-                      {section.content}
-                    </p>
+                  {/* Connector line */}
+                  {i < caseStudy.timeline.length - 1 && (
+                    <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-(--color-quaternary)/30" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Intro + Quote */}
+      <section className="section-padding-lg">
+        <div className="container">
+          <div className="max-w-4xl mx-auto">
+            <h3 className="text-quaternary mb-lg">{caseStudy.introHeading}</h3>
+            <p className="text-lg md:text-xl text-muted leading-relaxed mb-2xl">
+              {caseStudy.intro}
+            </p>
+
+            <div
+              className="p-xl md:p-2xl rounded-2xl relative overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, var(--color-quaternary) 0%, #1a5c3a 100%)",
+              }}
+            >
+              <div
+                className="absolute top-0 right-0 opacity-20"
+                style={{
+                  width: "150px",
+                  height: "129px",
+                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                  backgroundColor: "white",
+                  transform: "translateX(30px) translateY(-30px)",
+                }}
+              />
+              <MessageSquareQuote className="w-10 h-10 text-white/40 mb-lg" />
+              <blockquote className="font-heading text-xl md:text-2xl leading-snug text-white mb-lg">
+                "{caseStudy.quote}"
+              </blockquote>
+              <p className="text-white/70">— Tom Mayho, CFO, Kynetec</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Content Sections - Alternating */}
+      <section className="section-padding-lg border-t border-(--color-text)/10">
+        <div className="container">
+          <div className="flex flex-col" style={{ gap: "var(--space-4xl)" }}>
+            {caseStudy.sections.map((section, i) => (
+              <div
+                key={i}
+                className={`grid lg:grid-cols-2 gap-xl items-center ${i % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
+              >
+                <div className={i % 2 === 1 ? "lg:order-2" : ""}>
+                  <div className="flex items-center gap-md mb-lg">
+                    <div
+                      className="flex items-end justify-center text-white font-heading text-lg font-bold"
+                      style={{
+                        width: "48px",
+                        height: "42px",
+                        clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                        backgroundColor: "var(--color-quaternary)",
+                        paddingBottom: "4px",
+                      }}
+                    >
+                      {i + 1}
+                    </div>
+                    <h3 className="text-quaternary">{section.title}</h3>
+                  </div>
+                  <p className="text-lg text-muted leading-relaxed">{section.content}</p>
+                </div>
+                <div className={`${i % 2 === 1 ? "lg:order-1" : ""} hidden lg:block`}>
+                  <div
+                    className="aspect-video rounded-2xl"
+                    style={{ backgroundColor: "rgba(42, 157, 99, 0.05)" }}
+                  >
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Zap className="w-16 h-16 text-quaternary/20" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+// ============================================
+// LAYOUT VARIANT 4: Video-focused (Totalkare)
+// ============================================
+function LayoutVariant4({ caseStudy }) {
+  return (
+    <>
+      {/* Hero with video prominent */}
+      <section
+        className="relative overflow-hidden"
+        style={{ paddingTop: "140px", paddingBottom: "0" }}
+      >
+        <div className="container">
+          <Link
+            to="/case-studies"
+            className="inline-flex items-center gap-sm text-base font-bold text-muted hover:text-quaternary transition-colors mb-xl"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to case studies
+          </Link>
+
+          <div className="grid lg:grid-cols-2 gap-2xl items-center">
+            <div>
+              {caseStudy.logo && (
+                <img
+                  src={caseStudy.logo}
+                  alt={`${caseStudy.client} logo`}
+                  className="h-14 md:h-20 mb-xl"
+                  style={{ filter: "brightness(0)" }}
+                />
+              )}
+              <p className="text-label text-quaternary mb-md">{caseStudy.industry}</p>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-lg leading-tight">
+                {caseStudy.title}
+              </h1>
+              <p className="text-lg md:text-xl text-muted leading-relaxed">{caseStudy.subtitle}</p>
+            </div>
+
+            {/* Video */}
+            {caseStudy.videoUrl && (
+              <div className="relative">
+                <div className="aspect-video rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src={`https://www.youtube.com/embed/${caseStudy.videoUrl.split("/").pop().split("?")[0]}`}
+                    title={`${caseStudy.client} case study video`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                  />
+                </div>
+                {/* Decorative triangle */}
+                <div
+                  className="absolute -bottom-4 -right-4 hidden md:block -z-10"
+                  style={{
+                    width: "150px",
+                    height: "129px",
+                    clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                    backgroundColor: "var(--color-quaternary)",
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Quote banner */}
+      <section
+        className="relative overflow-hidden"
+        style={{ margin: "var(--space-3xl) 0", padding: "var(--space-2xl) 0" }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(135deg, var(--color-quaternary) 0%, #1a5c3a 100%)",
+          }}
+        />
+        <div
+          className="absolute top-0 left-0 opacity-10 hidden md:block"
+          style={{
+            width: "250px",
+            height: "214px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "white",
+            transform: "translateX(-80px) translateY(-60px)",
+          }}
+        />
+        <div
+          className="absolute bottom-0 right-0 opacity-10 hidden md:block"
+          style={{
+            width: "200px",
+            height: "172px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "white",
+            transform: "translateX(60px) translateY(50px)",
+          }}
+        />
+        <div className="container relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <MessageSquareQuote className="w-12 h-12 text-white/30 mx-auto mb-lg" />
+            <blockquote className="font-heading text-xl md:text-2xl lg:text-3xl leading-snug text-white mb-lg">
+              "{caseStudy.quote}"
+            </blockquote>
+            <p className="text-white/80 font-bold">{caseStudy.quoteAuthor}</p>
+            <p className="text-white/60">{caseStudy.quoteRole}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Bar */}
+      <section
+        className="border-y border-(--color-text)/10"
+        style={{ padding: "var(--space-2xl) 0" }}
+      >
+        <div className="container">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg md:gap-2xl text-center">
+            <div>
+              <p className="text-base text-muted mb-sm">Company</p>
+              <p className="text-xl md:text-2xl font-bold">{caseStudy.client}</p>
+            </div>
+            <div>
+              <p className="text-base text-muted mb-sm">Growth</p>
+              <p className="text-xl md:text-2xl font-bold text-quaternary">{caseStudy.users}</p>
+            </div>
+            <div>
+              <p className="text-base text-muted mb-sm">System Replaced</p>
+              <p className="text-xl md:text-2xl font-bold">{caseStudy.systemReplaced}</p>
+            </div>
+            <div>
+              <p className="text-base text-muted mb-sm">Product</p>
+              <p className="text-xl md:text-2xl font-bold text-quaternary">{caseStudy.product}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Intro */}
+      <section className="section-padding-lg">
+        <div className="container">
+          <div className="grid lg:grid-cols-2 gap-2xl items-center">
+            <div>
+              <h3 className="text-quaternary mb-lg">{caseStudy.introHeading}</h3>
+              <p className="text-lg md:text-xl text-muted leading-relaxed">{caseStudy.intro}</p>
+            </div>
+            <div className="relative">
+              <div className="aspect-[4/3] rounded-2xl md:rounded-3xl overflow-hidden">
+                <img
+                  src={caseStudy.featureImage}
+                  alt={`${caseStudy.client} project`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div
+                className="absolute -top-4 -left-4 hidden md:block"
+                style={{
+                  width: "80px",
+                  height: "69px",
+                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                  backgroundColor: "var(--color-quaternary)",
+                  opacity: 0.5,
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Content Sections - With checkmarks */}
+      <section
+        className="section-padding-lg"
+        style={{ backgroundColor: "rgba(42, 157, 99, 0.03)" }}
+      >
+        <div className="container">
+          <p className="text-label text-quaternary text-center mb-md">The Transformation</p>
+          <h2 className="text-center mb-2xl">
+            From problem to <span className="text-quaternary">partnership</span>
+          </h2>
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-col" style={{ gap: "var(--space-2xl)" }}>
+              {caseStudy.sections.map((section, i) => (
+                <div key={i} className="bg-white rounded-2xl p-xl border border-(--color-text)/10">
+                  <div className="flex gap-lg">
+                    <div
+                      className="flex items-center justify-center shrink-0"
+                      style={{
+                        width: "48px",
+                        height: "48px",
+                        borderRadius: "50%",
+                        backgroundColor: "rgba(42, 157, 99, 0.1)",
+                      }}
+                    >
+                      <Check className="w-6 h-6 text-quaternary" />
+                    </div>
+                    <div>
+                      <h4 className="text-quaternary mb-md">{section.title}</h4>
+                      <p className="text-muted leading-relaxed">{section.content}</p>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -371,100 +974,127 @@ export default function CaseStudyDetail() {
           </div>
         </div>
       </section>
+    </>
+  );
+}
 
-      {/* Video Section (if available) */}
-      {caseStudy.videoUrl && (
-        <section className="section-padding-lg border-t border-(--color-text)/10">
-          <div className="container">
-            <div className="text-center mb-2xl">
-              <p className="text-label text-quaternary mb-md">Watch the story</p>
-              <h3>
-                Hear it from <span className="text-quaternary">{caseStudy.client}</span>
-              </h3>
-            </div>
-            <div className="max-w-4xl mx-auto">
-              <div className="aspect-video rounded-2xl md:rounded-3xl overflow-hidden shadow-xl">
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src={`https://www.youtube.com/embed/${caseStudy.videoUrl.split("/").pop().split("?")[0]}`}
-                  title={`${caseStudy.client} case study video`}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+// ============================================
+// Shared CTA Section
+// ============================================
+function SharedCTA() {
+  return (
+    <section className="section-padding-lg">
+      <div className="container">
+        <div className="rounded-3xl md:rounded-[3rem] overflow-hidden relative">
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(135deg, var(--color-quaternary) 0%, #1a5c3a 100%)",
+            }}
+          />
+          <div
+            className="absolute top-0 left-0 opacity-10 hidden md:block"
+            style={{
+              width: "300px",
+              height: "260px",
+              clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+              backgroundColor: "white",
+              transform: "translateX(-80px) translateY(-80px)",
+            }}
+          />
+          <div
+            className="absolute bottom-0 right-0 opacity-10 hidden md:block"
+            style={{
+              width: "400px",
+              height: "350px",
+              clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+              backgroundColor: "white",
+              transform: "translateX(100px) translateY(100px)",
+            }}
+          />
 
-      {/* CTA */}
-      <section className="section-padding-lg">
-        <div className="container">
-          <div className="rounded-3xl md:rounded-[3rem] overflow-hidden relative">
-            {/* Background with gradient */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background: "linear-gradient(135deg, var(--color-quaternary) 0%, #1a5c3a 100%)",
-              }}
-            />
-            {/* Decorative triangles */}
-            <div
-              className="absolute top-0 left-0 opacity-10 hidden md:block"
-              style={{
-                width: "300px",
-                height: "260px",
-                clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                backgroundColor: "white",
-                transform: "translateX(-80px) translateY(-80px)",
-              }}
-            />
-            <div
-              className="absolute bottom-0 right-0 opacity-10 hidden md:block"
-              style={{
-                width: "400px",
-                height: "350px",
-                clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                backgroundColor: "white",
-                transform: "translateX(100px) translateY(100px)",
-              }}
-            />
+          <div className="relative z-10" style={{ padding: "var(--space-3xl) var(--space-xl)" }}>
+            <div className="text-center">
+              <h2 className="text-white" style={{ marginBottom: "var(--space-xl)" }}>
+                Ready for <span className="text-white/90">similar results</span>?
+              </h2>
+              <p
+                className="text-white/80 text-lg max-w-2xl mx-auto"
+                style={{ marginBottom: "var(--space-2xl)" }}
+              >
+                Let's discuss how we can help transform your business with NetSuite.
+              </p>
 
-            <div className="relative z-10" style={{ padding: "var(--space-3xl) var(--space-xl)" }}>
-              <div className="text-center">
-                <h2 className="text-white" style={{ marginBottom: "var(--space-xl)" }}>
-                  Ready for <span className="text-white/90">similar results</span>?
-                </h2>
-                <p
-                  className="text-white/80 text-lg max-w-2xl mx-auto"
-                  style={{ marginBottom: "var(--space-2xl)" }}
+              <div className="flex flex-col sm:flex-row gap-md justify-center">
+                <Link
+                  to="/contact"
+                  className="btn btn-lg justify-center bg-white text-(--color-quaternary) hover:scale-105 transition-transform"
                 >
-                  Let's discuss how we can help transform your business with NetSuite.
-                </p>
-
-                <div className="flex flex-col sm:flex-row gap-md justify-center">
-                  <Link
-                    to="/contact"
-                    className="btn btn-lg justify-center bg-white text-(--color-quaternary) hover:scale-105 transition-transform"
-                  >
-                    Start a conversation
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                  <Link
-                    to="/case-studies"
-                    className="btn btn-lg justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"
-                  >
-                    View more case studies
-                  </Link>
-                </div>
+                  Start a conversation
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+                <Link
+                  to="/case-studies"
+                  className="btn btn-lg justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"
+                >
+                  View more case studies
+                </Link>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
+
+// ============================================
+// Main Component
+// ============================================
+export default function CaseStudyDetail() {
+  const { id } = useParams();
+  const caseStudy = caseStudies[id];
+
+  if (!caseStudy) {
+    return (
+      <main id="main-content" className="section-padding-lg">
+        <div className="container text-center">
+          <h2 className="mb-lg">Case study not found</h2>
+          <Link to="/case-studies" className="btn btn-primary">
+            Back to case studies
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
+  // Render layout based on variant
+  const renderLayout = () => {
+    switch (caseStudy.layoutVariant) {
+      case 1:
+        return <LayoutVariant1 caseStudy={caseStudy} />;
+      case 2:
+        return <LayoutVariant2 caseStudy={caseStudy} />;
+      case 3:
+        return <LayoutVariant3 caseStudy={caseStudy} />;
+      case 4:
+        return <LayoutVariant4 caseStudy={caseStudy} />;
+      default:
+        return <LayoutVariant1 caseStudy={caseStudy} />;
+    }
+  };
+
+  return (
+    <main id="main-content">
+      <SEO
+        title={`${caseStudy.client} - Case Study`}
+        description={caseStudy.subtitle}
+        path={`/case-studies/${id}`}
+        keywords="NetSuite case study, ERP implementation success, NetSuite results"
+      />
+
+      {renderLayout()}
+      <SharedCTA />
     </main>
   );
 }
