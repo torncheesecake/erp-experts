@@ -346,7 +346,7 @@ export default function CaseStudies() {
             {testimonials.map((testimonial, i) => (
               <div key={i} className="card border-2 border-(--color-text)/10 p-lg md:p-xl">
                 <MessageSquareQuote className="w-8 h-8 text-quaternary mb-lg" />
-                <p className="text-base text-muted mb-xl leading-relaxed">"{testimonial.quote}"</p>
+                <p className="text-base text-muted mb-xl leading-snug">"{testimonial.quote}"</p>
                 <div>
                   <p className="font-bold">{testimonial.name}</p>
                   <p className="text-sm text-muted">
