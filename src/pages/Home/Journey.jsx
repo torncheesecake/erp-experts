@@ -130,7 +130,7 @@ export default function Journey() {
               to="/implementation"
               trackingName="journey_get_started"
               trackingPage="homepage"
-              className="btn btn-lg w-full justify-center mt-xl text-white whitespace-nowrap"
+              className="btn sm:btn-lg w-full justify-center mt-xl text-white whitespace-nowrap"
               style={{ backgroundColor: "var(--color-tertiary)" }}
             >
               Get started
@@ -191,7 +191,7 @@ export default function Journey() {
               to="/support"
               trackingName="journey_explore_support"
               trackingPage="homepage"
-              className="btn btn-lg w-full justify-center mt-xl text-white whitespace-nowrap"
+              className="btn sm:btn-lg w-full justify-center mt-xl text-white whitespace-nowrap"
               style={{ backgroundColor: "var(--color-secondary)" }}
             >
               Explore support

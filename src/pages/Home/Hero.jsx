@@ -77,7 +77,7 @@ export default function Hero() {
             to="/contact"
             trackingName="hero_start_project"
             trackingPage="homepage"
-            className="btn btn-primary btn-lg w-full sm:w-auto justify-center animate-hero-delay-3"
+            className="btn btn-primary sm:btn-lg w-full sm:w-auto justify-center animate-hero-delay-3"
           >
             Start a project
             <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
