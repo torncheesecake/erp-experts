@@ -275,7 +275,7 @@ export default function Support() {
                 <span className="text-secondary">we'd want it for ourselves.</span>
               </h3>
             </div>
-            <div className="grid grid-cols-2 gap-md md:gap-lg">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-md md:gap-lg">
               {benefits.map((benefit, i) => (
                 <div key={i} className="card border-2 border-(--color-text)/10 p-lg md:p-xl">
                   <div className="icon-box icon-box-md rounded-xl bg-(--color-secondary)/10 mb-md md:mb-lg">
