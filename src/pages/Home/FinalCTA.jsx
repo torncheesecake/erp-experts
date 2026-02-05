@@ -137,7 +137,10 @@ export default function FinalCTA() {
                     >
                       Or subscribe to our newsletter for NetSuite tips & insights
                     </p>
-                    <form onSubmit={handleNewsletterSubmit} className="relative max-w-md mx-auto">
+                    <form
+                      onSubmit={handleNewsletterSubmit}
+                      className="flex flex-col sm:flex-row gap-md max-w-md mx-auto"
+                    >
                       <input
                         type="email"
                         value={newsletterEmail}
@@ -145,12 +148,12 @@ export default function FinalCTA() {
                         placeholder="Enter your email"
                         required
                         disabled={newsletterStatus === "submitting"}
-                        className="w-full pl-6 pr-36 py-4 rounded-full border-2 border-white/40 bg-white/20 text-white placeholder-white/70 text-base font-medium focus:outline-none focus:border-white/70 focus:bg-white/30 transition-all disabled:opacity-50"
+                        className="flex-1 px-6 py-4 rounded-full border-2 border-white/40 bg-white/20 text-white placeholder-white/70 text-base font-medium focus:outline-none focus:border-white/70 focus:bg-white/30 transition-all disabled:opacity-50"
                       />
                       <button
                         type="submit"
                         disabled={newsletterStatus === "submitting"}
-                        className="absolute right-1.5 top-1/2 -translate-y-1/2 btn btn-sm justify-center bg-white text-(--color-primary) hover:scale-105 transition-transform rounded-full disabled:opacity-50"
+                        className="btn sm:btn-lg justify-center bg-white text-(--color-primary) hover:scale-105 transition-transform rounded-full disabled:opacity-50 whitespace-nowrap"
                       >
                         {newsletterStatus === "submitting" ? (
                           <Loader2 className="w-4 h-4 animate-spin" />

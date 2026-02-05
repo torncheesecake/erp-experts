@@ -86,7 +86,7 @@ export default function CaseStudyFeature() {
               </div>
 
               {/* Right: Stats */}
-              <div className="grid grid-cols-2 gap-md md:gap-lg">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-md md:gap-lg">
                 {[
                   { value: "40%", label: "Faster order processing", highlight: false },
                   { value: "3x", label: "Inventory accuracy", highlight: true },

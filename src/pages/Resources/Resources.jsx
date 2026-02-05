@@ -120,7 +120,10 @@ export default function Resources() {
       />
 
       {/* Hero */}
-      <section className="flex items-center relative overflow-hidden" style={{ paddingTop: "160px", paddingBottom: "30px" }}>
+      <section
+        className="flex items-center relative overflow-hidden"
+        style={{ paddingTop: "160px", paddingBottom: "30px" }}
+      >
         {/* Offset pink triangle */}
         <div
           className="absolute top-1/2 hidden lg:block"
@@ -376,19 +379,19 @@ export default function Resources() {
               }}
             />
             <div className="relative z-10">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-xl md:gap-2xl">
-                <div className="flex-1">
+              <div className="flex flex-col gap-lg">
+                <div>
                   <h4 className="text-(--color-text-on-dark)">
                     Get NetSuite insights delivered weekly
                   </h4>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-md flex-1">
+                <div className="flex flex-col sm:flex-row gap-md">
                   <input
                     type="email"
                     placeholder="Enter your email"
                     className="flex-1 px-(--space-xl) py-(--space-md) rounded-full border border-(--color-text)/15 bg-white text-base focus:outline-none focus:border-(--color-primary)"
                   />
-                  <button className="btn btn-lg justify-center shrink-0 bg-white text-(--color-text)">
+                  <button className="btn sm:btn-lg justify-center shrink-0 bg-white text-(--color-text) whitespace-nowrap">
                     Subscribe
                     <ArrowRight className="w-5 h-5" />
                   </button>

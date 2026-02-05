@@ -76,7 +76,7 @@ export default function Journey() {
         </div>
 
         {/* Two Paths */}
-        <div className="grid lg:grid-cols-2 gap-xl md:gap-2xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-xl md:gap-2xl">
           {/* Implementation Path */}
           <div className="p-(--space-xl) md:p-(--space-2xl) rounded-2xl md:rounded-3xl bg-(--color-tertiary)/5 border border-(--color-tertiary)/20">
             <div className="flex items-center gap-md mb-lg">
