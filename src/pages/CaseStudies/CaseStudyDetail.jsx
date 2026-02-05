@@ -223,14 +223,18 @@ function SharedHero({ caseStudy }) {
   return (
     <>
       {/* Hero with full-width image */}
-      <section className="relative min-h-[60vh] md:min-h-[70vh] flex items-center overflow-hidden">
+      <section
+        className="relative flex items-center overflow-hidden"
+        style={{ paddingTop: "160px", paddingBottom: "var(--space-3xl)", minHeight: "70vh" }}
+      >
         <div className="absolute inset-0">
           <img
             src={caseStudy.heroImage}
             alt={caseStudy.client}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
+          {/* Stronger gradient on mobile for readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/75 to-black/40 md:from-black/80 md:via-black/60 md:to-transparent" />
         </div>
 
         <div
@@ -244,10 +248,10 @@ function SharedHero({ caseStudy }) {
           }}
         />
 
-        <div className="container relative z-10 pt-(--space-4xl)">
+        <div className="container relative z-10">
           <Link
             to="/case-studies"
-            className="inline-flex items-center gap-sm text-base font-bold text-white/70 hover:text-white transition-colors mb-xl"
+            className="inline-flex items-center gap-sm text-base md:text-lg font-bold text-white bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition-colors mb-xl"
           >
             <ArrowLeft className="w-5 h-5" />
             Back to case studies
@@ -258,14 +262,14 @@ function SharedHero({ caseStudy }) {
               <img
                 src={caseStudy.logo}
                 alt={`${caseStudy.client} logo`}
-                className={`mb-xl ${caseStudy.client === "Totalkare" ? "h-16 md:h-20" : "h-12 md:h-16"}`}
+                className={`mb-lg md:mb-xl ${caseStudy.client === "Totalkare" ? "h-12 md:h-20" : "h-10 md:h-16"}`}
               />
             )}
             <p className="text-label text-quaternary mb-md">{caseStudy.industry}</p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white mb-xl leading-tight">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold text-white mb-lg md:mb-xl leading-tight">
               {caseStudy.title}
             </h1>
-            <p className="text-xl md:text-2xl text-white/80 leading-relaxed">
+            <p className="text-lg md:text-2xl text-white/90 leading-relaxed">
               {caseStudy.subtitle}
             </p>
           </div>
