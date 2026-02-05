@@ -86,7 +86,7 @@ export default function Footer() {
           </div>
 
           {/* Middle section - Links, Contact, Locations */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-xl mb-2xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-lg sm:gap-xl mb-2xl">
             {/* Navigation Links */}
             {footerLinks.map((col, i) => (
               <div key={i}>
@@ -126,10 +126,10 @@ export default function Footer() {
                 <li>
                   <a
                     href="mailto:hello@erpexperts.co.uk"
-                    className="flex items-center gap-sm text-base text-white/70 hover:text-white transition-colors"
+                    className="flex items-center gap-sm text-base text-white/70 hover:text-white transition-colors break-all"
                   >
-                    <Mail className="w-4 h-4 text-primary" />
-                    hello@erpexperts.co.uk
+                    <Mail className="w-4 h-4 text-primary shrink-0" />
+                    <span className="break-all">hello@erpexperts.co.uk</span>
                   </a>
                 </li>
               </ul>
