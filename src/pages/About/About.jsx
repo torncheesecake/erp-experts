@@ -81,7 +81,10 @@ export default function About() {
       />
 
       {/* Hero */}
-      <section className="flex items-center relative overflow-hidden" style={{ paddingTop: "160px", paddingBottom: "30px" }}>
+      <section
+        className="flex items-center relative overflow-hidden"
+        style={{ paddingTop: "160px", paddingBottom: "30px" }}
+      >
         {/* Offset triangle */}
         <div
           className="absolute top-1/2 hidden lg:block"
@@ -251,7 +254,7 @@ export default function About() {
             <p className="text-label text-primary mb-md">Our Team</p>
             <h3>Senior consultants who stay the course</h3>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-md md:gap-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md md:gap-lg">
             {teamRoles.map((role, i) => (
               <div key={i} className="bg-(--color-bg-light) rounded-2xl text-center p-lg md:p-xl">
                 <div className="icon-box icon-box-md rounded-full bg-(--color-primary) mx-auto mb-md">
@@ -289,7 +292,7 @@ export default function About() {
               Trusted by <span className="text-primary">industry leaders</span>
             </h3>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-md md:gap-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-md md:gap-lg">
             {clients.map((client, i) => (
               <div
                 key={i}

@@ -241,7 +241,7 @@ export default function Implementation() {
               ERP implementations fail in predictable ways. This methodology exists to prevent them.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-lg md:gap-xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-lg md:gap-xl">
             {processSteps.map((step, i) => (
               <div key={i} className="relative">
                 {/* Connector line */}
@@ -287,7 +287,7 @@ export default function Implementation() {
               Everything you'll have when you <span className="text-tertiary">go live.</span>
             </h3>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg">
             {services.map((service, i) => (
               <div
                 key={i}
