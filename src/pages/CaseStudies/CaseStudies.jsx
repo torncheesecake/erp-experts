@@ -342,7 +342,7 @@ export default function CaseStudies() {
               Real feedback from <span className="text-quaternary">real businesses</span>
             </h3>
           </div>
-          <div className="grid md:grid-cols-3 gap-lg">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
             {testimonials.map((testimonial, i) => (
               <div key={i} className="card border-2 border-(--color-text)/10 p-lg md:p-xl">
                 <MessageSquareQuote className="w-8 h-8 text-quaternary mb-lg" />
