@@ -170,7 +170,7 @@ export default function Implementation() {
               to="/what-is-netsuite"
               trackingName="implementation_hero_whats_netsuite"
               trackingPage="implementation"
-              className="btn btn-lg w-full sm:w-auto justify-center"
+              className="btn sm:btn-lg w-full sm:w-auto justify-center"
               style={{ backgroundColor: "var(--color-tertiary)", color: "white" }}
             >
               What's NetSuite?
@@ -201,7 +201,7 @@ export default function Implementation() {
                 Implementation done <span className="text-tertiary">right.</span>
               </h3>
             </div>
-            <div className="grid grid-cols-2 gap-md md:gap-lg">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-md md:gap-lg">
               {benefits.map((benefit, i) => (
                 <div key={i} className="card border-2 border-(--color-text)/10 p-lg md:p-xl">
                   <div className="icon-box icon-box-md rounded-xl bg-(--color-tertiary)/10 mb-md md:mb-lg">
@@ -395,7 +395,7 @@ export default function Implementation() {
               to="/contact"
               trackingName="implementation_footer_book_call"
               trackingPage="implementation"
-              className="btn btn-lg justify-center"
+              className="btn sm:btn-lg justify-center"
               style={{ backgroundColor: "var(--color-tertiary)", color: "white" }}
             >
               Book a call
@@ -405,7 +405,7 @@ export default function Implementation() {
               to="/case-studies"
               trackingName="implementation_footer_see_work"
               trackingPage="implementation"
-              className="btn btn-lg btn-outline justify-center"
+              className="btn sm:btn-lg btn-outline justify-center"
             >
               See our work
             </TrackedLink>
