@@ -195,7 +195,10 @@ export default function Support() {
       />
 
       {/* Hero */}
-      <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
+      <section
+        className="flex items-center relative overflow-hidden"
+        style={{ paddingTop: "160px", paddingBottom: "30px" }}
+      >
         {/* Offset purple triangle */}
         <div
           className="absolute top-1/2 hidden lg:block"
@@ -231,7 +234,7 @@ export default function Support() {
         <div className="container relative z-10">
           <div className="max-w-5xl">
             <p className="text-label text-secondary mb-md">Aftercare</p>
-            <h1 className="text-hero" style={{ marginBottom: "var(--space-2xl)" }}>
+            <h1 className="text-hero mb-xl md:mb-2xl">
               We make NetSuite
               <br />
               <span className="text-secondary">easier</span>.
@@ -240,7 +243,7 @@ export default function Support() {
               to="#plans"
               trackingName="support_hero_view_plans"
               trackingPage="support"
-              className="btn btn-lg w-full sm:w-auto justify-center"
+              className="btn sm:btn-lg w-full sm:w-auto justify-center"
               style={{ backgroundColor: "var(--color-secondary)", color: "white" }}
             >
               View plans
@@ -251,7 +254,7 @@ export default function Support() {
       </section>
 
       {/* Spacer */}
-      <div className="h-3xl" />
+      <div className="h-8 md:h-20" />
 
       {/* Stats */}
       <section className="section-padding" style={{ backgroundColor: "rgba(126, 34, 206, 0.05)" }}>
@@ -371,7 +374,7 @@ export default function Support() {
       {/* Plans */}
       <section id="plans" className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
-          <div className="text-center" style={{ marginBottom: "var(--space-3xl)" }}>
+          <div className="text-center mb-2xl md:mb-3xl">
             <p className="text-label text-secondary mb-md">Our plans</p>
             <h3>
               Bronze, Silver, Gold. <span className="text-secondary">Find your fit.</span>
@@ -379,7 +382,7 @@ export default function Support() {
           </div>
 
           {/* Plan Cards */}
-          <div className="grid md:grid-cols-3 gap-lg md:gap-xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-md md:gap-xl">
             {plans.map((plan, i) => {
               const colorVars = {
                 bronze: "--color-bronze",
@@ -390,7 +393,7 @@ export default function Support() {
               return (
                 <div
                   key={i}
-                  className={`card p-(--space-xl) md:p-(--space-2xl) relative ${
+                  className={`card p-lg md:p-(--space-2xl) relative ${
                     plan.featured ? "border-2" : ""
                   }`}
                   style={{
@@ -425,7 +428,7 @@ export default function Support() {
                     to="/contact"
                     trackingName={`support_plan_${plan.name.toLowerCase()}_get_started`}
                     trackingPage="support"
-                    className="btn btn-lg w-full justify-center mt-xl text-white"
+                    className="btn sm:btn-lg w-full justify-center mt-xl text-white"
                     style={{ backgroundColor: `var(${colorVar})` }}
                   >
                     Get started
@@ -499,7 +502,7 @@ export default function Support() {
                     to="/contact"
                     trackingName="support_footer_get_support"
                     trackingPage="support"
-                    className="btn btn-lg justify-center bg-white text-(--color-secondary) hover:scale-105 transition-transform"
+                    className="btn sm:btn-lg justify-center bg-white text-(--color-secondary) hover:scale-105 transition-transform"
                   >
                     Get support
                     <ArrowRight className="w-5 h-5" />
@@ -508,7 +511,7 @@ export default function Support() {
                     to="/contact"
                     trackingName="support_footer_book_call"
                     trackingPage="support"
-                    className="btn btn-lg justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"
+                    className="btn sm:btn-lg justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"
                   >
                     Book a call
                   </TrackedLink>

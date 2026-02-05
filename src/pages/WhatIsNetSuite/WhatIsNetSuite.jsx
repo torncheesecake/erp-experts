@@ -100,7 +100,7 @@ export default function WhatIsNetSuite() {
       />
 
       {/* Hero */}
-      <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
+      <section className="flex items-center relative overflow-hidden" style={{ paddingTop: "160px", paddingBottom: "30px" }}>
         {/* Decorative triangle */}
         <div
           className="absolute top-1/2 right-0 opacity-20 hidden lg:block pointer-events-none"

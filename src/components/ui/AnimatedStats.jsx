@@ -90,10 +90,11 @@ export default function AnimatedStats({
   highlightAlternate = true,
   columns = 4,
 }) {
+  // Always stack on mobile (1 col), then expand based on columns prop
   const gridClass =
     columns === 3
-      ? "grid grid-cols-3 gap-lg md:gap-xl"
-      : "grid grid-cols-2 lg:grid-cols-4 gap-lg md:gap-xl";
+      ? "grid grid-cols-1 sm:grid-cols-3 gap-lg md:gap-xl"
+      : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg md:gap-xl";
 
   return (
     <div className={gridClass}>

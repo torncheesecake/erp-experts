@@ -120,7 +120,7 @@ export default function Resources() {
       />
 
       {/* Hero */}
-      <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
+      <section className="flex items-center relative overflow-hidden" style={{ paddingTop: "160px", paddingBottom: "30px" }}>
         {/* Offset pink triangle */}
         <div
           className="absolute top-1/2 hidden lg:block"

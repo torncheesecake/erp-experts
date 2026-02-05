@@ -21,6 +21,16 @@ import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
 import { trackCTAClick } from "../../components/Analytics";
 
+// Import images
+import carallonLogo from "../../assets/carallon_logo_white.png.avif";
+import carallonImage from "../../assets/carallon-single.jpg.avif";
+import eco2solarLogo from "../../assets/eco2solar-logo.png.avif";
+import eco2solarImage from "../../assets/eco2solar-feature.avif";
+import kynetecLogo from "../../assets/kynetec-logo-white.svg";
+import kynetecImage from "../../assets/752bd0f50c694f1195be3b1771b703d5kynetec.jpg.avif";
+import totalkareLogo from "../../assets/totalkare-logo-white.png";
+import totalkareImage from "../../assets/totalkare-feature.avif";
+
 // Case Studies Data
 const caseStudies = [
   {
@@ -31,6 +41,8 @@ const caseStudies = [
     headline: "Entertainment technology leader",
     description:
       "Working at the cutting edge of entertainment technology with streamlined operations.",
+    image: carallonImage,
+    logo: carallonLogo,
   },
   {
     id: 2,
@@ -39,6 +51,8 @@ const caseStudies = [
     icon: Sun,
     headline: "Sustainable growth enabled",
     description: "Supporting the renewable energy sector with efficient business processes.",
+    image: eco2solarImage,
+    logo: eco2solarLogo,
   },
   {
     id: 3,
@@ -48,6 +62,8 @@ const caseStudies = [
     headline: "System replaced in 6 months",
     description:
       "Replaced a failing system in half the time of the original project, on schedule and within budget.",
+    image: kynetecImage,
+    logo: kynetecLogo,
   },
   {
     id: 4,
@@ -57,6 +73,8 @@ const caseStudies = [
     headline: "Reliable, scalable system",
     description:
       "A NetSuite solution that improved every aspect of operations and supports continued growth.",
+    image: totalkareImage,
+    logo: totalkareLogo,
   },
 ];
 
@@ -113,7 +131,23 @@ export default function CaseStudies() {
       />
 
       {/* Hero */}
-      <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
+      <section
+        className="flex items-center relative overflow-hidden"
+        style={{ paddingTop: "160px", paddingBottom: "30px" }}
+      >
+        {/* Mobile background triangle */}
+        <div
+          className="absolute lg:hidden"
+          style={{
+            top: "5%",
+            right: "-10%",
+            width: "320px",
+            height: "280px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-quaternary)",
+            opacity: 0.1,
+          }}
+        />
         {/* Offset green triangle */}
         <div
           className="absolute top-1/2 hidden lg:block"
@@ -151,7 +185,7 @@ export default function CaseStudies() {
             <p className="text-label text-quaternary" style={{ marginBottom: "var(--space-md)" }}>
               Case Studies
             </p>
-            <h1 className="text-hero" style={{ marginBottom: "var(--space-xl)" }}>
+            <h1 className="text-hero mb-lg md:mb-xl">
               Your industry. Your challenges.
               <br />
               <span className="text-quaternary">Our results.</span>
@@ -165,7 +199,7 @@ export default function CaseStudies() {
       </section>
 
       {/* Spacer */}
-      <div style={{ height: "var(--space-3xl)" }} />
+      <div className="h-8 md:h-20" />
 
       {/* Stats Bar */}
       <section
@@ -232,48 +266,49 @@ export default function CaseStudies() {
               <Link
                 key={study.id}
                 to={`/case-studies/${study.id}`}
-                className="group card border-2 border-(--color-text)/10 hover:border-(--color-quaternary) hover:shadow-xl hover:-translate-y-1 transition-all"
-                style={{ padding: "var(--space-xl)" }}
+                className="group block overflow-hidden rounded-2xl md:rounded-3xl border-2 border-(--color-text)/10 hover:border-(--color-quaternary) hover:shadow-xl hover:-translate-y-1 transition-all"
               >
-                {/* Header */}
-                <div
-                  className="flex items-start gap-lg"
-                  style={{ marginBottom: "var(--space-lg)" }}
-                >
-                  <div
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "rgba(42, 157, 99, 0.1)" }}
-                  >
-                    <study.icon className="w-6 h-6 md:w-7 md:h-7 text-quaternary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h5
-                      className="group-hover:text-quaternary transition-colors"
-                      style={{ marginBottom: "var(--space-xs)" }}
-                    >
-                      {study.client}
-                    </h5>
-                    <span className="text-sm font-medium text-quaternary">{study.industry}</span>
+                {/* Image */}
+                <div className="aspect-[16/9] relative overflow-hidden">
+                  <img
+                    src={study.image}
+                    alt={study.client}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  {/* Logo overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+                    <img
+                      src={study.logo}
+                      alt={`${study.client} logo`}
+                      className="h-8 md:h-10 w-auto object-contain brightness-0 invert"
+                    />
+                    <span className="text-xs font-bold text-white/80 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                      {study.industry}
+                    </span>
                   </div>
                 </div>
 
-                {/* Result */}
-                <p
-                  className="font-heading text-xl md:text-2xl text-quaternary"
-                  style={{ marginBottom: "var(--space-md)" }}
-                >
-                  {study.headline}
-                </p>
+                {/* Content */}
+                <div style={{ padding: "var(--space-xl)" }}>
+                  {/* Result */}
+                  <p
+                    className="font-heading text-xl md:text-2xl text-quaternary"
+                    style={{ marginBottom: "var(--space-md)" }}
+                  >
+                    {study.headline}
+                  </p>
 
-                {/* Description */}
-                <p className="text-base text-muted" style={{ marginBottom: "var(--space-xl)" }}>
-                  {study.description}
-                </p>
+                  {/* Description */}
+                  <p className="text-base text-muted" style={{ marginBottom: "var(--space-xl)" }}>
+                    {study.description}
+                  </p>
 
-                {/* CTA */}
-                <div className="flex items-center gap-sm text-quaternary font-bold">
-                  <span>Read case study</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  {/* CTA */}
+                  <div className="flex items-center gap-sm text-quaternary font-bold">
+                    <span>Read case study</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
               </Link>
             ))}
@@ -309,7 +344,7 @@ export default function CaseStudies() {
           </div>
           <div className="grid md:grid-cols-3 gap-lg">
             {testimonials.map((testimonial, i) => (
-              <div key={i} className="card border-2 border-(--color-text)/10 p-xl">
+              <div key={i} className="card border-2 border-(--color-text)/10 p-lg md:p-xl">
                 <MessageSquareQuote className="w-8 h-8 text-quaternary mb-lg" />
                 <p className="text-base text-muted mb-xl leading-relaxed">"{testimonial.quote}"</p>
                 <div>
@@ -345,7 +380,7 @@ export default function CaseStudies() {
               to="/contact"
               trackingName="case_studies_footer_start_project"
               trackingPage="case_studies"
-              className="btn btn-lg justify-center text-white hover:scale-105 transition-transform"
+              className="btn sm:btn-lg justify-center text-white hover:scale-105 transition-transform"
               style={{ backgroundColor: "var(--color-quaternary)" }}
             >
               Start a project
@@ -355,7 +390,7 @@ export default function CaseStudies() {
               href="https://one-score-to-rule-them-all.scoreapp.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-lg border-2 w-full sm:w-auto justify-center"
+              className="btn sm:btn-lg border-2 w-full sm:w-auto justify-center"
               style={{ borderColor: "var(--color-quaternary)", color: "var(--color-quaternary)" }}
               onClick={() => trackCTAClick("case_studies_netscore_cta", "case_studies")}
             >
@@ -364,6 +399,9 @@ export default function CaseStudies() {
           </div>
         </div>
       </section>
+
+      {/* Spacer */}
+      <div className="h-8 md:h-10" />
     </main>
   );
 }

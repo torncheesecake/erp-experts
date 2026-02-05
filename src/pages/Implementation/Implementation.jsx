@@ -122,7 +122,10 @@ export default function Implementation() {
       />
 
       {/* Hero */}
-      <section className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden pt-(--space-4xl)">
+      <section
+        className="flex items-center relative overflow-hidden"
+        style={{ paddingTop: "160px", paddingBottom: "30px" }}
+      >
         {/* Offset blue triangle */}
         <div
           className="absolute top-1/2 hidden lg:block"
@@ -158,9 +161,10 @@ export default function Implementation() {
         <div className="container relative z-10">
           <div className="max-w-5xl">
             <p className="text-label text-tertiary mb-md">NetSuite Implementation</p>
-            <h1 className="text-hero" style={{ marginBottom: "var(--space-2xl)" }}>
+            <h1 className="text-hero mb-xl md:mb-2xl">
               Implemented right.
-              <span className="text-tertiary"> Works right.</span>
+              <br />
+              <span className="text-tertiary">Works right.</span>
             </h1>
             <TrackedLink
               to="/what-is-netsuite"

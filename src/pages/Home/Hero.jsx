@@ -8,8 +8,8 @@ import TrackedLink from "../../components/ui/TrackedLink";
 export default function Hero() {
   return (
     <section
-      className="min-h-[50vh] md:min-h-[60vh] flex items-center relative overflow-hidden"
-      style={{ paddingTop: "var(--space-4xl)" }}
+      className="flex items-center relative overflow-hidden"
+      style={{ paddingTop: "160px", paddingBottom: "30px" }}
     >
       {/* Mobile triangle - positioned top right */}
       <div
@@ -84,6 +84,9 @@ export default function Hero() {
           </TrackedLink>
         </div>
       </div>
+
+      {/* Spacer */}
+      <div className="h-8 md:h-20" />
     </section>
   );
 }

@@ -97,7 +97,7 @@ export default function FinalCTA() {
                   to="/contact"
                   trackingName="footer_cta_start_project"
                   trackingPage="homepage"
-                  className="btn btn-lg justify-center bg-white text-(--color-primary) hover:scale-105 transition-transform"
+                  className="btn btn-lg justify-center bg-white text-(--color-primary) hover:scale-105 transition-transform whitespace-nowrap"
                 >
                   Start a project
                   <ArrowRight className="w-5 h-5" />
@@ -111,6 +111,9 @@ export default function FinalCTA() {
                   Book a call
                 </TrackedLink>
               </div>
+
+              {/* Spacer */}
+              <div className="h-8 md:h-10" />
 
               {/* Newsletter */}
               <div

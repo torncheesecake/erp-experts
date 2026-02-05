@@ -31,7 +31,7 @@ import kynetecHero from "../../assets/752bd0f50c694f1195be3b1771b703d5kynetec.jp
 import kynetecFeature from "../../assets/Image by Ant Rozetskykynetec.jpg.avif";
 
 // Import images - Totalkare
-import totalkareLogo from "../../assets/totalkare-logo.svg";
+import totalkareLogo from "../../assets/totalkare-logo-white.png";
 import totalkareHero from "../../assets/rs-recovery-ymech-2totalkare.webp.avif";
 import totalkareFeature from "../../assets/totalkare-feature.avif";
 
