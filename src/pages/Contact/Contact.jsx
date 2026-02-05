@@ -58,25 +58,31 @@ export default function Contact() {
     setErrorMessage("");
 
     try {
-      // Web3Forms - free form backend with CORS support
-      const submitData = new FormData();
-      submitData.append("access_key", "391757e6-186e-43f4-adac-d26415a290e8");
-      submitData.append("subject", `New Contact Form: ${formData.firstName} ${formData.lastName}`);
-      submitData.append("from_name", "ERP Experts Website");
-      submitData.append("name", `${formData.firstName} ${formData.lastName}`);
-      submitData.append("email", formData.email);
-      submitData.append("phone", formData.phone || "Not provided");
-      submitData.append("company", formData.company || "Not provided");
-      submitData.append("message", formData.message);
+      // NetSuite form submission
+      const nsData = {
+        formId: "f022774d-451f-4a5c-88bc-331a49876a4b",
+        submissions: {
+          first_name_abae: formData.firstName,
+          last_name_d97c: formData.lastName,
+          email_5139: formData.email,
+          phone_4c77: formData.phone || "",
+          company: formData.company || "",
+          long_answer_3524: formData.message,
+        },
+      };
 
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: submitData,
-      });
+      const response = await fetch(
+        "https://1018014.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=2917&deploy=1&compid=1018014&ns-at=AAEJ7tMQIkOj3nhbj5eohAG7d8syFNfC4MdQ6iSe1FDJxMjqFP0",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ entity: nsData }),
+        },
+      );
 
-      const result = await response.json();
-
-      if (result.success) {
+      if (response.ok) {
         setStatus("success");
         trackCTAClick("contact_form_submit", "contact");
         setFormData({
@@ -88,7 +94,7 @@ export default function Contact() {
           message: "",
         });
       } else {
-        throw new Error(result.message || "Failed to submit form");
+        throw new Error("Failed to submit form");
       }
     } catch (error) {
       setStatus("error");
@@ -108,7 +114,10 @@ export default function Contact() {
       />
 
       {/* Hero */}
-      <section className="flex items-center relative overflow-hidden" style={{ paddingTop: "160px", paddingBottom: "30px" }}>
+      <section
+        className="flex items-center relative overflow-hidden"
+        style={{ paddingTop: "160px", paddingBottom: "30px" }}
+      >
         {/* Offset triangle */}
         <div
           className="absolute top-1/2 hidden lg:block"

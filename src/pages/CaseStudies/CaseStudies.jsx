@@ -133,7 +133,7 @@ export default function CaseStudies() {
       {/* Hero */}
       <section
         className="flex items-center relative overflow-hidden"
-        style={{ paddingTop: "160px", paddingBottom: "30px" }}
+        style={{ paddingTop: "140px", paddingBottom: "var(--space-2xl)", minHeight: "50vh" }}
       >
         {/* Mobile background triangle */}
         <div
@@ -181,25 +181,20 @@ export default function CaseStudies() {
           />
         </div>
         <div className="container relative z-10">
-          <div className="max-w-4xl">
-            <p className="text-label text-quaternary" style={{ marginBottom: "var(--space-md)" }}>
-              Case Studies
-            </p>
-            <h1 className="text-hero mb-lg md:mb-xl">
-              Your industry. Your challenges.
-              <br />
-              <span className="text-quaternary">Our results.</span>
+          <div className="max-w-3xl lg:max-w-5xl">
+            <p className="text-label text-quaternary mb-md hidden md:block">Case Studies</p>
+            <h1
+              className="text-4xl sm:text-5xl md:text-6xl leading-[1.1] font-bold lg:!text-[7rem] xl:!text-[9rem]"
+              style={{ marginBottom: "var(--space-lg)" }}
+            >
+              Real Results, <span className="text-quaternary">Proven.</span>
             </h1>
-            <p className="text-xl md:text-2xl text-muted max-w-2xl leading-relaxed">
-              We've delivered NetSuite across dozens of industries. Whatever your sector, we
-              probably know it already.
+            <p className="text-xl md:text-2xl text-muted max-w-2xl m-0">
+              See how we've helped businesses like yours succeed with NetSuite.
             </p>
           </div>
         </div>
       </section>
-
-      {/* Spacer */}
-      <div className="h-8 md:h-20" />
 
       {/* Stats Bar */}
       <section

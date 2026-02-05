@@ -225,7 +225,7 @@ function SharedHero({ caseStudy }) {
       {/* Hero with full-width image */}
       <section
         className="relative flex items-center overflow-hidden"
-        style={{ paddingTop: "160px", paddingBottom: "var(--space-3xl)", minHeight: "70vh" }}
+        style={{ paddingTop: "120px", paddingBottom: "var(--space-2xl)", minHeight: "50vh" }}
       >
         <div className="absolute inset-0">
           <img
@@ -266,7 +266,7 @@ function SharedHero({ caseStudy }) {
               />
             )}
             <p className="text-label text-quaternary mb-md">{caseStudy.industry}</p>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold text-white mb-lg md:mb-xl leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-heading font-bold text-white mb-lg md:mb-xl leading-[1.1]">
               {caseStudy.title}
             </h1>
             <p className="text-lg md:text-2xl text-white/90 leading-relaxed">
@@ -868,14 +868,14 @@ function SharedCTA() {
               <div className="flex flex-col sm:flex-row gap-md justify-center">
                 <Link
                   to="/contact"
-                  className="btn btn-lg justify-center bg-white text-(--color-quaternary) hover:scale-105 transition-transform"
+                  className="btn justify-center bg-white text-(--color-quaternary) hover:scale-105 transition-transform"
                 >
                   Start a conversation
                   <ArrowRight className="w-5 h-5" />
                 </Link>
                 <Link
                   to="/case-studies"
-                  className="btn btn-lg justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"
+                  className="btn justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"
                 >
                   View more case studies
                 </Link>

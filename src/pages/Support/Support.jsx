@@ -197,8 +197,33 @@ export default function Support() {
       {/* Hero */}
       <section
         className="flex items-center relative overflow-hidden"
-        style={{ paddingTop: "160px", paddingBottom: "30px" }}
+        style={{ paddingTop: "140px", paddingBottom: "var(--space-2xl)", minHeight: "50vh" }}
       >
+        {/* Mobile background triangles */}
+        <div
+          className="absolute lg:hidden"
+          style={{
+            top: "20%",
+            right: "-20%",
+            width: "300px",
+            height: "260px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-secondary)",
+            opacity: 0.15,
+          }}
+        />
+        <div
+          className="absolute lg:hidden"
+          style={{
+            bottom: "10%",
+            left: "-15%",
+            width: "200px",
+            height: "172px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-secondary)",
+            opacity: 0.08,
+          }}
+        />
         {/* Offset purple triangle */}
         <div
           className="absolute top-1/2 hidden lg:block"
@@ -232,9 +257,12 @@ export default function Support() {
           />
         </div>
         <div className="container relative z-10">
-          <div className="max-w-5xl">
-            <p className="text-label text-secondary mb-md">Aftercare</p>
-            <h1 className="text-hero mb-xl md:mb-2xl">
+          <div className="max-w-3xl lg:max-w-5xl">
+            <p className="text-label text-secondary mb-md hidden md:block">Aftercare</p>
+            <h1
+              className="text-4xl sm:text-5xl md:text-6xl leading-[1.1] font-bold lg:!text-[7rem] xl:!text-[9rem]"
+              style={{ marginBottom: "var(--space-lg)" }}
+            >
               We make NetSuite
               <br />
               <span className="text-secondary">easier</span>.
@@ -243,11 +271,11 @@ export default function Support() {
               to="#plans"
               trackingName="support_hero_view_plans"
               trackingPage="support"
-              className="btn sm:btn-lg w-full sm:w-auto justify-center"
+              className="btn btn-lg w-full sm:w-auto justify-center text-lg px-8 py-4"
               style={{ backgroundColor: "var(--color-secondary)", color: "white" }}
             >
               View plans
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-6 h-6" />
             </TrackedLink>
           </div>
         </div>

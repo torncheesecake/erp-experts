@@ -124,8 +124,33 @@ export default function Implementation() {
       {/* Hero */}
       <section
         className="flex items-center relative overflow-hidden"
-        style={{ paddingTop: "140px", paddingBottom: "var(--space-xl)" }}
+        style={{ paddingTop: "140px", paddingBottom: "var(--space-2xl)", minHeight: "50vh" }}
       >
+        {/* Mobile background triangle */}
+        <div
+          className="absolute lg:hidden"
+          style={{
+            top: "20%",
+            right: "-20%",
+            width: "300px",
+            height: "260px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-tertiary)",
+            opacity: 0.15,
+          }}
+        />
+        <div
+          className="absolute lg:hidden"
+          style={{
+            bottom: "10%",
+            left: "-15%",
+            width: "200px",
+            height: "172px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-tertiary)",
+            opacity: 0.08,
+          }}
+        />
         {/* Offset blue triangle */}
         <div
           className="absolute top-1/2 hidden lg:block"
@@ -152,38 +177,41 @@ export default function Implementation() {
           }}
         >
           <img
-            src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1000&q=80"
+            src="https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=2070&auto=format&fit=crop"
             alt=""
             className="w-full h-full object-cover"
             style={{ opacity: 0.5 }}
           />
         </div>
         <div className="container relative z-10">
-          <div className="max-w-5xl">
+          <div className="max-w-3xl lg:max-w-5xl">
             <p className="text-label text-tertiary mb-md hidden md:block">
               NetSuite Implementation
             </p>
-            <h1 className="text-hero mb-xl md:mb-2xl">
-              Implemented right.
+            <h1
+              className="text-4xl sm:text-5xl md:text-6xl leading-[1.1] font-bold lg:!text-[7rem] xl:!text-[9rem]"
+              style={{ marginBottom: "var(--space-lg)" }}
+            >
+              Deploy NetSuite,
               <br />
-              <span className="md:text-tertiary">Works right.</span>
+              <span className="text-tertiary">not disaster.</span>
             </h1>
             <TrackedLink
               to="/what-is-netsuite"
               trackingName="implementation_hero_whats_netsuite"
               trackingPage="implementation"
-              className="btn w-full sm:w-auto justify-center"
+              className="btn btn-lg w-full sm:w-auto justify-center text-lg px-8 py-4"
               style={{ backgroundColor: "var(--color-tertiary)", color: "white" }}
             >
               What's NetSuite?
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-6 h-6" />
             </TrackedLink>
           </div>
         </div>
       </section>
 
       {/* Spacer */}
-      <div className="h-3xl" />
+      <div className="h-xl md:h-3xl" />
 
       {/* Stats */}
       <section className="section-padding" style={{ backgroundColor: "rgba(59, 130, 246, 0.05)" }}>

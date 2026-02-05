@@ -9,7 +9,7 @@ export default function Hero() {
   return (
     <section
       className="flex items-center relative overflow-hidden"
-      style={{ paddingTop: "160px", paddingBottom: "30px" }}
+      style={{ paddingTop: "140px", paddingBottom: "var(--space-2xl)", minHeight: "50vh" }}
     >
       {/* Mobile triangle - positioned top right */}
       <div
@@ -60,33 +60,32 @@ export default function Hero() {
       </div>
 
       <div className="container relative z-10">
-        <div className="max-w-2xl">
+        <div className="max-w-3xl lg:max-w-5xl">
           <h1
-            className="text-hero animate-hero-delay-1"
-            style={{ marginBottom: "var(--space-2xl)" }}
+            className="text-4xl sm:text-5xl md:text-6xl animate-hero-delay-1 leading-[1.1] font-bold lg:!text-[7rem] xl:!text-[9rem]"
+            style={{ marginBottom: "var(--space-lg)" }}
           >
-            We Make NetSuite <span className="text-primary">Work.</span>
+            We Make NetSuite
+            <br />
+            <span className="text-primary">Work.</span>
           </h1>
           <p
-            className="text-lg md:text-xl text-muted animate-hero-delay-2"
-            style={{ marginBottom: "var(--space-2xl)" }}
+            className="text-xl md:text-2xl text-muted animate-hero-delay-2"
+            style={{ marginBottom: "var(--space-xl)" }}
           >
-            UK's trusted NetSuite implementation partner for growing businesses.
+            and have done so for over two decades.
           </p>
           <TrackedLink
             to="/contact"
             trackingName="hero_start_project"
             trackingPage="homepage"
-            className="btn btn-primary sm:btn-lg w-full sm:w-auto justify-center animate-hero-delay-3"
+            className="btn btn-primary btn-lg w-full sm:w-auto justify-center animate-hero-delay-3 text-lg px-8 py-4"
           >
             Start a project
-            <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
+            <ArrowRight className="w-6 h-6" />
           </TrackedLink>
         </div>
       </div>
-
-      {/* Spacer */}
-      <div className="h-8 md:h-20" />
     </section>
   );
 }
