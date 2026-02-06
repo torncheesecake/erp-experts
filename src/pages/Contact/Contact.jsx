@@ -71,16 +71,13 @@ export default function Contact() {
         },
       };
 
-      const response = await fetch(
-        "https://1018014.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=2917&deploy=1&compid=1018014&ns-at=AAEJ7tMQIkOj3nhbj5eohAG7d8syFNfC4MdQ6iSe1FDJxMjqFP0",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ entity: nsData }),
+      const response = await fetch(import.meta.env.VITE_NETSUITE_FORM_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ entity: nsData }),
+      });
 
       if (response.ok) {
         setStatus("success");
