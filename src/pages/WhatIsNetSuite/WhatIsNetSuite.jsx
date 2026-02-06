@@ -100,7 +100,10 @@ export default function WhatIsNetSuite() {
       />
 
       {/* Hero */}
-      <section className="flex items-center relative overflow-hidden" style={{ paddingTop: "160px", paddingBottom: "30px" }}>
+      <section
+        className="flex items-center relative overflow-hidden"
+        style={{ paddingTop: "160px", paddingBottom: "30px" }}
+      >
         {/* Decorative triangle */}
         <div
           className="absolute top-1/2 right-0 opacity-20 hidden lg:block pointer-events-none"
@@ -129,7 +132,7 @@ export default function WhatIsNetSuite() {
                 to="/contact"
                 trackingName="whatisnetsuite_hero_talk_to_us"
                 trackingPage="what-is-netsuite"
-                className="btn btn-lg w-full sm:w-auto justify-center"
+                className="btn sm:btn-lg w-full sm:w-auto justify-center"
                 style={{ backgroundColor: "var(--color-tertiary)", color: "white" }}
               >
                 Talk to us about NetSuite
@@ -139,7 +142,7 @@ export default function WhatIsNetSuite() {
                 to="/implementation"
                 trackingName="whatisnetsuite_hero_implementation"
                 trackingPage="what-is-netsuite"
-                className="btn btn-lg border-2 border-(--color-tertiary) text-tertiary w-full sm:w-auto justify-center"
+                className="btn sm:btn-lg border-2 border-(--color-tertiary) text-tertiary w-full sm:w-auto justify-center"
               >
                 How we implement it
               </TrackedLink>
@@ -273,7 +276,7 @@ export default function WhatIsNetSuite() {
               to="/implementation"
               trackingName="whatisnetsuite_modules_see_implementation"
               trackingPage="what-is-netsuite"
-              className="btn btn-lg justify-center"
+              className="btn sm:btn-lg justify-center"
               style={{ backgroundColor: "var(--color-tertiary)", color: "white" }}
             >
               See how we implement these modules
@@ -329,7 +332,7 @@ export default function WhatIsNetSuite() {
                   to="/case-studies/4"
                   trackingName="whatisnetsuite_read_totalkare"
                   trackingPage="what-is-netsuite"
-                  className="btn btn-lg justify-center"
+                  className="btn sm:btn-lg justify-center"
                   style={{ backgroundColor: "var(--color-quaternary)", color: "white" }}
                 >
                   Read the full case study
@@ -414,8 +417,8 @@ export default function WhatIsNetSuite() {
           </div>
 
           {/* Comparison table */}
-          <div className="max-w-5xl mx-auto">
-            <div className="grid grid-cols-4 gap-0 rounded-2xl overflow-hidden bg-white shadow-sm">
+          <div className="max-w-5xl mx-auto overflow-x-auto">
+            <div className="grid grid-cols-4 gap-0 rounded-2xl overflow-hidden bg-white shadow-sm min-w-[600px]">
               {/* Header row */}
               <div className="p-lg bg-(--color-text)/5 border-b border-(--color-text)/10">
                 <p className="font-bold text-muted">&nbsp;</p>
@@ -595,7 +598,7 @@ export default function WhatIsNetSuite() {
                 to="/implementation"
                 trackingName="whatisnetsuite_next_implementation"
                 trackingPage="what-is-netsuite"
-                className="btn btn-lg justify-center w-full"
+                className="btn sm:btn-lg justify-center w-full"
                 style={{ backgroundColor: "var(--color-tertiary)", color: "white" }}
               >
                 Learn more
@@ -614,7 +617,7 @@ export default function WhatIsNetSuite() {
                 to="/support"
                 trackingName="whatisnetsuite_next_support"
                 trackingPage="what-is-netsuite"
-                className="btn btn-lg justify-center w-full"
+                className="btn sm:btn-lg justify-center w-full"
                 style={{ backgroundColor: "var(--color-secondary)", color: "white" }}
               >
                 View plans
@@ -633,7 +636,7 @@ export default function WhatIsNetSuite() {
                 to="/case-studies"
                 trackingName="whatisnetsuite_next_casestudies"
                 trackingPage="what-is-netsuite"
-                className="btn btn-lg justify-center w-full"
+                className="btn sm:btn-lg justify-center w-full"
                 style={{ backgroundColor: "var(--color-quaternary)", color: "white" }}
               >
                 Read stories
@@ -695,7 +698,7 @@ export default function WhatIsNetSuite() {
                     to="/contact"
                     trackingName="whatisnetsuite_footer_talk"
                     trackingPage="what-is-netsuite"
-                    className="btn btn-lg justify-center bg-white text-(--color-tertiary) hover:scale-105 transition-transform"
+                    className="btn sm:btn-lg justify-center bg-white text-(--color-tertiary) hover:scale-105 transition-transform"
                   >
                     Talk to an expert
                     <ArrowRight className="w-5 h-5" />
@@ -704,7 +707,7 @@ export default function WhatIsNetSuite() {
                     href="https://ric-snwikqbv.scoreapp.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn btn-lg justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"
+                    className="btn sm:btn-lg justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"
                   >
                     Take the ERP readiness quiz
                   </a>

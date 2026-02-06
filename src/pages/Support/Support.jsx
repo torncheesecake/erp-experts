@@ -267,16 +267,16 @@ export default function Support() {
               <br />
               <span className="text-secondary">easier</span>.
             </h1>
-            <TrackedLink
-              to="#plans"
-              trackingName="support_hero_view_plans"
-              trackingPage="support"
+            <button
+              onClick={() =>
+                document.getElementById("plans")?.scrollIntoView({ behavior: "smooth" })
+              }
               className="btn btn-lg w-full sm:w-auto justify-center text-lg px-8 py-4"
               style={{ backgroundColor: "var(--color-secondary)", color: "white" }}
             >
               View plans
               <ArrowRight className="w-6 h-6" />
-            </TrackedLink>
+            </button>
           </div>
         </div>
       </section>

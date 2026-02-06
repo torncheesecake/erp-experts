@@ -2,8 +2,4 @@
 User-agent: *
 Allow: /
 
-# Sitemap
 Sitemap: https://erpexperts.co.uk/sitemap.xml
-
-# Crawl-delay (optional, be gentle)
-Crawl-delay: 1

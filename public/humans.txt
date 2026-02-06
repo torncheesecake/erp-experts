@@ -1,0 +1,35 @@
+/* TEAM */
+
+Developer: Matthew Hillman
+Contact: shadow_lion@icloud.com
+Location: United Kingdom
+
+/* THANKS */
+
+Client: ERP Experts
+Location: Stafford, UK
+
+/* SITE */
+
+Last update: 2026/02/06
+Language: English
+Doctype: HTML5
+IDE: Zed
+
+/* TECHNOLOGY */
+
+Framework: React 18
+Build Tool: Vite 7
+Styling: Tailwind CSS 4
+Hosting: StackCDN
+
+/* DEVELOPMENT */
+
+Build Time: January - February 2026
+Components: 50+
+Lines of Code: 15,000+
+
+/* NOTES */
+
+This website was designed and developed from scratch.
+No templates. No WordPress. Just clean, handcrafted code.
