@@ -47,7 +47,11 @@ export default function Navbar() {
             onMouseEnter={() => setServicesOpen(true)}
             onMouseLeave={() => setServicesOpen(false)}
           >
-            <button className="flex items-center gap-1 text-base font-medium text-(--color-text) opacity-70 hover:opacity-100 transition-opacity">
+            <button
+              className="flex items-center gap-1 text-base font-medium text-(--color-text) opacity-70 hover:opacity-100 transition-opacity"
+              aria-expanded={servicesOpen}
+              aria-haspopup="true"
+            >
               Services
               <ChevronDown
                 className={`w-4 h-4 transition-transform ${servicesOpen ? "rotate-180" : ""}`}
@@ -108,7 +112,12 @@ export default function Navbar() {
         </div>
 
         {/* Mobile menu button */}
-        <button className="lg:hidden p-3" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+        <button
+          className="lg:hidden p-3"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileMenuOpen}
+        >
           {mobileMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
         </button>
       </nav>

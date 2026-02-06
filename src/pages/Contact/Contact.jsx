@@ -259,6 +259,8 @@ export default function Contact() {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
+                        pattern="[0-9\s\-\+\(\)]{7,20}"
+                        title="Please enter a valid phone number"
                         disabled={status === "submitting"}
                         className="w-full h-14 px-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary) disabled:opacity-50 disabled:cursor-not-allowed"
                       />
@@ -289,6 +291,7 @@ export default function Contact() {
                       onChange={handleChange}
                       required
                       rows={5}
+                      maxLength={2000}
                       disabled={status === "submitting"}
                       className="w-full p-lg rounded-xl border border-(--color-text)/10 bg-white text-base focus:outline-none focus:border-(--color-primary) resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                     />
