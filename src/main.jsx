@@ -12,7 +12,6 @@ console.log(
     "║   👋 Hey there, fellow developer!                         ║\n" +
     "║                                                           ║\n" +
     "║   This site was designed & built by Matthew Hillman       ║\n" +
-    "║   📧 shadow_lion@icloud.com                               ║\n" +
     "║                                                           ║\n" +
     "║   Stack: React 18 • Vite 7 • Tailwind CSS 4               ║\n" +
     "║   Built: Jan-Feb 2026                                     ║\n" +

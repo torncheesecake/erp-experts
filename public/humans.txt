@@ -1,7 +1,6 @@
 /* TEAM */
 
 Developer: Matthew Hillman
-Contact: shadow_lion@icloud.com
 Location: United Kingdom
 
 /* THANKS */
