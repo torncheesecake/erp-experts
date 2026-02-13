@@ -1,0 +1,5 @@
+# robots.txt for ERP Experts
+User-agent: *
+Allow: /
+
+Sitemap: https://erpexperts.co.uk/sitemap.xml
