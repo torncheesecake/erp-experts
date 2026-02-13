@@ -523,19 +523,17 @@ export default function ResourceAssessment() {
                       transform: "translateX(30%) translateY(-30%)",
                     }}
                   />
-                  <h2 className="text-2xl md:text-3xl" style={{ marginBottom: "var(--space-xl)" }}>
-                    Your Readiness Score
-                  </h2>
+                  <h3 style={{ marginBottom: "var(--space-xl)" }}>Your Readiness Score</h3>
                   <div style={{ marginBottom: "var(--space-lg)" }}>
                     <ScoreRing score={clampedPercentage} />
                   </div>
                   <span
-                    className={`inline-block text-sm font-bold uppercase tracking-wider px-4 py-1.5 rounded-full ${band.color} ${band.bg}/10`}
+                    className={`inline-block text-base font-bold uppercase tracking-wider px-4 py-1.5 rounded-full ${band.color} ${band.bg}/10`}
                   >
                     {band.label}
                   </span>
                   <p
-                    className="text-base md:text-lg text-muted max-w-2xl mx-auto leading-relaxed"
+                    className="text-base text-muted max-w-2xl mx-auto leading-relaxed"
                     style={{ marginTop: "var(--space-lg)" }}
                   >
                     {band.summary}
@@ -544,10 +542,8 @@ export default function ResourceAssessment() {
 
                 {/* Category breakdown */}
                 <div style={{ marginTop: "var(--space-2xl)" }}>
-                  <h3 className="text-xl md:text-2xl" style={{ marginBottom: "var(--space-lg)" }}>
-                    Category Breakdown
-                  </h3>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-md">
+                  <h4 style={{ marginBottom: "var(--space-lg)" }}>Category Breakdown</h4>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-lg">
                     {questions.map((q) => {
                       const score = answers[q.key] || 0;
                       const Icon = q.icon;
@@ -555,28 +551,28 @@ export default function ResourceAssessment() {
                         <div
                           key={q.key}
                           className="rounded-xl border border-(--color-text)/15 flex flex-col"
-                          style={{ padding: "var(--space-lg)" }}
+                          style={{ padding: "var(--space-xl)" }}
                         >
                           <div
-                            className="flex items-center gap-sm"
-                            style={{ marginBottom: "var(--space-sm)" }}
+                            className="flex items-center gap-md"
+                            style={{ marginBottom: "var(--space-md)" }}
                           >
                             <div
-                              className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                              className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
                               style={{ backgroundColor: "rgba(232, 58, 122, 0.1)" }}
                             >
-                              <Icon className="w-4.5 h-4.5 text-primary" />
+                              <Icon className="w-5 h-5 text-primary" />
                             </div>
-                            <span className="text-sm font-bold leading-tight">{q.label}</span>
-                            <span className="ml-auto text-sm font-bold text-muted shrink-0">
+                            <span className="text-base font-bold leading-tight">{q.label}</span>
+                            <span className="ml-auto text-base font-bold text-muted shrink-0">
                               {score}/4
                             </span>
                           </div>
-                          <div className="flex gap-1.5" style={{ marginBottom: "var(--space-sm)" }}>
+                          <div className="flex gap-1.5" style={{ marginBottom: "var(--space-md)" }}>
                             {[1, 2, 3, 4].map((n) => (
                               <div
                                 key={n}
-                                className="h-2 flex-1 rounded-full"
+                                className="h-2.5 flex-1 rounded-full"
                                 style={{
                                   backgroundColor:
                                     n <= score ? "var(--color-primary)" : "var(--color-text)",
@@ -586,7 +582,7 @@ export default function ResourceAssessment() {
                             ))}
                           </div>
                           {q.feedback && q.feedback[score] && (
-                            <p className="text-xs text-muted leading-relaxed mt-auto">
+                            <p className="text-base text-muted leading-relaxed mt-auto">
                               {q.feedback[score]}
                             </p>
                           )}
@@ -606,12 +602,10 @@ export default function ResourceAssessment() {
                       "linear-gradient(135deg, rgba(232,58,122,0.06) 0%, rgba(124,58,237,0.06) 50%, rgba(37,99,235,0.06) 100%)",
                   }}
                 >
-                  <h3 className="text-xl md:text-2xl" style={{ marginBottom: "var(--space-xs)" }}>
-                    Want the full picture?
-                  </h3>
+                  <h4 style={{ marginBottom: "var(--space-md)" }}>Want the full picture?</h4>
                   <p
-                    className="text-sm text-muted max-w-lg mx-auto"
-                    style={{ marginBottom: "var(--space-lg)" }}
+                    className="text-base text-muted max-w-lg mx-auto"
+                    style={{ marginBottom: "var(--space-xl)" }}
                   >
                     Our detailed scorecard dives deeper with 20 questions and gives you a
                     comprehensive breakdown with personalised recommendations.
@@ -630,7 +624,7 @@ export default function ResourceAssessment() {
                       to="/contact"
                       trackingName="assessment_contact"
                       trackingPage="/resources/erp-readiness-assessment"
-                      className="inline-flex items-center gap-sm text-sm font-bold hover:opacity-80 transition-opacity"
+                      className="inline-flex items-center gap-sm text-base font-bold hover:opacity-80 transition-opacity"
                       style={{
                         color: "var(--color-primary)",
                         padding: "var(--space-sm) var(--space-md)",
