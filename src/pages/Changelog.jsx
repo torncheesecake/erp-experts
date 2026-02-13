@@ -28,6 +28,12 @@ const changelog = [
         description:
           "All sections on the Terms page are now collapsible with smooth CSS grid-rows animations. First 3 sections open by default. Includes an Expand all / Collapse all toggle.",
       },
+      {
+        type: "improved",
+        title: "Clean URLs",
+        description:
+          "Switched from HashRouter to BrowserRouter for clean URLs. Pages now accessible at /about instead of /#/about. Server-side .htaccess rewrites ensure direct links and page refreshes work correctly.",
+      },
     ],
   },
   {

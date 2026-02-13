@@ -1,4 +1,4 @@
-import { HashRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 
 // Layout - not lazy loaded as it's needed immediately
