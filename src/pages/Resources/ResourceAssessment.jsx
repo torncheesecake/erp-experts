@@ -15,6 +15,8 @@ import {
   ClipboardCheck,
   RotateCcw,
   ExternalLink,
+  Mail,
+  Loader2,
 } from "lucide-react";
 import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
@@ -244,6 +246,8 @@ export default function ResourceAssessment() {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [selected, setSelected] = useState(null);
+  const [leadForm, setLeadForm] = useState({ firstName: "", lastName: "", email: "" });
+  const [submitting, setSubmitting] = useState(false);
   const contentRef = useRef(null);
 
   const totalScore = Object.values(answers).reduce((sum, v) => sum + v, 0);
@@ -264,10 +268,51 @@ export default function ResourceAssessment() {
     }, 300);
   };
 
+  const isEmailValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isLeadFormValid =
+    leadForm.firstName.trim() && leadForm.lastName.trim() && isEmailValid(leadForm.email);
+
+  const handleLeadSubmit = async (e) => {
+    e.preventDefault();
+    if (!isLeadFormValid) return;
+    setSubmitting(true);
+
+    const payload = {
+      firstName: leadForm.firstName.trim(),
+      lastName: leadForm.lastName.trim(),
+      email: leadForm.email.trim(),
+      score: clampedPercentage,
+      band: band.label,
+      answers,
+      source: "erp-readiness-assessment",
+      timestamp: new Date().toISOString(),
+    };
+
+    const webhookUrl = import.meta.env.VITE_LEAD_CAPTURE_URL;
+    if (webhookUrl) {
+      try {
+        await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } catch {
+        // Silently fail — don't block results
+      }
+    }
+
+    setSubmitting(false);
+    setCurrentStep(8);
+    if (contentRef.current) {
+      contentRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   const restart = () => {
     setCurrentStep(0);
     setAnswers({});
     setSelected(null);
+    setLeadForm({ firstName: "", lastName: "", email: "" });
   };
 
   const progressPercent = currentStep === 0 ? 0 : Math.round((Math.min(currentStep, 6) / 6) * 100);
@@ -345,7 +390,7 @@ export default function ResourceAssessment() {
       {/* Assessment Body */}
       <section className="section-padding-lg" ref={contentRef}>
         <div className="container">
-          <div className={`mx-auto ${currentStep === 7 ? "max-w-6xl" : "max-w-4xl"}`}>
+          <div className={`mx-auto ${currentStep === 8 ? "max-w-6xl" : "max-w-4xl"}`}>
             {/* Progress bar */}
             {currentStep > 0 && currentStep <= 6 && (
               <div style={{ marginBottom: "var(--space-3xl)" }}>
@@ -480,8 +525,137 @@ export default function ResourceAssessment() {
                 );
               })()}
 
-            {/* Step 7: Results */}
+            {/* Step 7: Lead Capture */}
             {currentStep === 7 && (
+              <div
+                className="rounded-2xl border border-(--color-text)/15 relative overflow-hidden"
+                style={{ padding: "var(--space-3xl)" }}
+              >
+                {/* Decorative triangle */}
+                <div
+                  className="absolute top-0 right-0 opacity-5 pointer-events-none"
+                  style={{
+                    width: "200px",
+                    height: "172px",
+                    clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                    backgroundColor: "var(--color-primary)",
+                    transform: "translateX(30%) translateY(-30%)",
+                  }}
+                />
+                <div className="text-center" style={{ marginBottom: "var(--space-2xl)" }}>
+                  <div
+                    className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center"
+                    style={{
+                      backgroundColor: "var(--color-primary)",
+                      marginBottom: "var(--space-lg)",
+                    }}
+                  >
+                    <Mail className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 style={{ marginBottom: "var(--space-md)" }}>Your results are ready</h3>
+                  <p className="text-base text-muted max-w-lg mx-auto leading-relaxed">
+                    Enter your details below and we'll show your score instantly. We'll also send
+                    you a copy of your results.
+                  </p>
+                </div>
+                <form onSubmit={handleLeadSubmit} className="max-w-md mx-auto">
+                  <div className="flex flex-col" style={{ gap: "var(--space-md)" }}>
+                    <div className="grid grid-cols-2 gap-md">
+                      <div>
+                        <label
+                          htmlFor="firstName"
+                          className="block text-sm font-bold"
+                          style={{ marginBottom: "var(--space-xs)" }}
+                        >
+                          First name
+                        </label>
+                        <input
+                          id="firstName"
+                          type="text"
+                          required
+                          value={leadForm.firstName}
+                          onChange={(e) =>
+                            setLeadForm((prev) => ({ ...prev, firstName: e.target.value }))
+                          }
+                          className="w-full rounded-xl border border-(--color-text)/10 text-base focus:border-primary focus:outline-none transition-colors"
+                          style={{ padding: "var(--space-md) var(--space-lg)" }}
+                          placeholder="First name"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="lastName"
+                          className="block text-sm font-bold"
+                          style={{ marginBottom: "var(--space-xs)" }}
+                        >
+                          Last name
+                        </label>
+                        <input
+                          id="lastName"
+                          type="text"
+                          required
+                          value={leadForm.lastName}
+                          onChange={(e) =>
+                            setLeadForm((prev) => ({ ...prev, lastName: e.target.value }))
+                          }
+                          className="w-full rounded-xl border border-(--color-text)/10 text-base focus:border-primary focus:outline-none transition-colors"
+                          style={{ padding: "var(--space-md) var(--space-lg)" }}
+                          placeholder="Last name"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-bold"
+                        style={{ marginBottom: "var(--space-xs)" }}
+                      >
+                        Work email
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        required
+                        value={leadForm.email}
+                        onChange={(e) =>
+                          setLeadForm((prev) => ({ ...prev, email: e.target.value }))
+                        }
+                        className="w-full rounded-xl border border-(--color-text)/10 text-base focus:border-primary focus:outline-none transition-colors"
+                        style={{ padding: "var(--space-md) var(--space-lg)" }}
+                        placeholder="you@company.com"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={!isLeadFormValid || submitting}
+                      className="btn btn-lg w-full inline-flex items-center justify-center gap-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                      style={{ marginTop: "var(--space-md)" }}
+                    >
+                      {submitting ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          Get your results
+                          <ArrowRight className="w-5 h-5" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <p
+                    className="text-sm text-muted text-center"
+                    style={{ marginTop: "var(--space-lg)" }}
+                  >
+                    No spam. We'll send you a copy of your results and that's it.
+                  </p>
+                </form>
+              </div>
+            )}
+
+            {/* Step 8: Results */}
+            {currentStep === 8 && (
               <div>
                 {/* Top actions row */}
                 <div
