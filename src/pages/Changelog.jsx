@@ -12,6 +12,12 @@ const changelog = [
     entries: [
       {
         type: "added",
+        title: "ERP Readiness Assessment",
+        description:
+          "Interactive 6-question assessment at /resources/erp-readiness-assessment. Instant readiness score with category breakdown across leadership, experience, resources, priority, data, and success definition. Links to full ScoreApp scorecard for detailed results.",
+      },
+      {
+        type: "added",
         title: "FAQ page",
         description:
           "New FAQ page with collapsible accordion, 4 categories (Getting Started, Implementation, Support, General). Route at /faq, linked from footer.",
@@ -607,7 +613,7 @@ export default function Changelog() {
                             {config.label}
                           </span>
                         </div>
-                        <h4 className="mb-md text-lg md:text-xl">{entry.title}</h4>
+                        <h4 className="mb-md text-base md:text-lg">{entry.title}</h4>
                         <p className="text-base text-muted leading-relaxed">{entry.description}</p>
                       </div>
                     );

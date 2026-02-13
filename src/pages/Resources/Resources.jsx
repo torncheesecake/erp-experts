@@ -4,7 +4,9 @@
  */
 
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, FileText, Clock } from "lucide-react";
+import { ArrowRight, BookOpen, FileText, ClipboardCheck, Clock } from "lucide-react";
+
+const typeIcons = { Guide: BookOpen, Article: FileText, Assessment: ClipboardCheck };
 import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
 
@@ -13,6 +15,15 @@ import erpWorkForYouHero from "../../assets/521dfd_8d98556467bd405188ecbb172caa3
 import erpImplementationHero from "../../assets/521dfd_d357dbfbc21d409792ca92d69250c49a~mv2.webp";
 
 const resources = [
+  {
+    slug: "erp-readiness-assessment",
+    type: "Assessment",
+    title: "ERP Readiness Assessment",
+    subtitle: "Find out if your business is ready for NetSuite",
+    desc: "Answer 6 quick questions to get an instant readiness score. See where you stand across leadership, resources, data, and more.",
+    readTime: "2 min",
+    image: "https://images.unsplash.com/photo-1553484771-047a44eee27a?w=800&q=80",
+  },
   {
     slug: "is-netsuite-right-for-your-business",
     type: "Guide",
@@ -184,7 +195,7 @@ export default function Resources() {
               <Link
                 key={i}
                 to={`/resources/${resource.slug}`}
-                className="group block overflow-hidden rounded-2xl md:rounded-3xl border border-(--color-text)/5 hover:border-(--color-primary)/20 transition-all hover:-translate-y-2 hover:shadow-lg"
+                className="group block overflow-hidden rounded-2xl md:rounded-3xl border border-(--color-text)/15 hover:border-(--color-primary)/30 transition-all hover:-translate-y-2 hover:shadow-lg"
               >
                 <div className="aspect-[16/9] relative overflow-hidden">
                   <img
@@ -206,11 +217,10 @@ export default function Resources() {
                   {/* Type badge */}
                   <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm">
                     <div className="flex items-center gap-1.5">
-                      {resource.type === "Guide" ? (
-                        <BookOpen className="w-3.5 h-3.5 text-primary" />
-                      ) : (
-                        <FileText className="w-3.5 h-3.5 text-primary" />
-                      )}
+                      {(() => {
+                        const TypeIcon = typeIcons[resource.type] || FileText;
+                        return <TypeIcon className="w-3.5 h-3.5 text-primary" />;
+                      })()}
                       <span className="text-xs font-bold">{resource.type}</span>
                     </div>
                   </div>
@@ -221,7 +231,7 @@ export default function Resources() {
                     <span className="text-sm">{resource.readTime}</span>
                   </div>
                   <h4
-                    className="group-hover:text-primary transition-colors"
+                    className="text-xl group-hover:text-primary transition-colors"
                     style={{ marginBottom: "var(--space-sm)" }}
                   >
                     {resource.title}
