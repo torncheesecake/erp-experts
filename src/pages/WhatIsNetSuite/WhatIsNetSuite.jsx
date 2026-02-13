@@ -700,7 +700,7 @@ export default function WhatIsNetSuite() {
                     trackingPage="what-is-netsuite"
                     className="btn sm:btn-lg justify-center bg-white text-(--color-tertiary) hover:scale-105 transition-transform"
                   >
-                    Talk to an expert
+                    Start a conversation
                     <ArrowRight className="w-5 h-5" />
                   </TrackedLink>
                   <a

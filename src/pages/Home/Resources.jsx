@@ -12,28 +12,28 @@ import erpImplementationHero from "../../assets/521dfd_d357dbfbc21d409792ca92d69
 
 const resources = [
   {
-    slug: "cfo-guide-ai-enhanced-finance",
+    slug: "is-netsuite-right-for-your-business",
     type: "Guide",
     icon: BookOpen,
-    title: "A CFO's Guide to AI-Enhanced Finance",
-    image: "https://images.unsplash.com/photo-1639322537228-f710d846310a?w=600&q=80",
-    desc: "Discover how AI capabilities can empower your financial leadership and drive competitive advantage.",
+    title: "Is NetSuite Right for Your Business?",
+    image: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=600&q=80",
+    desc: "An honest evaluation guide. No sales pitch, just practical questions and real trade-offs.",
   },
   {
-    slug: "stress-free-erp-implementation",
+    slug: "future-of-work-generative-ai",
     type: "Guide",
     icon: BookOpen,
-    title: "The Ultimate Guide to a Stress-Free ERP Implementation",
-    image: erpImplementationHero,
-    desc: "How to make your ERP project a success with the right partner and approach.",
+    title: "The Future of Work: Leveraging the Potential of Generative AI",
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&q=80",
+    desc: "How generative AI is shifting the focus from automation to augmentation of human capabilities.",
   },
   {
-    slug: "your-erp-system-should-work-for-you",
-    type: "Article",
-    icon: FileText,
-    title: "Your ERP System Should Work For You",
-    image: erpWorkForYouHero,
-    desc: "You deserve technology that keeps up with your ambitions, not something that holds you back.",
+    slug: "4-skills-cfos-need-now",
+    type: "Guide",
+    icon: BookOpen,
+    title: "4 Skills CFOs Need Now",
+    image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80",
+    desc: "The CFO's job is no longer just about the numbers. Discover the top skills for modern finance leaders.",
   },
 ];
 

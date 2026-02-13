@@ -99,7 +99,7 @@ export default function FinalCTA() {
                   trackingPage="homepage"
                   className="btn sm:btn-lg justify-center bg-white text-(--color-primary) hover:scale-105 transition-transform whitespace-nowrap"
                 >
-                  Start a project
+                  Start a conversation
                   <ArrowRight className="w-5 h-5" />
                 </TrackedLink>
                 <TrackedLink

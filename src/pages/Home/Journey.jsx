@@ -133,7 +133,7 @@ export default function Journey() {
               className="btn sm:btn-lg w-full justify-center mt-xl text-white whitespace-nowrap"
               style={{ backgroundColor: "var(--color-tertiary)" }}
             >
-              Get started
+              Start a conversation
               <ArrowRight className="w-5 h-5" />
             </TrackedLink>
           </div>

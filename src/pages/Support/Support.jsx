@@ -459,7 +459,7 @@ export default function Support() {
                     className="btn sm:btn-lg w-full justify-center mt-xl text-white"
                     style={{ backgroundColor: `var(${colorVar})` }}
                   >
-                    Get started
+                    Start a conversation
                     <ArrowRight className="w-5 h-5" />
                   </TrackedLink>
                 </div>

@@ -414,7 +414,7 @@ export default function CaseStudies() {
               className="btn sm:btn-lg justify-center text-white hover:scale-105 transition-transform"
               style={{ backgroundColor: "var(--color-quaternary)" }}
             >
-              Start a project
+              Start a conversation
               <ArrowRight className="w-5 h-5" />
             </TrackedLink>
             <a

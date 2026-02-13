@@ -2,8 +2,18 @@
  * Terms and Conditions Page
  */
 
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, FileText, Scale, Shield, Clock, CreditCard, AlertCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  FileText,
+  Scale,
+  Shield,
+  Clock,
+  CreditCard,
+  AlertCircle,
+  ChevronDown,
+} from "lucide-react";
 import SEO from "../components/ui/SEO";
 
 const definitions = [
@@ -1009,15 +1019,18 @@ const ClauseCard = ({ clause, color = "primary" }) => {
 };
 
 // Section component
-const TermsSection = ({ section }) => {
+const TermsSection = ({ section, isOpen, onToggle }) => {
   const color = section.color || "primary";
   const bgColor = color === "secondary" ? "var(--color-secondary)" : "var(--color-primary)";
   const clauseCount = section.clauses?.length || 0;
 
   return (
-    <div style={{ marginBottom: "var(--space-3xl)" }}>
-      {/* Section header */}
-      <div className="flex items-center gap-md mb-xl">
+    <div style={{ marginBottom: "var(--space-xl)" }}>
+      {/* Section header - clickable */}
+      <button
+        onClick={onToggle}
+        className="w-full flex items-center gap-md py-md cursor-pointer group text-left"
+      >
         <span
           className="flex items-end justify-center text-white font-heading text-lg font-bold shrink-0"
           style={{
@@ -1030,65 +1043,108 @@ const TermsSection = ({ section }) => {
         >
           {section.number}
         </span>
-        <h2 className="text-2xl md:text-3xl">{section.title}</h2>
-      </div>
+        <h2 className="text-2xl md:text-3xl flex-1 group-hover:text-primary transition-colors">
+          {section.title}
+        </h2>
+        <ChevronDown
+          className={`w-6 h-6 text-muted transition-transform duration-300 shrink-0 ${isOpen ? "rotate-180" : ""}`}
+        />
+      </button>
 
-      {/* Intro text if present */}
-      {section.intro && (
-        <div className="bg-(--color-text)/5 rounded-2xl p-xl mb-lg">
-          <p className="text-muted">{section.intro}</p>
-        </div>
-      )}
+      {/* Collapsible content */}
+      <div
+        className="grid transition-[grid-template-rows] duration-300 ease-in-out"
+        style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
+      >
+        <div className="overflow-hidden">
+          <div className="pt-md pb-lg">
+            {/* Intro text if present */}
+            {section.intro && (
+              <div className="bg-(--color-text)/5 rounded-2xl p-xl mb-lg">
+                <p className="text-muted">{section.intro}</p>
+              </div>
+            )}
 
-      {/* Important callout if present */}
-      {section.important && (
-        <div
-          className={`rounded-2xl p-xl mb-xl border-2 ${color === "secondary" ? "border-secondary/20" : "border-primary/20"}`}
-          style={{
-            backgroundColor:
-              color === "secondary" ? "rgba(147, 51, 234, 0.05)" : "rgba(236, 72, 153, 0.05)",
-          }}
-        >
-          <div className="flex items-start gap-md">
-            <AlertCircle
-              className={`w-6 h-6 ${color === "secondary" ? "text-secondary" : "text-primary"} shrink-0 mt-1`}
-            />
-            <div>
-              <p className="font-bold mb-sm">{section.important.title}</p>
-              <p className="text-muted">{section.important.text}</p>
-            </div>
+            {/* Important callout if present */}
+            {section.important && (
+              <div
+                className={`rounded-2xl p-xl mb-xl border-2 ${color === "secondary" ? "border-secondary/20" : "border-primary/20"}`}
+                style={{
+                  backgroundColor:
+                    color === "secondary" ? "rgba(147, 51, 234, 0.05)" : "rgba(236, 72, 153, 0.05)",
+                }}
+              >
+                <div className="flex items-start gap-md">
+                  <AlertCircle
+                    className={`w-6 h-6 ${color === "secondary" ? "text-secondary" : "text-primary"} shrink-0 mt-1`}
+                  />
+                  <div>
+                    <p className="font-bold mb-sm">{section.important.title}</p>
+                    <p className="text-muted">{section.important.text}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Clauses */}
+            {section.clauses && (
+              <div className={getGridCols(clauseCount)}>
+                {section.clauses.map((clause) => (
+                  <ClauseCard key={clause.id} clause={clause} color={color} />
+                ))}
+              </div>
+            )}
+
+            {/* Examples for Aftercare */}
+            {section.examples && (
+              <div
+                className="mt-lg rounded-2xl p-xl border-2 border-secondary/20"
+                style={{ backgroundColor: "rgba(147, 51, 234, 0.05)" }}
+              >
+                <p className="text-sm font-bold mb-md text-secondary">Examples:</p>
+                <ul className="text-sm text-muted space-y-sm">
+                  {section.examples.map((example, i) => (
+                    <li key={i}>{example}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
-      )}
-
-      {/* Clauses */}
-      {section.clauses && (
-        <div className={getGridCols(clauseCount)}>
-          {section.clauses.map((clause) => (
-            <ClauseCard key={clause.id} clause={clause} color={color} />
-          ))}
-        </div>
-      )}
-
-      {/* Examples for Aftercare */}
-      {section.examples && (
-        <div
-          className="mt-lg rounded-2xl p-xl border-2 border-secondary/20"
-          style={{ backgroundColor: "rgba(147, 51, 234, 0.05)" }}
-        >
-          <p className="text-sm font-bold mb-md text-secondary">Examples:</p>
-          <ul className="text-sm text-muted space-y-sm">
-            {section.examples.map((example, i) => (
-              <li key={i}>{example}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      </div>
     </div>
   );
 };
 
+// All section keys: "1" for Interpretation, then termsSections numbers
+const allSectionKeys = ["1", ...termsSections.map((s) => s.number)];
+const defaultOpenSections = ["1", "2", "3"];
+
 export default function Terms() {
+  const [openSections, setOpenSections] = useState(new Set(defaultOpenSections));
+
+  const toggleSection = (key) => {
+    setOpenSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  };
+
+  const allExpanded = openSections.size === allSectionKeys.length;
+
+  const toggleAll = () => {
+    if (allExpanded) {
+      setOpenSections(new Set());
+    } else {
+      setOpenSections(new Set(allSectionKeys));
+    }
+  };
+
   return (
     <main id="main-content">
       <SEO
@@ -1128,6 +1184,10 @@ export default function Terms() {
               These terms govern the relationship between ERP Experts Ltd and our customers for the
               supply of NetSuite implementation, support, and consulting services.
             </p>
+            <p className="text-sm text-muted/50 mt-md flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" />
+              Last updated: February 2026
+            </p>
           </div>
         </div>
       </section>
@@ -1153,9 +1213,22 @@ export default function Terms() {
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
           <div>
+            {/* Expand / Collapse all */}
+            <div className="flex justify-end mb-xl">
+              <button
+                onClick={toggleAll}
+                className="text-sm font-medium text-primary hover:text-primary/80 transition-colors cursor-pointer"
+              >
+                {allExpanded ? "Collapse all" : "Expand all"}
+              </button>
+            </div>
+
             {/* Section 1: Interpretation - Special layout for definitions */}
-            <div style={{ marginBottom: "var(--space-3xl)" }}>
-              <div className="flex items-center gap-md mb-xl">
+            <div style={{ marginBottom: "var(--space-xl)" }}>
+              <button
+                onClick={() => toggleSection("1")}
+                className="w-full flex items-center gap-md py-md cursor-pointer group text-left"
+              >
                 <span
                   className="flex items-end justify-center text-white font-heading text-lg font-bold shrink-0"
                   style={{
@@ -1168,30 +1241,50 @@ export default function Terms() {
                 >
                   1
                 </span>
-                <h2 className="text-2xl md:text-3xl">Interpretation</h2>
-              </div>
-              <p className="text-lg text-muted mb-xl">
-                The definitions and rules of interpretation in this clause apply in these
-                Conditions.
-              </p>
+                <h2 className="text-2xl md:text-3xl flex-1 group-hover:text-primary transition-colors">
+                  Interpretation
+                </h2>
+                <ChevronDown
+                  className={`w-6 h-6 text-muted transition-transform duration-300 shrink-0 ${openSections.has("1") ? "rotate-180" : ""}`}
+                />
+              </button>
 
-              <h4 className="mb-lg">1.1 Definitions</h4>
-              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-md">
-                {definitions.map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex flex-col gap-sm p-lg rounded-xl border border-(--color-text)/10 hover:border-primary/20 transition-colors"
-                  >
-                    <div className="font-bold text-primary">{item.term}</div>
-                    <div className="text-muted text-sm">{item.definition}</div>
+              <div
+                className="grid transition-[grid-template-rows] duration-300 ease-in-out"
+                style={{ gridTemplateRows: openSections.has("1") ? "1fr" : "0fr" }}
+              >
+                <div className="overflow-hidden">
+                  <div className="pt-md pb-lg">
+                    <p className="text-lg text-muted mb-xl">
+                      The definitions and rules of interpretation in this clause apply in these
+                      Conditions.
+                    </p>
+
+                    <h4 className="mb-lg">1.1 Definitions</h4>
+                    <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-md">
+                      {definitions.map((item, i) => (
+                        <div
+                          key={i}
+                          className="flex flex-col gap-sm p-lg rounded-xl border border-(--color-text)/10 hover:border-primary/20 transition-colors"
+                        >
+                          <div className="font-bold text-primary">{item.term}</div>
+                          <div className="text-muted text-sm">{item.definition}</div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                ))}
+                </div>
               </div>
             </div>
 
             {/* All other sections rendered dynamically */}
             {termsSections.map((section) => (
-              <TermsSection key={section.number} section={section} />
+              <TermsSection
+                key={section.number}
+                section={section}
+                isOpen={openSections.has(section.number)}
+                onToggle={() => toggleSection(section.number)}
+              />
             ))}
 
             {/* Contact */}

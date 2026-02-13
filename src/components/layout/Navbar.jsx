@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Menu, X, ChevronDown } from "lucide-react";
+import { ArrowRight, Menu, X, ChevronDown, Phone } from "lucide-react";
 import logoImage from "../../assets/ERP Experts Europe Transparent.png";
 import TrackedLink from "../ui/TrackedLink";
 
@@ -100,6 +100,19 @@ export default function Navbar() {
           >
             About
           </Link>
+          <Link
+            to="/resources"
+            className="text-base font-medium text-(--color-text) opacity-70 hover:opacity-100 transition-opacity"
+          >
+            Resources
+          </Link>
+          <a
+            href="tel:+441785336253"
+            className="flex items-center gap-1.5 text-base font-medium text-(--color-text) opacity-50 hover:opacity-100 transition-opacity"
+          >
+            <Phone className="w-3.5 h-3.5" />
+            01785 336 253
+          </a>
           <TrackedLink
             to="/contact"
             trackingName="navbar_lets_talk"
@@ -187,6 +200,19 @@ export default function Navbar() {
               onClick={() => setMobileMenuOpen(false)}
             >
               About
+            </Link>
+            <Link
+              to="/resources"
+              className="text-lg font-bold"
+              style={{
+                padding: "var(--space-md) 0",
+                minHeight: "48px",
+                display: "flex",
+                alignItems: "center",
+              }}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Resources
             </Link>
             <TrackedLink
               to="/contact"

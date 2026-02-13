@@ -17,6 +17,8 @@ const footerLinks = [
     links: [
       { label: "About", href: "/about" },
       { label: "Case Studies", href: "/case-studies" },
+      { label: "Resources", href: "/resources" },
+      { label: "FAQ", href: "/faq" },
       { label: "Contact", href: "/contact" },
     ],
   },

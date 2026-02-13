@@ -14,6 +14,7 @@ import {
   Eye,
   ToggleRight,
   Scale,
+  Clock,
 } from "lucide-react";
 import SEO from "../components/ui/SEO";
 
@@ -255,6 +256,10 @@ export default function Cookies() {
             </h1>
             <p className="text-xl text-muted">
               How we use cookies to improve your experience on our website.
+            </p>
+            <p className="text-sm text-muted/50 mt-md flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" />
+              Last updated: February 2026
             </p>
           </div>
         </div>

@@ -81,7 +81,7 @@ export default function Hero() {
             trackingPage="homepage"
             className="btn btn-primary btn-lg w-full sm:w-auto justify-center animate-hero-delay-3 text-lg px-8 py-4"
           >
-            Start a project
+            Start a conversation
             <ArrowRight className="w-6 h-6" />
           </TrackedLink>
         </div>

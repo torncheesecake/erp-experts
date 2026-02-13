@@ -1,0 +1,280 @@
+/**
+ * ERP Experts FAQ Page
+ */
+
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  ArrowRight,
+  ChevronDown,
+  HelpCircle,
+  Rocket,
+  Settings,
+  HeadphonesIcon,
+  MessageSquare,
+} from "lucide-react";
+import SEO from "../../components/ui/SEO";
+import TrackedLink from "../../components/ui/TrackedLink";
+
+const faqCategories = [
+  {
+    title: "Getting Started",
+    icon: Rocket,
+    color: "tertiary",
+    questions: [
+      {
+        q: "Is NetSuite right for my business?",
+        a: "NetSuite is a strong fit for mid-market organisations that need unified financials, inventory, and CRM in a single cloud platform. It handles multi-entity, multi-currency, and multi-country operations well. However, very small businesses may find it over-engineered, and organisations with highly specialised manufacturing or field service needs may be better served by industry-specific platforms. We are always honest about fit. If NetSuite is not right for you, we will tell you.",
+      },
+      {
+        q: "How much does NetSuite cost?",
+        a: "NetSuite licensing is based on the modules you need and the number of users. Implementation costs depend on complexity, customisation, and data migration requirements. We provide fixed-price quotes after a proper scoping exercise so there are no surprises. As a guide, a typical mid-market implementation represents a significant investment, but one that pays for itself through efficiency gains and better decision-making.",
+      },
+      {
+        q: "How long does implementation take?",
+        a: "A typical mid-market NetSuite implementation takes between three and six months. The main factors that affect timelines are the complexity of your requirements, the quality of your existing data, and how much time your team can dedicate to the project. We are realistic about timelines from the start and build in buffer for data migration and testing.",
+      },
+      {
+        q: "Do you only work with NetSuite?",
+        a: "Yes. NetSuite is all we do, and it has been for over 20 years. That focus means our team has deep expertise in the platform rather than surface-level knowledge across many products. When you work with us, you are working with specialists, not generalists.",
+      },
+    ],
+  },
+  {
+    title: "Implementation",
+    icon: Settings,
+    color: "tertiary",
+    questions: [
+      {
+        q: "What does the implementation process look like?",
+        a: "We start with a thorough discovery phase to understand your business processes and requirements. From there, we build a detailed project plan with clear milestones. The process typically follows: scoping, configuration, data migration, testing, training, and go-live. Your team is involved throughout, and we assign a dedicated project manager who stays with you from start to finish.",
+      },
+      {
+        q: "Will my team need training?",
+        a: "Yes, and we consider this essential to a successful implementation. We provide role-based training tailored to how each team member will actually use the system. This is not generic classroom training. We train your people on your specific workflows, in your configured environment, so they are confident from day one.",
+      },
+      {
+        q: "Can I keep my existing tools and integrations?",
+        a: "In most cases, yes. NetSuite integrates well with a wide range of third-party tools including e-commerce platforms, CRM systems, payment processors, and more. During scoping, we map out your existing technology stack and identify what needs to integrate, what can be replaced by native NetSuite functionality, and what should remain standalone.",
+      },
+      {
+        q: "What if my project goes off track?",
+        a: "We have built-in checkpoints throughout every project to catch issues early. If something does go off track, we address it transparently and work with you to find a solution. We also specialise in rescuing troubled NetSuite implementations that other partners have left in a difficult state.",
+      },
+    ],
+  },
+  {
+    title: "Support",
+    icon: HeadphonesIcon,
+    color: "secondary",
+    questions: [
+      {
+        q: "What happens after go-live?",
+        a: "Go-live is the beginning of your NetSuite journey, not the end. We provide post-go-live support to address any teething issues and help your team settle into the new system. Beyond that, we offer ongoing support plans that include system health checks, optimisation, and access to our support team for day-to-day questions and issues.",
+      },
+      {
+        q: "What are your support hours?",
+        a: "Our standard support operates during UK business hours. We offer different support tiers depending on your needs, from basic assistance to priority response times. For organisations that need it, we can discuss extended coverage arrangements. Every support plan includes access to our ticketing system for logging and tracking issues.",
+      },
+      {
+        q: "Can you fix a broken NetSuite setup?",
+        a: "Absolutely. We regularly take on rescue projects where a previous implementation has gone wrong or where a system has grown messy over time. We start with a health audit to understand the current state, then create a prioritised plan to get things working properly. Some of our best client relationships started as rescue projects.",
+      },
+    ],
+  },
+  {
+    title: "General",
+    icon: MessageSquare,
+    color: "primary",
+    questions: [
+      {
+        q: "Where are you based?",
+        a: "Our headquarters are in Stafford, with additional offices in Manchester and Dubai (for the MENA region). We work with clients across the UK and internationally. Most of our work is delivered remotely, but we are happy to meet in person when it adds value.",
+      },
+      {
+        q: "How do I get started?",
+        a: "The best first step is a conversation. We will ask about your business, your current systems, and what you are trying to achieve. From there, we can advise whether NetSuite is the right fit and, if so, outline what an implementation would look like for your specific situation. No commitment, no hard sell.",
+      },
+      {
+        q: "What makes you different from other NetSuite partners?",
+        a: "We have been doing this for over 20 years, and NetSuite is the only thing we do. We offer fixed pricing with no surprises, and the same team that scopes your project is the team that delivers it. We also maintain a 100% client retention rate, which we think says more than any sales pitch could.",
+      },
+    ],
+  },
+];
+
+export default function FAQ() {
+  const [openItems, setOpenItems] = useState({});
+
+  const toggleItem = (categoryIndex, questionIndex) => {
+    const key = `${categoryIndex}-${questionIndex}`;
+    setOpenItems((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const isOpen = (categoryIndex, questionIndex) => {
+    return openItems[`${categoryIndex}-${questionIndex}`] || false;
+  };
+
+  return (
+    <main id="main-content">
+      <SEO
+        title="Frequently Asked Questions"
+        description="Common questions about NetSuite implementation, support, and working with ERP Experts. Honest answers from a team with over 20 years of experience."
+        path="/faq"
+        keywords="NetSuite FAQ, NetSuite questions, ERP implementation questions, NetSuite cost, NetSuite partner FAQ"
+      />
+
+      {/* Hero */}
+      <section
+        className="flex items-center relative overflow-hidden"
+        style={{ paddingTop: "140px", paddingBottom: "var(--space-2xl)", minHeight: "45vh" }}
+      >
+        <div
+          className="absolute top-1/2 right-0 opacity-10 hidden lg:block pointer-events-none"
+          style={{
+            width: "600px",
+            height: "514px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-primary)",
+            transform: "translateX(30%) translateY(-50%)",
+          }}
+        />
+        <div className="container relative z-10">
+          <div className="max-w-3xl">
+            <p className="text-label text-primary mb-md">FAQ</p>
+            <h1
+              className="text-4xl sm:text-5xl md:text-6xl lg:!text-[7rem] font-bold leading-[1.1]"
+              style={{ marginBottom: "var(--space-lg)" }}
+            >
+              Common <span className="text-primary">questions</span>.
+            </h1>
+            <p className="text-xl md:text-2xl text-muted max-w-2xl">
+              Honest answers about NetSuite, implementation, and working with us.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Categories */}
+      <section className="section-padding-lg border-t border-(--color-text)/10">
+        <div className="container">
+          <div className="flex flex-col gap-3xl">
+            {faqCategories.map((category, catIndex) => (
+              <div key={catIndex}>
+                {/* Category header */}
+                <div className="flex items-center gap-md mb-xl">
+                  <div
+                    className={`icon-box icon-box-md rounded-xl bg-${category.color}/10`}
+                  >
+                    <category.icon className={`w-6 h-6 text-${category.color}`} />
+                  </div>
+                  <h2 className="text-2xl md:text-3xl">{category.title}</h2>
+                </div>
+
+                {/* Questions */}
+                <div className="flex flex-col gap-md">
+                  {category.questions.map((item, qIndex) => (
+                    <div
+                      key={qIndex}
+                      className="rounded-2xl border border-(--color-text)/10 hover:border-primary/20 transition-colors overflow-hidden"
+                    >
+                      <button
+                        onClick={() => toggleItem(catIndex, qIndex)}
+                        className="w-full flex items-center justify-between gap-lg p-lg md:p-xl text-left"
+                      >
+                        <span className="text-lg font-bold">{item.q}</span>
+                        <ChevronDown
+                          className={`w-5 h-5 text-primary shrink-0 transition-transform duration-300 ${
+                            isOpen(catIndex, qIndex) ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+                      <div
+                        className={`grid transition-all duration-300 ${
+                          isOpen(catIndex, qIndex)
+                            ? "grid-rows-[1fr] opacity-100"
+                            : "grid-rows-[0fr] opacity-0"
+                        }`}
+                      >
+                        <div className="overflow-hidden">
+                          <p className="text-lg text-muted leading-relaxed px-lg md:px-xl pb-lg md:pb-xl">
+                            {item.a}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="section-padding-lg">
+        <div className="container">
+          <div className="rounded-2xl md:rounded-3xl overflow-hidden relative">
+            <div
+              className="absolute inset-0"
+              style={{
+                background: "linear-gradient(135deg, var(--color-primary) 0%, #a01d5a 100%)",
+              }}
+            />
+            <div
+              className="absolute top-0 left-0 opacity-10 hidden md:block"
+              style={{
+                width: "250px",
+                height: "215px",
+                clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                backgroundColor: "white",
+                transform: "translateX(-60px) translateY(-60px)",
+              }}
+            />
+            <div
+              className="absolute bottom-0 right-0 opacity-10 hidden md:block"
+              style={{
+                width: "300px",
+                height: "260px",
+                clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                backgroundColor: "white",
+                transform: "translateX(80px) translateY(80px)",
+              }}
+            />
+
+            <div className="relative z-10 p-xl md:p-2xl text-center">
+              <div className="icon-box icon-box-lg rounded-2xl bg-white/20 mx-auto mb-lg">
+                <HelpCircle className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-white" style={{ marginBottom: "var(--space-lg)" }}>
+                Still have <span className="text-white/80">questions</span>?
+              </h2>
+              <p className="text-white/70 text-lg max-w-2xl mx-auto mb-xl">
+                We are happy to chat through your specific situation. No obligation, no hard sell.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-md justify-center">
+                <TrackedLink
+                  to="/contact"
+                  trackingName="faq_cta_contact"
+                  trackingPage="faq"
+                  className="btn justify-center bg-white text-primary hover:scale-105 transition-transform"
+                >
+                  Start a conversation
+                  <ArrowRight className="w-5 h-5" />
+                </TrackedLink>
+                <TrackedLink
+                  href="https://calendly.com/discovery-erpexperts/discovery"
+                  trackingName="faq_cta_book_call"
+                  trackingPage="faq"
+                  className="btn justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"
+                >
+                  Book a call
+                </TrackedLink>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}

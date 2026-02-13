@@ -5,7 +5,6 @@
 
 import { useParams, Link } from "react-router-dom";
 import {
-  ArrowLeft,
   ArrowRight,
   Clock,
   Calendar,
@@ -29,6 +28,7 @@ import {
 } from "lucide-react";
 import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
+import Breadcrumb from "../../components/ui/Breadcrumb";
 import erpWorkForYouHero from "../../assets/521dfd_8d98556467bd405188ecbb172caa3b1f~mv2.png.jpeg";
 import erpImplementationHero from "../../assets/521dfd_d357dbfbc21d409792ca92d69250c49a~mv2.webp";
 const erpImplementationSecondary = erpImplementationHero; // Use same image as fallback
@@ -1082,13 +1082,14 @@ export default function ResourceArticle() {
         />
 
         <div className="container relative z-20 pt-(--space-4xl)">
-          <Link
-            to="/resources"
-            className="inline-flex items-center gap-sm px-4 py-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors mb-xl font-medium"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Resources
-          </Link>
+          <Breadcrumb
+            items={[
+              { label: "Home", to: "/" },
+              { label: "Resources", to: "/resources" },
+              { label: article.title },
+            ]}
+            light
+          />
 
           <div style={{ maxWidth: "800px" }}>
             {/* Meta badges */}
@@ -1386,19 +1387,6 @@ export default function ResourceArticle() {
         </div>
       </section>
 
-      {/* Back to Resources */}
-      <section style={{ paddingTop: "var(--space-xl)", paddingBottom: "0" }}>
-        <div className="container">
-          <Link
-            to="/resources"
-            className="inline-flex items-center gap-sm px-4 py-2 rounded-full bg-(--color-text)/5 hover:bg-(--color-text)/10 transition-colors font-medium text-muted hover:text-(--color-text)"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Resources
-          </Link>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="section-padding-lg">
         <div className="container">
@@ -1447,7 +1435,7 @@ export default function ResourceArticle() {
                     trackingPage="resource-article"
                     className="btn btn-lg justify-center bg-white text-primary hover:scale-105 transition-transform"
                   >
-                    Talk to an expert
+                    Start a conversation
                     <ArrowRight className="w-5 h-5" />
                   </TrackedLink>
                 </div>

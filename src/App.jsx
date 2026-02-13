@@ -32,10 +32,12 @@ const Contact = lazy(() => import("./pages/Contact/Contact"));
 const Support = lazy(() => import("./pages/Support/Support"));
 const WhatIsNetSuite = lazy(() => import("./pages/WhatIsNetSuite/WhatIsNetSuite"));
 const DesignGuide = lazy(() => import("./pages/DesignGuide"));
+const Changelog = lazy(() => import("./pages/Changelog"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Cookies = lazy(() => import("./pages/Cookies"));
+const FAQ = lazy(() => import("./pages/FAQ/FAQ"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -86,9 +88,11 @@ function App() {
             <Route path="/support" element={<Support />} />
             <Route path="/what-is-netsuite" element={<WhatIsNetSuite />} />
             <Route path="/design-guide" element={<DesignGuide />} />
+            <Route path="/changelog" element={<Changelog />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/cookies" element={<Cookies />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

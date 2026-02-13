@@ -4,8 +4,9 @@
  */
 
 import { useParams, Link } from "react-router-dom";
-import { ArrowRight, ArrowLeft, MessageSquareQuote, Check } from "lucide-react";
+import { ArrowRight, MessageSquareQuote, Check } from "lucide-react";
 import SEO from "../../components/ui/SEO";
+import Breadcrumb from "../../components/ui/Breadcrumb";
 
 // Import images - Carallon
 import carallonLogo from "../../assets/carallon_logo_white.png.avif";
@@ -249,13 +250,14 @@ function SharedHero({ caseStudy }) {
         />
 
         <div className="container relative z-10">
-          <Link
-            to="/case-studies"
-            className="inline-flex items-center gap-sm text-base md:text-lg font-bold text-white bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition-colors mb-xl"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Back to case studies
-          </Link>
+          <Breadcrumb
+            items={[
+              { label: "Home", to: "/" },
+              { label: "Case Studies", to: "/case-studies" },
+              { label: caseStudy.client },
+            ]}
+            light
+          />
 
           <div className="max-w-3xl">
             {caseStudy.logo && (
