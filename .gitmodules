@@ -1,0 +1,3 @@
+[submodule "src/quizlift"]
+	path = src/quizlift
+	url = https://github.com/torncheesecake/quizlift.git

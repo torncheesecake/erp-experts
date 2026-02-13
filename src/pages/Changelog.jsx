@@ -11,6 +11,12 @@ const changelog = [
     date: "13 February 2026",
     entries: [
       {
+        type: "improved",
+        title: "Assessment extracted to QuizLift submodule",
+        description:
+          "ERP Readiness Assessment now loaded from the private QuizLift repo (git submodule) instead of inline code. Assessment component is imported from src/quizlift/. 'Powered by QuizLift' branding added to results page.",
+      },
+      {
         type: "added",
         title: "Lead capture on ERP Readiness Assessment",
         description:
