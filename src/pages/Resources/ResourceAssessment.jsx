@@ -164,9 +164,13 @@ const bands = [
   },
 ];
 
-function ScoreRing({ score, band }) {
+function ScoreRing({ score }) {
   const [animatedScore, setAnimatedScore] = useState(0);
-  const radius = 90;
+  const gradientId = "scoreGradient";
+  const size = 280;
+  const center = size / 2;
+  const radius = 120;
+  const strokeWidth = 14;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (animatedScore / 100) * circumference;
   const prefersReduced = useRef(
@@ -192,22 +196,29 @@ function ScoreRing({ score, band }) {
 
   return (
     <div className="relative inline-flex items-center justify-center">
-      <svg width="220" height="220" className="-rotate-90">
+      <svg width={size} height={size} className="-rotate-90">
+        <defs>
+          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#e83a7a" />
+            <stop offset="50%" stopColor="#7c3aed" />
+            <stop offset="100%" stopColor="#2563eb" />
+          </linearGradient>
+        </defs>
         <circle
-          cx="110"
-          cy="110"
+          cx={center}
+          cy={center}
           r={radius}
           fill="none"
-          strokeWidth="10"
+          strokeWidth={strokeWidth}
           style={{ stroke: "var(--color-text)", opacity: 0.05 }}
         />
         <circle
-          cx="110"
-          cy="110"
+          cx={center}
+          cy={center}
           r={radius}
           fill="none"
-          stroke={band.ring}
-          strokeWidth="10"
+          stroke={`url(#${gradientId})`}
+          strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
@@ -217,10 +228,13 @@ function ScoreRing({ score, band }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className={`text-5xl md:text-6xl font-heading font-bold ${band.color}`}>
+        <span
+          className="text-4xl md:text-5xl font-heading font-bold"
+          style={{ color: "var(--color-primary)" }}
+        >
           {animatedScore}%
         </span>
-        <span className="text-base text-muted mt-1">ready</span>
+        <span className="text-sm text-muted mt-1">readiness score</span>
       </div>
     </div>
   );
@@ -331,7 +345,7 @@ export default function ResourceAssessment() {
       {/* Assessment Body */}
       <section className="section-padding-lg" ref={contentRef}>
         <div className="container">
-          <div className="max-w-4xl mx-auto">
+          <div className={`mx-auto ${currentStep === 7 ? "max-w-6xl" : "max-w-4xl"}`}>
             {/* Progress bar */}
             {currentStep > 0 && currentStep <= 6 && (
               <div style={{ marginBottom: "var(--space-3xl)" }}>
@@ -469,10 +483,34 @@ export default function ResourceAssessment() {
             {/* Step 7: Results */}
             {currentStep === 7 && (
               <div>
+                {/* Top actions row */}
+                <div
+                  className="flex flex-col sm:flex-row items-center justify-between gap-md"
+                  style={{ marginBottom: "var(--space-2xl)" }}
+                >
+                  <button
+                    onClick={restart}
+                    className="inline-flex items-center gap-sm text-sm font-medium text-muted hover:text-primary transition-colors"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                    Retake assessment
+                  </button>
+                  <TrackedLink
+                    href="https://one-score-to-rule-them-all.scoreapp.com"
+                    trackingName="assessment_full_scorecard_top"
+                    trackingPage="/resources/erp-readiness-assessment"
+                    className="inline-flex items-center gap-sm text-sm font-bold hover:opacity-80 transition-opacity"
+                    style={{ color: "var(--color-primary)" }}
+                  >
+                    Take the full 20-question assessment
+                    <ExternalLink className="w-4 h-4" />
+                  </TrackedLink>
+                </div>
+
                 {/* Score card */}
                 <div
                   className="text-center rounded-2xl border border-(--color-text)/15 relative overflow-hidden"
-                  style={{ padding: "var(--space-4xl) var(--space-3xl)" }}
+                  style={{ padding: "var(--space-3xl) var(--space-2xl)" }}
                 >
                   {/* Decorative triangle */}
                   <div
@@ -485,58 +523,60 @@ export default function ResourceAssessment() {
                       transform: "translateX(30%) translateY(-30%)",
                     }}
                   />
-                  <h2 className="text-3xl md:text-4xl" style={{ marginBottom: "var(--space-2xl)" }}>
+                  <h2 className="text-2xl md:text-3xl" style={{ marginBottom: "var(--space-xl)" }}>
                     Your Readiness Score
                   </h2>
-                  <div style={{ marginBottom: "var(--space-2xl)" }}>
-                    <ScoreRing score={clampedPercentage} band={band} />
+                  <div style={{ marginBottom: "var(--space-lg)" }}>
+                    <ScoreRing score={clampedPercentage} />
                   </div>
                   <span
-                    className={`inline-block text-sm font-bold uppercase tracking-wider px-4 py-2 rounded-full ${band.color} ${band.bg}/10`}
+                    className={`inline-block text-sm font-bold uppercase tracking-wider px-4 py-1.5 rounded-full ${band.color} ${band.bg}/10`}
                   >
                     {band.label}
                   </span>
                   <p
-                    className="text-lg md:text-xl text-muted max-w-2xl mx-auto leading-relaxed"
-                    style={{ marginTop: "var(--space-xl)" }}
+                    className="text-base md:text-lg text-muted max-w-2xl mx-auto leading-relaxed"
+                    style={{ marginTop: "var(--space-lg)" }}
                   >
                     {band.summary}
                   </p>
                 </div>
 
                 {/* Category breakdown */}
-                <div style={{ marginTop: "var(--space-3xl)" }}>
-                  <h3 className="text-2xl md:text-3xl" style={{ marginBottom: "var(--space-xl)" }}>
+                <div style={{ marginTop: "var(--space-2xl)" }}>
+                  <h3 className="text-xl md:text-2xl" style={{ marginBottom: "var(--space-lg)" }}>
                     Category Breakdown
                   </h3>
-                  <div className="grid md:grid-cols-2 gap-lg">
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-md">
                     {questions.map((q) => {
                       const score = answers[q.key] || 0;
                       const Icon = q.icon;
                       return (
                         <div
                           key={q.key}
-                          className="rounded-xl border border-(--color-text)/15"
-                          style={{ padding: "var(--space-xl)" }}
+                          className="rounded-xl border border-(--color-text)/15 flex flex-col"
+                          style={{ padding: "var(--space-lg)" }}
                         >
                           <div
-                            className="flex items-center gap-md"
-                            style={{ marginBottom: "var(--space-md)" }}
+                            className="flex items-center gap-sm"
+                            style={{ marginBottom: "var(--space-sm)" }}
                           >
                             <div
-                              className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                              className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
                               style={{ backgroundColor: "rgba(232, 58, 122, 0.1)" }}
                             >
-                              <Icon className="w-5 h-5 text-primary" />
+                              <Icon className="w-4.5 h-4.5 text-primary" />
                             </div>
-                            <span className="text-sm font-bold">{q.label}</span>
-                            <span className="ml-auto text-sm font-bold text-muted">{score}/4</span>
+                            <span className="text-sm font-bold leading-tight">{q.label}</span>
+                            <span className="ml-auto text-sm font-bold text-muted shrink-0">
+                              {score}/4
+                            </span>
                           </div>
-                          <div className="flex gap-2">
+                          <div className="flex gap-1.5" style={{ marginBottom: "var(--space-sm)" }}>
                             {[1, 2, 3, 4].map((n) => (
                               <div
                                 key={n}
-                                className="h-2.5 flex-1 rounded-full transition-all"
+                                className="h-2 flex-1 rounded-full"
                                 style={{
                                   backgroundColor:
                                     n <= score ? "var(--color-primary)" : "var(--color-text)",
@@ -546,10 +586,7 @@ export default function ResourceAssessment() {
                             ))}
                           </div>
                           {q.feedback && q.feedback[score] && (
-                            <p
-                              className="text-sm text-muted leading-relaxed"
-                              style={{ marginTop: "var(--space-md)" }}
-                            >
+                            <p className="text-xs text-muted leading-relaxed mt-auto">
                               {q.feedback[score]}
                             </p>
                           )}
@@ -559,40 +596,32 @@ export default function ResourceAssessment() {
                   </div>
                 </div>
 
-                {/* CTAs */}
+                {/* Bottom CTA */}
                 <div
-                  className="rounded-2xl border border-(--color-text)/15 text-center relative overflow-hidden"
+                  className="rounded-2xl text-center relative overflow-hidden"
                   style={{
-                    marginTop: "var(--space-3xl)",
-                    padding: "var(--space-3xl)",
+                    marginTop: "var(--space-2xl)",
+                    padding: "var(--space-2xl) var(--space-xl)",
+                    background:
+                      "linear-gradient(135deg, rgba(232,58,122,0.06) 0%, rgba(124,58,237,0.06) 50%, rgba(37,99,235,0.06) 100%)",
                   }}
                 >
-                  <div
-                    className="absolute bottom-0 left-0 opacity-5 pointer-events-none"
-                    style={{
-                      width: "180px",
-                      height: "155px",
-                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                      backgroundColor: "var(--color-primary)",
-                      transform: "translateX(-30%) translateY(30%)",
-                    }}
-                  />
-                  <h3 className="text-2xl md:text-3xl" style={{ marginBottom: "var(--space-sm)" }}>
+                  <h3 className="text-xl md:text-2xl" style={{ marginBottom: "var(--space-xs)" }}>
                     Want the full picture?
                   </h3>
                   <p
-                    className="text-lg text-muted max-w-lg mx-auto"
-                    style={{ marginBottom: "var(--space-2xl)" }}
+                    className="text-sm text-muted max-w-lg mx-auto"
+                    style={{ marginBottom: "var(--space-lg)" }}
                   >
-                    Our detailed scorecard has 20 in-depth questions and gives you a comprehensive
-                    breakdown with personalised recommendations.
+                    Our detailed scorecard dives deeper with 20 questions and gives you a
+                    comprehensive breakdown with personalised recommendations.
                   </p>
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-md">
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-sm">
                     <TrackedLink
                       href="https://one-score-to-rule-them-all.scoreapp.com"
                       trackingName="assessment_full_scorecard"
                       trackingPage="/resources/erp-readiness-assessment"
-                      className="btn btn-lg inline-flex items-center gap-sm"
+                      className="btn inline-flex items-center gap-sm"
                     >
                       Get your full scorecard
                       <ExternalLink className="w-4 h-4" />
@@ -601,25 +630,16 @@ export default function ResourceAssessment() {
                       to="/contact"
                       trackingName="assessment_contact"
                       trackingPage="/resources/erp-readiness-assessment"
-                      className="btn btn-lg inline-flex items-center gap-sm"
+                      className="inline-flex items-center gap-sm text-sm font-bold hover:opacity-80 transition-opacity"
                       style={{
-                        backgroundColor: "transparent",
                         color: "var(--color-primary)",
-                        border: "2px solid var(--color-primary)",
+                        padding: "var(--space-sm) var(--space-md)",
                       }}
                     >
                       Start a conversation
                       <ArrowRight className="w-4 h-4" />
                     </TrackedLink>
                   </div>
-                  <button
-                    onClick={restart}
-                    className="inline-flex items-center gap-sm text-sm text-muted hover:text-primary transition-colors"
-                    style={{ marginTop: "var(--space-xl)" }}
-                  >
-                    <RotateCcw className="w-4 h-4" />
-                    Retake assessment
-                  </button>
                 </div>
               </div>
             )}
