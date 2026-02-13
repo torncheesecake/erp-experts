@@ -12,6 +12,12 @@ const changelog = [
     entries: [
       {
         type: "added",
+        title: "Lead capture on ERP Readiness Assessment",
+        description:
+          "New step between questions and results: collects first name, last name, and work email before showing the score. Data is POSTed to a configurable webhook endpoint (VITE_LEAD_CAPTURE_URL) along with the score, band, and answers. Silently skips if no webhook is configured.",
+      },
+      {
+        type: "added",
         title: "ERP Readiness Assessment",
         description:
           "Interactive 6-question assessment at /resources/erp-readiness-assessment. Instant readiness score with category breakdown across leadership, experience, resources, priority, data, and success definition. Links to full ScoreApp scorecard for detailed results.",
