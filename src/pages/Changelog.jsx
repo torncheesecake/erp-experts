@@ -41,6 +41,18 @@ const changelog = [
     entries: [
       {
         type: "added",
+        title: "New guide: The Future of Work - Generative AI",
+        description:
+          "Resource guide exploring how AI augments human capabilities rather than replacing them. Covers reducing information overload, enhancing cognitive performance, democratising expertise, and practical applications for business. Based on Oracle NetSuite business guide by Dr. Maryam Alavi.",
+      },
+      {
+        type: "added",
+        title: "New guide: 4 Skills CFOs Need Now",
+        description:
+          "Resource guide covering communication, active listening, data analysis, and scenario planning. Practical tips and frameworks for modern finance leaders navigating complexity.",
+      },
+      {
+        type: "added",
         title: "Resources link in navbar",
         description:
           "Resources now appears in the main navigation bar on both desktop and mobile menus, between About and the CTA button.",
@@ -51,18 +63,6 @@ const changelog = [
         description:
           "Phone number (01785 336 253) displayed in desktop navigation with phone icon. Subtle styling that doesn't compete with the main CTA. Hidden on mobile where it's already in the footer.",
       },
-      {
-        type: "improved",
-        title: "CTA text standardised",
-        description:
-          "All page-level call-to-action buttons now consistently use 'Start a conversation' instead of mixed phrases like 'Start a project', 'Get started', 'Talk to an expert'. Updated across 7 pages. Navbar retains 'Let's Talk'.",
-      },
-      {
-        type: "improved",
-        title: "Homepage Resources section updated",
-        description:
-          "Featured resources updated to show the 3 newest guides: Is NetSuite Right for Your Business?, The Future of Work: Generative AI, and 4 Skills CFOs Need Now.",
-      },
     ],
   },
   {
@@ -70,9 +70,9 @@ const changelog = [
     entries: [
       {
         type: "added",
-        title: "Last updated dates on legal pages",
+        title: "New guide: Is NetSuite Right for Your Business?",
         description:
-          "Terms, Privacy Policy, and Cookies pages now show 'Last updated: February 2026' with a calendar icon below the hero subtitle. Consistent placement across all three legal pages.",
+          "Practical evaluation guide helping businesses honestly assess whether NetSuite is the right fit. Covers signs you've outgrown your current system, where NetSuite excels and where it doesn't, questions to ask during the sales process, and how to evaluate implementation partners.",
       },
       {
         type: "added",
@@ -93,21 +93,21 @@ const changelog = [
     entries: [
       {
         type: "added",
-        title: "New guide: Is NetSuite Right for Your Business?",
+        title: "Last updated dates on legal pages",
         description:
-          "Practical evaluation guide helping businesses honestly assess whether NetSuite is the right fit. Covers signs you've outgrown your current system, where NetSuite excels and where it doesn't, questions to ask during the sales process, and how to evaluate implementation partners.",
+          "Terms, Privacy Policy, and Cookies pages now show 'Last updated: February 2026' with a calendar icon below the hero subtitle. Consistent placement across all three legal pages.",
       },
       {
-        type: "added",
-        title: "New guide: The Future of Work - Generative AI",
+        type: "improved",
+        title: "CTA text standardised",
         description:
-          "Resource guide exploring how AI augments human capabilities rather than replacing them. Covers reducing information overload, enhancing cognitive performance, democratising expertise, and practical applications for business.",
+          "All page-level call-to-action buttons now consistently use 'Start a conversation' instead of mixed phrases like 'Start a project', 'Get started', 'Talk to an expert'. Updated across 7 pages. Navbar retains 'Let's Talk'.",
       },
       {
-        type: "added",
-        title: "New guide: 4 Skills CFOs Need Now",
+        type: "improved",
+        title: "Homepage Resources section updated",
         description:
-          "Resource guide covering communication, active listening, data analysis, and scenario planning. Practical tips and frameworks for modern finance leaders navigating complexity.",
+          "Featured resources updated to show the 3 newest guides: Is NetSuite Right for Your Business?, The Future of Work: Generative AI, and 4 Skills CFOs Need Now.",
       },
     ],
   },
