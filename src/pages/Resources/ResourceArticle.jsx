@@ -44,10 +44,381 @@ import {
   PiggyBank,
   Bot,
   FileSpreadsheet,
+  MessageSquare,
+  Ear,
+  LineChart,
+  Presentation,
 } from "lucide-react";
 
 // Articles data
 const articles = {
+  "is-netsuite-right-for-your-business": {
+    title: "Is NetSuite Right for Your Business?",
+    subtitle: "A Practical Evaluation Guide for Growing Organisations",
+    date: "Feb 2026",
+    readTime: "5 min read",
+    type: "Guide",
+    layoutVariant: 2,
+    heroImage: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=1400&q=80",
+    featureImage: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80",
+    challengeLabel: "The Real Question",
+    challengeHeading: 'Cutting Through the <span class="text-primary">Sales Pitch</span>',
+    challengeText:
+      "Every ERP vendor will tell you their platform is the perfect fit. The truth is more nuanced. NetSuite is a powerful platform, but it is not the right solution for every organisation. Making the wrong choice means wasted budget, frustrated teams, and a painful migration you did not need. This guide helps you evaluate honestly whether NetSuite aligns with your business needs, your budget, and your growth trajectory.",
+    intro:
+      "Choosing an ERP system is one of the most consequential technology decisions a growing business will make. It touches every department, reshapes your processes, and locks you into an ecosystem for years. Yet most of the information available is written by people trying to sell you something. This guide takes a different approach. We will walk you through the practical questions, honest trade-offs, and real-world considerations that should inform your decision. Think of it as the conversation you would have with a knowledgeable friend over a coffee, not a sales presentation.",
+
+    takeaways: [
+      "Know when you have outgrown spreadsheets",
+      "Understand where NetSuite truly excels",
+      "Ask the right questions during sales",
+      "Set realistic implementation expectations",
+      "Evaluate partners before you commit",
+    ],
+
+    overviewHeading: 'Making the Right <span class="text-primary">Decision</span>',
+    overviewSubtext:
+      "A poor ERP choice costs far more than money. It costs time, morale, and competitive advantage. The organisations that get this right are the ones that invest in honest evaluation before they sign anything. Here is what that evaluation should look like.",
+    tipsHeading: '5 Steps to an Honest <span class="text-primary">Evaluation</span>',
+
+    tips: [
+      {
+        number: "01",
+        icon: AlertTriangle,
+        title: "Signs You Have Outgrown Your Current Systems",
+        content:
+          "Before evaluating any new platform, be honest about whether you actually need one. If your team regularly works around your systems rather than with them, that is a strong signal. Common warning signs include maintaining critical business data across multiple disconnected spreadsheets, manually re-keying data between systems, and finding that month-end close takes days rather than hours. If your finance team spends more time gathering data than analysing it, or if you cannot get a reliable, real-time picture of inventory or cash flow, you have likely outgrown your current setup.",
+        actions: [
+          "List the workarounds your team uses daily",
+          "Calculate time spent on manual data transfers each month",
+          "Identify decisions delayed by lack of real-time data",
+        ],
+      },
+      {
+        number: "02",
+        icon: Target,
+        title: "Where NetSuite Excels and Where It Does Not",
+        content:
+          "NetSuite is genuinely strong for mid-market organisations that need unified financials, inventory, and CRM in a single cloud platform. It handles multi-entity, multi-currency, and multi-country operations well, and its SuiteCloud platform allows meaningful customisation. However, it is not the best fit for every scenario. Very small businesses may find it over-engineered and expensive for their needs. Organisations with highly specialised manufacturing or field service requirements may find that industry-specific platforms serve them better. And if your business runs almost entirely on project-based billing, dedicated PSA tools might be a more natural fit.",
+        actions: [
+          "Map your core requirements against NetSuite's native strengths",
+          "Identify any niche needs that may require specialist software",
+          "Consider whether your organisation's complexity justifies the investment",
+        ],
+      },
+      {
+        number: "03",
+        icon: Search,
+        title: "Questions to Ask During the Sales Process",
+        content:
+          "The sales process is your best opportunity to gather honest information, but only if you ask the right questions. Do not just ask for a demo of the features you want. Ask to see the features you are worried about. Request references from organisations of a similar size and industry, and actually call them. Ask your sales representative directly: where do customers most commonly struggle with NetSuite? A good salesperson will give you a straight answer. Also ask about the total cost of ownership, including licence fees, implementation costs, ongoing support, and any third-party integrations you will need. The licence fee is rarely the full picture.",
+        actions: [
+          "Request references from businesses similar to yours in size and sector",
+          "Ask for a total cost of ownership breakdown, not just licence fees",
+          "Ask the vendor where their platform is weakest for your use case",
+        ],
+      },
+      {
+        number: "04",
+        icon: ClipboardCheck,
+        title: "Setting Realistic Implementation Expectations",
+        content:
+          "Implementation timelines are one of the most common sources of frustration. A typical mid-market NetSuite implementation takes between three and six months, not the few weeks some vendors imply. The most common cause of delays is not the technology itself but unclear requirements, poor data quality, and insufficient involvement from your own team. Plan for your key people to spend a meaningful portion of their time on the project. Budget for data cleansing before migration. And be realistic about customisation: every custom workflow adds time, cost, and future maintenance overhead. Start with standard processes where you can.",
+        actions: [
+          "Plan for three to six months, with buffer for data migration",
+          "Allocate dedicated time from key staff in each department",
+          "Prioritise standard NetSuite processes over custom development",
+        ],
+      },
+      {
+        number: "05",
+        icon: Handshake,
+        title: "How to Evaluate Implementation Partners",
+        content:
+          "Your implementation partner matters as much as the software itself. Look beyond certifications and ask about their methodology. Do they take time to understand your business before proposing solutions, or do they jump straight to configuration? A good partner will challenge your assumptions and push back when your requests would create unnecessary complexity. Ask about their team structure: will you be working with the same people throughout, or will you be handed off after the sale? Check how they handle post-go-live support. And be wary of any partner who guarantees a fixed timeline before they have properly scoped your requirements.",
+        actions: [
+          "Ask whether the same team handles scoping, build, and support",
+          "Request a detailed methodology document before committing",
+          "Confirm their approach to post-go-live support and optimisation",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: FileSpreadsheet,
+        title: "Document Your Processes",
+        content:
+          "Before speaking to any vendor, map out your current processes in detail. This gives you a clear baseline and prevents the sales team from defining your requirements for you.",
+      },
+      {
+        icon: Users,
+        title: "Involve End Users Early",
+        content:
+          "The people who will use the system daily often spot practical issues that leadership overlooks. Include them in demos and evaluation sessions from the start.",
+      },
+      {
+        icon: PiggyBank,
+        title: "Budget for the Full Journey",
+        content:
+          "Factor in training, data migration, third-party integrations, and at least twelve months of post-go-live optimisation. The licence cost is typically only a fraction of the total investment.",
+      },
+      {
+        icon: TestTube,
+        title: "Run a Proof of Concept",
+        content:
+          "If possible, ask your shortlisted vendors to demonstrate a specific workflow from your business. A generic demo tells you very little about real-world fit.",
+      },
+    ],
+
+    conclusion:
+      "Choosing an ERP system is a significant commitment, and it deserves more than a rushed decision based on a polished sales presentation. Take the time to evaluate honestly, ask difficult questions, and involve the people who will live with the system every day. If NetSuite is the right fit, that process will confirm it. And if it is not, you will have saved yourself a great deal of time and money. Either way, you will be making a decision grounded in reality rather than hope.",
+
+    disclaimer:
+      "This guide reflects our honest experience working with NetSuite implementations. Every organisation is different. Contact ERP Experts for a candid conversation about whether NetSuite is the right fit for your specific situation.",
+  },
+
+  "cfo-guide-ai-enhanced-finance": {
+    title: "A CFO's Guide to AI-Enhanced Finance",
+    subtitle: "Key Areas Where Finance Leaders Harness Artificial Intelligence",
+    date: "Feb 2026",
+    readTime: "4 min read",
+    type: "Guide",
+    layoutVariant: 1,
+    heroImage: "https://images.unsplash.com/photo-1639322537228-f710d846310a?w=1400&q=80",
+    featureImage: "https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=800&q=80",
+    challengeLabel: "The Challenge",
+    challengeHeading: 'When Decision-Making <span class="text-primary">Can\'t Keep Pace</span>',
+    challengeText:
+      "Uncertainty demands rapid adjustments, be they tactical tweaks or large strategic shifts. But more than half (57%) of 678 US financial executives polled by PwC as part of its May 2025 Pulse Survey say they can't make decisions fast enough to keep pace with the current level of volatility. As a result, those respondents told PwC they believe they're missing opportunities due to inaction.",
+    intro:
+      "The technology is here, and finance leaders know AI can help them make faster and more-informed decisions. Will you use it to enhance your financial leadership, improve operational efficiency, and drive a competitive advantage? This guide shows how NetSuite's AI capabilities can empower your financial leadership and drive your organisation's success.",
+
+    takeaways: [
+      "AI enables faster decision-making",
+      "57% of CFOs can't keep pace with volatility",
+      "Revolutionise financial forecasting",
+      "Automate time-consuming tasks",
+      "Improve collaboration across teams",
+    ],
+
+    // Section headings
+    overviewHeading: 'AI-Enhanced <span class="text-primary">Financial&nbsp;Leadership</span>',
+    overviewSubtext:
+      "One answer to today's volatile business environment is artificial intelligence. The CFO Alliance confirms that finance leaders know AI can help them make faster and more-informed decisions. The question is: will you use it to drive competitive advantage?",
+    tipsHeading: 'How AI Transforms <span class="text-primary">Finance</span>',
+
+    tips: [
+      {
+        number: "01",
+        icon: TrendingUp,
+        title: "Revolutionising Financial Forecasting",
+        content:
+          "AI is transforming how finance teams approach forecasting and planning. By analysing vast amounts of historical data alongside real-time market indicators, AI enables more accurate predictions and strategic responses to diverse economic scenarios. Finance leaders can model multiple futures simultaneously and prepare for volatility before it hits.",
+        actions: [
+          "Analyse historical patterns with real-time market data",
+          "Model multiple scenarios to prepare for uncertainty",
+          "Move from reactive to proactive financial planning",
+        ],
+      },
+      {
+        number: "02",
+        icon: Users,
+        title: "Enhancing Collaboration and Communication",
+        content:
+          "The finance function doesn't operate in isolation. AI tools help bring teams together by providing a single source of truth that everyone can access. From automated reporting dashboards to intelligent alerts, AI ensures that stakeholders across the organisation stay informed and aligned on financial performance and goals.",
+        actions: [
+          "Unified dashboards for cross-functional visibility",
+          "Automated alerts keep stakeholders informed",
+          "Break down silos between finance and operations",
+        ],
+      },
+      {
+        number: "03",
+        icon: Settings,
+        title: "Automating Time-Consuming Tasks",
+        content:
+          "AI plays a crucial role in business process automation, picking up repetitive, time-consuming tasks and improving accuracy. From invoice processing to expense categorisation, AI frees your finance team to focus on strategic analysis rather than manual data entry. The result is both efficiency gains and improved data quality.",
+        actions: [
+          "Automate invoice processing and reconciliation",
+          "Intelligent expense categorisation and coding",
+          "Reduce manual errors and improve data accuracy",
+        ],
+      },
+      {
+        number: "04",
+        icon: BarChart3,
+        title: "Real-Time Performance Insights",
+        content:
+          "Traditional financial reporting looks backwards. AI-powered analytics deliver real-time insights that enable proactive decision-making. Finance leaders can spot trends, identify anomalies, and surface opportunities as they happen rather than discovering them weeks later in monthly reports.",
+        actions: [
+          "Real-time KPI monitoring and trend analysis",
+          "Anomaly detection surfaces issues early",
+          "Shift from backward-looking to forward-thinking",
+        ],
+      },
+      {
+        number: "05",
+        icon: Target,
+        title: "Driving Competitive Advantage",
+        content:
+          "Organisations that embrace AI in finance gain a significant edge. They can respond faster to market changes, allocate resources more effectively, and make decisions with greater confidence. The competitive gap between AI-enabled finance teams and traditional approaches is widening every day.",
+        actions: [
+          "Respond faster to market shifts and opportunities",
+          "Optimise resource allocation with data-driven insights",
+          "Build confidence in strategic decision-making",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Zap,
+        title: "Speed Matters",
+        content:
+          "In volatile markets, the ability to make fast, informed decisions separates leaders from laggards.",
+      },
+      {
+        icon: Cloud,
+        title: "Cloud-Native AI",
+        content:
+          "NetSuite's cloud platform means AI capabilities are always up to date and accessible from anywhere.",
+      },
+      {
+        icon: Eye,
+        title: "Full Visibility",
+        content:
+          "AI aggregates data across your entire operation, providing the complete picture finance leaders need.",
+      },
+      {
+        icon: TrendingUp,
+        title: "Continuous Learning",
+        content:
+          "AI systems improve over time, learning from your data to deliver increasingly accurate insights.",
+      },
+    ],
+
+    conclusion:
+      "Discover how NetSuite's AI capabilities can empower your financial leadership and drive your organisation's success. The finance leaders who thrive in uncertain times are those who embrace technology that enables faster, smarter decisions.",
+
+    disclaimer:
+      "Contact ERP Experts to learn how AI-enhanced finance can transform your organisation's decision-making capabilities.",
+  },
+
+  "4-skills-cfos-need-now": {
+    title: "4 Skills CFOs Need Now",
+    subtitle: "Tips to Excel at Communication, Collaboration, Data Analysis and FP&A",
+    date: "2025",
+    readTime: "3 min read",
+    type: "Guide",
+    layoutVariant: 3,
+    heroImage: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1400&q=80",
+    featureImage: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80",
+    challengeLabel: "The Shift",
+    challengeHeading: 'Beyond the <span class="text-primary">Numbers</span>',
+    challengeText:
+      "The CFO's job is no longer just about the numbers. As finance leaders take on broader strategic roles, soft skills are more in demand than ever. Today's CFOs need to be communicators, collaborators, and strategic thinkers, not just number crunchers.",
+    intro:
+      "Modern CFOs are expected to do far more than manage the books. They're strategic partners, data storytellers, and cross-functional leaders. This guide explores the top skills every finance leader needs to thrive in today's business environment.",
+
+    takeaways: [
+      "Active listening builds trust",
+      "Data analysis drives decisions",
+      "Scenario planning reduces risk",
+      "Communication is a leadership skill",
+      "Collaboration breaks down silos",
+    ],
+
+    overviewHeading: 'The Modern <span class="text-primary">CFO</span>',
+    overviewSubtext:
+      "Finance leaders who master these skills position themselves and their organisations for long-term success. It's no longer enough to be technically proficient; the best CFOs combine financial expertise with strong interpersonal and analytical capabilities.",
+    tipsHeading: '4 Skills Every CFO <span class="text-primary">Needs</span>',
+
+    tips: [
+      {
+        number: "01",
+        icon: MessageSquare,
+        title: "Communication",
+        content:
+          "Effective communication is the cornerstone of modern financial leadership. CFOs must translate complex financial data into clear, compelling narratives that resonate with boards, investors, and cross-functional teams. The ability to tell the story behind the numbers is what separates good CFOs from great ones.",
+        actions: [
+          "Translate financial complexity into clear narratives",
+          "Tailor messaging for different stakeholders",
+          "Present data visually to drive understanding",
+        ],
+      },
+      {
+        number: "02",
+        icon: Ear,
+        title: "Active Listening",
+        content:
+          "Active listening goes beyond hearing words. It's about understanding context, reading between the lines, and building trust. CFOs who listen effectively gain deeper insights from their teams, identify risks earlier, and foster a culture where people feel heard and valued.",
+        actions: [
+          "Build trust through genuine engagement",
+          "Identify risks and opportunities others miss",
+          "Foster a culture of open communication",
+        ],
+      },
+      {
+        number: "03",
+        icon: BarChart3,
+        title: "Data Analysis",
+        content:
+          "In an era of information abundance, the ability to cut through noise and extract meaningful insights is critical. CFOs need to go beyond traditional reporting, leveraging advanced analytics to uncover patterns, validate assumptions, and support strategic decisions with evidence rather than intuition.",
+        actions: [
+          "Move beyond traditional reporting to advanced analytics",
+          "Uncover patterns and validate assumptions",
+          "Support strategic decisions with data-driven evidence",
+        ],
+      },
+      {
+        number: "04",
+        icon: LineChart,
+        title: "Scenario Planning and Forecasting",
+        content:
+          "In volatile markets, the ability to model multiple futures is invaluable. CFOs skilled in scenario planning and FP&A can stress-test strategies, prepare contingency plans, and guide their organisations through uncertainty with confidence. This means moving from static annual budgets to dynamic, rolling forecasts.",
+        actions: [
+          "Model multiple scenarios to stress-test strategies",
+          "Move from static budgets to rolling forecasts",
+          "Build contingency plans for market volatility",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Handshake,
+        title: "Collaboration",
+        content:
+          "Break down silos by partnering closely with operations, sales, and technology teams to drive unified strategy.",
+      },
+      {
+        icon: Presentation,
+        title: "Storytelling",
+        content:
+          "The best CFOs don't just present numbers. They tell compelling stories that drive action and alignment.",
+      },
+      {
+        icon: TrendingUp,
+        title: "Strategic Vision",
+        content:
+          "Look beyond quarterly results to anticipate market shifts and position the organisation for long-term growth.",
+      },
+      {
+        icon: Bot,
+        title: "Tech Fluency",
+        content:
+          "Understanding AI, automation, and cloud technologies is essential for leading finance transformation.",
+      },
+    ],
+
+    conclusion:
+      "The most effective CFOs combine deep financial expertise with strong communication, analytical, and strategic skills. As the role continues to evolve, investing in these capabilities isn't optional. It's essential for driving organisational success.",
+
+    disclaimer:
+      "Based on insights from Oracle NetSuite. Contact ERP Experts to discuss how the right tools can support your finance leadership.",
+  },
+
   "streamlining-your-netsuite-experience": {
     title: "Streamlining Your NetSuite Experience",
     subtitle: "Essential Tips for Growing Businesses",
@@ -306,7 +677,7 @@ const articles = {
     date: "Jan 24, 2025",
     readTime: "4 min read",
     type: "Guide",
-    layoutVariant: 2,
+    layoutVariant: 3,
     heroImage: erpImplementationHero,
     featureImage: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
     challengeLabel: "The Challenge",
@@ -422,6 +793,132 @@ const articles = {
 
     disclaimer:
       "Every implementation is unique. Speak to our team to understand how we can tailor our approach to your specific needs.",
+  },
+
+  "future-of-work-generative-ai": {
+    title: "The Future of Work: Leveraging the Potential of Generative AI",
+    subtitle: "How AI augments human capabilities rather than replacing them",
+    date: "2025",
+    readTime: "3 min read",
+    type: "Guide",
+    layoutVariant: 2,
+    heroImage: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1400&q=80",
+    featureImage: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80",
+    challengeLabel: "The Challenge",
+    challengeHeading: 'Task and Information <span class="text-primary">Overload</span>',
+    challengeText:
+      "In today's hyper-connected digital environment, workers are experiencing chronic task and information overload. A recent Microsoft survey found that 68 percent of employees feel they lack sufficient uninterrupted time to focus on their core tasks. Human brains are not designed to process and rapidly switch between high volumes of complex information without a decline in performance and accuracy.",
+    intro:
+      "The rapid advancements in generative AI are ushering in a transformative era of work, where the boundaries between human and machine capabilities are being continually redefined. The focus is shifting from mere automation to the augmentation of work, supporting and enhancing human cognitive capabilities rather than replacing them.",
+
+    takeaways: [
+      "AI augments, not replaces, human work",
+      "68% of employees lack focus time",
+      "Reduces task and information overload",
+      "Enhances creativity and problem-solving",
+      "Upskilling is essential for adoption",
+    ],
+
+    overviewHeading: 'Augmenting Human <span class="text-primary">Potential</span>',
+    overviewSubtext:
+      "In addition to driving automation and operational efficiency, AI has the potential to elevate human cognitive performance by enabling deeper creativity, more effective problem-solving, and strategic thinking. When implemented effectively, it can also contribute to greater employee satisfaction and well-being.",
+    tipsHeading: 'How GenAI Transforms <span class="text-primary">Work</span>',
+
+    tips: [
+      {
+        number: "01",
+        icon: Zap,
+        title: "Reducing Information Overload",
+        content:
+          "GenAI can dramatically reduce the time and mental effort required for information processing. It can automatically summarise long email threads, extract key insights from reports, generate meeting notes, and respond to context-specific queries by drawing from an organisation's internal knowledge base.",
+        actions: [
+          "Automate summaries of emails, reports, and meetings",
+          "Free up uninterrupted time for core responsibilities",
+          "Reduce stress and improve employee well-being",
+        ],
+      },
+      {
+        number: "02",
+        icon: Lightbulb,
+        title: "Enhancing Cognitive Performance",
+        content:
+          "By automating routine and structured tasks, GenAI expands cognitive bandwidth, allowing individuals to focus their mental energy on complex core tasks and innovative problem-solving. It provides access to expertise, assists with analysis, and facilitates the acquisition of new skills.",
+        actions: [
+          "Enable deeper creativity and strategic thinking",
+          "Lower barriers to traditionally complex work",
+          "Broaden participation in high-value problem-solving",
+        ],
+      },
+      {
+        number: "03",
+        icon: Users,
+        title: "Democratising Expertise",
+        content:
+          "GenAI helps enable a broader range of individuals to contribute more effectively. A junior analyst can leverage AI to analyse large datasets and identify trends. A product designer can synthesise customer feedback into actionable insights. Non-technical team members can articulate feature ideas that AI tools help transform into functional code.",
+        actions: [
+          "Junior staff can perform at a higher level",
+          "Cross-functional collaboration becomes easier",
+          "Technical barriers are significantly lowered",
+        ],
+      },
+      {
+        number: "04",
+        icon: Target,
+        title: "Catalysing Innovation",
+        content:
+          "GenAI reduces the time, cost, and effort required to experiment with new ideas, encouraging teams to iterate quickly, ask what-if questions, and develop creative options. A marketing team can generate and test multiple campaign concepts within a single day, enabling more agile and informed decision-making.",
+        actions: [
+          "Rapid prototyping and experimentation",
+          "Test multiple creative options in parallel",
+          "Enable more agile decision-making",
+        ],
+      },
+      {
+        number: "05",
+        icon: GraduationCap,
+        title: "Preparing the Workforce",
+        content:
+          "Organisations must invest in comprehensive upskilling and reskilling programs. A key component is developing GenAI fluency: equipping users with the understanding, technical proficiency, and confidence to effectively apply AI tools. Prompt engineering skills are essential for successfully augmenting human work.",
+        actions: [
+          "Develop GenAI fluency across the organisation",
+          "Foster safe and guided experimentation",
+          "Establish governance for responsible AI use",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: TrendingUp,
+        title: "Force Multiplier",
+        content:
+          "GenAI expands the scope of what individuals can accomplish, raising the overall quality of work.",
+      },
+      {
+        icon: Settings,
+        title: "Process Reimagination",
+        content:
+          "Businesses must reimagine traditional work processes and rethink workflows to fully capture AI's advantages.",
+      },
+      {
+        icon: Cloud,
+        title: "AI Agents",
+        content:
+          "Looking ahead, AI agents will autonomously execute routine tasks with minimal human input.",
+      },
+      {
+        icon: Eye,
+        title: "Human-Centred Future",
+        content:
+          "The goal is a future where people flourish in collaboration with intelligent technologies.",
+      },
+    ],
+
+    conclusion:
+      "The future of work is not something to resist or fear. It is an opportunity to reimagine what work can be. By centering innovation around people and augmenting human potential with intelligent technologies, organisations can create a more adaptive and human-centred workplace for all.",
+
+    disclaimer:
+      "Based on research by Maryam Alavi, PhD, Georgia Institute of Technology, and published by Oracle NetSuite.",
   },
 
   "spreadsheet-hidden-costs": {
@@ -612,7 +1109,7 @@ export default function ResourceArticle() {
 
             <h1
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading text-white"
-              style={{ marginBottom: "var(--space-lg)" }}
+              style={{ marginBottom: "var(--space-lg)", textWrap: "balance" }}
             >
               {article.title}
             </h1>
@@ -886,6 +1383,19 @@ export default function ResourceArticle() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Back to Resources */}
+      <section style={{ paddingTop: "var(--space-xl)", paddingBottom: "0" }}>
+        <div className="container">
+          <Link
+            to="/resources"
+            className="inline-flex items-center gap-sm px-4 py-2 rounded-full bg-(--color-text)/5 hover:bg-(--color-text)/10 transition-colors font-medium text-muted hover:text-(--color-text)"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Resources
+          </Link>
         </div>
       </section>
 

@@ -3,30 +3,37 @@
  */
 
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, Video, FileSpreadsheet } from "lucide-react";
+import { ArrowRight, BookOpen, FileText } from "lucide-react";
 import TrackedLink from "../../components/ui/TrackedLink";
+
+// Import hero images
+import erpWorkForYouHero from "../../assets/521dfd_8d98556467bd405188ecbb172caa3b1f~mv2.png.jpeg";
+import erpImplementationHero from "../../assets/521dfd_d357dbfbc21d409792ca92d69250c49a~mv2.webp";
 
 const resources = [
   {
+    slug: "cfo-guide-ai-enhanced-finance",
     type: "Guide",
     icon: BookOpen,
-    title: "The Complete NetSuite Implementation Guide",
-    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80",
-    desc: "Everything you need to know before starting your NetSuite journey.",
+    title: "A CFO's Guide to AI-Enhanced Finance",
+    image: "https://images.unsplash.com/photo-1639322537228-f710d846310a?w=600&q=80",
+    desc: "Discover how AI capabilities can empower your financial leadership and drive competitive advantage.",
   },
   {
-    type: "Webinar",
-    icon: Video,
-    title: "Maximising ROI from Your NetSuite Investment",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80",
-    desc: "Learn how to get the most value from your ERP system.",
+    slug: "stress-free-erp-implementation",
+    type: "Guide",
+    icon: BookOpen,
+    title: "The Ultimate Guide to a Stress-Free ERP Implementation",
+    image: erpImplementationHero,
+    desc: "How to make your ERP project a success with the right partner and approach.",
   },
   {
-    type: "Case Study",
-    icon: FileSpreadsheet,
-    title: "How We Rescued a Failed Implementation",
-    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80",
-    desc: "A real story of turning ERP disaster into success.",
+    slug: "your-erp-system-should-work-for-you",
+    type: "Article",
+    icon: FileText,
+    title: "Your ERP System Should Work For You",
+    image: erpWorkForYouHero,
+    desc: "You deserve technology that keeps up with your ambitions, not something that holds you back.",
   },
 ];
 
@@ -41,19 +48,22 @@ export default function Resources() {
               Resources & <span className="text-primary">insights</span>
             </h3>
           </div>
-          <span className="inline-flex items-center gap-sm text-base font-bold text-muted/50 cursor-not-allowed">
+          <TrackedLink
+            to="/resources"
+            trackingName="home_resources_view_all"
+            trackingPage="home"
+            className="inline-flex items-center gap-sm text-base font-bold text-primary hover:gap-md transition-all"
+          >
             View all resources
-            <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-              Coming soon
-            </span>
-          </span>
+            <ArrowRight className="w-4 h-4" />
+          </TrackedLink>
         </div>
 
         <div className="grid md:grid-cols-3 gap-lg md:gap-xl">
           {resources.map((resource, i) => (
             <Link
               key={i}
-              to="/resources"
+              to={`/resources/${resource.slug}`}
               className="group block overflow-hidden rounded-2xl md:rounded-3xl border border-(--color-text)/5 hover:border-(--color-primary)/20 transition-all hover:-translate-y-2"
             >
               <div className="aspect-[16/9] relative overflow-hidden">

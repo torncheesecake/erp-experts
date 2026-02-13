@@ -536,7 +536,7 @@ export default function Support() {
                     <ArrowRight className="w-5 h-5" />
                   </TrackedLink>
                   <TrackedLink
-                    to="/contact"
+                    href="https://calendly.com/discovery-erpexperts/discovery"
                     trackingName="support_footer_book_call"
                     trackingPage="support"
                     className="btn sm:btn-lg justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"

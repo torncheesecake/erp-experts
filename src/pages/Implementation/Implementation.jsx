@@ -422,7 +422,7 @@ export default function Implementation() {
           </p>
           <div className="flex flex-col sm:flex-row gap-md justify-center">
             <TrackedLink
-              to="/contact"
+              href="https://calendly.com/discovery-erpexperts/discovery"
               trackingName="implementation_footer_book_call"
               trackingPage="implementation"
               className="btn justify-center"

@@ -103,7 +103,7 @@ export default function FinalCTA() {
                   <ArrowRight className="w-5 h-5" />
                 </TrackedLink>
                 <TrackedLink
-                  to="/contact"
+                  href="https://calendly.com/discovery-erpexperts/discovery"
                   trackingName="footer_cta_book_call"
                   trackingPage="homepage"
                   className="btn sm:btn-lg justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"

@@ -14,6 +14,42 @@ import erpImplementationHero from "../../assets/521dfd_d357dbfbc21d409792ca92d69
 
 const resources = [
   {
+    slug: "is-netsuite-right-for-your-business",
+    type: "Guide",
+    title: "Is NetSuite Right for Your Business?",
+    subtitle: "A Practical Evaluation Guide",
+    desc: "An honest look at whether NetSuite fits your organisation. No sales pitch, just practical questions, real trade-offs, and the evaluation steps that actually matter.",
+    readTime: "5 min read",
+    image: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=600&q=80",
+  },
+  {
+    slug: "future-of-work-generative-ai",
+    type: "Guide",
+    title: "The Future of Work: Leveraging the Potential of Generative AI",
+    subtitle: "How AI augments human capabilities",
+    desc: "Discover how generative AI is shifting the focus from automation to augmentation, supporting and enhancing human cognitive capabilities rather than replacing them.",
+    readTime: "3 min read",
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&q=80",
+  },
+  {
+    slug: "cfo-guide-ai-enhanced-finance",
+    type: "Guide",
+    title: "A CFO's Guide to AI-Enhanced Finance",
+    subtitle: "Key Areas Where Finance Leaders Harness AI",
+    desc: "Discover how NetSuite's AI capabilities can empower your financial leadership, improve operational efficiency, and drive competitive advantage.",
+    readTime: "4 min read",
+    image: "https://images.unsplash.com/photo-1639322537228-f710d846310a?w=600&q=80",
+  },
+  {
+    slug: "4-skills-cfos-need-now",
+    type: "Guide",
+    title: "4 Skills CFOs Need Now",
+    subtitle: "Communication, Collaboration, Data Analysis & FP&A",
+    desc: "The CFO's job is no longer just about the numbers. Soft skills are more in demand than ever. Discover the top skills for modern finance leaders.",
+    readTime: "3 min read",
+    image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80",
+  },
+  {
     slug: "streamlining-your-netsuite-experience",
     type: "Guide",
     title: "Streamlining Your NetSuite Experience",
