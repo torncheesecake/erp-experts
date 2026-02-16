@@ -31,6 +31,8 @@ import kynetecLogo from "../../assets/kynetec-logo-white.svg";
 import kynetecImage from "../../assets/752bd0f50c694f1195be3b1771b703d5kynetec.jpg.avif";
 import totalkareLogo from "../../assets/totalkare-logo-white.png";
 import totalkareImage from "../../assets/totalkare-feature.avif";
+import coats4kidsLogo from "../../assets/coats4kids-logo.png";
+import coats4kidsImage from "../../assets/coats4kids-hero.jpg";
 
 // Case Studies Data
 const caseStudies = [
@@ -84,9 +86,9 @@ const caseStudies = [
     icon: HeartHandshake,
     headline: "Tools to scale and make an even bigger impact",
     description:
-      "How ERP Experts helped a children's charity streamline operations and amplify their mission with NetSuite.",
-    image: null,
-    logo: null,
+      "How ERP Experts helped a volunteer-driven charity on a mission to deliver a million coats to children in poverty.",
+    image: coats4kidsImage,
+    logo: coats4kidsLogo,
   },
 ];
 
