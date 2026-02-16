@@ -89,6 +89,7 @@ const caseStudies = [
       "How ERP Experts helped a volunteer-driven charity on a mission to deliver a million coats to children in poverty.",
     image: coats4kidsImage,
     logo: coats4kidsLogo,
+    logoLight: true,
   },
 ];
 
@@ -303,7 +304,7 @@ export default function CaseStudies() {
                       <img
                         src={study.logo}
                         alt={`${study.client} logo`}
-                        className="h-8 md:h-10 w-auto object-contain brightness-0 invert"
+                        className={`h-8 md:h-10 w-auto object-contain ${study.logoLight ? "" : "brightness-0 invert"}`}
                       />
                     ) : (
                       <span className="text-lg font-heading font-bold text-white">
