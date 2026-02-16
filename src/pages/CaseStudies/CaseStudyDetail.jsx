@@ -869,14 +869,44 @@ function LayoutVariant4({ caseStudy }) {
 }
 
 // ============================================
-// LAYOUT VARIANT 5: Quote banner + checkmarks (Coats4Kids)
+// LAYOUT VARIANT 5: Wide layout with side-by-side sections (Coats4Kids)
 // ============================================
 function LayoutVariant5({ caseStudy }) {
   return (
     <>
       <SharedHero caseStudy={caseStudy} />
 
-      {/* Quote banner */}
+      {/* Intro + Feature Image — full width two-column */}
+      <section className="section-padding-lg">
+        <div className="container">
+          <div className="grid lg:grid-cols-2 gap-2xl items-center">
+            <div>
+              <h3 className="text-quaternary mb-lg">{caseStudy.introHeading}</h3>
+              <p className="text-lg md:text-xl text-muted leading-relaxed">{caseStudy.intro}</p>
+            </div>
+            <div className="relative">
+              <div className="aspect-[4/3] rounded-2xl md:rounded-3xl overflow-hidden">
+                <img
+                  src={caseStudy.featureImage}
+                  alt={`${caseStudy.client}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div
+                className="absolute -bottom-6 -right-6 hidden md:block"
+                style={{
+                  width: "120px",
+                  height: "103px",
+                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                  backgroundColor: "var(--color-quaternary)",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quote banner — full width */}
       <section className="relative overflow-hidden" style={{ padding: "var(--space-2xl) 0" }}>
         <div
           className="absolute inset-0"
@@ -905,9 +935,9 @@ function LayoutVariant5({ caseStudy }) {
           }}
         />
         <div className="container relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="text-center">
             <MessageSquareQuote className="w-12 h-12 text-white/30 mx-auto mb-lg" />
-            <blockquote className="font-heading text-xl md:text-2xl lg:text-3xl leading-snug text-white mb-lg">
+            <blockquote className="font-heading text-xl md:text-2xl lg:text-3xl leading-snug text-white mb-lg max-w-4xl mx-auto">
               "{caseStudy.quote}"
             </blockquote>
             <p className="text-white/80 font-bold">{caseStudy.quoteAuthor}</p>
@@ -916,17 +946,7 @@ function LayoutVariant5({ caseStudy }) {
         </div>
       </section>
 
-      {/* Intro */}
-      <section className="section-padding-lg">
-        <div className="container">
-          <div className="max-w-4xl mx-auto">
-            <h3 className="text-quaternary mb-lg">{caseStudy.introHeading}</h3>
-            <p className="text-lg md:text-xl text-muted leading-relaxed">{caseStudy.intro}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Content Sections - Checkmark style */}
+      {/* Content Sections — 2x2 card grid */}
       <section
         className="section-padding-lg"
         style={{ backgroundColor: "rgba(42, 157, 99, 0.03)" }}
@@ -936,30 +956,28 @@ function LayoutVariant5({ caseStudy }) {
           <h2 className="text-center mb-2xl">
             From challenge to <span className="text-quaternary">impact</span>
           </h2>
-          <div className="max-w-4xl mx-auto">
-            <div className="flex flex-col" style={{ gap: "var(--space-2xl)" }}>
-              {caseStudy.sections.map((section, i) => (
-                <div key={i} className="bg-white rounded-2xl p-xl border border-(--color-text)/10">
-                  <div className="flex gap-lg">
-                    <div
-                      className="flex items-center justify-center shrink-0"
-                      style={{
-                        width: "48px",
-                        height: "48px",
-                        borderRadius: "50%",
-                        backgroundColor: "rgba(42, 157, 99, 0.1)",
-                      }}
-                    >
-                      <Check className="w-6 h-6 text-quaternary" />
-                    </div>
-                    <div>
-                      <h4 className="text-quaternary mb-md">{section.title}</h4>
-                      <p className="text-muted leading-relaxed">{section.content}</p>
-                    </div>
-                  </div>
+          <div className="grid md:grid-cols-2 gap-lg">
+            {caseStudy.sections.map((section, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-2xl p-xl border border-(--color-text)/10 hover:shadow-lg transition-shadow"
+              >
+                <div
+                  className="flex items-end justify-center text-white font-heading text-lg font-bold mb-lg"
+                  style={{
+                    width: "48px",
+                    height: "42px",
+                    clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                    backgroundColor: "var(--color-quaternary)",
+                    paddingBottom: "4px",
+                  }}
+                >
+                  {i + 1}
                 </div>
-              ))}
-            </div>
+                <h4 className="text-quaternary mb-md">{section.title}</h4>
+                <p className="text-muted leading-relaxed">{section.content}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
