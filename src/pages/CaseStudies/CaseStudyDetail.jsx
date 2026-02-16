@@ -31,6 +31,7 @@ import totalkareFeature from "../../assets/totalkare-feature.avif";
 // Import images - Coats4Kids
 import coats4kidsLogo from "../../assets/coats4kids-logo.png";
 import coats4kidsHero from "../../assets/coats4kids-hero.jpg";
+import coats4kidsFeature from "../../assets/coats4kids-feature.jpg";
 
 // Case studies data
 const caseStudies = {
@@ -47,7 +48,7 @@ const caseStudies = {
       "How ERP Experts transformed the operations of a volunteer-driven charity aiming to deliver a million brand new coats to children living in poverty across the UK.",
     logo: coats4kidsLogo,
     heroImage: coats4kidsHero,
-    featureImage: coats4kidsHero,
+    featureImage: coats4kidsFeature,
     introHeading: "Every child deserves warmth, dignity, and hope",
     intro:
       "Almost 1 in every 3 UK primary school children lives in poverty - over 4.2 million children in need, with more than 1 million in dire need. Many have never owned anything brand new. Coats4Kids was founded in 2021 by Rotarians with an ambitious mission: to deliver one million brand new winter coats to primary-aged children from disadvantaged families. But as the charity grew from a Rotary project into an independent registered charity in 2023, their operations needed to keep pace with their ambition. Their existing NetSuite system, poorly implemented by another provider, wasn't delivering. That's when they turned to ERP Experts.",
