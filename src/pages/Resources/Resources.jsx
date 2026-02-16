@@ -1,102 +1,13 @@
 /**
  * ERP Experts Resources Page
- * Links to the actual resource articles
+ * Data imported from src/data/articles.js — single source of truth.
  */
 
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, FileText, ClipboardCheck, Clock } from "lucide-react";
-
-const typeIcons = { Guide: BookOpen, Article: FileText, Assessment: ClipboardCheck };
+import { ArrowRight, FileText, Clock } from "lucide-react";
 import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
-
-// Import hero images
-import erpWorkForYouHero from "../../assets/521dfd_8d98556467bd405188ecbb172caa3b1f~mv2.png.jpeg";
-import erpImplementationHero from "../../assets/521dfd_d357dbfbc21d409792ca92d69250c49a~mv2.webp";
-
-const resources = [
-  {
-    slug: "erp-readiness-assessment",
-    type: "Assessment",
-    title: "ERP Readiness Assessment",
-    subtitle: "Find out if your business is ready for NetSuite",
-    desc: "Answer 6 quick questions to get an instant readiness score. See where you stand across leadership, resources, data, and more.",
-    readTime: "2 min",
-    image: "https://images.unsplash.com/photo-1553484771-047a44eee27a?w=800&q=80",
-  },
-  {
-    slug: "is-netsuite-right-for-your-business",
-    type: "Guide",
-    title: "Is NetSuite Right for Your Business?",
-    subtitle: "A Practical Evaluation Guide",
-    desc: "An honest look at whether NetSuite fits your organisation. No sales pitch, just practical questions, real trade-offs, and the evaluation steps that actually matter.",
-    readTime: "5 min read",
-    image: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=600&q=80",
-  },
-  {
-    slug: "future-of-work-generative-ai",
-    type: "Guide",
-    title: "The Future of Work: Leveraging the Potential of Generative AI",
-    subtitle: "How AI augments human capabilities",
-    desc: "Discover how generative AI is shifting the focus from automation to augmentation, supporting and enhancing human cognitive capabilities rather than replacing them.",
-    readTime: "3 min read",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&q=80",
-  },
-  {
-    slug: "cfo-guide-ai-enhanced-finance",
-    type: "Guide",
-    title: "A CFO's Guide to AI-Enhanced Finance",
-    subtitle: "Key Areas Where Finance Leaders Harness AI",
-    desc: "Discover how NetSuite's AI capabilities can empower your financial leadership, improve operational efficiency, and drive competitive advantage.",
-    readTime: "4 min read",
-    image: "https://images.unsplash.com/photo-1639322537228-f710d846310a?w=600&q=80",
-  },
-  {
-    slug: "4-skills-cfos-need-now",
-    type: "Guide",
-    title: "4 Skills CFOs Need Now",
-    subtitle: "Communication, Collaboration, Data Analysis & FP&A",
-    desc: "The CFO's job is no longer just about the numbers. Soft skills are more in demand than ever. Discover the top skills for modern finance leaders.",
-    readTime: "3 min read",
-    image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80",
-  },
-  {
-    slug: "streamlining-your-netsuite-experience",
-    type: "Guide",
-    title: "Streamlining Your NetSuite Experience",
-    subtitle: "Essential Tips for Growing Businesses",
-    desc: "Getting the most out of NetSuite requires regular attention and smart optimisation. These essential tips will help keep your system running smoothly.",
-    readTime: "3 min read",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80",
-  },
-  {
-    slug: "your-erp-system-should-work-for-you",
-    type: "Article",
-    title: "Your ERP System Should Work For You",
-    subtitle: "Not Against You",
-    desc: "Growing a business is exciting, but outdated systems can quietly drain your energy. You deserve technology that keeps up with your ambitions.",
-    readTime: "2 min read",
-    image: erpWorkForYouHero,
-  },
-  {
-    slug: "stress-free-erp-implementation",
-    type: "Guide",
-    title: "The Ultimate Guide to a Stress-Free ERP Implementation",
-    subtitle: "How to make your ERP project a success",
-    desc: "ERP implementation often gets a bad reputation. With the right partner and approach, it can be smooth, efficient, and even enjoyable.",
-    readTime: "4 min read",
-    image: erpImplementationHero,
-  },
-  {
-    slug: "spreadsheet-hidden-costs",
-    type: "Guide",
-    title: "The Hidden Costs of Spreadsheets",
-    subtitle: "Why Your Spreadsheets Are Holding You Back",
-    desc: "As ERP data requirements expand and business environments grow more complex, spreadsheets reveal their limitations and hidden costs.",
-    readTime: "3 min read",
-    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80",
-  },
-];
+import { articlesList, typeIcons } from "../../data/articles";
 
 export default function Resources() {
   return (
@@ -191,7 +102,7 @@ export default function Resources() {
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
           <div className="grid md:grid-cols-2 gap-lg md:gap-xl">
-            {resources.map((resource, i) => (
+            {articlesList.map((resource, i) => (
               <Link
                 key={i}
                 to={`/resources/${resource.slug}`}
@@ -202,6 +113,7 @@ export default function Resources() {
                     src={resource.image}
                     alt={resource.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading={i < 2 ? undefined : "lazy"}
                   />
                   {/* Triangle accent */}
                   <div

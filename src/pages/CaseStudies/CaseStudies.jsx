@@ -1,125 +1,18 @@
 /**
- * ERP Experts Case Studies Page
- * Filterable list of case studies with green theme
+ * ERP Experts Case Studies Listing Page
+ * Data imported from src/data/caseStudies.js — single source of truth.
  */
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  ArrowRight,
-  Lightbulb,
-  Sun,
-  BarChart3,
-  Wrench,
-  HeartHandshake,
-  TrendingUp,
-  Clock,
-  Target,
-  MessageSquareQuote,
-} from "lucide-react";
+import { ArrowRight, MessageSquareQuote } from "lucide-react";
 import AnimatedStats from "../../components/ui/AnimatedStats";
 import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
-import { trackCTAClick } from "../../components/Analytics";
-
-// Import images
-import carallonLogo from "../../assets/carallon_logo_white.png.avif";
-import carallonImage from "../../assets/carallon-single.jpg.avif";
-import eco2solarLogo from "../../assets/eco2solar-logo.png.avif";
-import eco2solarImage from "../../assets/eco2solar-feature.avif";
-import kynetecLogo from "../../assets/kynetec-logo-white.svg";
-import kynetecImage from "../../assets/752bd0f50c694f1195be3b1771b703d5kynetec.jpg.avif";
-import totalkareLogo from "../../assets/totalkare-logo-white.png";
-import totalkareImage from "../../assets/totalkare-feature.avif";
-import coats4kidsLogo from "../../assets/coats4kids-logo.png";
-import coats4kidsImage from "../../assets/coats4kids-hero.jpg";
-
-// Case Studies Data
-const caseStudies = [
-  {
-    id: 1,
-    client: "Carallon",
-    industry: "Technology",
-    icon: Lightbulb,
-    headline: "Entertainment technology leader",
-    description:
-      "Working at the cutting edge of entertainment technology with streamlined operations.",
-    image: carallonImage,
-    logo: carallonLogo,
-  },
-  {
-    id: 2,
-    client: "eco2solar",
-    industry: "Renewable Energy",
-    icon: Sun,
-    headline: "Sustainable growth enabled",
-    description: "Supporting the renewable energy sector with efficient business processes.",
-    image: eco2solarImage,
-    logo: eco2solarLogo,
-  },
-  {
-    id: 3,
-    client: "Kynetec",
-    industry: "Market Research",
-    icon: BarChart3,
-    headline: "System replaced in 6 months",
-    description:
-      "Replaced a failing system in half the time of the original project, on schedule and within budget.",
-    image: kynetecImage,
-    logo: kynetecLogo,
-  },
-  {
-    id: 4,
-    client: "Totalkare",
-    industry: "Manufacturing",
-    icon: Wrench,
-    headline: "Reliable, scalable system",
-    description:
-      "A NetSuite solution that improved every aspect of operations and supports continued growth.",
-    image: totalkareImage,
-    logo: totalkareLogo,
-  },
-  {
-    id: 5,
-    client: "Coats4Kids",
-    industry: "Charity",
-    icon: HeartHandshake,
-    headline: "Tools to scale and make an even bigger impact",
-    description:
-      "How ERP Experts helped a volunteer-driven charity on a mission to deliver a million coats to children in poverty.",
-    image: coats4kidsImage,
-    logo: coats4kidsLogo,
-    logoLight: true,
-  },
-];
+import { caseStudiesList, testimonials, caseStudiesHeroImage } from "../../data/caseStudies";
 
 // Get unique industries for filter
-const industries = ["All", ...new Set(caseStudies.map((cs) => cs.industry))];
-
-// Testimonials
-const testimonials = [
-  {
-    quote:
-      "Most consultants vanish after go-live. ERP Experts are still here three years later. That tells you everything you need to know.",
-    name: "David Hall",
-    role: "CEO",
-    company: "Totalkare",
-  },
-  {
-    quote:
-      "Our NetSuite system wasn't working, so we brought in ERP Experts. They quickly gave us clear choices and explained the time and cost for each. With their help, we replaced the system in just six months - half the time of the original project - by using teams in different time zones for continuous progress. The project finished on schedule and within budget, and we now have a stable system with reliable ongoing support.",
-    name: "Tom Mayho",
-    role: "CFO",
-    company: "Kynetec",
-  },
-  {
-    quote:
-      "ERP Experts didn't just fix our system. They gave us the tools to scale and make an even bigger impact. If you are using NetSuite without them, you are missing out.",
-    name: "Peter Borner",
-    role: "CEO",
-    company: "Coats4Kids",
-  },
-];
+const industries = ["All", ...new Set(caseStudiesList.map((cs) => cs.industry))];
 
 // Stats for credibility
 const stats = [
@@ -133,8 +26,8 @@ export default function CaseStudies() {
 
   const filteredStudies =
     selectedIndustry === "All"
-      ? caseStudies
-      : caseStudies.filter((cs) => cs.industry === selectedIndustry);
+      ? caseStudiesList
+      : caseStudiesList.filter((cs) => cs.industry === selectedIndustry);
 
   return (
     <main id="main-content">
@@ -189,7 +82,7 @@ export default function CaseStudies() {
           }}
         >
           <img
-            src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&q=80"
+            src={caseStudiesHeroImage}
             alt=""
             className="w-full h-full object-cover"
             style={{ opacity: 0.5 }}
@@ -255,6 +148,7 @@ export default function CaseStudies() {
               <button
                 key={industry}
                 onClick={() => setSelectedIndustry(industry)}
+                aria-pressed={selectedIndustry === industry}
                 className={`px-3 md:px-4 py-1.5 md:py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
                   selectedIndustry === industry
                     ? "bg-(--color-quaternary) text-white"
@@ -285,6 +179,7 @@ export default function CaseStudies() {
                       src={study.image}
                       alt={study.client}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
                     />
                   ) : (
                     <div
@@ -319,20 +214,15 @@ export default function CaseStudies() {
 
                 {/* Content */}
                 <div style={{ padding: "var(--space-xl)" }}>
-                  {/* Result */}
                   <p
                     className="font-heading text-xl md:text-2xl text-quaternary"
                     style={{ marginBottom: "var(--space-md)" }}
                   >
                     {study.headline}
                   </p>
-
-                  {/* Description */}
                   <p className="text-base text-muted" style={{ marginBottom: "var(--space-xl)" }}>
                     {study.description}
                   </p>
-
-                  {/* CTA */}
                   <div className="flex items-center gap-sm text-quaternary font-bold">
                     <span>Read case study</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -352,7 +242,6 @@ export default function CaseStudies() {
 
       {/* Testimonials */}
       <section className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden">
-        {/* Decorative triangle */}
         <div
           className="absolute bottom-0 left-0 opacity-[0.05] hidden lg:block pointer-events-none"
           style={{
@@ -373,7 +262,6 @@ export default function CaseStudies() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
             {testimonials.map((testimonial, i) =>
               i === 0 ? (
-                /* Featured first testimonial with green gradient */
                 <div
                   key={i}
                   className="rounded-2xl md:rounded-3xl p-lg md:p-xl relative overflow-hidden"
@@ -381,7 +269,6 @@ export default function CaseStudies() {
                     background: "linear-gradient(135deg, var(--color-quaternary) 0%, #1a5c3a 100%)",
                   }}
                 >
-                  {/* Decorative triangle */}
                   <div
                     className="absolute top-0 right-0 opacity-20"
                     style={{
@@ -406,7 +293,6 @@ export default function CaseStudies() {
                   </div>
                 </div>
               ) : (
-                /* Regular testimonial cards */
                 <div key={i} className="card border-2 border-(--color-text)/10 p-lg md:p-xl">
                   <MessageSquareQuote className="w-8 h-8 text-quaternary mb-lg" />
                   <p className="text-base text-muted mb-xl leading-snug">"{testimonial.quote}"</p>
@@ -450,22 +336,18 @@ export default function CaseStudies() {
               Start a conversation
               <ArrowRight className="w-5 h-5" />
             </TrackedLink>
-            <a
-              href="https://one-score-to-rule-them-all.scoreapp.com"
-              target="_blank"
-              rel="noopener noreferrer"
+            <TrackedLink
+              to="/resources/erp-readiness-assessment"
+              trackingName="case_studies_netscore_cta"
+              trackingPage="case_studies"
               className="btn sm:btn-lg border-2 w-full sm:w-auto justify-center"
               style={{ borderColor: "var(--color-quaternary)", color: "var(--color-quaternary)" }}
-              onClick={() => trackCTAClick("case_studies_netscore_cta", "case_studies")}
             >
-              Get your free NETscore
-            </a>
+              Take the ERP readiness assessment
+            </TrackedLink>
           </div>
         </div>
       </section>
-
-      {/* Spacer */}
-      <div className="h-8 md:h-10" />
     </main>
   );
 }
