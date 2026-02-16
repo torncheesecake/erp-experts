@@ -724,6 +724,16 @@ function LayoutVariant4({ caseStudy }) {
               </div>
             </div>
           </div>
+          {/* Scroll indicator */}
+          <div className="flex flex-col items-center mt-xl text-muted">
+            <p className="text-sm font-bold mb-sm">Read the full story below</p>
+            <div className="w-6 h-10 rounded-full border-2 border-(--color-quaternary)/40 flex items-start justify-center pt-1.5">
+              <div
+                className="w-1.5 h-3 rounded-full bg-(--color-quaternary)/60"
+                style={{ animation: "scrollBounce 1.5s ease-in-out infinite" }}
+              />
+            </div>
+          </div>
         </section>
       )}
 
