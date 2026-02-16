@@ -28,8 +28,54 @@ import totalkareLogo from "../../assets/totalkare-logo-white.png";
 import totalkareHero from "../../assets/rs-recovery-ymech-2totalkare.webp.avif";
 import totalkareFeature from "../../assets/totalkare-feature.avif";
 
+// Import images - Coats4Kids (none available - uses gradient)
+
 // Case studies data
 const caseStudies = {
+  5: {
+    id: 5,
+    layoutVariant: 5, // Gradient hero, no images
+    client: "Coats4Kids",
+    industry: "Charity / Non-Profit",
+    users: "Growing team",
+    systemReplaced: "Manual processes",
+    product: "NetSuite",
+    title: "Streamlining a Charity to Amplify Its Mission",
+    subtitle:
+      "How ERP Experts helped Coats4Kids move beyond fixing their system to giving them the tools to scale and make an even bigger impact.",
+    logo: null,
+    heroImage: null,
+    featureImage: null,
+    introHeading: "More than just a coat",
+    intro:
+      "Coats4Kids is a charity on a mission: ensuring no child in the UK goes without a warm coat. But behind the scenes, their operations were struggling. As the organisation grew, so did the complexity of managing donations, inventory, logistics, and reporting. Their existing NetSuite system wasn't delivering. That's when they turned to ERP Experts.",
+    quote:
+      "ERP Experts didn't just fix our system. They gave us the tools to scale and make an even bigger impact. If you are using NetSuite without them, you are missing out.",
+    quoteAuthor: "Peter Borner",
+    quoteRole: "CEO, Coats4Kids",
+    sections: [
+      {
+        title: "The Challenge",
+        content:
+          "Coats4Kids needed a NetSuite system that actually worked for a charity. Their existing setup had been implemented without a real understanding of their processes, leaving them with workarounds, manual tasks, and limited visibility over their operations. They needed a partner who would listen, understand, and deliver.",
+      },
+      {
+        title: "Understanding Before Action",
+        content:
+          "ERP Experts took the time to truly understand how Coats4Kids operated. Before touching a single configuration, they mapped out the charity's workflows - from donation intake to coat distribution - and identified where the system was falling short. This consultative approach meant the solution was built around real needs, not assumptions.",
+      },
+      {
+        title: "A System That Serves the Mission",
+        content:
+          "With a clear picture of the challenges, ERP Experts redesigned Coats4Kids' NetSuite environment. Inventory tracking was streamlined so the team could see exactly what stock was available and where. Reporting was transformed, giving leadership real-time insight into operations, donations, and impact metrics. Manual processes were automated, freeing up the team to focus on what matters most: getting coats to children.",
+      },
+      {
+        title: "Tools to Scale",
+        content:
+          "The real transformation wasn't just fixing what was broken - it was building a platform for growth. As Coats4Kids expands their reach across the UK, their NetSuite system now scales with them. New regions, new partnerships, and increased volume are all supported by a system designed to grow. ERP Experts didn't just solve today's problems; they built for tomorrow's ambitions.",
+      },
+    ],
+  },
   1: {
     id: 1,
     layoutVariant: 1, // Full-width hero with gradient overlay
@@ -821,6 +867,171 @@ function LayoutVariant4({ caseStudy }) {
 }
 
 // ============================================
+// LAYOUT VARIANT 5: Gradient hero, no images (Coats4Kids)
+// ============================================
+function LayoutVariant5({ caseStudy }) {
+  return (
+    <>
+      {/* Gradient Hero (no image) */}
+      <section
+        className="relative flex items-center overflow-hidden"
+        style={{ paddingTop: "120px", paddingBottom: "var(--space-2xl)", minHeight: "50vh" }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(135deg, var(--color-quaternary) 0%, #1a5c3a 60%, #0f3d24 100%)",
+          }}
+        />
+        <div
+          className="absolute top-1/2 right-0 opacity-10 hidden lg:block pointer-events-none"
+          style={{
+            width: "1000px",
+            height: "858px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "white",
+            transform: "translateX(20%) translateY(-50%)",
+          }}
+        />
+        <div
+          className="absolute bottom-0 left-0 opacity-10 hidden md:block pointer-events-none"
+          style={{
+            width: "400px",
+            height: "343px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "white",
+            transform: "translateX(-30%) translateY(30%)",
+          }}
+        />
+
+        <div className="container relative z-10">
+          <Breadcrumb
+            items={[
+              { label: "Home", to: "/" },
+              { label: "Case Studies", to: "/case-studies" },
+              { label: caseStudy.client },
+            ]}
+            light
+          />
+
+          <div className="max-w-3xl">
+            <p className="text-label text-white/70 mb-md">{caseStudy.industry}</p>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-heading font-bold text-white mb-lg md:mb-xl leading-[1.1]">
+              {caseStudy.title}
+            </h1>
+            <p className="text-lg md:text-2xl text-white/90 leading-relaxed">
+              {caseStudy.subtitle}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Project Details Bar */}
+      <section
+        className="border-b border-(--color-text)/10"
+        style={{ padding: "var(--space-2xl) 0" }}
+      >
+        <div className="container">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg md:gap-2xl text-center">
+            <div>
+              <p className="text-base text-muted mb-sm">Company</p>
+              <p className="text-xl md:text-2xl font-bold">{caseStudy.client}</p>
+            </div>
+            <div>
+              <p className="text-base text-muted mb-sm">Users</p>
+              <p className="text-xl md:text-2xl font-bold text-quaternary">{caseStudy.users}</p>
+            </div>
+            <div>
+              <p className="text-base text-muted mb-sm">System Replaced</p>
+              <p className="text-xl md:text-2xl font-bold">{caseStudy.systemReplaced}</p>
+            </div>
+            <div>
+              <p className="text-base text-muted mb-sm">Product</p>
+              <p className="text-xl md:text-2xl font-bold text-quaternary">{caseStudy.product}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Intro + Quote */}
+      <section className="section-padding-lg">
+        <div className="container">
+          <div className="max-w-4xl mx-auto">
+            <h3 className="text-quaternary mb-lg">{caseStudy.introHeading}</h3>
+            <p className="text-lg md:text-xl text-muted leading-relaxed mb-2xl">
+              {caseStudy.intro}
+            </p>
+
+            <div
+              className="p-xl md:p-2xl rounded-2xl relative overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, var(--color-quaternary) 0%, #1a5c3a 100%)",
+              }}
+            >
+              <div
+                className="absolute top-0 right-0 opacity-20"
+                style={{
+                  width: "150px",
+                  height: "129px",
+                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                  backgroundColor: "white",
+                  transform: "translateX(30px) translateY(-30px)",
+                }}
+              />
+              <MessageSquareQuote className="w-10 h-10 text-white/40 mb-lg" />
+              <blockquote className="font-heading text-xl md:text-2xl leading-snug text-white mb-lg">
+                "{caseStudy.quote}"
+              </blockquote>
+              <p className="text-white/80 font-bold">{caseStudy.quoteAuthor}</p>
+              <p className="text-white/60">{caseStudy.quoteRole}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Content Sections - Checkmark style */}
+      <section
+        className="section-padding-lg"
+        style={{ backgroundColor: "rgba(42, 157, 99, 0.03)" }}
+      >
+        <div className="container">
+          <p className="text-label text-quaternary text-center mb-md">The Journey</p>
+          <h2 className="text-center mb-2xl">
+            From challenge to <span className="text-quaternary">impact</span>
+          </h2>
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-col" style={{ gap: "var(--space-2xl)" }}>
+              {caseStudy.sections.map((section, i) => (
+                <div key={i} className="bg-white rounded-2xl p-xl border border-(--color-text)/10">
+                  <div className="flex gap-lg">
+                    <div
+                      className="flex items-center justify-center shrink-0"
+                      style={{
+                        width: "48px",
+                        height: "48px",
+                        borderRadius: "50%",
+                        backgroundColor: "rgba(42, 157, 99, 0.1)",
+                      }}
+                    >
+                      <Check className="w-6 h-6 text-quaternary" />
+                    </div>
+                    <div>
+                      <h4 className="text-quaternary mb-md">{section.title}</h4>
+                      <p className="text-muted leading-relaxed">{section.content}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+// ============================================
 // Shared CTA Section
 // ============================================
 function SharedCTA() {
@@ -921,6 +1132,8 @@ export default function CaseStudyDetail() {
         return <LayoutVariant3 caseStudy={caseStudy} />;
       case 4:
         return <LayoutVariant4 caseStudy={caseStudy} />;
+      case 5:
+        return <LayoutVariant5 caseStudy={caseStudy} />;
       default:
         return <LayoutVariant1 caseStudy={caseStudy} />;
     }

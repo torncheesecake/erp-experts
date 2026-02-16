@@ -11,6 +11,7 @@ import {
   Sun,
   BarChart3,
   Wrench,
+  HeartHandshake,
   TrendingUp,
   Clock,
   Target,
@@ -75,6 +76,17 @@ const caseStudies = [
       "A NetSuite solution that improved every aspect of operations and supports continued growth.",
     image: totalkareImage,
     logo: totalkareLogo,
+  },
+  {
+    id: 5,
+    client: "Coats4Kids",
+    industry: "Charity",
+    icon: HeartHandshake,
+    headline: "Tools to scale and make an even bigger impact",
+    description:
+      "How ERP Experts helped a children's charity streamline operations and amplify their mission with NetSuite.",
+    image: null,
+    logo: null,
   },
 ];
 
@@ -265,19 +277,37 @@ export default function CaseStudies() {
               >
                 {/* Image */}
                 <div className="aspect-[16/9] relative overflow-hidden">
-                  <img
-                    src={study.image}
-                    alt={study.client}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                  {study.image ? (
+                    <img
+                      src={study.image}
+                      alt={study.client}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div
+                      className="w-full h-full group-hover:scale-105 transition-transform duration-500 flex items-center justify-center"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, var(--color-quaternary) 0%, #1a5c3a 100%)",
+                      }}
+                    >
+                      {study.icon && <study.icon className="w-16 h-16 text-white/30" />}
+                    </div>
+                  )}
                   {/* Logo overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
-                    <img
-                      src={study.logo}
-                      alt={`${study.client} logo`}
-                      className="h-8 md:h-10 w-auto object-contain brightness-0 invert"
-                    />
+                    {study.logo ? (
+                      <img
+                        src={study.logo}
+                        alt={`${study.client} logo`}
+                        className="h-8 md:h-10 w-auto object-contain brightness-0 invert"
+                      />
+                    ) : (
+                      <span className="text-lg font-heading font-bold text-white">
+                        {study.client}
+                      </span>
+                    )}
                     <span className="text-xs font-bold text-white/80 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
                       {study.industry}
                     </span>
