@@ -8,6 +8,29 @@ import { Plus, Wrench, Zap, FileText } from "lucide-react";
 
 const changelog = [
   {
+    date: "17 February 2026",
+    entries: [
+      {
+        type: "improved",
+        title: "Data separation and page restructuring",
+        description:
+          "Separated data from presentation across major pages. Split monolithic components into smaller, focused modules. Case studies data moved to caseStudies.js, articles data to articles.js. Improved maintainability and code organisation.",
+      },
+      {
+        type: "improved",
+        title: "Case study visual enhancements",
+        description:
+          "Added scroll indicator below Totalkare video to hint at content below. Fixed Coats4Kids logo rendering — removed brightness-0 invert filter for coloured logos. Updated Coats4Kids with separate feature image for intro section. Implemented wider layout with side-by-side intro and 2x2 card grid.",
+      },
+      {
+        type: "added",
+        title: "FTP deployment configuration",
+        description:
+          "Added .ftpconfig file with FTP credentials and deployment instructions for future uploads. File excluded from git via .gitignore for security.",
+      },
+    ],
+  },
+  {
     date: "13 February 2026",
     entries: [
       {

@@ -3,6 +3,9 @@
 .env.local
 .env.production
 
+# FTP credentials
+.ftpconfig
+
 # Logs
 logs
 *.log
