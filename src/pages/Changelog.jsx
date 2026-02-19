@@ -8,6 +8,29 @@ import { Plus, Wrench, Zap, FileText } from "lucide-react";
 
 const changelog = [
   {
+    date: "19 February 2026",
+    entries: [
+      {
+        type: "improved",
+        title: "Homepage CTA redesign",
+        description:
+          "Removed the newsletter signup form from the homepage final CTA. Replaced with a clean horizontal layout: heading and copy on the left, stacked action buttons on the right. New copy focuses on starting a conversation. Phone number displayed as subtle inline text rather than a competing button.",
+      },
+      {
+        type: "added",
+        title: "Partners page",
+        description:
+          "New Partners section at /partners with listing page and individual detail pages for Phocas and Levy Global. Clean light gradient hero, horizontal card layout on the listing page. Detail pages feature side-by-side intro, brand cards, stats, and industry information pulled from partner websites. Black colour scheme throughout. Link added to footer.",
+      },
+      {
+        type: "improved",
+        title: "ERP Readiness Assessment — QuizLift embed",
+        description:
+          "Replaced the git submodule approach with a lightweight QuizLift embed script. New QuizLiftEmbed component injects the external embed.js script at runtime. Simpler architecture with no submodule dependency.",
+      },
+    ],
+  },
+  {
     date: "17 February 2026",
     entries: [
       {
