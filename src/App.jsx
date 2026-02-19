@@ -28,7 +28,7 @@ const CaseStudies = lazy(() => import("./pages/CaseStudies/CaseStudies"));
 const CaseStudyDetail = lazy(() => import("./pages/CaseStudies/CaseStudyDetail"));
 const Resources = lazy(() => import("./pages/Resources/Resources"));
 const ResourceArticle = lazy(() => import("./pages/Resources/ResourceArticle"));
-const ResourceAssessment = lazy(() => import("./quizlift/src/components/Assessment"));
+const ResourceAssessment = lazy(() => import("./pages/Resources/ResourceAssessment"));
 const Contact = lazy(() => import("./pages/Contact/Contact"));
 const Support = lazy(() => import("./pages/Support/Support"));
 const WhatIsNetSuite = lazy(() => import("./pages/WhatIsNetSuite/WhatIsNetSuite"));
@@ -38,6 +38,8 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Cookies = lazy(() => import("./pages/Cookies"));
+const Partners = lazy(() => import("./pages/Partners/Partners"));
+const PartnerDetail = lazy(() => import("./pages/Partners/PartnerDetail"));
 const FAQ = lazy(() => import("./pages/FAQ/FAQ"));
 
 function ScrollToTop() {
@@ -94,6 +96,8 @@ function App() {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/cookies" element={<Cookies />} />
+            <Route path="/partners" element={<Partners />} />
+            <Route path="/partners/:slug" element={<PartnerDetail />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="*" element={<NotFound />} />
           </Route>
