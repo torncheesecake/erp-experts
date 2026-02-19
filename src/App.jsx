@@ -41,6 +41,7 @@ const Cookies = lazy(() => import("./pages/Cookies"));
 const Partners = lazy(() => import("./pages/Partners/Partners"));
 const PartnerDetail = lazy(() => import("./pages/Partners/PartnerDetail"));
 const FAQ = lazy(() => import("./pages/FAQ/FAQ"));
+const Reports = lazy(() => import("./pages/Reports"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -99,6 +100,7 @@ function App() {
             <Route path="/partners" element={<Partners />} />
             <Route path="/partners/:slug" element={<PartnerDetail />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/reports" element={<Reports />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

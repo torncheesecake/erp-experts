@@ -1,0 +1,373 @@
+{
+  "lastUpdated": "2026-02-19",
+  "weeks": [
+    {
+      "weekEnding": "2026-02-18",
+      "ga": {
+        "sessions": 51,
+        "pageViews": 64,
+        "users": 26,
+        "newUsers": 20,
+        "avgSessionDuration": 35,
+        "topPages": [
+          { "path": "/", "views": 26 },
+          { "path": "/resources/erp-readiness-assessment", "views": 10 },
+          { "path": "/about", "views": 7 },
+          { "path": "/case-studies", "views": 6 },
+          { "path": "/support", "views": 4 },
+          { "path": "/implementation", "views": 4 },
+          { "path": "/what-is-netsuite", "views": 3 },
+          { "path": "/contact", "views": 2 },
+          { "path": "/resources", "views": 1 },
+          { "path": "/resources/cfo-guide", "views": 1 }
+        ],
+        "trafficSources": {
+          "organic": 55,
+          "direct": 35,
+          "referral": 0,
+          "social": 2
+        },
+        "ctaClicks": 0,
+        "leads": 2
+      },
+      "linkedin": {
+        "followers": 1325,
+        "impressions": 532,
+        "engagementRate": 2.6,
+        "engagements": 14,
+        "newFollowers": 4
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
+    {
+      "weekEnding": "2026-02-11",
+      "ga": {
+        "sessions": 82,
+        "pageViews": 329,
+        "users": 38,
+        "newUsers": 29,
+        "avgSessionDuration": 57,
+        "topPages": [
+          { "path": "/", "views": 200 },
+          { "path": "/support", "views": 36 },
+          { "path": "/case-studies", "views": 19 },
+          { "path": "/about", "views": 16 },
+          { "path": "/implementation", "views": 12 },
+          { "path": "/contact", "views": 11 },
+          { "path": "/resources", "views": 9 },
+          { "path": "/case-studies/carallon", "views": 8 },
+          { "path": "/case-studies/eco2solar", "views": 3 },
+          { "path": "/what-is-netsuite", "views": 2 }
+        ],
+        "trafficSources": {
+          "organic": 49,
+          "direct": 43,
+          "referral": 7,
+          "social": 0
+        },
+        "ctaClicks": 23,
+        "leads": 1
+      },
+      "linkedin": {
+        "followers": 1321,
+        "impressions": 1748,
+        "engagementRate": 2.4,
+        "engagements": 42,
+        "newFollowers": 7
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
+    {
+      "weekEnding": "2026-02-01",
+      "ga": {
+        "sessions": null,
+        "pageViews": null,
+        "users": null,
+        "newUsers": null,
+        "avgSessionDuration": null,
+        "topPages": [],
+        "trafficSources": null,
+        "ctaClicks": null,
+        "leads": null
+      },
+      "linkedin": {
+        "followers": 1314,
+        "impressions": 1151,
+        "engagementRate": 1.5,
+        "engagements": 17,
+        "newFollowers": 16
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
+    {
+      "weekEnding": "2026-01-25",
+      "ga": {
+        "sessions": null,
+        "pageViews": null,
+        "users": null,
+        "newUsers": null,
+        "avgSessionDuration": null,
+        "topPages": [],
+        "trafficSources": null,
+        "ctaClicks": null,
+        "leads": null
+      },
+      "linkedin": {
+        "followers": 1298,
+        "impressions": 691,
+        "engagementRate": 4.1,
+        "engagements": 28,
+        "newFollowers": 7
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
+    {
+      "weekEnding": "2026-01-18",
+      "ga": {
+        "sessions": null,
+        "pageViews": null,
+        "users": null,
+        "newUsers": null,
+        "avgSessionDuration": null,
+        "topPages": [],
+        "trafficSources": null,
+        "ctaClicks": null,
+        "leads": null
+      },
+      "linkedin": {
+        "followers": 1291,
+        "impressions": 1019,
+        "engagementRate": 2.2,
+        "engagements": 22,
+        "newFollowers": 16
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
+    {
+      "weekEnding": "2026-01-11",
+      "ga": {
+        "sessions": null,
+        "pageViews": null,
+        "users": null,
+        "newUsers": null,
+        "avgSessionDuration": null,
+        "topPages": [],
+        "trafficSources": null,
+        "ctaClicks": null,
+        "leads": null
+      },
+      "linkedin": {
+        "followers": 1275,
+        "impressions": 953,
+        "engagementRate": 2.8,
+        "engagements": 27,
+        "newFollowers": 13
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
+    {
+      "weekEnding": "2026-01-04",
+      "ga": {
+        "sessions": null,
+        "pageViews": null,
+        "users": null,
+        "newUsers": null,
+        "avgSessionDuration": null,
+        "topPages": [],
+        "trafficSources": null,
+        "ctaClicks": null,
+        "leads": null
+      },
+      "linkedin": {
+        "followers": 1262,
+        "impressions": 238,
+        "engagementRate": 1.7,
+        "engagements": 4,
+        "newFollowers": 6
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
+    {
+      "weekEnding": "2025-12-28",
+      "ga": {
+        "sessions": null,
+        "pageViews": null,
+        "users": null,
+        "newUsers": null,
+        "avgSessionDuration": null,
+        "topPages": [],
+        "trafficSources": null,
+        "ctaClicks": null,
+        "leads": null
+      },
+      "linkedin": {
+        "followers": 1256,
+        "impressions": 291,
+        "engagementRate": 1.7,
+        "engagements": 5,
+        "newFollowers": 10
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
+    {
+      "weekEnding": "2025-12-21",
+      "ga": {
+        "sessions": null,
+        "pageViews": null,
+        "users": null,
+        "newUsers": null,
+        "avgSessionDuration": null,
+        "topPages": [],
+        "trafficSources": null,
+        "ctaClicks": null,
+        "leads": null
+      },
+      "linkedin": {
+        "followers": 1246,
+        "impressions": 856,
+        "engagementRate": 2.1,
+        "engagements": 18,
+        "newFollowers": 23
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
+    {
+      "weekEnding": "2025-12-14",
+      "ga": {
+        "sessions": null,
+        "pageViews": null,
+        "users": null,
+        "newUsers": null,
+        "avgSessionDuration": null,
+        "topPages": [],
+        "trafficSources": null,
+        "ctaClicks": null,
+        "leads": null
+      },
+      "linkedin": {
+        "followers": 1223,
+        "impressions": 860,
+        "engagementRate": 2.0,
+        "engagements": 17,
+        "newFollowers": 28
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
+    {
+      "weekEnding": "2025-12-07",
+      "ga": {
+        "sessions": null,
+        "pageViews": null,
+        "users": null,
+        "newUsers": null,
+        "avgSessionDuration": null,
+        "topPages": [],
+        "trafficSources": null,
+        "ctaClicks": null,
+        "leads": null
+      },
+      "linkedin": {
+        "followers": 1195,
+        "impressions": 1816,
+        "engagementRate": 0.6,
+        "engagements": 11,
+        "newFollowers": 35
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
+    {
+      "weekEnding": "2025-11-30",
+      "ga": {
+        "sessions": null,
+        "pageViews": null,
+        "users": null,
+        "newUsers": null,
+        "avgSessionDuration": null,
+        "topPages": [],
+        "trafficSources": null,
+        "ctaClicks": null,
+        "leads": null
+      },
+      "linkedin": {
+        "followers": 1160,
+        "impressions": 1405,
+        "engagementRate": 1.0,
+        "engagements": 14,
+        "newFollowers": 48
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    }
+  ]
+}
