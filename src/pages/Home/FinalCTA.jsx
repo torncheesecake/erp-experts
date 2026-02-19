@@ -1,51 +1,11 @@
 /**
- * Homepage Final CTA + Newsletter Section
+ * Homepage Final CTA Section
  */
 
-import { useState } from "react";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react";
 import TrackedLink from "../../components/ui/TrackedLink";
-import { trackEvent } from "../../components/Analytics";
 
 export default function FinalCTA() {
-  const [newsletterEmail, setNewsletterEmail] = useState("");
-  const [newsletterStatus, setNewsletterStatus] = useState("idle");
-
-  const handleNewsletterSubmit = async (e) => {
-    e.preventDefault();
-    if (!newsletterEmail) return;
-
-    setNewsletterStatus("submitting");
-
-    try {
-      const submitData = new FormData();
-      submitData.append("access_key", "391757e6-186e-43f4-adac-d26415a290e8");
-      submitData.append("subject", "Newsletter Subscription");
-      submitData.append("from_name", "ERP Experts Website");
-      submitData.append("email", newsletterEmail);
-      submitData.append("message", "New newsletter subscription request");
-
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: submitData,
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setNewsletterStatus("success");
-        setNewsletterEmail("");
-        trackEvent("newsletter_subscribe", "CTA", "homepage_newsletter", 1);
-        setTimeout(() => setNewsletterStatus("idle"), 5000);
-      } else {
-        throw new Error("Subscription failed");
-      }
-    } catch {
-      setNewsletterStatus("error");
-      setTimeout(() => setNewsletterStatus("idle"), 5000);
-    }
-  };
-
   return (
     <section style={{ padding: "var(--space-xl) var(--space-lg)" }}>
       <div className="container">
@@ -80,19 +40,23 @@ export default function FinalCTA() {
             }}
           />
 
-          <div className="relative z-10" style={{ padding: "var(--space-3xl) var(--space-xl)" }}>
-            <div className="text-center">
-              <h2 className="text-white" style={{ marginBottom: "var(--space-xl)" }}>
-                Let's build <span className="text-white/90">something great.</span>
-              </h2>
-              <p
-                className="text-white text-lg max-w-2xl mx-auto"
-                style={{ marginBottom: "var(--space-2xl)" }}
-              >
-                Ready to transform your business? Get in touch to start your NetSuite journey.
-              </p>
+          <div className="relative z-10" style={{ padding: "var(--space-3xl) var(--space-2xl)" }}>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2xl">
+              <div className="flex-1">
+                <h2
+                  className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight"
+                  style={{ marginBottom: "var(--space-lg)" }}
+                >
+                  Ready to transform your business{" "}
+                  <span className="text-white/80">with NetSuite?</span>
+                </h2>
+                <p className="text-white text-base md:text-lg leading-relaxed m-0">
+                  New implementation, rescue project, or ongoing support — we'd love to hear from
+                  you. No pressure, just an honest conversation.
+                </p>
+              </div>
 
-              <div className="flex flex-col sm:flex-row gap-md justify-center">
+              <div className="flex flex-col sm:flex-row md:flex-col gap-md shrink-0">
                 <TrackedLink
                   to="/contact"
                   trackingName="footer_cta_start_project"
@@ -106,68 +70,25 @@ export default function FinalCTA() {
                   href="https://calendly.com/discovery-erpexperts/discovery"
                   trackingName="footer_cta_book_call"
                   trackingPage="homepage"
-                  className="btn sm:btn-lg justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"
+                  className="btn sm:btn-lg justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all whitespace-nowrap"
                 >
                   Book a call
                 </TrackedLink>
               </div>
+            </div>
 
-              {/* Spacer */}
-              <div className="h-8 md:h-10" />
-
-              {/* Newsletter */}
-              <div
-                style={{
-                  paddingTop: "var(--space-2xl)",
-                  marginTop: "var(--space-2xl)",
-                  borderTop: "1px solid rgba(255,255,255,0.2)",
-                }}
+            <div
+              className="flex items-center gap-sm text-white/60"
+              style={{ marginTop: "var(--space-xl)" }}
+            >
+              <Phone className="w-4 h-4" />
+              <span className="text-sm">Prefer to talk?</span>
+              <a
+                href="tel:+441785336253"
+                className="text-white font-bold text-sm hover:underline transition-colors"
               >
-                {newsletterStatus === "success" ? (
-                  <p className="text-white text-base font-bold">
-                    Thanks for subscribing! We'll be in touch.
-                  </p>
-                ) : newsletterStatus === "error" ? (
-                  <p className="text-red-300 text-base">Something went wrong. Please try again.</p>
-                ) : (
-                  <>
-                    <p
-                      className="text-white/70 text-base"
-                      style={{ marginBottom: "var(--space-lg)" }}
-                    >
-                      Or subscribe to our newsletter for NetSuite tips & insights
-                    </p>
-                    <form
-                      onSubmit={handleNewsletterSubmit}
-                      className="flex flex-col sm:flex-row gap-md max-w-md mx-auto"
-                    >
-                      <input
-                        type="email"
-                        value={newsletterEmail}
-                        onChange={(e) => setNewsletterEmail(e.target.value)}
-                        placeholder="Enter your email"
-                        required
-                        disabled={newsletterStatus === "submitting"}
-                        className="flex-1 px-6 py-4 rounded-full border-2 border-white/40 bg-white/20 text-white placeholder-white/70 text-base font-medium focus:outline-none focus:border-white/70 focus:bg-white/30 transition-all disabled:opacity-50"
-                      />
-                      <button
-                        type="submit"
-                        disabled={newsletterStatus === "submitting"}
-                        className="btn sm:btn-lg justify-center bg-white text-(--color-primary) hover:scale-105 transition-transform rounded-full disabled:opacity-50 whitespace-nowrap"
-                      >
-                        {newsletterStatus === "submitting" ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <>
-                            Subscribe
-                            <ArrowRight className="w-4 h-4" />
-                          </>
-                        )}
-                      </button>
-                    </form>
-                  </>
-                )}
-              </div>
+                01785 336 253
+              </a>
             </div>
           </div>
         </div>
