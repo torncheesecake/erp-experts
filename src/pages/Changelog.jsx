@@ -22,12 +22,6 @@ const changelog = [
         description:
           "New Partners section at /partners with listing page and individual detail pages for Phocas and Levy Global. Clean light gradient hero, horizontal card layout on the listing page. Detail pages feature side-by-side intro, brand cards, stats, and industry information pulled from partner websites. Black colour scheme throughout. Link added to footer.",
       },
-      {
-        type: "removed",
-        title: "ERP Readiness Assessment removed",
-        description:
-          "Removed the ERP Readiness Assessment page, route, resource card, and case studies CTA link. The QuizLift embed relies on a local development server and is not suitable for production.",
-      },
     ],
   },
   {
@@ -56,24 +50,6 @@ const changelog = [
   {
     date: "13 February 2026",
     entries: [
-      {
-        type: "improved",
-        title: "Assessment extracted to QuizLift submodule",
-        description:
-          "ERP Readiness Assessment now loaded from the private QuizLift repo (git submodule) instead of inline code. Assessment component is imported from src/quizlift/. 'Powered by QuizLift' branding added to results page.",
-      },
-      {
-        type: "added",
-        title: "Lead capture on ERP Readiness Assessment",
-        description:
-          "New step between questions and results: collects first name, last name, and work email before showing the score. Data is POSTed to a configurable webhook endpoint (VITE_LEAD_CAPTURE_URL) along with the score, band, and answers. Silently skips if no webhook is configured.",
-      },
-      {
-        type: "added",
-        title: "ERP Readiness Assessment",
-        description:
-          "Interactive 6-question assessment at /resources/erp-readiness-assessment. Instant readiness score with category breakdown across leadership, experience, resources, priority, data, and success definition. Links to full ScoreApp scorecard for detailed results.",
-      },
       {
         type: "added",
         title: "FAQ page",
