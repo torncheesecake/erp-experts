@@ -1043,8 +1043,6 @@ export const typeIcons = { Guide: BookOpen, Article: FileText, Assessment: Asses
 
 // Listing page card image mapping (some articles use different images for cards vs hero)
 const cardImages = {
-  "erp-readiness-assessment":
-    "https://images.unsplash.com/photo-1553484771-047a44eee27a?w=800&q=80",
   "is-netsuite-right-for-your-business":
     "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=600&q=80",
   "future-of-work-generative-ai":
@@ -1062,7 +1060,6 @@ const cardImages = {
 
 // Ordered list of article slugs for the listing page
 const articleOrder = [
-  "erp-readiness-assessment",
   "is-netsuite-right-for-your-business",
   "future-of-work-generative-ai",
   "cfo-guide-ai-enhanced-finance",
@@ -1076,18 +1073,6 @@ const articleOrder = [
 // Derived list for the listing page
 export const articlesList = articleOrder.map((slug) => {
   const a = articles[slug];
-  // ERP readiness assessment is special — not a full article
-  if (!a) {
-    return {
-      slug,
-      type: "Assessment",
-      title: "ERP Readiness Assessment",
-      subtitle: "Find out if your business is ready for NetSuite",
-      desc: "Answer 6 quick questions to get an instant readiness score. See where you stand across leadership, resources, data, and more.",
-      readTime: "2 min",
-      image: cardImages[slug],
-    };
-  }
   return {
     slug,
     type: a.type,

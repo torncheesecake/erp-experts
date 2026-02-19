@@ -23,10 +23,10 @@ const changelog = [
           "New Partners section at /partners with listing page and individual detail pages for Phocas and Levy Global. Clean light gradient hero, horizontal card layout on the listing page. Detail pages feature side-by-side intro, brand cards, stats, and industry information pulled from partner websites. Black colour scheme throughout. Link added to footer.",
       },
       {
-        type: "improved",
-        title: "ERP Readiness Assessment — QuizLift embed",
+        type: "removed",
+        title: "ERP Readiness Assessment removed",
         description:
-          "Replaced the git submodule approach with a lightweight QuizLift embed script. New QuizLiftEmbed component injects the external embed.js script at runtime. Simpler architecture with no submodule dependency.",
+          "Removed the ERP Readiness Assessment page, route, resource card, and case studies CTA link. The QuizLift embed relies on a local development server and is not suitable for production.",
       },
     ],
   },

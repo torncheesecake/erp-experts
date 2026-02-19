@@ -336,15 +336,6 @@ export default function CaseStudies() {
               Start a conversation
               <ArrowRight className="w-5 h-5" />
             </TrackedLink>
-            <TrackedLink
-              to="/resources/erp-readiness-assessment"
-              trackingName="case_studies_netscore_cta"
-              trackingPage="case_studies"
-              className="btn sm:btn-lg border-2 w-full sm:w-auto justify-center"
-              style={{ borderColor: "var(--color-quaternary)", color: "var(--color-quaternary)" }}
-            >
-              Take the ERP readiness assessment
-            </TrackedLink>
           </div>
         </div>
       </section>

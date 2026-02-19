@@ -28,7 +28,7 @@ const CaseStudies = lazy(() => import("./pages/CaseStudies/CaseStudies"));
 const CaseStudyDetail = lazy(() => import("./pages/CaseStudies/CaseStudyDetail"));
 const Resources = lazy(() => import("./pages/Resources/Resources"));
 const ResourceArticle = lazy(() => import("./pages/Resources/ResourceArticle"));
-const ResourceAssessment = lazy(() => import("./pages/Resources/ResourceAssessment"));
+
 const Contact = lazy(() => import("./pages/Contact/Contact"));
 const Support = lazy(() => import("./pages/Support/Support"));
 const WhatIsNetSuite = lazy(() => import("./pages/WhatIsNetSuite/WhatIsNetSuite"));
@@ -86,7 +86,7 @@ function App() {
             <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
             <Route path="/about" element={<About />} />
             <Route path="/resources" element={<Resources />} />
-            <Route path="/resources/erp-readiness-assessment" element={<ResourceAssessment />} />
+
             <Route path="/resources/:slug" element={<ResourceArticle />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/support" element={<Support />} />
