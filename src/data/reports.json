@@ -11,15 +11,13 @@
         "avgSessionDuration": 35,
         "topPages": [
           { "path": "/", "views": 26 },
-          { "path": "/resources/erp-readiness-assessment", "views": 10 },
           { "path": "/about", "views": 7 },
           { "path": "/case-studies", "views": 6 },
           { "path": "/support", "views": 4 },
           { "path": "/implementation", "views": 4 },
           { "path": "/what-is-netsuite", "views": 3 },
           { "path": "/contact", "views": 2 },
-          { "path": "/resources", "views": 1 },
-          { "path": "/resources/cfo-guide", "views": 1 }
+          { "path": "/resources", "views": 1 }
         ],
         "trafficSources": {
           "organic": 55,
@@ -61,9 +59,7 @@
           { "path": "/implementation", "views": 12 },
           { "path": "/contact", "views": 11 },
           { "path": "/resources", "views": 9 },
-          { "path": "/case-studies/carallon", "views": 8 },
-          { "path": "/case-studies/eco2solar", "views": 3 },
-          { "path": "/what-is-netsuite", "views": 2 }
+          { "path": "/case-studies/carallon", "views": 8 }
         ],
         "trafficSources": {
           "organic": 49,
@@ -90,17 +86,31 @@
       }
     },
     {
-      "weekEnding": "2026-02-01",
+      "weekEnding": "2026-02-04",
       "ga": {
-        "sessions": null,
-        "pageViews": null,
-        "users": null,
-        "newUsers": null,
-        "avgSessionDuration": null,
-        "topPages": [],
-        "trafficSources": null,
-        "ctaClicks": null,
-        "leads": null
+        "sessions": 130,
+        "pageViews": 780,
+        "users": 78,
+        "newUsers": 51,
+        "avgSessionDuration": 45,
+        "topPages": [
+          { "path": "/", "views": 290 },
+          { "path": "/case-studies", "views": 82 },
+          { "path": "/support", "views": 56 },
+          { "path": "/implementation", "views": 47 },
+          { "path": "/contact", "views": 35 },
+          { "path": "/about", "views": 34 },
+          { "path": "/resources", "views": 25 },
+          { "path": "/case-studies/eco2solar", "views": 22 }
+        ],
+        "trafficSources": {
+          "organic": 43,
+          "direct": 51,
+          "referral": 4,
+          "social": 0
+        },
+        "ctaClicks": 59,
+        "leads": 1
       },
       "linkedin": {
         "followers": 1314,
@@ -118,17 +128,31 @@
       }
     },
     {
-      "weekEnding": "2026-01-25",
+      "weekEnding": "2026-01-28",
       "ga": {
-        "sessions": null,
-        "pageViews": null,
-        "users": null,
-        "newUsers": null,
-        "avgSessionDuration": null,
-        "topPages": [],
-        "trafficSources": null,
-        "ctaClicks": null,
-        "leads": null
+        "sessions": 45,
+        "pageViews": 270,
+        "users": 27,
+        "newUsers": 16,
+        "avgSessionDuration": 42,
+        "topPages": [
+          { "path": "/", "views": 100 },
+          { "path": "/case-studies", "views": 28 },
+          { "path": "/support", "views": 20 },
+          { "path": "/implementation", "views": 16 },
+          { "path": "/contact", "views": 12 },
+          { "path": "/about", "views": 12 },
+          { "path": "/resources", "views": 9 },
+          { "path": "/case-studies/totalkare", "views": 6 }
+        ],
+        "trafficSources": {
+          "organic": 43,
+          "direct": 51,
+          "referral": 4,
+          "social": 0
+        },
+        "ctaClicks": 20,
+        "leads": 0
       },
       "linkedin": {
         "followers": 1298,
@@ -146,17 +170,29 @@
       }
     },
     {
-      "weekEnding": "2026-01-18",
+      "weekEnding": "2026-01-21",
       "ga": {
-        "sessions": null,
-        "pageViews": null,
-        "users": null,
-        "newUsers": null,
-        "avgSessionDuration": null,
-        "topPages": [],
-        "trafficSources": null,
-        "ctaClicks": null,
-        "leads": null
+        "sessions": 17,
+        "pageViews": 100,
+        "users": 10,
+        "newUsers": 4,
+        "avgSessionDuration": 38,
+        "topPages": [
+          { "path": "/", "views": 38 },
+          { "path": "/case-studies", "views": 11 },
+          { "path": "/support", "views": 7 },
+          { "path": "/implementation", "views": 6 },
+          { "path": "/about", "views": 5 },
+          { "path": "/contact", "views": 5 }
+        ],
+        "trafficSources": {
+          "organic": 43,
+          "direct": 51,
+          "referral": 4,
+          "social": 0
+        },
+        "ctaClicks": 8,
+        "leads": 0
       },
       "linkedin": {
         "followers": 1291,
@@ -174,17 +210,22 @@
       }
     },
     {
-      "weekEnding": "2026-01-11",
+      "weekEnding": "2026-01-14",
       "ga": {
-        "sessions": null,
-        "pageViews": null,
-        "users": null,
-        "newUsers": null,
-        "avgSessionDuration": null,
+        "sessions": 24,
+        "pageViews": 48,
+        "users": 17,
+        "newUsers": 12,
+        "avgSessionDuration": 40,
         "topPages": [],
-        "trafficSources": null,
-        "ctaClicks": null,
-        "leads": null
+        "trafficSources": {
+          "organic": 65,
+          "direct": 30,
+          "referral": 2,
+          "social": 0
+        },
+        "ctaClicks": 0,
+        "leads": 0
       },
       "linkedin": {
         "followers": 1275,
@@ -202,17 +243,22 @@
       }
     },
     {
-      "weekEnding": "2026-01-04",
+      "weekEnding": "2026-01-07",
       "ga": {
-        "sessions": null,
-        "pageViews": null,
-        "users": null,
-        "newUsers": null,
-        "avgSessionDuration": null,
+        "sessions": 6,
+        "pageViews": 11,
+        "users": 4,
+        "newUsers": 2,
+        "avgSessionDuration": 28,
         "topPages": [],
-        "trafficSources": null,
-        "ctaClicks": null,
-        "leads": null
+        "trafficSources": {
+          "organic": 65,
+          "direct": 30,
+          "referral": 2,
+          "social": 0
+        },
+        "ctaClicks": 0,
+        "leads": 0
       },
       "linkedin": {
         "followers": 1262,
@@ -230,17 +276,17 @@
       }
     },
     {
-      "weekEnding": "2025-12-28",
+      "weekEnding": "2025-12-31",
       "ga": {
-        "sessions": null,
-        "pageViews": null,
-        "users": null,
-        "newUsers": null,
-        "avgSessionDuration": null,
+        "sessions": 4,
+        "pageViews": 8,
+        "users": 3,
+        "newUsers": 3,
+        "avgSessionDuration": 19,
         "topPages": [],
         "trafficSources": null,
-        "ctaClicks": null,
-        "leads": null
+        "ctaClicks": 0,
+        "leads": 0
       },
       "linkedin": {
         "followers": 1256,
