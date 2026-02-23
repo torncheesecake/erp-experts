@@ -1,5 +1,232 @@
 {
   "lastUpdated": "2026-02-19",
+  "ga4Period": {
+    "start": "2026-01-01",
+    "end": "2026-02-18",
+    "totalSessions": 285,
+    "totalPageViews": 1578,
+    "totalUsers": 179,
+    "totalNewUsers": 108,
+    "totalCTAClicks": 112,
+    "totalLeads": 5,
+    "countries": [
+      { "country": "United Kingdom", "users": 66 },
+      { "country": "India", "users": 7 },
+      { "country": "China", "users": 3 },
+      { "country": "Iraq", "users": 3 },
+      { "country": "Philippines", "users": 3 },
+      { "country": "Switzerland", "users": 3 },
+      { "country": "United States", "users": 3 },
+      { "country": "Other", "users": 10 }
+    ],
+    "trafficSources": {
+      "organic": 132,
+      "direct": 140,
+      "referral": 11,
+      "social": 1,
+      "unassigned": 7
+    },
+    "funnel": [
+      { "step": "Landed on site", "users": 84, "description": "First-time visitors who arrived on the site" },
+      { "step": "Viewed homepage", "users": 72, "description": "Visited the homepage" },
+      { "step": "Browsed a second page", "users": 68, "description": "Viewed at least one other page (case studies, support, etc.)" },
+      { "step": "Visited contact page", "users": 19, "description": "Made it to the contact page" },
+      { "step": "Clicked a CTA", "users": 16, "description": "Clicked a call-to-action button" },
+      { "step": "Became a lead", "users": 3, "description": "Submitted a form or enquiry" }
+    ],
+    "pageBounceRates": [
+      { "page": "Homepage", "bounceRate": 33.5 },
+      { "page": "Case Studies", "bounceRate": 7.9 },
+      { "page": "Support", "bounceRate": 0 },
+      { "page": "Implementation", "bounceRate": 5.9 },
+      { "page": "About Us", "bounceRate": 7.9 },
+      { "page": "Contact", "bounceRate": 0 },
+      { "page": "Resources", "bounceRate": 0 },
+      { "page": "eco2solar Case Study", "bounceRate": 23.5 },
+      { "page": "What is NetSuite?", "bounceRate": 0 }
+    ],
+    "ctaBreakdown": [
+      { "button": "Navbar — Let's Talk", "clicks": 28 },
+      { "button": "Hero — Start a Project", "clicks": 22 },
+      { "button": "Footer CTA — Book a Call", "clicks": 18 },
+      { "button": "Footer CTA — Start a Project", "clicks": 14 },
+      { "button": "Implementation — Book a Call", "clicks": 9 },
+      { "button": "Contact — Form Submit", "clicks": 7 },
+      { "button": "Support — Book a Call", "clicks": 6 },
+      { "button": "Journey — Get Started", "clicks": 5 },
+      { "button": "About — Start a Conversation", "clicks": 4 }
+    ],
+    "navigationFlow": {
+      "period": "2026-01-26 to 2026-02-22",
+      "totalSessions": 238,
+      "paths": [
+        {
+          "from": "Homepage",
+          "visitors": 137,
+          "nextPages": [
+            { "page": "About Us", "visitors": 17 },
+            { "page": "Case Studies", "visitors": 17 },
+            { "page": "Contact", "visitors": 15 },
+            { "page": "Implementation", "visitors": 13 },
+            { "page": "Resources", "visitors": 7 },
+            { "page": "Other pages", "visitors": 18 }
+          ]
+        },
+        {
+          "from": "Old site (redirected)",
+          "visitors": 52,
+          "nextPages": []
+        },
+        {
+          "from": "One Score quiz",
+          "visitors": 11,
+          "nextPages": []
+        },
+        {
+          "from": "Implementation",
+          "visitors": 10,
+          "nextPages": []
+        },
+        {
+          "from": "About Us",
+          "visitors": 8,
+          "nextPages": []
+        }
+      ],
+      "step3": [
+        { "page": "Homepage (returned)", "visitors": 8 },
+        { "page": "eco2solar Case Study", "visitors": 4 },
+        { "page": "About Us", "visitors": 1 },
+        { "page": "Carallon Case Study", "visitors": 1 },
+        { "page": "Contact", "visitors": 1 },
+        { "page": "Other pages", "visitors": 2 }
+      ]
+    },
+    "pageEngagement": [
+      { "page": "Homepage", "avgTimeOnPage": 85, "views": 585, "sessions": 171, "bounceRate": 31.6 },
+      { "page": "Case Studies", "avgTimeOnPage": 102, "views": 167, "sessions": 40, "bounceRate": 7.5 },
+      { "page": "Support", "avgTimeOnPage": 177, "views": 112, "sessions": 30, "bounceRate": 0 },
+      { "page": "Implementation", "avgTimeOnPage": 156, "views": 92, "sessions": 35, "bounceRate": 5.7 },
+      { "page": "About Us", "avgTimeOnPage": 56, "views": 79, "sessions": 40, "bounceRate": 7.5 },
+      { "page": "Contact", "avgTimeOnPage": 45, "views": 69, "sessions": 28, "bounceRate": 0 },
+      { "page": "Resources", "avgTimeOnPage": 79, "views": 55, "sessions": 10, "bounceRate": 0 },
+      { "page": "eco2solar Case Study", "avgTimeOnPage": 16, "views": 44, "sessions": 17, "bounceRate": 23.5 },
+      { "page": "What is NetSuite?", "avgTimeOnPage": 48, "views": 14, "sessions": 10, "bounceRate": 0 }
+    ],
+    "exitPages": [
+      { "page": "Homepage", "exitRate": 31.6, "exits": 54 },
+      { "page": "eco2solar Case Study", "exitRate": 23.5, "exits": 4 },
+      { "page": "Page Not Found (404)", "exitRate": 20.0, "exits": 2 },
+      { "page": "About Us", "exitRate": 7.5, "exits": 3 },
+      { "page": "Case Studies", "exitRate": 7.5, "exits": 3 },
+      { "page": "Implementation", "exitRate": 5.7, "exits": 2 },
+      { "page": "Contact", "exitRate": 0, "exits": 0 },
+      { "page": "Support", "exitRate": 0, "exits": 0 }
+    ],
+    "seoInsights": {
+      "period": "2026-01-23 to 2026-02-19",
+      "totalImpressions": 24817,
+      "totalClicks": 66,
+      "avgCTR": 0.27,
+      "topLandingPages": [
+        { "path": "/", "impressions": 5102, "clicks": 48, "ctr": 0.94, "avgPosition": 23.6 },
+        { "path": "/post/what-is-an-erp-system", "impressions": 4663, "clicks": 3, "ctr": 0.06, "avgPosition": 43.0 },
+        { "path": "/post/6-essential-accounts-receivable-reports", "impressions": 2027, "clicks": 3, "ctr": 0.15, "avgPosition": 14.5 },
+        { "path": "/post/which-is-the-best-erp-for-manufacturers", "impressions": 2939, "clicks": 2, "ctr": 0.07, "avgPosition": 45.7 },
+        { "path": "/netsuite-experts", "impressions": 2262, "clicks": 2, "ctr": 0.09, "avgPosition": 27.4 }
+      ]
+    }
+  },
+  "linkedinYear": {
+    "start": "2025-02-20",
+    "end": "2026-02-19",
+    "totalImpressions": 46616,
+    "membersReached": 6092,
+    "demographics": {
+      "jobTitles": [
+        { "title": "Founder", "pct": 9.3 },
+        { "title": "Financial Director", "pct": 4.6 },
+        { "title": "CEO", "pct": 3.8 },
+        { "title": "Co-Founder", "pct": 3.6 },
+        { "title": "Managing Director", "pct": 3.5 }
+      ],
+      "locations": [
+        { "location": "London", "pct": 19.5 },
+        { "location": "Manchester", "pct": 9.6 },
+        { "location": "Leeds", "pct": 1.9 },
+        { "location": "Bristol", "pct": 1.6 },
+        { "location": "Oxford", "pct": 1.4 }
+      ],
+      "industries": [
+        { "industry": "IT Services & Consulting", "pct": 16.5 },
+        { "industry": "Business Consulting", "pct": 9.7 },
+        { "industry": "Software Development", "pct": 9.6 },
+        { "industry": "Financial Services", "pct": 5.4 },
+        { "industry": "Technology & Internet", "pct": 3.6 }
+      ],
+      "seniority": [
+        { "level": "Senior", "pct": 29.5 },
+        { "level": "Director", "pct": 18.9 },
+        { "level": "Entry", "pct": 10.9 },
+        { "level": "Owner", "pct": 10.5 },
+        { "level": "CXO", "pct": 10.1 }
+      ],
+      "companySize": [
+        { "size": "11-50", "pct": 23.0 },
+        { "size": "1-10", "pct": 22.6 },
+        { "size": "51-200", "pct": 17.3 },
+        { "size": "10,001+", "pct": 6.4 },
+        { "size": "201-500", "pct": 4.7 }
+      ]
+    }
+  },
+  "topLinkedInPosts": [
+    {
+      "date": "2025-12-09",
+      "excerpt": "The number one question business owners ask me...",
+      "impressions": 299,
+      "votes": 9,
+      "comments": 9,
+      "reposts": 0,
+      "engagementRate": 6.02
+    },
+    {
+      "date": "2026-01-13",
+      "excerpt": "If you are looking for straightforward, expert advice...",
+      "impressions": 300,
+      "votes": 9,
+      "comments": 3,
+      "reposts": 2,
+      "engagementRate": 4.67
+    },
+    {
+      "date": "2026-01-29",
+      "excerpt": "Did you know 50% of ERP projects fail...",
+      "impressions": 162,
+      "votes": 5,
+      "comments": 1,
+      "reposts": 0,
+      "engagementRate": 3.7
+    },
+    {
+      "date": "2026-02-10",
+      "excerpt": "If ERP seems complex, you are not alone...",
+      "impressions": 164,
+      "votes": 4,
+      "comments": 0,
+      "reposts": 1,
+      "engagementRate": 4.27
+    },
+    {
+      "date": "2026-02-17",
+      "excerpt": "3 Ways to Launch Your ERP Journey...",
+      "impressions": 99,
+      "votes": 1,
+      "comments": 0,
+      "reposts": 1,
+      "engagementRate": 4.04
+    }
+  ],
   "weeks": [
     {
       "weekEnding": "2026-02-18",
