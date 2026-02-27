@@ -1814,7 +1814,7 @@ export default function Reports() {
                   {/* ── Row 4: Diagnostic summary ── */}
                   <FadeIn delay={360}>
                     <div className="rounded-2xl md:rounded-3xl border-2 border-primary/15 bg-primary/3 mt-xl" style={{ padding: "var(--space-xl)" }}>
-                      <div className="flex items-center justify-between flex-wrap gap-sm mb-lg">
+                      <div className="flex items-center justify-between flex-wrap gap-sm mb-sm">
                         <div className="flex items-center gap-sm">
                           <Target className="w-5 h-5 text-primary" />
                           <p className="text-lg font-heading font-bold">Things Worth Looking Into</p>
@@ -1824,8 +1824,10 @@ export default function Reports() {
                           <span className="flex items-center gap-xs"><span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" /> Medium</span>
                           <span className="flex items-center gap-xs"><span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" /> Low</span>
                           <span className="flex items-center gap-xs"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> Actioned</span>
+                          <span className="flex items-center gap-xs"><span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block" /> Resolved</span>
                         </div>
                       </div>
+                      <p className="text-sm text-(--color-text)/50 leading-relaxed mb-lg">These insights are generated automatically from the reporting data above. They update every time the data is refreshed — new issues appear when thresholds are crossed, and resolved issues move to the history below.</p>
                       <div className="space-y-md">
                         {(() => {
                           const diagnostics = [];
@@ -1994,6 +1996,62 @@ export default function Reports() {
                           });
                         })()}
                       </div>
+
+                      {/* ── Previously resolved ── */}
+                      {(() => {
+                        const actions = reportData.actions || [];
+                        const diagnosticIds = [];
+
+                        // Rebuild the list of diagnostic IDs that are currently active
+                        const browsedStep2 = funnel.find(s => s.step.toLowerCase().includes("second"));
+                        const contactStep2 = funnel.find(s => s.step.toLowerCase().includes("contact"));
+                        const ctaStep2 = funnel.find(s => s.step.toLowerCase().includes("cta"));
+                        const leadStep2 = funnel[funnel.length - 1];
+                        const pageEng2 = reportData.ga4Period?.pageEngagement || [];
+                        const exitPages2 = reportData.ga4Period?.exitPages || [];
+                        const homepageEng2 = pageEng2.find(p => p.page === "Homepage");
+                        const homepageViews2 = homepageEng2?.views || 0;
+                        const otherPageViews2 = pageEng2.filter(p => p.page !== "Homepage").reduce((s, p) => s + p.views, 0);
+
+                        if (homepageViews2 > 0 && otherPageViews2 > 0 && Number((otherPageViews2 / homepageViews2 * 100).toFixed(0)) < 50) diagnosticIds.push("homepage-drop-off");
+                        if (contactStep2 && ctaStep2 && contactStep2.users > 0 && Number(((ctaStep2.users / contactStep2.users) * 100).toFixed(0)) < 90) diagnosticIds.push("contact-drop-off");
+                        if (ctaStep2 && leadStep2 && ctaStep2.users > 0 && Number(((leadStep2.users / ctaStep2.users) * 100).toFixed(0)) < 50) diagnosticIds.push("cta-to-lead-drop-off");
+                        const lowViewPages2 = pageEng2?.filter(p => p.views <= 2 && p.page !== "Homepage");
+                        if (lowViewPages2 && lowViewPages2.length > 2) diagnosticIds.push("low-view-pages");
+                        if (browsedStep2 && contactStep2 && browsedStep2.users > 0 && Number(((contactStep2.users / browsedStep2.users) * 100).toFixed(0)) < 40) diagnosticIds.push("browse-to-contact-gap");
+                        const notFound2 = exitPages2?.find(p => p.page.includes("404"));
+                        if (notFound2 && notFound2.exits > 0) diagnosticIds.push("404-redirects");
+                        const highBounce2 = reportData.ga4Period?.pageBounceRates?.filter(p => p.bounceRate > 30 && p.page !== "Homepage");
+                        if (highBounce2 && highBounce2.length > 0) diagnosticIds.push("high-bounce-rate");
+
+                        const resolved = actions.filter(a => !diagnosticIds.includes(a.id));
+                        if (resolved.length === 0) return null;
+
+                        return (
+                          <div className="mt-xl pt-xl border-t-2 border-(--color-text)/8">
+                            <div className="flex items-center gap-sm mb-md">
+                              <Award className="w-4 h-4 text-purple-500" />
+                              <p className="text-base font-heading font-bold text-(--color-text)/70">Previously Resolved</p>
+                              <span className="text-xs text-(--color-text)/50 ml-auto">{resolved.length} issue{resolved.length !== 1 ? "s" : ""} fixed</span>
+                            </div>
+                            <div className="space-y-sm">
+                              {resolved.map((a) => (
+                                <div key={a.id} className="rounded-xl border overflow-hidden flex bg-purple-50/30 border-purple-200/40">
+                                  <div className="w-1.5 shrink-0 bg-purple-400" />
+                                  <div className="flex-1" style={{ padding: "12px 16px" }}>
+                                    <div className="flex items-start justify-between gap-md mb-xs">
+                                      <p className="text-sm font-bold text-(--color-text)/60">{a.summary}</p>
+                                      <span className="text-xs font-bold shrink-0 rounded-full" style={{ padding: "3px 10px", backgroundColor: "rgba(168,85,247,0.12)", color: "#a855f7" }}>Resolved</span>
+                                    </div>
+                                    <p className="text-xs text-(--color-text)/50">Done on {britDate(a.date)} — the data no longer flags this as an issue.</p>
+                                    {a.detail && <p className="text-xs text-(--color-text)/40 mt-xs">{a.detail}</p>}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </FadeIn>
                 </>
