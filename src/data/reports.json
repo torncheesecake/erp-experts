@@ -38,7 +38,7 @@
     "totalUsers": 199,
     "totalNewUsers": 127,
     "totalCTAClicks": 130,
-    "totalLeads": 21,
+    "totalLeads": 0,
     "countries": [
       { "country": "United Kingdom", "users": 73 },
       { "country": "India", "users": 9 },
@@ -63,7 +63,7 @@
       { "step": "Browsed a second page", "users": 71, "description": "Viewed at least one other page (case studies, support, etc.)" },
       { "step": "Visited contact page", "users": 19, "description": "Made it to the contact page" },
       { "step": "Clicked a CTA", "users": 17, "description": "Clicked a call-to-action button" },
-      { "step": "Became a lead", "users": 5, "description": "Submitted a form or enquiry" }
+      { "step": "Became a lead", "users": 0, "description": "Submitted a form or enquiry" }
     ],
     "pageBounceRates": [
       { "page": "Homepage", "bounceRate": 32.4 },
@@ -285,7 +285,7 @@
           "social": 0
         },
         "ctaClicks": 18,
-        "leads": 16
+        "leads": 0
       },
       "linkedin": {
         "followers": 1366,
@@ -327,7 +327,7 @@
           "social": 2
         },
         "ctaClicks": 0,
-        "leads": 2
+        "leads": 0
       },
       "linkedin": {
         "followers": 1325,
@@ -369,7 +369,7 @@
           "social": 0
         },
         "ctaClicks": 23,
-        "leads": 1
+        "leads": 0
       },
       "linkedin": {
         "followers": 1321,
@@ -411,7 +411,7 @@
           "social": 0
         },
         "ctaClicks": 59,
-        "leads": 1
+        "leads": 0
       },
       "linkedin": {
         "followers": 1314,
