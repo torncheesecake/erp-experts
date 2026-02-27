@@ -1,5 +1,35 @@
 {
   "lastUpdated": "2026-02-27",
+  "actions": [
+    {
+      "id": "404-redirects",
+      "date": "2026-02-27",
+      "summary": "Added 301 redirects in .htaccess for all old-site URLs",
+      "detail": "Configured server-side 301 redirects for /post/*, /netsuite-*, /services/*, /blog/*, /about-erp*, /case-studies-*, and other legacy paths. Google should de-index old URLs and transfer link equity over the next few weeks.",
+      "monitor": "Check Google Search Console weekly — old URLs should gradually disappear from the index. If 404 exits drop to 0 in the next data update, this issue is resolved."
+    },
+    {
+      "id": "contact-drop-off",
+      "date": "2026-02-04",
+      "summary": "Added Calendly 'Book a Call' option alongside the contact form",
+      "detail": "Contact page now offers three paths: a form (6 fields, 3 required), a Calendly booking link, and a NETscore quiz link. This reduces friction for visitors who don't want to fill out a form.",
+      "monitor": "Track which of the three options gets the most clicks. If drop-off persists after 4+ weeks, the issue is likely intent (visitors researching, not ready to commit) rather than friction."
+    },
+    {
+      "id": "cta-to-lead-drop-off",
+      "date": "2026-02-04",
+      "summary": "Added multiple conversion paths (form, Calendly, NETscore quiz)",
+      "detail": "Every main page now has 'Start a conversation', 'Book a Call', and 'Get your free NETscore' CTAs. Resources and What is NetSuite pages also have a lead magnet guide download.",
+      "monitor": "Monitor NETscore quiz completions and guide downloads as softer conversion signals. The CTA-to-lead ratio should improve as these alternatives capture visitors who aren't ready for direct contact."
+    },
+    {
+      "id": "browse-to-contact-gap",
+      "date": "2026-02-04",
+      "summary": "Added CTAs and lead magnets to every main page",
+      "detail": "Every page now has multiple CTAs including softer options (NETscore quiz, guide download) for visitors who are researching rather than ready to buy.",
+      "monitor": "Track NETscore quiz and guide download uptake. The browse-to-contact ratio may remain low — most visitors are in research mode. Softer CTAs capture this audience differently."
+    }
+  ],
   "ga4Period": {
     "start": "2026-01-01",
     "end": "2026-02-27",

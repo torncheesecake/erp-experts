@@ -1819,15 +1819,18 @@ export default function Reports() {
                           <Target className="w-5 h-5 text-primary" />
                           <p className="text-lg font-heading font-bold">Things Worth Looking Into</p>
                         </div>
-                        <div className="flex items-center gap-md text-xs text-(--color-text)/60">
+                        <div className="flex items-center gap-md text-xs text-(--color-text)/60 flex-wrap">
                           <span className="flex items-center gap-xs"><span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" /> High</span>
                           <span className="flex items-center gap-xs"><span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" /> Medium</span>
                           <span className="flex items-center gap-xs"><span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" /> Low</span>
+                          <span className="flex items-center gap-xs"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> Actioned</span>
                         </div>
                       </div>
                       <div className="space-y-md">
                         {(() => {
                           const diagnostics = [];
+                          const actions = reportData.actions || [];
+                          const getAction = (id) => actions.find(a => a.id === id);
                           const totalFunnelUsers = funnel[0]?.users || 0;
                           const isLowVolume = totalFunnelUsers < 50;
 
@@ -1836,6 +1839,7 @@ export default function Reports() {
                             const browseRatio = (otherPageViews / homepageViews * 100).toFixed(0);
                             if (Number(browseRatio) < 50) {
                               diagnostics.push({
+                                id: "homepage-drop-off",
                                 title: "Too many people leave from the homepage",
                                 detail: `Only ${browseRatio}% of homepage views lead to other pages.${isLowVolume ? ` Based on just ${homepageViews} homepage views — this may stabilise with more traffic.` : " People are landing, looking, and leaving."}`,
                                 recommendation: "The homepage has a CTA and client logos already. Consider testing stronger copy in the hero subtitle, or adding a testimonial quote closer to the top of the page.",
@@ -1849,6 +1853,7 @@ export default function Reports() {
                             const contactToCtaPct = ((ctaStep.users / contactStep.users) * 100).toFixed(0);
                             if (Number(contactToCtaPct) < 90) {
                               diagnostics.push({
+                                id: "contact-drop-off",
                                 title: "People visit the contact page but don't take action",
                                 detail: `${contactStep.users} people made it to the contact page, but only ${ctaStep.users} clicked a button. ${contactStep.users - ctaStep.users} people looked and left.${isLowVolume ? " Small sample — worth monitoring." : ""}`,
                                 recommendation: "The contact page now has a 'Book a Call' Calendly option alongside the form (6 fields, 3 required). Monitor whether the Calendly button gets clicks — if the drop-off persists, the issue may be intent rather than friction.",
@@ -1862,6 +1867,7 @@ export default function Reports() {
                             const ctaToLeadPct = ((leadStep.users / ctaStep.users) * 100).toFixed(0);
                             if (Number(ctaToLeadPct) < 50) {
                               diagnostics.push({
+                                id: "cta-to-lead-drop-off",
                                 title: "People click buttons but don't follow through",
                                 detail: `${ctaStep.users} people clicked a CTA but only ${leadStep.users} submitted a form — ${ctaStep.users - leadStep.users} dropped off.${isLowVolume ? " With this volume, even 1-2 extra submissions would change the ratio significantly." : ""}`,
                                 recommendation: "The contact page now offers a form, a Calendly 'Book a Call' option, and a NETscore quiz link. If drop-off persists, the issue may be that visitors are exploring rather than ready to commit — track which of the three options gets the most clicks.",
@@ -1875,6 +1881,7 @@ export default function Reports() {
                           if (lowViewPages && lowViewPages.length > 2) {
                             const names = lowViewPages.slice(0, 3).map(p => p.page).join(", ");
                             diagnostics.push({
+                              id: "low-view-pages",
                               title: `${lowViewPages.length} pages barely get any views`,
                               detail: `Pages like ${names} had 2 or fewer views.${isLowVolume ? " This is normal at low traffic — most pages won't get regular visits yet." : " They may need better internal linking."}`,
                               recommendation: isLowVolume
@@ -1890,6 +1897,7 @@ export default function Reports() {
                             const browseToContactPct = ((contactStep.users / browsedStep.users) * 100).toFixed(0);
                             if (Number(browseToContactPct) < 40) {
                               diagnostics.push({
+                                id: "browse-to-contact-gap",
                                 title: "Most people browse the site but never visit the contact page",
                                 detail: `${browsedStep.users} people viewed multiple pages, but only ${contactStep.users} went to /contact (${browseToContactPct}%).${isLowVolume ? " Small numbers — this ratio may improve as organic traffic grows." : ""}`,
                                 recommendation: "Every main page now has 'Start a conversation', 'Book a Call', and 'Get your free NETscore' CTAs, plus a lead magnet guide download on Resources and What is NetSuite. The gap is likely intent-based — most visitors are researching, not buying yet. Monitor NETscore quiz and guide download uptake to see if softer CTAs capture this audience.",
@@ -1902,9 +1910,10 @@ export default function Reports() {
                           const notFound = exitPages?.find(p => p.page.includes("404"));
                           if (notFound && notFound.exits > 0) {
                             diagnostics.push({
+                              id: "404-redirects",
                               title: `${notFound.exits} people ended up on a "page not found" error`,
                               detail: "They clicked a link or used a bookmark that leads to a page that doesn't exist. These are likely old-site URLs that haven't been redirected.",
-                              recommendation: "301 redirects are now configured in .htaccess for old URLs (/post/*, /netsuite-*, /about-erp*, /services/*, /blog/*, etc.). Monitor Google Search Console over the next few weeks to confirm the old URLs are being de-indexed and link equity is transferring.",
+                              recommendation: "Add 301 redirects in .htaccess for old URLs (e.g. /post/*, /netsuite-*, /about-erp*). Check Google Search Console for the specific URLs.",
                               severity: "medium",
                             });
                           }
@@ -1914,6 +1923,7 @@ export default function Reports() {
                           if (highBounce && highBounce.length > 0) {
                             const names = highBounce.map(p => `${p.page} (${p.bounceRate}%)`).join(", ");
                             diagnostics.push({
+                              id: "high-bounce-rate",
                               title: `${highBounce.length} page${highBounce.length > 1 ? "s have" : " has a"} high bounce rate${highBounce.length === 1 ? "" : "s"}`,
                               detail: `${names}. Visitors land on these pages and leave without viewing anything else.`,
                               recommendation: isLowVolume
@@ -1924,29 +1934,60 @@ export default function Reports() {
                           }
 
                           if (diagnostics.length === 0) {
-                            diagnostics.push({ title: "No major issues detected", detail: `The data looks healthy across ${totalFunnelUsers} visitors. Keep monitoring — patterns become clearer with more volume.`, severity: "low" });
+                            diagnostics.push({ id: "all-clear", title: "No major issues detected", detail: `The data looks healthy across ${totalFunnelUsers} visitors. Keep monitoring — patterns become clearer with more volume.`, severity: "low" });
                           }
 
+                          // Sort: unactioned first (by severity), then actioned
                           const severityOrder = { high: 0, medium: 1, low: 2 };
-                          diagnostics.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
+                          diagnostics.sort((a, b) => {
+                            const aAction = getAction(a.id);
+                            const bAction = getAction(b.id);
+                            if (aAction && !bAction) return 1;
+                            if (!aAction && bAction) return -1;
+                            return severityOrder[a.severity] - severityOrder[b.severity];
+                          });
 
-                          const severityColors = { high: { accent: "#ef4444", label: "High priority" }, medium: { accent: "#f59e0b", label: "Worth addressing" }, low: { accent: "#22c55e", label: "Monitor" } };
+                          const severityColors = {
+                            high: { accent: "#ef4444", label: "High priority" },
+                            medium: { accent: "#f59e0b", label: "Worth addressing" },
+                            low: { accent: "#22c55e", label: "Monitor" },
+                          };
+                          const actionedColor = { accent: "#3b82f6", label: "Actioned" };
+
                           return diagnostics.map((d, di) => {
-                            const colors = severityColors[d.severity];
+                            const action = getAction(d.id);
+                            const isActioned = !!action;
+                            const colors = isActioned ? actionedColor : severityColors[d.severity];
                             return (
-                              <div key={di} className="rounded-xl bg-white border border-(--color-text)/10 overflow-hidden flex">
+                              <div key={di} className={`rounded-xl border overflow-hidden flex ${isActioned ? "bg-blue-50/40 border-blue-200/60" : "bg-white border-(--color-text)/10"}`}>
                                 <div className="w-1.5 shrink-0" style={{ backgroundColor: colors.accent }} />
                                 <div className="flex-1" style={{ padding: "var(--space-lg)" }}>
                                   <div className="flex items-start justify-between gap-md mb-sm">
-                                    <p className="text-base font-bold text-(--color-text)">{d.title}</p>
+                                    <p className={`text-base font-bold ${isActioned ? "text-(--color-text)/70" : "text-(--color-text)"}`}>{d.title}</p>
                                     <span className="text-xs font-bold shrink-0 rounded-full" style={{ padding: "3px 10px", backgroundColor: colors.accent + "15", color: colors.accent }}>{colors.label}</span>
                                   </div>
                                   <p className="text-sm text-(--color-text)/60 leading-relaxed">{d.detail}</p>
-                                  {d.recommendation && (
+                                  {isActioned ? (
+                                    <div className="mt-md space-y-sm">
+                                      <div className="rounded-lg bg-blue-100/50 border border-blue-200/60" style={{ padding: "10px 14px" }}>
+                                        <p className="text-sm text-blue-900/80 leading-relaxed">
+                                          <span className="font-bold">Done on {britDate(action.date)}:</span> {action.summary}
+                                        </p>
+                                        {action.detail && (
+                                          <p className="text-sm text-blue-800/60 leading-relaxed mt-xs">{action.detail}</p>
+                                        )}
+                                      </div>
+                                      {action.monitor && (
+                                        <div className="rounded-lg bg-(--color-text)/4" style={{ padding: "10px 14px" }}>
+                                          <p className="text-sm text-(--color-text)/80 leading-relaxed"><span className="font-bold">What to monitor:</span> {action.monitor}</p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ) : d.recommendation ? (
                                     <div className="mt-md rounded-lg bg-(--color-text)/4" style={{ padding: "10px 14px" }}>
                                       <p className="text-sm text-(--color-text)/80 leading-relaxed"><span className="font-bold">Suggested action:</span> {d.recommendation}</p>
                                     </div>
-                                  )}
+                                  ) : null}
                                 </div>
                               </div>
                             );
