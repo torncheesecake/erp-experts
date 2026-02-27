@@ -336,6 +336,14 @@ export default function CaseStudies() {
               Start a conversation
               <ArrowRight className="w-5 h-5" />
             </TrackedLink>
+            <TrackedLink
+              href="https://ric-snwikqbv.scoreapp.com"
+              trackingName="case_studies_netscore_cta"
+              trackingPage="case_studies"
+              className="btn sm:btn-lg btn-outline justify-center"
+            >
+              Get your free NETscore
+            </TrackedLink>
           </div>
         </div>
       </section>

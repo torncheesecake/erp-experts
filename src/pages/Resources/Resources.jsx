@@ -8,6 +8,7 @@ import { ArrowRight, FileText, Clock } from "lucide-react";
 import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
 import { articlesList, typeIcons } from "../../data/articles";
+import LeadMagnet from "../../components/ui/LeadMagnet";
 
 export default function Resources() {
   return (
@@ -159,6 +160,8 @@ export default function Resources() {
           </div>
         </div>
       </section>
+
+      <LeadMagnet trackingName="resources_guide" trackingPage="resources" />
 
       {/* CTA */}
       <section className="section-padding-lg border-t border-(--color-text)/10">

@@ -42,6 +42,7 @@ const Partners = lazy(() => import("./pages/Partners/Partners"));
 const PartnerDetail = lazy(() => import("./pages/Partners/PartnerDetail"));
 const FAQ = lazy(() => import("./pages/FAQ/FAQ"));
 const Reports = lazy(() => import("./pages/Reports"));
+const VideoPage = lazy(() => import("./pages/VideoPage"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -53,6 +54,7 @@ function ScrollToTop() {
   return null;
 }
 
+// v2
 function App() {
   return (
     <Router>
@@ -60,6 +62,9 @@ function App() {
       <Analytics />
       <Suspense fallback={<PageLoader />}>
         <Routes>
+          {/* Standalone pages (no navbar/footer) */}
+          <Route path="/video/ai-powered-reporting" element={<VideoPage />} />
+
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Navigate to="/implementation" replace />} />
@@ -82,6 +87,30 @@ function App() {
               element={<Navigate to="/implementation" replace />}
             />
             <Route path="/services/training" element={<Navigate to="/implementation" replace />} />
+            {/* Old site URL redirects */}
+            <Route path="/netsuite-help" element={<Navigate to="/support" replace />} />
+            <Route path="/netsuite-support" element={<Navigate to="/support" replace />} />
+            <Route path="/netsuite-products" element={<Navigate to="/implementation" replace />} />
+            <Route path="/netsuite-experts" element={<Navigate to="/about" replace />} />
+            <Route path="/netsuite-services" element={<Navigate to="/implementation" replace />} />
+            <Route path="/netsuite-pricing" element={<Navigate to="/contact" replace />} />
+            <Route path="/netsuite-integrations" element={<Navigate to="/implementation" replace />} />
+            <Route path="/about-erp-experts" element={<Navigate to="/about" replace />} />
+            <Route path="/what-is-erp" element={<Navigate to="/what-is-netsuite" replace />} />
+            <Route path="/why-netsuite" element={<Navigate to="/what-is-netsuite" replace />} />
+            <Route path="/manufacturing" element={<Navigate to="/case-studies" replace />} />
+            <Route path="/business-transformation" element={<Navigate to="/implementation" replace />} />
+            <Route path="/contact-us" element={<Navigate to="/contact" replace />} />
+            <Route path="/blog" element={<Navigate to="/resources" replace />} />
+            <Route path="/tc" element={<Navigate to="/terms" replace />} />
+            <Route path="/privacy-policy" element={<Navigate to="/privacy" replace />} />
+            <Route path="/become-a-partner" element={<Navigate to="/partners" replace />} />
+            <Route path="/case-studies-carallon" element={<Navigate to="/case-studies/carallon" replace />} />
+            <Route path="/case-studies-eco2solar" element={<Navigate to="/case-studies/eco2solar" replace />} />
+            <Route path="/case-studies-totalkare" element={<Navigate to="/case-studies/totalkare" replace />} />
+            <Route path="/case-studies-kynetec" element={<Navigate to="/case-studies/kynetec" replace />} />
+            <Route path="/post/netsuite-for-small-businesses" element={<Navigate to="/resources/netsuite-for-small-businesses" replace />} />
+            <Route path="/post/*" element={<Navigate to="/resources" replace />} />
             <Route path="/implementation" element={<Implementation />} />
             <Route path="/case-studies" element={<CaseStudies />} />
             <Route path="/case-studies/:id" element={<CaseStudyDetail />} />

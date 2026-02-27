@@ -12,6 +12,7 @@ import {
   Check,
   AlertCircle,
   Loader2,
+  Calendar,
 } from "lucide-react";
 import SEO from "../../components/ui/SEO";
 import { trackCTAClick } from "../../components/Analytics";
@@ -372,6 +373,38 @@ export default function Contact() {
                   className="text-lg font-bold text-primary hover:underline"
                 >
                   01785 336 253
+                </a>
+              </div>
+
+              {/* Book a Call Card */}
+              <div className="p-(--space-xl) rounded-2xl bg-(--color-primary)/5 border border-(--color-primary)/20">
+                <div className="flex items-center gap-md mb-lg">
+                  <div
+                    className="shrink-0 flex items-end justify-center"
+                    style={{
+                      width: "40px",
+                      height: "35px",
+                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                      backgroundColor: "var(--color-primary)",
+                    }}
+                  >
+                    <Calendar className="w-4 h-4 text-white mb-1" />
+                  </div>
+                  <h6>Book a Call</h6>
+                </div>
+                <p className="text-base text-muted mb-md">
+                  Skip the form — pick a time that works for you and we'll call you.
+                  15-minute discovery call, no obligation.
+                </p>
+                <a
+                  href="https://calendly.com/discovery-erpexperts/discovery"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-primary w-full justify-center"
+                  onClick={() => trackCTAClick("contact_book_call", "contact")}
+                >
+                  Choose a time
+                  <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
             </div>

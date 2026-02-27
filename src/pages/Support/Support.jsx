@@ -543,6 +543,14 @@ export default function Support() {
                   >
                     Book a call
                   </TrackedLink>
+                  <TrackedLink
+                    href="https://ric-snwikqbv.scoreapp.com"
+                    trackingName="support_netscore_cta"
+                    trackingPage="support"
+                    className="btn sm:btn-lg justify-center bg-white/10 text-white/80 border-2 border-white/20 hover:bg-white/20 transition-all"
+                  >
+                    Get your free NETscore
+                  </TrackedLink>
                 </div>
               </div>
             </div>

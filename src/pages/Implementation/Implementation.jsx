@@ -432,12 +432,12 @@ export default function Implementation() {
               <ArrowRight className="w-5 h-5" />
             </TrackedLink>
             <TrackedLink
-              to="/case-studies"
-              trackingName="implementation_footer_see_work"
+              href="https://ric-snwikqbv.scoreapp.com"
+              trackingName="implementation_netscore_cta"
               trackingPage="implementation"
               className="btn btn-outline justify-center"
             >
-              See our work
+              Get your free NETscore
             </TrackedLink>
           </div>
         </div>

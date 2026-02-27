@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
+import LeadMagnet from "../../components/ui/LeadMagnet";
 
 const modules = [
   {
@@ -646,6 +647,13 @@ export default function WhatIsNetSuite() {
           </div>
         </div>
       </section>
+
+      <LeadMagnet
+        heading="Get our free NetSuite buyer's guide"
+        description="Everything you need to know before investing in NetSuite — costs, timelines, common pitfalls, and what to ask vendors. Written for decision-makers, not developers."
+        trackingName="netsuite_guide"
+        trackingPage="what-is-netsuite"
+      />
 
       {/* Final CTA */}
       <section className="section-padding-lg">

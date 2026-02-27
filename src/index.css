@@ -650,3 +650,13 @@ h6 {
         opacity: 0.4;
     }
 }
+
+/* ─── Print stylesheet (Reports page) ─── */
+@media print {
+    header, footer, .print\\:hidden { display: none !important; }
+    * { animation: none !important; transition: none !important; box-shadow: none !important; }
+    body { background: white !important; color: black !important; font-size: 11pt; }
+    section { break-inside: avoid; page-break-inside: avoid; }
+    .container { max-width: 100% !important; padding: 0 1cm !important; }
+    svg { max-height: 150px; }
+}

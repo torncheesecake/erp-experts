@@ -270,6 +270,14 @@ export default function FAQ() {
                 >
                   Book a call
                 </TrackedLink>
+                <TrackedLink
+                  href="https://ric-snwikqbv.scoreapp.com"
+                  trackingName="faq_netscore_cta"
+                  trackingPage="faq"
+                  className="btn justify-center bg-white/10 text-white/80 border-2 border-white/20 hover:bg-white/20 transition-all"
+                >
+                  Get your free NETscore
+                </TrackedLink>
               </div>
             </div>
           </div>

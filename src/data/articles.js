@@ -923,6 +923,134 @@ export const articles = {
       "Based on research by Maryam Alavi, PhD, Georgia Institute of Technology, and published by Oracle NetSuite.",
   },
 
+  "netsuite-for-small-businesses": {
+    title: "NetSuite for Small Businesses",
+    subtitle: "Is Enterprise ERP Right for a Growing SME?",
+    cardDescription:
+      "NetSuite is built for mid-market and enterprise. But can it work for a small business? An honest look at when it makes sense, when it doesn't, and what to watch out for.",
+    date: "Feb 2026",
+    readTime: "4 min read",
+    type: "Guide",
+    layoutVariant: 2,
+    heroImage: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1400&q=80",
+    featureImage: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80",
+    challengeLabel: "The Honest Truth",
+    challengeHeading: 'Enterprise Software for a <span class="text-primary">Small Team</span>?',
+    challengeText:
+      "NetSuite is a powerful, cloud-based ERP platform used by thousands of organisations worldwide. But most of the marketing around it targets mid-market and enterprise buyers. If you are a small business with 5 to 50 employees, you might be wondering whether it is overkill, whether you can afford it, and whether the benefits justify the investment. The answer depends entirely on your situation.",
+    intro:
+      "Small businesses face a unique challenge when it comes to ERP. You have outgrown spreadsheets and disconnected tools, but the enterprise platforms feel like they were designed for someone ten times your size. NetSuite sits in an interesting middle ground. This guide cuts through the marketing to help you decide whether it genuinely fits your business, your budget, and your growth plans.",
+
+    takeaways: [
+      "NetSuite can work for small businesses — with caveats",
+      "Total cost is more than just the licence fee",
+      "Implementation complexity scales with customisation",
+      "The real value comes from growing into the platform",
+      "Choosing the right partner matters more at smaller scale",
+    ],
+
+    overviewHeading: 'Small Business, <span class="text-primary">Big Decision</span>',
+    overviewSubtext:
+      "Choosing an ERP system is one of the most significant technology investments a small business will make. Getting it right means years of smooth operations and confident growth. Getting it wrong means wasted budget, frustrated staff, and a painful migration you did not need.",
+    tipsHeading: '5 Things Small Businesses Should <span class="text-primary">Know</span>',
+
+    tips: [
+      {
+        number: "01",
+        icon: AlertTriangle,
+        title: "When NetSuite Makes Sense for a Small Business",
+        content:
+          "NetSuite is a strong fit for small businesses that are growing quickly, operating across multiple entities or currencies, or planning to scale significantly over the next few years. If your business is already dealing with inventory management, multi-channel sales, or complex financial reporting, NetSuite's unified platform can eliminate the patchwork of tools you are currently stitching together. It is particularly valuable if you need real-time visibility across your operations and your current tools cannot provide that.",
+        actions: [
+          "You are managing inventory, orders, and finances across separate systems",
+          "You operate in multiple currencies or have international customers",
+          "You are growing fast and need a platform that scales with you",
+        ],
+      },
+      {
+        number: "02",
+        icon: PiggyBank,
+        title: "Understanding the True Cost",
+        content:
+          "The licence fee is only part of the picture. NetSuite pricing is based on a base platform fee plus per-user costs and additional modules. For a small business, this can range from a few hundred to several thousand pounds per month depending on your configuration. On top of that, factor in implementation costs, data migration, training, and ongoing support. A realistic first-year budget for a small business is typically between fifteen thousand and fifty thousand pounds all in. If that feels like a stretch, it might be worth considering whether you truly need an enterprise platform or whether a simpler tool would serve you better for now.",
+        actions: [
+          "Get a full cost breakdown including implementation, training, and support",
+          "Compare the total against your current tool costs and the cost of manual workarounds",
+          "Factor in at least twelve months of post-go-live optimisation budget",
+        ],
+      },
+      {
+        number: "03",
+        icon: Target,
+        title: "Keep It Simple at the Start",
+        content:
+          "The biggest mistake small businesses make with NetSuite is over-customising from day one. Every custom workflow, script, and integration adds cost, complexity, and maintenance overhead. Start with NetSuite's standard processes and only customise where there is a genuine business need that cannot be met any other way. You can always add complexity later as you grow. The businesses that get the most value from NetSuite are the ones that adopt standard processes first and refine over time.",
+        actions: [
+          "Start with out-of-the-box processes before customising",
+          "Document which processes genuinely need customisation and which are just preferences",
+          "Plan a phased approach — core financials first, then inventory, then CRM",
+        ],
+      },
+      {
+        number: "04",
+        icon: TrendingUp,
+        title: "The Growth Advantage",
+        content:
+          "Where NetSuite really pays off for small businesses is growth. If you are planning to double or triple in size over the next three to five years, investing in NetSuite now means you will not need to rip out and replace your systems later. Adding new users, new entities, new modules, or expanding into new markets is straightforward because the platform was designed for it. Businesses that start on simpler tools often hit a ceiling and face a painful migration just when they can least afford the disruption.",
+        actions: [
+          "Map your three to five year growth plan and assess whether your current tools can keep up",
+          "Consider the cost of migrating later versus investing now",
+          "Look at NetSuite as a platform you grow into, not one you need to fill immediately",
+        ],
+      },
+      {
+        number: "05",
+        icon: Handshake,
+        title: "Choosing the Right Partner Is Critical",
+        content:
+          "For a small business, the implementation partner matters even more than for larger organisations. You need a partner who understands the constraints of a smaller budget and team, who will push back on unnecessary complexity, and who will help you get live quickly without cutting corners. Avoid partners who try to sell you everything at once. A good partner will help you prioritise, keep scope tight, and ensure you are getting value from the platform before expanding. Ask specifically about their experience with businesses of your size.",
+        actions: [
+          "Ask for references from businesses similar to yours in size and sector",
+          "Check whether the partner has a track record with small business implementations",
+          "Ensure they offer affordable post-go-live support, not just project delivery",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Cloud,
+        title: "Cloud-Native",
+        content:
+          "No servers to manage, no IT team needed. NetSuite runs entirely in the cloud, which suits small businesses perfectly.",
+      },
+      {
+        icon: Zap,
+        title: "SuiteSuccess",
+        content:
+          "Oracle's SuiteSuccess program offers pre-configured industry editions designed for faster, lower-cost implementations.",
+      },
+      {
+        icon: Users,
+        title: "Role-Based Access",
+        content:
+          "Give each team member access to exactly what they need. No more, no less. Keeps things clean and secure.",
+      },
+      {
+        icon: BarChart3,
+        title: "Real-Time Dashboards",
+        content:
+          "See your entire business at a glance — cash flow, orders, inventory — without waiting for someone to build a report.",
+      },
+    ],
+
+    conclusion:
+      "NetSuite can absolutely work for small businesses, but it is not the right choice for every small business. If you are growing quickly, dealing with operational complexity, and planning for significant scale, the investment makes sense. If you are a stable small business with straightforward needs, simpler tools may serve you better and at lower cost. The key is honest evaluation — not being sold a platform you do not need, and not settling for tools you will outgrow in eighteen months.",
+
+    disclaimer:
+      "Every business is different. Contact ERP Experts for a candid conversation about whether NetSuite is the right fit for your size and stage of growth.",
+  },
+
   "spreadsheet-hidden-costs": {
     title: "The Hidden Costs of Spreadsheets",
     subtitle: "Why Your Spreadsheets Are Holding You Back",
@@ -1054,12 +1182,15 @@ const cardImages = {
     "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80",
   "your-erp-system-should-work-for-you": erpWorkForYouHero,
   "stress-free-erp-implementation": erpImplementationHero,
+  "netsuite-for-small-businesses":
+    "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&q=80",
   "spreadsheet-hidden-costs":
     "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80",
 };
 
 // Ordered list of article slugs for the listing page
 const articleOrder = [
+  "netsuite-for-small-businesses",
   "is-netsuite-right-for-your-business",
   "future-of-work-generative-ai",
   "cfo-guide-ai-enhanced-finance",

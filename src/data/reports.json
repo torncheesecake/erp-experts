@@ -1,64 +1,65 @@
 {
-  "lastUpdated": "2026-02-19",
+  "lastUpdated": "2026-02-27",
   "ga4Period": {
     "start": "2026-01-01",
-    "end": "2026-02-18",
-    "totalSessions": 285,
-    "totalPageViews": 1578,
-    "totalUsers": 179,
-    "totalNewUsers": 108,
-    "totalCTAClicks": 112,
-    "totalLeads": 5,
+    "end": "2026-02-27",
+    "totalSessions": 320,
+    "totalPageViews": 1648,
+    "totalUsers": 199,
+    "totalNewUsers": 127,
+    "totalCTAClicks": 130,
+    "totalLeads": 21,
     "countries": [
-      { "country": "United Kingdom", "users": 66 },
-      { "country": "India", "users": 7 },
+      { "country": "United Kingdom", "users": 73 },
+      { "country": "India", "users": 9 },
       { "country": "China", "users": 3 },
       { "country": "Iraq", "users": 3 },
       { "country": "Philippines", "users": 3 },
       { "country": "Switzerland", "users": 3 },
       { "country": "United States", "users": 3 },
-      { "country": "Other", "users": 10 }
+      { "country": "Netherlands", "users": 2 },
+      { "country": "Other", "users": 8 }
     ],
     "trafficSources": {
-      "organic": 132,
-      "direct": 140,
-      "referral": 11,
+      "organic": 147,
+      "direct": 157,
+      "referral": 13,
       "social": 1,
-      "unassigned": 7
+      "unassigned": 8
     },
     "funnel": [
-      { "step": "Landed on site", "users": 84, "description": "First-time visitors who arrived on the site" },
-      { "step": "Viewed homepage", "users": 72, "description": "Visited the homepage" },
-      { "step": "Browsed a second page", "users": 68, "description": "Viewed at least one other page (case studies, support, etc.)" },
+      { "step": "Landed on site", "users": 92, "description": "First-time visitors who arrived on the site" },
+      { "step": "Viewed homepage", "users": 82, "description": "Visited the homepage" },
+      { "step": "Browsed a second page", "users": 71, "description": "Viewed at least one other page (case studies, support, etc.)" },
       { "step": "Visited contact page", "users": 19, "description": "Made it to the contact page" },
-      { "step": "Clicked a CTA", "users": 16, "description": "Clicked a call-to-action button" },
-      { "step": "Became a lead", "users": 3, "description": "Submitted a form or enquiry" }
+      { "step": "Clicked a CTA", "users": 17, "description": "Clicked a call-to-action button" },
+      { "step": "Became a lead", "users": 5, "description": "Submitted a form or enquiry" }
     ],
     "pageBounceRates": [
-      { "page": "Homepage", "bounceRate": 33.5 },
-      { "page": "Case Studies", "bounceRate": 7.9 },
+      { "page": "Homepage", "bounceRate": 32.4 },
+      { "page": "Case Studies", "bounceRate": 7.5 },
       { "page": "Support", "bounceRate": 0 },
       { "page": "Implementation", "bounceRate": 5.9 },
-      { "page": "About Us", "bounceRate": 7.9 },
-      { "page": "Contact", "bounceRate": 0 },
-      { "page": "Resources", "bounceRate": 0 },
+      { "page": "About Us", "bounceRate": 9.5 },
+      { "page": "Contact", "bounceRate": 2.9 },
+      { "page": "Resources", "bounceRate": 7.7 },
       { "page": "eco2solar Case Study", "bounceRate": 23.5 },
       { "page": "What is NetSuite?", "bounceRate": 0 }
     ],
     "ctaBreakdown": [
-      { "button": "Navbar — Let's Talk", "clicks": 28 },
-      { "button": "Hero — Start a Project", "clicks": 22 },
-      { "button": "Footer CTA — Book a Call", "clicks": 18 },
-      { "button": "Footer CTA — Start a Project", "clicks": 14 },
-      { "button": "Implementation — Book a Call", "clicks": 9 },
-      { "button": "Contact — Form Submit", "clicks": 7 },
-      { "button": "Support — Book a Call", "clicks": 6 },
+      { "button": "Navbar — Let's Talk", "clicks": 30 },
+      { "button": "Hero — Start a Project", "clicks": 24 },
+      { "button": "Footer CTA — Book a Call", "clicks": 20 },
+      { "button": "Footer CTA — Start a Project", "clicks": 16 },
+      { "button": "Contact — Form Submit", "clicks": 17 },
+      { "button": "Implementation — Book a Call", "clicks": 10 },
+      { "button": "Support — Book a Call", "clicks": 7 },
       { "button": "Journey — Get Started", "clicks": 5 },
       { "button": "About — Start a Conversation", "clicks": 4 }
     ],
     "navigationFlow": {
-      "period": "2026-01-26 to 2026-02-22",
-      "totalSessions": 238,
+      "period": "2026-01-30 to 2026-02-26",
+      "totalSessions": 251,
       "paths": [
         {
           "from": "Homepage",
@@ -103,80 +104,81 @@
       ]
     },
     "pageEngagement": [
-      { "page": "Homepage", "avgTimeOnPage": 85, "views": 585, "sessions": 171, "bounceRate": 31.6 },
-      { "page": "Case Studies", "avgTimeOnPage": 102, "views": 167, "sessions": 40, "bounceRate": 7.5 },
-      { "page": "Support", "avgTimeOnPage": 177, "views": 112, "sessions": 30, "bounceRate": 0 },
-      { "page": "Implementation", "avgTimeOnPage": 156, "views": 92, "sessions": 35, "bounceRate": 5.7 },
-      { "page": "About Us", "avgTimeOnPage": 56, "views": 79, "sessions": 40, "bounceRate": 7.5 },
-      { "page": "Contact", "avgTimeOnPage": 45, "views": 69, "sessions": 28, "bounceRate": 0 },
-      { "page": "Resources", "avgTimeOnPage": 79, "views": 55, "sessions": 10, "bounceRate": 0 },
+      { "page": "Homepage", "avgTimeOnPage": 72, "views": 586, "sessions": 185, "bounceRate": 32.4 },
+      { "page": "Case Studies", "avgTimeOnPage": 97, "views": 168, "sessions": 40, "bounceRate": 7.5 },
+      { "page": "Support", "avgTimeOnPage": 165, "views": 112, "sessions": 30, "bounceRate": 0 },
+      { "page": "Implementation", "avgTimeOnPage": 138, "views": 94, "sessions": 34, "bounceRate": 5.9 },
+      { "page": "About Us", "avgTimeOnPage": 53, "views": 87, "sessions": 42, "bounceRate": 9.5 },
+      { "page": "Contact", "avgTimeOnPage": 55, "views": 82, "sessions": 34, "bounceRate": 2.9 },
+      { "page": "Resources", "avgTimeOnPage": 64, "views": 60, "sessions": 13, "bounceRate": 7.7 },
       { "page": "eco2solar Case Study", "avgTimeOnPage": 16, "views": 44, "sessions": 17, "bounceRate": 23.5 },
       { "page": "What is NetSuite?", "avgTimeOnPage": 48, "views": 14, "sessions": 10, "bounceRate": 0 }
     ],
     "exitPages": [
-      { "page": "Homepage", "exitRate": 31.6, "exits": 54 },
+      { "page": "Homepage", "exitRate": 32.4, "exits": 60 },
       { "page": "eco2solar Case Study", "exitRate": 23.5, "exits": 4 },
       { "page": "Page Not Found (404)", "exitRate": 20.0, "exits": 2 },
-      { "page": "About Us", "exitRate": 7.5, "exits": 3 },
+      { "page": "About Us", "exitRate": 9.5, "exits": 4 },
       { "page": "Case Studies", "exitRate": 7.5, "exits": 3 },
-      { "page": "Implementation", "exitRate": 5.7, "exits": 2 },
-      { "page": "Contact", "exitRate": 0, "exits": 0 },
+      { "page": "Resources", "exitRate": 7.7, "exits": 1 },
+      { "page": "Implementation", "exitRate": 5.9, "exits": 2 },
+      { "page": "Contact", "exitRate": 2.9, "exits": 1 },
       { "page": "Support", "exitRate": 0, "exits": 0 }
     ],
     "seoInsights": {
-      "period": "2026-01-23 to 2026-02-19",
-      "totalImpressions": 24817,
-      "totalClicks": 66,
-      "avgCTR": 0.27,
+      "period": "2026-01-30 to 2026-02-26",
+      "totalImpressions": 21518,
+      "totalClicks": 64,
+      "avgCTR": 0.30,
       "topLandingPages": [
-        { "path": "/", "impressions": 5102, "clicks": 48, "ctr": 0.94, "avgPosition": 23.6 },
-        { "path": "/post/what-is-an-erp-system", "impressions": 4663, "clicks": 3, "ctr": 0.06, "avgPosition": 43.0 },
-        { "path": "/post/6-essential-accounts-receivable-reports", "impressions": 2027, "clicks": 3, "ctr": 0.15, "avgPosition": 14.5 },
-        { "path": "/post/which-is-the-best-erp-for-manufacturers", "impressions": 2939, "clicks": 2, "ctr": 0.07, "avgPosition": 45.7 },
-        { "path": "/netsuite-experts", "impressions": 2262, "clicks": 2, "ctr": 0.09, "avgPosition": 27.4 }
+        { "path": "/", "impressions": 4126, "clicks": 39, "ctr": 0.95, "avgPosition": 19.7 },
+        { "path": "/post/what-is-an-erp-system", "impressions": 3475, "clicks": 3, "ctr": 0.09, "avgPosition": 41.8 },
+        { "path": "/post/which-is-the-best-erp-for-manufacturers", "impressions": 2947, "clicks": 2, "ctr": 0.07, "avgPosition": 41.1 },
+        { "path": "/netsuite-experts", "impressions": 2127, "clicks": 3, "ctr": 0.14, "avgPosition": 26.7 },
+        { "path": "/post/6-essential-accounts-receivable-reports", "impressions": 1440, "clicks": 4, "ctr": 0.28, "avgPosition": 13.7 }
       ]
     }
   },
   "linkedinYear": {
-    "start": "2025-02-20",
-    "end": "2026-02-19",
-    "totalImpressions": 46616,
-    "membersReached": 6092,
+    "start": "2025-02-27",
+    "end": "2026-02-27",
+    "totalImpressions": 47532,
+    "membersReached": 6385,
     "demographics": {
       "jobTitles": [
-        { "title": "Founder", "pct": 9.3 },
+        { "title": "Founder", "pct": 9.5 },
         { "title": "Financial Director", "pct": 4.6 },
         { "title": "CEO", "pct": 3.8 },
-        { "title": "Co-Founder", "pct": 3.6 },
+        { "title": "Co-Founder", "pct": 3.5 },
         { "title": "Managing Director", "pct": 3.5 }
       ],
       "locations": [
-        { "location": "London", "pct": 19.5 },
-        { "location": "Manchester", "pct": 9.6 },
-        { "location": "Leeds", "pct": 1.9 },
+        { "location": "London", "pct": 19.3 },
+        { "location": "Manchester", "pct": 9.5 },
+        { "location": "Leeds", "pct": 1.8 },
         { "location": "Bristol", "pct": 1.6 },
-        { "location": "Oxford", "pct": 1.4 }
+        { "location": "Oxford", "pct": 1.5 }
       ],
       "industries": [
-        { "industry": "IT Services & Consulting", "pct": 16.5 },
-        { "industry": "Business Consulting", "pct": 9.7 },
-        { "industry": "Software Development", "pct": 9.6 },
+        { "industry": "IT Services & Consulting", "pct": 16.4 },
+        { "industry": "Business Consulting", "pct": 9.8 },
+        { "industry": "Software Development", "pct": 9.5 },
         { "industry": "Financial Services", "pct": 5.4 },
-        { "industry": "Technology & Internet", "pct": 3.6 }
+        { "industry": "Technology & Internet", "pct": 3.7 }
       ],
       "seniority": [
-        { "level": "Senior", "pct": 29.5 },
-        { "level": "Director", "pct": 18.9 },
-        { "level": "Entry", "pct": 10.9 },
-        { "level": "Owner", "pct": 10.5 },
-        { "level": "CXO", "pct": 10.1 }
+        { "level": "Senior", "pct": 29.3 },
+        { "level": "Director", "pct": 18.7 },
+        { "level": "Entry", "pct": 11.1 },
+        { "level": "Owner", "pct": 10.4 },
+        { "level": "CXO", "pct": 10.3 }
       ],
       "companySize": [
-        { "size": "11-50", "pct": 23.0 },
+        { "size": "11-50", "pct": 22.9 },
         { "size": "1-10", "pct": 22.6 },
         { "size": "51-200", "pct": 17.3 },
-        { "size": "10,001+", "pct": 6.4 },
-        { "size": "201-500", "pct": 4.7 }
+        { "size": "10,001+", "pct": 6.3 },
+        { "size": "201-500", "pct": 4.9 }
       ]
     }
   },
@@ -218,16 +220,58 @@
       "engagementRate": 4.27
     },
     {
-      "date": "2026-02-17",
-      "excerpt": "3 Ways to Launch Your ERP Journey...",
-      "impressions": 99,
-      "votes": 1,
+      "date": "2026-02-20",
+      "excerpt": "ERP Experts — latest insights on NetSuite...",
+      "impressions": 420,
+      "votes": 8,
       "comments": 0,
-      "reposts": 1,
-      "engagementRate": 4.04
+      "reposts": 0,
+      "engagementRate": 1.9
     }
   ],
   "weeks": [
+    {
+      "weekEnding": "2026-02-27",
+      "ga": {
+        "sessions": 35,
+        "pageViews": 70,
+        "users": 20,
+        "newUsers": 19,
+        "avgSessionDuration": 40,
+        "topPages": [
+          { "path": "/", "views": 22 },
+          { "path": "/about", "views": 8 },
+          { "path": "/contact", "views": 7 },
+          { "path": "/case-studies", "views": 6 },
+          { "path": "/support", "views": 5 },
+          { "path": "/resources", "views": 5 },
+          { "path": "/implementation", "views": 4 },
+          { "path": "/what-is-netsuite", "views": 3 }
+        ],
+        "trafficSources": {
+          "organic": 46,
+          "direct": 43,
+          "referral": 6,
+          "social": 0
+        },
+        "ctaClicks": 18,
+        "leads": 16
+      },
+      "linkedin": {
+        "followers": 1366,
+        "impressions": 916,
+        "engagementRate": 1.2,
+        "engagements": 11,
+        "newFollowers": 31
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
     {
       "weekEnding": "2026-02-18",
       "ga": {

@@ -8,7 +8,105 @@ import { Plus, Wrench, Zap, FileText } from "lucide-react";
 
 const changelog = [
   {
+    date: "24 February 2026",
+    entries: [
+      {
+        type: "improved",
+        title: "Reports: intelligent diagnostics redesign",
+        description:
+          "Completely rebuilt the \"Things Worth Looking Into\" section. Diagnostics now analyse actual site code and live data to generate accurate, site-aware recommendations. Added severity levels (High/Medium/Low) with colour-coded legend. New full-width card layout with left accent bars and inset recommendation boxes. Sorted by priority so the most actionable items appear first.",
+      },
+      {
+        type: "added",
+        title: "Conversion improvements: Book a Call, lead magnet, NETscore",
+        description:
+          "Three new conversion paths added site-wide. Contact page now has a 'Book a Call' Calendly card in the sidebar. New lead magnet email capture component ('Free NetSuite buyer's guide') added to Resources and What is NetSuite pages. NETscore quiz CTA buttons added to Implementation, Support, Case Studies, and FAQ pages.",
+      },
+      {
+        type: "added",
+        title: "Reports: changelog link",
+        description:
+          "Added a 'View changelog' link in the Reports hero section next to the last-updated date, so stakeholders can quickly see what's changed on the site.",
+      },
+      {
+        type: "added",
+        title: "AI-Powered Reporting video page",
+        description:
+          "New standalone branded page at /video/ai-powered-reporting for sharing video content via email links. Features native HTML5 video player, download button, decorative triangle background using all four brand colours, and a discovery call CTA. Page is not indexed by search engines and has no navbar/footer for a clean, focused viewing experience.",
+      },
+    ],
+  },
+  {
+    date: "23 February 2026",
+    entries: [
+      {
+        type: "improved",
+        title: "Reports: collapsible sections",
+        description:
+          "Website Trends, Visitor Journey, SEO, Geography, LinkedIn, and Email sections are now collapsible with a click. Open/closed state persists in localStorage so your preferences stick between visits. Each section shows a subtitle summary even when collapsed.",
+      },
+      {
+        type: "improved",
+        title: "Reports: animated traffic donut and mobile polish",
+        description:
+          "Traffic source donut chart now animates in as you scroll to it — segments grow from zero with staggered timing. Chart date labels optimised for mobile screens (shorter labels, smaller text). Period bar shows compact date format on small screens.",
+      },
+      {
+        type: "improved",
+        title: "Reports: sparklines on metric cards",
+        description:
+          "Key metric cards (sessions, users, page views, session duration) now show a tiny 6-week trend line beneath the numbers. Gives an at-a-glance sense of direction without needing to scroll to the full charts.",
+      },
+    ],
+  },
+  {
+    date: "20 February 2026",
+    entries: [
+      {
+        type: "added",
+        title: "Reports: print stylesheet and staleness warning",
+        description:
+          "Added a 'Print Report' button in the sticky bar that produces a clean, printer-friendly version — no navbar, no animations, proper page breaks. Also added an amber staleness banner that appears when report data is more than 7 days old as a reminder to update.",
+      },
+      {
+        type: "improved",
+        title: "Reports: sticky anchor navigation",
+        description:
+          "New jump links in the period bar (Website, Funnel, SEO, LinkedIn) that scroll smoothly to each section. Active section highlighted as you scroll. Links appear on tablet and desktop alongside the existing period tabs.",
+      },
+      {
+        type: "improved",
+        title: "Reports: section reordering and empty-state handling",
+        description:
+          "Sections reordered so the most actionable data appears first (Website Performance, then Trends, then Top Pages). Sections with no meaningful data for the selected period are now fully hidden instead of showing empty placeholders. Go-Live section auto-hides after 12 weeks.",
+      },
+    ],
+  },
+  {
     date: "19 February 2026",
+    entries: [
+      {
+        type: "added",
+        title: "Reports dashboard: password gate and tooltips",
+        description:
+          "Internal reports are now behind a simple password gate to prevent accidental public access. Added touch-friendly tooltip icons throughout the dashboard — tap the ? to see plain-English explanations of each metric. Works on both mobile (tap to toggle) and desktop (hover).",
+      },
+      {
+        type: "added",
+        title: "Weekly reports dashboard with real GA4 and LinkedIn data",
+        description:
+          "New internal marketing dashboard at /reports showing website performance, visitor journey funnels, SEO rankings, LinkedIn engagement, and email marketing metrics. Data pulled from GA4 and LinkedIn analytics, stored in reports.json, with weekly and monthly comparison views.",
+      },
+      {
+        type: "improved",
+        title: "Reports: 12-week historical data backfill",
+        description:
+          "Backfilled reports.json with monthly GA4 snapshot data going back 12 weeks. Enables month-over-month comparisons and trend analysis from day one rather than waiting weeks to accumulate data.",
+      },
+    ],
+  },
+  {
+    date: "18 February 2026",
     entries: [
       {
         type: "improved",
@@ -29,21 +127,38 @@ const changelog = [
     entries: [
       {
         type: "improved",
-        title: "Data separation and page restructuring",
+        title: "Code architecture: data separation",
         description:
-          "Separated data from presentation across major pages. Split monolithic components into smaller, focused modules. Case studies data moved to caseStudies.js, articles data to articles.js. Improved maintainability and code organisation.",
-      },
-      {
-        type: "improved",
-        title: "Case study visual enhancements",
-        description:
-          "Added scroll indicator below Totalkare video to hint at content below. Fixed Coats4Kids logo rendering — removed brightness-0 invert filter for coloured logos. Updated Coats4Kids with separate feature image for intro section. Implemented wider layout with side-by-side intro and 2x2 card grid.",
+          "Separated data from presentation across major pages. Split monolithic components into smaller, focused modules. Case studies data moved to caseStudies.js, articles data to articles.js. Improved maintainability and makes future content updates easier.",
       },
       {
         type: "added",
         title: "FTP deployment configuration",
         description:
           "Added .ftpconfig file with FTP credentials and deployment instructions for future uploads. File excluded from git via .gitignore for security.",
+      },
+      {
+        type: "improved",
+        title: "Case study polish",
+        description:
+          "Added scroll indicator below Totalkare video to hint at content below the fold. Refined visual consistency across all case study detail pages.",
+      },
+    ],
+  },
+  {
+    date: "16 February 2026",
+    entries: [
+      {
+        type: "added",
+        title: "New case study: Coats4Kids",
+        description:
+          "Fifth case study added — Coats4Kids charity. Gradient hero variant with custom layout, real content sourced from the Coats4Kids website. Showcases how NetSuite supports not-for-profit organisations.",
+      },
+      {
+        type: "improved",
+        title: "Coats4Kids case study enhancements",
+        description:
+          "Updated Coats4Kids with real logo, hero image, and website content. Implemented wider layout with side-by-side intro and 2x2 card grid. Added separate feature image for the intro section. Fixed logo rendering for coloured logos.",
       },
     ],
   },
