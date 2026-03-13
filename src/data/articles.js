@@ -1081,7 +1081,7 @@ export const articles = {
     readTime: "6 min read",
     type: "Guide",
     layoutVariant: 7,
-    heroImage: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1400&q=80",
+    heroMode: "import-workflow",
 
     intro:
       "CSV imports are one of the most common ways to get data into NetSuite — whether you are migrating from another system, loading a bulk update, or bringing in data from a third-party source. They are also one of the most common sources of frustration. A single formatting error, a mismatched field name, or an encoding issue can reject an entire file with an error message that tells you very little about what actually went wrong. This guide covers the most frequent causes of CSV import failures in NetSuite and gives you clear, tested fixes for each one.",
