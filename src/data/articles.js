@@ -1,6 +1,14 @@
 /**
  * Single source of truth for all resource article data.
  * Both the listing page and article detail pages import from here.
+ *
+ * Layout Variants:
+ *   1–3  Legacy (inline in ResourceArticle.jsx)
+ *   4    Alternating: tips alternate L/R rows. Best for visual/process guides with 4–6 tips.
+ *   5    Cards: 2-col card grid. Best for quick-reference, listicles, many short tips.
+ *   6    Editorial: narrow blog style, pull quotes. Best for thought-leadership, opinion, long-form.
+ *   7    Timeline: vertical timeline with connecting line. Best for step-by-step how-tos.
+ *   8    Comparison: side-by-side matrix. Best for evaluations and partner/vendor selection.
  */
 
 import {
@@ -34,6 +42,15 @@ import {
   Ear,
   LineChart,
   Presentation,
+  Layers,
+  Compass,
+  Cpu,
+  Factory,
+  Package,
+  Shield,
+  Globe,
+  Rocket,
+  Clock,
 } from "lucide-react";
 
 import erpWorkForYouHero from "../assets/521dfd_8d98556467bd405188ecbb172caa3b1f~mv2.png.jpeg";
@@ -195,7 +212,7 @@ export const articles = {
     ],
 
     // Section headings
-    overviewHeading: 'AI-Enhanced <span class="text-primary">Financial&nbsp;Leadership</span>',
+    overviewHeading: 'AI-Enhanced <span class="text-primary">Financial Leadership</span>',
     overviewSubtext:
       "One answer to today's volatile business environment is artificial intelligence. The CFO Alliance confirms that finance leaders know AI can help them make faster and more-informed decisions. The question is: will you use it to drive competitive advantage?",
     tipsHeading: 'How AI Transforms <span class="text-primary">Finance</span>',
@@ -528,10 +545,10 @@ export const articles = {
     ],
 
     // Section headings
-    overviewHeading: 'Why NetSuite <span class="text-primary">Optimisation</span>&nbsp;Matters',
+    overviewHeading: 'Why NetSuite <span class="text-primary">Optimisation</span> Matters',
     overviewSubtext:
       "From data hygiene to performance settings, we'll cover the essential practices that separate a sluggish system from one that truly empowers your team.",
-    tipsHeading: '5 Ways to Optimise <span class="text-primary">Your&nbsp;NetSuite</span>',
+    tipsHeading: '5 Ways to Optimise <span class="text-primary">Your NetSuite</span>',
 
     conclusion:
       "A well-maintained system not only improves performance but also contributes to sustainable growth. Start with one tip and work your way through.",
@@ -552,7 +569,7 @@ export const articles = {
     heroImage: erpWorkForYouHero,
     featureImage: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80",
     challengeLabel: "The Problem",
-    challengeHeading: 'When Systems Become a&nbsp;<span class="text-primary">Burden</span>',
+    challengeHeading: 'When Systems Become a <span class="text-primary">Burden</span>',
     challengeText:
       "Many businesses reach a point where spreadsheets, disconnected tools, and manual workarounds stop being helpful. Teams waste time searching for information, making decisions based on outdated data, and firefighting avoidable problems.",
     intro:
@@ -657,7 +674,7 @@ export const articles = {
     ],
 
     // Section headings
-    overviewHeading: 'Technology Should <span class="text-primary">Empower&nbsp;You</span>',
+    overviewHeading: 'Technology Should <span class="text-primary">Empower You</span>',
     overviewSubtext:
       "This is exactly what companies like Eco2Solar and Totalkare experienced before their transformation. Their old systems created frustration, limited capacity, and made scaling feel impossible.",
     tipsHeading: 'From Problem to <span class="text-primary">Solution</span>',
@@ -696,7 +713,7 @@ export const articles = {
     ],
 
     // Section headings
-    overviewHeading: 'Taking the Stress Out of&nbsp;<span class="text-primary">ERP</span>',
+    overviewHeading: 'Taking the Stress Out of <span class="text-primary">ERP</span>',
     overviewSubtext:
       "Here's how to take the stress out of your ERP implementation and make it a success.",
     tipsHeading: '5 Steps to a Successful <span class="text-primary">Implementation</span>',
@@ -928,6 +945,10 @@ export const articles = {
     subtitle: "Is Enterprise ERP Right for a Growing SME?",
     cardDescription:
       "NetSuite is built for mid-market and enterprise. But can it work for a small business? An honest look at when it makes sense, when it doesn't, and what to watch out for.",
+    metaDescription:
+      "Is NetSuite right for small businesses? An honest guide for SMEs evaluating NetSuite: when it makes sense, what it costs, and what to watch out for.",
+    keywords:
+      "NetSuite for small businesses, NetSuite small business, is NetSuite good for small businesses, NetSuite SME, NetSuite pricing small business, ERP for small business",
     date: "Feb 2026",
     readTime: "4 min read",
     type: "Guide",
@@ -1051,6 +1072,287 @@ export const articles = {
       "Every business is different. Contact ERP Experts for a candid conversation about whether NetSuite is the right fit for your size and stage of growth.",
   },
 
+  "csv-import-errors": {
+    title: "CSV Imports: Why They Fail and How to Fix It",
+    subtitle: "A Practical Guide to Troubleshooting NetSuite CSV Import Errors",
+    cardDescription:
+      "The most common reasons CSV imports fail in NetSuite and exactly how to fix each one. Save hours of trial and error with this field-tested troubleshooting guide.",
+    date: "Mar 2026",
+    readTime: "6 min read",
+    type: "Guide",
+    layoutVariant: 7,
+    heroImage: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1400&q=80",
+
+    intro:
+      "CSV imports are one of the most common ways to get data into NetSuite — whether you are migrating from another system, loading a bulk update, or bringing in data from a third-party source. They are also one of the most common sources of frustration. A single formatting error, a mismatched field name, or an encoding issue can reject an entire file with an error message that tells you very little about what actually went wrong. This guide covers the most frequent causes of CSV import failures in NetSuite and gives you clear, tested fixes for each one.",
+
+    takeaways: [
+      "Fix the most common formatting and encoding errors",
+      "Match your CSV columns to NetSuite fields correctly",
+      "Handle date, currency, and number format mismatches",
+      "Avoid duplicate record and reference errors",
+      "Validate your file before uploading",
+    ],
+
+    overviewHeading: 'Stop Guessing, Start <span class="text-primary">Fixing</span>',
+    overviewSubtext:
+      "Most CSV import errors fall into a handful of predictable categories. Once you know what to look for, you can fix problems in minutes instead of hours. This guide works through each category with specific solutions you can apply immediately.",
+    tipsHeading: '6 Common CSV Import <span class="text-primary">Failures</span> and Their Fixes',
+
+    tips: [
+      {
+        number: "01",
+        icon: AlertTriangle,
+        title: "Character Encoding Issues",
+        content:
+          "This is the single most common cause of mysterious import failures. If your CSV file contains special characters — accented names, currency symbols, or data copied from Word or PDF documents — and the file is not saved as UTF-8, NetSuite will either reject the file or import garbled data. Excel in particular likes to save CSV files in ANSI or Windows-1252 encoding by default, which silently corrupts non-ASCII characters. The fix is simple but easy to overlook: always save your CSV as UTF-8. In Excel, use 'Save As' and select 'CSV UTF-8'. In Google Sheets, the default export is already UTF-8. If you are generating files programmatically, make sure your script explicitly writes UTF-8 with a BOM (byte order mark) for maximum compatibility.",
+        actions: [
+          "Always save as CSV UTF-8 from Excel (not plain CSV)",
+          "Check for hidden special characters copied from Word or PDFs",
+          "Use a text editor like Notepad++ to verify encoding before upload",
+        ],
+      },
+      {
+        number: "02",
+        icon: Database,
+        title: "Column Header Mismatches",
+        content:
+          "NetSuite's CSV Import Assistant maps your column headers to internal field names, and it is surprisingly strict about exact matches. A column called 'Customer Name' will not automatically map to NetSuite's 'Company Name' field. Extra spaces, different capitalisation, or slightly different wording will all cause fields to be skipped or the import to fail entirely. The safest approach is to download a sample export of the record type you are importing, then use those exact column headers in your import file. This guarantees your headers match what NetSuite expects. For custom fields, use the internal ID (prefixed with 'custbody_' or 'custcol_') rather than the display label, as labels can be changed by administrators without warning.",
+        actions: [
+          "Export a sample record and reuse the exact column headers",
+          "Use internal IDs for custom fields instead of display labels",
+          "Remove any trailing spaces from header cells",
+        ],
+      },
+      {
+        number: "03",
+        icon: Settings,
+        title: "Date and Number Format Conflicts",
+        content:
+          "Date formats are a persistent source of import errors, especially in organisations that operate across the UK and US. NetSuite expects dates in the format set in your company preferences — typically DD/MM/YYYY for UK accounts or MM/DD/YYYY for US accounts. If your CSV contains dates in the wrong format, NetSuite will either reject them or, worse, silently swap the day and month, turning 3rd February into 2nd March. Number formats cause similar problems: NetSuite may expect a period as the decimal separator, but your source data uses commas. Before importing, check your NetSuite company preferences under Setup > Company > General Preferences and ensure your CSV matches exactly.",
+        actions: [
+          "Check your NetSuite date format under company preferences",
+          "Ensure all date columns use a consistent format throughout the file",
+          "Verify decimal separators match your NetSuite configuration",
+        ],
+      },
+      {
+        number: "04",
+        icon: Link2,
+        title: "Missing or Invalid Record References",
+        content:
+          "Many NetSuite fields are references to other records — a sales order references a customer, an invoice references an item. When importing, you need to provide either the internal ID or the exact name/number that NetSuite can look up. If the referenced record does not exist, or if the name does not match exactly, the import row will fail. This is particularly common when importing transactions that reference customers, items, or employees. The most reliable approach is to use internal IDs for all reference fields. You can find these by running a saved search on the referenced record type and including the internal ID column. For subsidiary, department, class, and location fields, make sure the referenced values exist and are active — inactive records will be rejected.",
+        actions: [
+          "Use internal IDs rather than names for all reference fields",
+          "Run a saved search to verify referenced records exist",
+          "Check that referenced records are active, not inactive",
+        ],
+      },
+      {
+        number: "05",
+        icon: Search,
+        title: "Duplicate Detection and Overwrite Errors",
+        content:
+          "NetSuite has built-in duplicate detection, and if your import file contains records that match existing data, the import will either fail or create unwanted duplicates depending on your settings. When updating existing records, you must include a unique identifier — typically the internal ID or external ID — and set the import to 'Update' mode rather than 'Add'. If you are adding new records and getting duplicate errors, check whether NetSuite's duplicate detection rules are matching on fields like email address or company name. You can review these rules under Setup > Company > Auto-Generated Numbers or the relevant record type's duplicate detection settings. For large imports, it is worth doing a dry run with a small subset of rows first to catch these issues early.",
+        actions: [
+          "Include internal ID or external ID when updating existing records",
+          "Set the correct import mode: Add, Update, or Add/Update",
+          "Test with a small subset before running the full import",
+        ],
+      },
+      {
+        number: "06",
+        icon: Wrench,
+        title: "File Structure and Formatting Problems",
+        content:
+          "Sometimes the CSV file itself is the problem, not the data inside it. Common structural issues include: empty rows at the end of the file (Excel often adds these invisibly), multiple header rows, merged cells from a copied spreadsheet, or line breaks within a cell value that split a single record across multiple rows. Another frequent issue is using the wrong delimiter — NetSuite expects comma-separated values, but some European systems export with semicolons. Before uploading, open your CSV in a plain text editor (not Excel) and check that each row contains the same number of commas, there are no blank rows, and multi-line cell values are properly enclosed in double quotes. Cleaning up these structural issues before import will save you significant troubleshooting time.",
+        actions: [
+          "Open the file in a text editor to check for hidden formatting issues",
+          "Remove any empty rows, merged cells, or extra header rows",
+          "Ensure multi-line values are enclosed in double quotes",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Eye,
+        title: "Use the Import Preview",
+        content:
+          "NetSuite shows a preview of how your data will be mapped before you commit. Always review this carefully — it catches header mismatches and formatting issues before they affect your data.",
+      },
+      {
+        icon: ClipboardCheck,
+        title: "Keep an Error Log",
+        content:
+          "After each import, download the error file NetSuite generates. It tells you exactly which rows failed and why. Patterns in the errors usually point to a single root cause.",
+      },
+      {
+        icon: FileSpreadsheet,
+        title: "Build a Template Library",
+        content:
+          "For imports you do regularly, create a validated template with the correct headers, formatting, and a sample row. Reusing templates eliminates the most common mistakes.",
+      },
+      {
+        icon: Zap,
+        title: "Consider SuiteScript for Recurring Imports",
+        content:
+          "If you run the same import weekly or daily, a scheduled SuiteScript can automate the process with built-in validation, error handling, and logging — no manual CSV uploads needed.",
+      },
+    ],
+
+    conclusion:
+      "CSV imports do not have to be painful. The vast majority of failures come down to encoding, formatting, and reference mismatches — all of which are straightforward to fix once you know what to look for. Build good habits around file preparation, use internal IDs wherever possible, and always test with a small batch first. You will go from dreading import day to running them confidently in minutes.",
+
+    disclaimer:
+      "NetSuite's CSV Import Assistant handles most standard import scenarios. For complex migrations or recurring data loads, contact ERP Experts to discuss automation options.",
+  },
+
+  "accounts-receivable-reports": {
+    title: "6 Essential Accounts Receivable Reports",
+    subtitle: "The Reports That Keep Cash Flowing and Customers Paying",
+    cardDescription:
+      "A practical guide to the six accounts receivable reports every business needs to manage cash flow, reduce bad debts, and maintain healthy customer relationships.",
+    metaDescription:
+      "Six essential accounts receivable reports every business should run. Practical AR reporting examples to manage cash flow, reduce bad debts, and improve collections.",
+    keywords:
+      "accounts receivable reports, accounts receivable reporting, AR reports, accounts receivable report example, AR aging report, cash flow reports",
+    date: "Mar 2026",
+    readTime: "6 min read",
+    type: "Guide",
+    layoutVariant: 6,
+    heroImage:
+      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1400&q=80",
+    featureImage:
+      "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80",
+
+    challengeLabel: "Why It Matters",
+    challengeHeading:
+      'Getting Paid On Time Is <span class="text-primary">Non-Negotiable</span>',
+    challengeText:
+      "Getting paid on time is crucial for any business\u2019s cash flow and ultimate survival, so avoiding late payments and bad debts is essential. Accounts receivable reports are the key accounting tools to manage a company\u2019s accounts receivable balance and forecast cash flow. They alert a business to any payments that are overdue so it can take mitigating action and avoid bad debts.",
+
+    intro:
+      "Accounts receivable reports provide visibility into the status of customer payments against current invoices. They\u2019re used for managing customer relationships and cash flow, as well as evaluating the efficiency of a business\u2019s invoicing and credit control processes. Accounts receivable are all the payments owed to a company by its customers and other parties, recorded under \u201ccurrent assets\u201d on a company\u2019s balance sheet because they are typically due for payment within a year. Traditionally, accounts receivable reporting was a monthly accounting activity guiding credit control, but as accounting has gone digital and real-time data is widely available, accounts receivable have become an on-demand, real-time query allowing action to be taken more efficiently.",
+
+    takeaways: [
+      "Track every invoice from issue to settlement",
+      "Spot overdue payments before they become bad debts",
+      "Understand each customer\u2019s payment behaviour",
+      "Forecast cash flow with confidence",
+      "Automate reporting with NetSuite",
+    ],
+
+    overviewHeading:
+      'Three Pillars of <span class="text-primary">Receivables Reporting</span>',
+    overviewSubtext:
+      "Managing accounts receivable relies on three principal kinds of report: receivables reports that list invoices issued and payments due for each customer; aging reports that show how long invoices have been outstanding; and payment history reports organised by invoice and payments made.",
+    tipsHeading:
+      '6 Essential <span class="text-primary">Accounts Receivable</span> Reports',
+
+    tips: [
+      {
+        number: "01",
+        icon: ClipboardCheck,
+        title: "Accounts Receivable Register",
+        content:
+          "The accounts receivable register is a list of all the billing activity for a given period. The report typically includes the invoice number, customer name, date and sale amount. The register also includes any billing adjustments made, credit memos and customer payments received. The accounts receivable register is sometimes called a subledger, because it provides all the detailed information behind the totals that are posted into a company\u2019s accounts receivable account in the general ledger.",
+        actions: [
+          "Complete record of all billing activity for the period",
+          "Includes invoices, adjustments, credits and payments received",
+          "Reconciles against the general ledger totals",
+        ],
+      },
+      {
+        number: "02",
+        icon: Users,
+        title: "Receivables by Customer Report",
+        content:
+          "The receivables by customer report displays outstanding balances by customer for invoiced receivables and is typically organised by customer name or customer number. Any outstanding balances reduce automatically as customer payments are matched to receivables. A business can use this report as part of their credit management and receivables collection processes.",
+        actions: [
+          "Outstanding balances broken down by customer",
+          "Balances update as payments are matched to invoices",
+          "Supports credit management and collection processes",
+        ],
+      },
+      {
+        number: "03",
+        icon: BarChart3,
+        title: "Aging Summary Report",
+        content:
+          "The aging summary report provides an overview of any unpaid invoices grouped by the length of time the invoice has been overdue. For each customer with monies owing, the report shows what the customer owes for the current billing period and any previous billing periods. This high-level view makes it easy to spot patterns and prioritise collection efforts.",
+        actions: [
+          "Unpaid invoices grouped by overdue time period",
+          "Quick view of current vs overdue amounts per customer",
+          "Makes it easy to prioritise collection efforts",
+        ],
+      },
+      {
+        number: "04",
+        icon: Search,
+        title: "Aging Detail Report",
+        content:
+          "The aging detail report adds more detail to the information shown in the aging summary report. Rather than showing the total outstanding payments for a customer, the aging detail report shows each individual unpaid invoice and typically includes details such as customer name, transaction type, date of invoice, due date, invoice number, invoice description, tax breakdown and amount due.",
+        actions: [
+          "Individual invoice-level detail for every overdue amount",
+          "Includes due dates, tax breakdowns and descriptions",
+          "Enables drill-down from summary to individual invoice detail",
+        ],
+      },
+      {
+        number: "05",
+        icon: FileSpreadsheet,
+        title: "Payment History by Invoice",
+        content:
+          "The payment history by invoice report provides details of each customer\u2019s payment history arranged by invoice, showing how those invoices were settled. This information can be helpful when reconciling customer accounts, resolving disputes, and understanding how individual transactions were closed out.",
+        actions: [
+          "Payment history organised by invoice",
+          "Shows how each invoice was settled",
+          "Essential for reconciliation and dispute resolution",
+        ],
+      },
+      {
+        number: "06",
+        icon: PiggyBank,
+        title: "Payment History by Payment",
+        content:
+          "The payment history by payment report shows each customer\u2019s payment history organised by payment, including how those payments were applied to invoices. This report includes all methods of payment and can be helpful when reconciling or tracing a customer\u2019s payment method through the billing process.",
+        actions: [
+          "Payment history organised by payment made",
+          "Shows how payments were applied across invoices",
+          "Covers all payment methods for full traceability",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Eye,
+        title: "Customer Receivables Reports",
+        content:
+          "Customer receivables reports break down the accounts receivable balance by customer, including open receivables awaiting payment, closed receivables that have been paid, and unbilled orders not yet invoiced.",
+      },
+      {
+        icon: AlertTriangle,
+        title: "Aging Reports",
+        content:
+          "Aging reports break down unpaid invoices by time, showing how long an invoice has been outstanding beyond its payment terms. They can be organised by salesperson, region, invoice number and collections agent to identify problem areas.",
+      },
+      {
+        icon: LineChart,
+        title: "Payment History Reports",
+        content:
+          "Payment history reports show individual customers\u2019 payment behaviour over time and come in two forms: history by payment made and history by invoice. They are essential for managing regular customer relationships.",
+      },
+    ],
+
+    conclusion:
+      "Visibility into your receivables is not optional \u2014 it\u2019s the difference between chasing cash and controlling it. The businesses that stay on top of these six reports spot problems early, collect faster, and build stronger customer relationships. If you\u2019re still relying on spreadsheets or month-end snapshots, you\u2019re already behind.",
+
+    disclaimer:
+      "NetSuite automates accounts receivable reporting in real time. Contact ERP Experts to see how it can transform your cash flow visibility.",
+  },
+
   "spreadsheet-hidden-costs": {
     title: "The Hidden Costs of Spreadsheets",
     subtitle: "Why Your Spreadsheets Are Holding You Back",
@@ -1074,7 +1376,7 @@ export const articles = {
     ],
 
     // Section headings
-    overviewHeading: 'Where Spreadsheets <span class="text-primary">Fall&nbsp;Short</span>',
+    overviewHeading: 'Where Spreadsheets <span class="text-primary">Fall Short</span>',
     overviewSubtext:
       "Here are four critical areas where spreadsheets fall short as an ERP intelligence tool, and how an advanced ERP solution can transform these challenges into advantages.",
     tipsHeading: 'The Hidden Costs of <span class="text-primary">Spreadsheets</span>',
@@ -1163,6 +1465,1367 @@ export const articles = {
     disclaimer:
       "ERP Experts can help your organisation move beyond the limitations of spreadsheets to a scalable, intelligent ERP solution that supports sustainable growth.",
   },
+
+  "maximise-profits": {
+    title: "10 Tips to Maximise Profits",
+    subtitle: "Practical Strategies for Driving Revenue and Cutting Costs",
+    cardDescription:
+      "Profitability is simple in theory, brutal in practice. These 10 strategies cover every lever you can pull to maximise revenue, minimise costs, and protect your margins.",
+    metaDescription:
+      "How to maximise profits: 10 proven strategies to increase revenue, reduce costs, and protect margins. Practical tips for businesses looking to improve profitability.",
+    keywords:
+      "maximise profits, how to increase profits, maximising profits, improve profitability, increase profit margins, profit maximisation strategies",
+    date: "Mar 2026",
+    readTime: "8 min read",
+    type: "Guide",
+    layoutVariant: 5,
+    heroImage:
+      "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1400&q=80",
+    featureImage:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+
+    challengeLabel: "The Bottom Line",
+    challengeHeading:
+      'Revenue Is Vanity. <span class="text-primary">Profit Is Sanity.</span>',
+    challengeText:
+      "Profitability measures how effectively a company turns revenue into actual money it gets to keep. Sounds straightforward, but the gap between growing revenue and growing profit catches out more businesses than you might think. Costs creep, margins erode, and before long you are working harder for less. These 10 strategies tackle both sides of the equation so you can grow smarter, not just bigger.",
+
+    intro:
+      "Every business wants to be more profitable, but most focus almost exclusively on the revenue side of the equation. The real opportunity lies in attacking costs and revenue simultaneously, making each sale more valuable while spending less to deliver it. The strategies below cover operational costs, pricing, customer value, forecasting and recurring revenue. None of them require a miracle. All of them require discipline.",
+
+    takeaways: [
+      "Audit operating costs before they audit you",
+      "Standardise COGS to protect margins",
+      "Discontinue products that drain resources",
+      "Sell more to the customers you already have",
+      "Build recurring revenue for consistency",
+    ],
+
+    overviewHeading:
+      'Two Sides of the <span class="text-primary">Profit Equation</span>',
+    overviewSubtext:
+      "Profitability improves when you either increase revenue or decrease costs. The most effective businesses do both at the same time. These tips are split across cost reduction, revenue growth, and operational efficiency so you can work on the areas that matter most to your business right now.",
+    tipsHeading:
+      '10 Ways to <span class="text-primary">Maximise Profits</span>',
+
+    tips: [
+      {
+        number: "01",
+        icon: Settings,
+        title: "Reduce Operating Costs",
+        content:
+          "Operating costs are the expenses that keep the lights on: rent, utilities, equipment, marketing, R&D, payroll, and general admin. They do not include production costs (that is COGS) or major capital items like buildings and machinery. When the pressure is on, operating costs are usually the first target. That is fine as long as you understand what you are cutting. Slashing the marketing budget saves money today but can starve the pipeline tomorrow. The same goes for R&D. Every cost cutting decision should be reviewed for its downstream impact, not just its immediate saving.",
+        actions: [
+          "Map every operating cost line by line so nothing hides in general ledger categories",
+          "Score each cost for short and long term impact before making any cuts",
+          "Ring fence marketing and R&D spend that directly feeds your future revenue pipeline",
+        ],
+      },
+      {
+        number: "02",
+        icon: Wrench,
+        title: "Reduce Cost of Goods Sold",
+        content:
+          "COGS covers everything directly tied to producing a product or delivering a service: raw materials, labour, packaging, and fulfilment. Getting COGS right is critical because it determines whether your pricing actually works. The goal is to standardise your production process so you can accurately predict true costs and avoid large swings from one build to the next. You can reduce COGS by negotiating supplier terms, streamlining production, or substituting materials, but be careful. Cheaper components can damage product quality, and cutting labour leaves you short staffed and recruiting, which costs more than you saved.",
+        actions: [
+          "Define and track the exact time and material cost of every build to eliminate guesswork",
+          "Standardise your production process so cost variation between builds stays predictable",
+          "Weigh short term savings against quality and capacity risks before switching suppliers",
+        ],
+      },
+      {
+        number: "03",
+        icon: BarChart3,
+        title: "Review Your Product Portfolio and Pricing",
+        content:
+          "When was the last time you looked at the true unit margin for every product you sell? Not the headline number, the real one. Some products look profitable until you factor in the complexity, the returns, and the support overhead. Review your portfolio ruthlessly. Identify underperformers, flag anything that is difficult to manufacture or deliver, and consider whether a price drop on your highest margin product could drive enough volume to increase total profit. Do not be afraid to discontinue the bottom of the list or raise prices on products that are not earning their keep.",
+        actions: [
+          "Calculate true unit margins including support, returns, and fulfilment overhead",
+          "Flag low margin products for discontinuation or aggressive repricing",
+          "Run controlled price tests on high margin lines to see if volume offsets any reduction",
+        ],
+      },
+      {
+        number: "04",
+        icon: TrendingUp,
+        title: "Up-sell, Cross-sell, Resell",
+        content:
+          "Acquiring a new customer costs significantly more than selling to an existing one. That makes upselling, cross-selling, and reselling some of the highest return activities in any business. Train your sales team to upsell without being pushy. Use cross-selling to introduce customers to complementary products, whether through targeted promotions or simple recommendations that products pair well together. For e-commerce, automate cross-sell suggestions based on basket contents. Reselling is gaining traction too: let customers return products they no longer need, refurbish them, and sell them again. More revenue, less waste.",
+        actions: [
+          "Train sales teams in natural upselling techniques that add value rather than pressure",
+          "Automate cross-sell recommendations at checkout based on basket contents and purchase history",
+          "Explore resell or refurbishment programmes to unlock a second revenue stream from returned stock",
+        ],
+      },
+      {
+        number: "05",
+        icon: Users,
+        title: "Increase Customer Lifetime Value",
+        content:
+          "Understanding your customers and delivering consistently excellent experiences is the most cost effective way to grow. Loyal customers spend more, refer others, and cost less to serve. Show existing customers you value them through incentives, loyalty programmes, and referral rewards. Ask for reviews and recommendations. Most importantly, make the experience outstanding at every touchpoint. In the age of social media, a single remarkable customer experience can do more for your brand than a six figure ad campaign.",
+        actions: [
+          "Build a referral programme that gives existing customers a genuine reason to recommend you",
+          "Track Net Promoter Score or an equivalent metric monthly and act on detractor feedback fast",
+          "Invest in customer experience at every touchpoint because one great interaction outperforms any ad",
+        ],
+      },
+      {
+        number: "06",
+        icon: PiggyBank,
+        title: "Lower Your Overheads",
+        content:
+          "One of the fastest routes to better margins, particularly in manufacturing, is negotiating better terms with suppliers. If you split orders across multiple suppliers for the same component, consider consolidating. Increasing your volume with one provider while reducing with others can unlock meaningful price breaks. Look across your entire portfolio too. Have you started buying additional materials from an incumbent supplier over time? If so, renegotiate at each step. Supplier relationships are not set and forget. Regular reviews keep your costs competitive.",
+        actions: [
+          "Consolidate suppliers where possible to unlock meaningful volume discounts",
+          "Renegotiate terms proactively whenever your order profile or volume changes",
+          "Schedule formal annual supplier reviews and treat them as non-negotiable",
+        ],
+      },
+      {
+        number: "07",
+        icon: LineChart,
+        title: "Refine Demand Forecasts",
+        content:
+          "Holding too much inventory means storage costs and potential write-offs when stock expires. Holding too little means rush orders and expedited shipping, both of which hammer your COGS. Accurate demand forecasting based on historical data, seasonality, and sales pipeline gives you the confidence to order what you need, when you need it. The better your forecasting, the leaner your supply chain, and the healthier your margins.",
+        actions: [
+          "Use historical sales data and seasonal patterns to build demand forecasts you can trust",
+          "Integrate live sales pipeline data so forecasts reflect what is actually coming, not just the past",
+          "Review forecast accuracy monthly and refine your models before small errors become expensive ones",
+        ],
+      },
+      {
+        number: "08",
+        icon: ClipboardCheck,
+        title: "Increase Order Efficiency",
+        content:
+          "Sending the wrong product costs you three times: the replacement shipment, the return shipping, and the labour to receive, inspect, and restock the original item. These costs are entirely avoidable. Invest in systems that catch errors before they leave the warehouse: barcode scanning, pick verification, and automated packing lists. Pair that with a motivated, well trained team and your error rate drops to near zero. Every correctly shipped order protects your margin and your customer relationship.",
+        actions: [
+          "Implement barcode scanning and pick verification so errors are caught before they leave the building",
+          "Track error rates weekly and investigate root causes rather than treating each one as a one-off",
+          "Train warehouse teams to prioritise accuracy over speed because rework always costs more",
+        ],
+      },
+      {
+        number: "09",
+        icon: Zap,
+        title: "Add Recurring Revenue",
+        content:
+          "One off sales are unpredictable. Recurring revenue gives you a baseline you can build on. There are two main routes. First, add services around your existing products: maintenance contracts, aftercare packages, or extended warranties. These increase the total value of each sale and keep customers engaged. Second, offer product subscriptions for items customers purchase routinely. A small discount on a subscription incentivises the customer and gives you guaranteed, predictable revenue month after month.",
+        actions: [
+          "Identify which products naturally lend themselves to maintenance contracts or aftercare packages",
+          "Launch subscription options for items customers buy repeatedly, even a small discount drives commitment",
+          "Track monthly and annual recurring revenue as a core KPI so you can see your baseline growing",
+        ],
+      },
+      {
+        number: "10",
+        icon: Target,
+        title: "Use KPIs and Benchmark Regularly",
+        content:
+          "You cannot improve what you do not measure. Establishing benchmarks gives you a reference point for evaluating performance across every area of the business. Review your KPIs regularly, not once a quarter, but weekly or fortnightly. Look for outliers and address them before they become expensive problems. The businesses that stay profitable long term are the ones that build a culture of continuous measurement and improvement, not the ones that wait for the annual review to discover something went wrong six months ago.",
+        actions: [
+          "Define clear KPIs across cost, revenue, efficiency, and customer value so nothing slips through",
+          "Review performance weekly or fortnightly and flag outliers before they become expensive problems",
+          "Benchmark against both industry standards and your own history to spot trends early",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Eye,
+        title: "Full Visibility",
+        content:
+          "A connected ERP system gives you real time visibility across costs, margins, inventory, and customer behaviour, so every decision is backed by data, not guesswork.",
+      },
+      {
+        icon: Lightbulb,
+        title: "Smarter Forecasting",
+        content:
+          "With historical data, trend analysis, and pipeline integration built in, your forecasts get sharper over time, reducing waste and improving cash flow.",
+      },
+      {
+        icon: Zap,
+        title: "Automated Efficiency",
+        content:
+          "From order processing to financial reporting, automation eliminates manual errors and frees your team to focus on work that actually drives profit.",
+      },
+    ],
+
+    conclusion:
+      "Profitability is not a single initiative. It is the compound result of dozens of small, deliberate decisions made consistently over time. Cut costs with precision, not panic. Grow revenue by selling smarter to the customers you already have. Forecast accurately, fulfil efficiently, and measure relentlessly. The businesses that get this right are the ones that treat profitability as a discipline, not a destination.",
+
+    disclaimer:
+      "Every business operates in a different context. These strategies should be adapted to your specific industry, scale, and goals. Speak to our team to explore how NetSuite can support your profitability objectives.",
+  },
+
+  "what-is-an-erp-system": {
+    title: "What is an ERP System? A Beginner's Guide",
+    subtitle: "Everything You Need to Know Before You Start Looking",
+    cardDescription:
+      "A plain English guide to ERP systems: what they do, who needs one, and how to evaluate your options. No jargon, no sales pitch, just the fundamentals.",
+    metaDescription:
+      "What is an ERP system and how does it work? A beginner's guide to understanding ERP systems, core modules, cloud vs on-premise, and how to evaluate vendors.",
+    keywords:
+      "what is an ERP system, ERP systems UK, understanding ERP systems, what is an ERP system and how does it work, ERP system, enterprise resource planning, ERP guide",
+    date: "Mar 2026",
+    readTime: "8 min read",
+    type: "Guide",
+    layoutVariant: 6,
+    heroImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1400&q=80",
+
+    intro:
+      "Enterprise resource planning might sound like something only large corporations need to worry about, but ERP systems are increasingly the backbone of businesses of every size. If you have ever wondered what an ERP system actually is, how it works, and whether your organisation needs one, this guide covers the fundamentals in plain English. No jargon, no sales pitch, just a clear explanation of what ERP means, what it does, and how to decide whether it belongs in your business.",
+    overviewHeading: 'Understanding <span class="text-primary">ERP Systems</span>',
+    overviewSubtext:
+      "An ERP system connects your entire business into a single platform. Instead of running finance on one tool, inventory on another, and sales on a third, everything lives in one place. That means less manual work, fewer errors, and a real time view of how your organisation is performing. For businesses in the UK and beyond, understanding ERP systems is the first step toward making smarter technology decisions.",
+    tipsHeading: '8 Things You Need to Know About <span class="text-primary">ERP</span>',
+
+    takeaways: [
+      "ERP connects every department into one system",
+      "Cloud ERP is now the standard for most businesses",
+      "The right time to invest is before your workarounds break",
+      "Implementation success depends on planning, not software",
+      "AI and automation are shaping the future of ERP",
+    ],
+
+    tips: [
+      {
+        number: "01",
+        icon: BookOpen,
+        title: "What ERP Actually Stands For and Does",
+        content:
+          "ERP stands for enterprise resource planning. At its core, an ERP system is software that connects all the key functions of a business into a single, unified platform. That includes finance, inventory, human resources, customer relationship management, procurement, and more. Instead of each department running its own spreadsheets or standalone tools, an ERP system gives everyone access to the same data in real time. When a sales order is placed, the inventory updates automatically. When an invoice is raised, the financial reports reflect it instantly. The result is less duplication, fewer errors, and a business that runs on facts rather than guesswork.",
+        actions: [
+          "Think of ERP as the central nervous system connecting every part of your business",
+          "It replaces disconnected spreadsheets and standalone tools with a single source of truth",
+          "Every department sees the same real time data, which eliminates conflicting reports",
+        ],
+      },
+      {
+        number: "02",
+        icon: Layers,
+        title: "The Core Modules of an ERP System",
+        content:
+          "Most ERP systems are built around a set of core modules, each handling a specific business function. Financial management is the foundation, covering general ledger, accounts payable and receivable, budgeting, and reporting. Inventory management tracks stock levels, warehousing, and fulfilment in real time. CRM manages customer interactions, sales pipelines, and marketing campaigns. Procurement handles supplier relationships, purchase orders, and spend analysis. Human resources covers payroll, employee records, and workforce planning. Not every business needs every module on day one, but the strength of an ERP system is that these modules share a single database, so data flows naturally between them without manual transfers or integration headaches.",
+        actions: [
+          "Finance, inventory, CRM, procurement, and HR are the most common starting modules",
+          "Modules share a single database so data flows between them automatically",
+          "Start with the modules you need now and add others as your business grows",
+        ],
+      },
+      {
+        number: "03",
+        icon: Cloud,
+        title: "Cloud vs On-Premise ERP",
+        content:
+          "One of the biggest decisions when choosing an ERP system is whether to go cloud based or on-premise. On-premise ERP means the software runs on servers you own and manage in house. It gives you full control over the infrastructure but comes with significant upfront capital expenditure, ongoing maintenance costs, and the need for dedicated IT staff. Cloud ERP, by contrast, is hosted by the vendor and accessed through a web browser. You pay a subscription rather than a large upfront sum, updates are handled automatically, and your team can access the system from anywhere. For the vast majority of businesses today, cloud ERP is the modern standard. It is faster to deploy, easier to scale, and removes the burden of managing hardware.",
+        actions: [
+          "Cloud ERP has lower upfront costs, automatic updates, and anywhere access",
+          "On-premise gives more control but requires significant IT investment and maintenance",
+          "For most UK businesses, cloud is the practical and cost effective choice",
+        ],
+      },
+      {
+        number: "04",
+        icon: AlertTriangle,
+        title: "Signs Your Business Needs an ERP System",
+        content:
+          "Not every business needs an ERP system, but there are clear warning signs that you have outgrown your current setup. If your team maintains critical data across multiple disconnected spreadsheets, you are carrying risk. If people are manually re-keying information between systems, you are wasting time and inviting errors. If month end close takes days instead of hours, your processes are not scaling. Other signals include an inability to get real time reports on inventory, cash flow, or sales performance, and the feeling that your finance team spends more time gathering data than analysing it.",
+        actions: [
+          "Multiple spreadsheets holding critical business data is a strong warning sign",
+          "If month end takes days rather than hours, your processes are not scaling",
+          "When your team works around systems rather than with them, it is time to act",
+        ],
+      },
+      {
+        number: "05",
+        icon: BarChart3,
+        title: "How ERP Improves Decision Making",
+        content:
+          "One of the most compelling benefits of an ERP system is the impact it has on decision making. When all your business data lives in one place, you get a single source of truth that everyone can rely on. Dashboards provide real time visibility across departments, so leaders can see exactly how the business is performing at any moment. Cross-department reporting becomes straightforward because the data is already connected. Finance can see the impact of a sales campaign instantly. Operations can plan production based on live order data. The result is faster, more confident decisions based on current information rather than last month's spreadsheet.",
+        actions: [
+          "Real time dashboards replace monthly reports with live performance data",
+          "A single source of truth means no more conflicting numbers between departments",
+          "Faster access to accurate data means faster, more confident business decisions",
+        ],
+      },
+      {
+        number: "06",
+        icon: AlertTriangle,
+        title: "Common ERP Implementation Mistakes",
+        content:
+          "Choosing the right ERP system is only half the battle. How you implement it matters just as much. The most common mistake is insufficient planning: jumping straight into configuration without properly mapping your requirements and processes. Skipping user training is another frequent error that leads to low adoption and frustrated teams. Many organisations also try to replicate their old processes exactly in the new system, which defeats the purpose of moving to a modern platform. Lack of executive sponsorship leaves the project without the authority to make decisions and resolve conflicts. A typical mid-market implementation takes three to six months. Plan accordingly.",
+        actions: [
+          "Map your processes and requirements thoroughly before any configuration begins",
+          "Invest in proper training for end users, not just administrators",
+          "Use the implementation as an opportunity to improve processes, not just digitise old ones",
+        ],
+      },
+      {
+        number: "07",
+        icon: Compass,
+        title: "How to Evaluate ERP Vendors",
+        content:
+          "Evaluating ERP vendors can feel overwhelming, but focusing on a few key areas will help you make a sound decision. Start with scalability: will this system grow with your business over the next five to ten years? Check industry fit by asking for references from organisations similar to yours in size and sector. Look at the partner ecosystem because your implementation partner matters as much as the software itself. Understand the total cost of ownership, not just the licence fee, but implementation, training, integrations, and ongoing support. Be wary of vendors who cannot give you a straight answer about where their platform is weakest for your use case.",
+        actions: [
+          "Assess scalability, industry fit, and partner ecosystem before anything else",
+          "Get a total cost of ownership breakdown including implementation and ongoing support",
+          "Ask vendors directly where their platform falls short for businesses like yours",
+        ],
+      },
+      {
+        number: "08",
+        icon: Cpu,
+        title: "The Future of ERP: AI and Automation",
+        content:
+          "ERP systems are evolving rapidly, and artificial intelligence is at the centre of that evolution. Modern ERP platforms are integrating AI powered forecasting that analyses historical data and market signals to predict demand, cash flow, and resource needs with increasing accuracy. Automated workflows handle repetitive tasks like invoice matching, expense categorisation, and order routing without human intervention. Predictive analytics surface insights before problems occur, flagging anomalies in spending patterns or inventory levels that would take a human analyst hours to spot. For organisations evaluating ERP systems in the UK today, choosing a platform with a strong AI roadmap is a strategic advantage that will compound over time.",
+        actions: [
+          "AI powered forecasting is replacing manual planning with data driven predictions",
+          "Automated workflows eliminate repetitive tasks and reduce human error",
+          "Choose a platform with a credible AI roadmap to stay ahead as the technology matures",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Target,
+        title: "Start With Your Biggest Pain Point",
+        content:
+          "Do not try to solve everything at once. Identify the single biggest problem in your current setup and make that the focus of your evaluation. A clear, focused starting point leads to faster results and builds momentum for the rest of the rollout.",
+      },
+      {
+        icon: Users,
+        title: "Involve End Users Early",
+        content:
+          "The people who will use the ERP system daily often spot practical issues that leadership overlooks. Include them in demos and evaluation sessions from the start to improve adoption and avoid surprises after go live.",
+      },
+      {
+        icon: Database,
+        title: "Plan for Data Migration From Day One",
+        content:
+          "Moving data from your existing systems into a new ERP is one of the most underestimated tasks in any implementation. Start assessing your data quality early and budget time for cleansing, mapping, and testing well before go live.",
+      },
+      {
+        icon: GraduationCap,
+        title: "Budget for Training, Not Just Software",
+        content:
+          "The best ERP system in the world will fail if your team does not know how to use it. Allocate meaningful budget for training during implementation and ongoing learning after go live. The return on that investment is immediate.",
+      },
+    ],
+
+    conclusion:
+      "An ERP system is not just software. It is the foundation that connects your people, processes, and data into a single, coherent operation. The businesses that invest the time to understand what ERP is, evaluate their options honestly, and implement with discipline are the ones that turn technology into a genuine competitive advantage.",
+
+    disclaimer:
+      "This guide is for informational purposes. Every business has unique requirements. Contact ERP Experts for a candid conversation about whether an ERP system is the right move for your organisation.",
+  },
+
+  "best-erp-for-manufacturers": {
+    title: "Best ERP for Manufacturers",
+    subtitle: "What to Look for and Why NetSuite Stands Out",
+    cardDescription:
+      "A practical guide to choosing the best ERP for manufacturers. What capabilities matter most, where generic systems fall short, and how the right platform transforms production, inventory, and profitability.",
+    metaDescription:
+      "Discover the best ERP for manufacturers. Key capabilities to look for in a manufacturing ERP, from production planning to costing, and why NetSuite stands out.",
+    keywords:
+      "best ERP for manufacturers, best ERP for manufacturing, ERP for manufacturers, manufacturing ERP, NetSuite for manufacturing, ERP for production, manufacturing software",
+    date: "Mar 2026",
+    readTime: "7 min read",
+    type: "Guide",
+    layoutVariant: 8,
+    heroImage: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1400&q=80",
+
+    intro:
+      "Choosing the best ERP for manufacturers is one of the most impactful decisions a production business will make. The right manufacturing ERP connects your shop floor to your back office, gives you real time visibility across every operation, and scales as your business grows. The wrong one forces your team into workarounds, creates data silos between departments, and leaves you flying blind on costs and capacity. This guide walks through the capabilities that matter most when evaluating ERP for manufacturers, and explains why purpose built platforms like NetSuite consistently outperform generic alternatives in manufacturing environments.",
+
+    overviewHeading: 'Choosing the Right <span class="text-primary">Manufacturing ERP</span>',
+    overviewSubtext:
+      "Manufacturing is not a bolt on module. It is a fundamentally different way of operating, with unique demands around production scheduling, material planning, quality control, and costing. The best ERP for manufacturers handles these natively rather than forcing you to adapt a system designed for distribution or services. Here is what that looks like in practice.",
+    tipsHeading: '6 Capabilities That Define the <span class="text-primary">Best Manufacturing ERP</span>',
+    comparison: {
+      heading: 'Manufacturing ERP Options <span class="text-primary">Compared</span>',
+      intro:
+        "This matrix helps you separate platforms that are built for production teams from stacks that rely on workarounds and manual control.",
+      columns: ["NetSuite for Manufacturing", "Generic ERP", "Spreadsheet Stack"],
+      rows: [
+        {
+          criterion: "Production planning and scheduling",
+          values: [
+            {
+              text: "Native work orders, routings, and capacity planning in one system.",
+              tone: "positive",
+            },
+            {
+              text: "Basic planning is available, but advanced scheduling often needs custom work.",
+              tone: "warning",
+            },
+            {
+              text: "Manual planning with no live capacity view.",
+              tone: "negative",
+            },
+          ],
+        },
+        {
+          criterion: "Inventory and material visibility",
+          values: [
+            {
+              text: "Live visibility across raw materials, WIP, and finished goods.",
+              tone: "positive",
+            },
+            {
+              text: "Core stock control works, but manufacturing context can be limited.",
+              tone: "warning",
+            },
+            {
+              text: "No reliable single view and high reconciliation effort.",
+              tone: "negative",
+            },
+          ],
+        },
+        {
+          criterion: "Quality and traceability",
+          values: [
+            {
+              text: "Supports lot and serial traceability with controlled workflows.",
+              tone: "positive",
+            },
+            {
+              text: "Partial traceability, often dependent on add-ons.",
+              tone: "warning",
+            },
+            {
+              text: "Traceability depends on manual discipline and is hard to audit.",
+              tone: "negative",
+            },
+          ],
+        },
+        {
+          criterion: "Costing and margin control",
+          values: [
+            {
+              text: "Standard and actual costing with variance reporting and landed costs.",
+              tone: "positive",
+            },
+            {
+              text: "Financial costing exists, but manufacturing variance analysis is weaker.",
+              tone: "warning",
+            },
+            {
+              text: "Costing is fragmented and margin analysis is usually delayed.",
+              tone: "negative",
+            },
+          ],
+        },
+        {
+          criterion: "Scalability for multi-site growth",
+          values: [
+            {
+              text: "Designed for multi-location operations without replacing the platform.",
+              tone: "positive",
+            },
+            {
+              text: "Scales with caveats and rising customisation overhead.",
+              tone: "warning",
+            },
+            {
+              text: "Becomes fragile quickly as volume and complexity increase.",
+              tone: "negative",
+            },
+          ],
+        },
+        {
+          criterion: "Time-to-value",
+          values: [
+            {
+              text: "Faster value once scoped well, because core manufacturing processes are native.",
+              tone: "positive",
+            },
+            {
+              text: "Moderate value speed with more implementation dependency.",
+              tone: "warning",
+            },
+            {
+              text: "Slow, people-dependent delivery with high risk of rework.",
+              tone: "negative",
+            },
+          ],
+        },
+      ],
+      recommendationTitle: "Selection Focus",
+      recommendationText:
+        "Prioritise native manufacturing capability over feature volume. The safest path is the platform that reduces manual work and gives finance and operations one reliable view from day one.",
+    },
+
+    takeaways: [
+      "Generic ERPs miss critical manufacturing requirements",
+      "Production planning and scheduling drive efficiency",
+      "Real time inventory visibility eliminates guesswork",
+      "Quality and traceability are non negotiable",
+      "True cost of goods manufactured determines profitability",
+    ],
+
+    tips: [
+      {
+        number: "01",
+        icon: Factory,
+        title: "Why Manufacturers Need Purpose Built ERP",
+        content:
+          "Most ERP systems were designed with distribution, retail, or professional services in mind. They can handle invoices and general ledger entries, but they struggle with the realities of manufacturing: multi level bills of materials, production routing, work order management, and shop floor tracking. When a manufacturer tries to run on a generic ERP, the gaps get filled with spreadsheets, manual processes, and third party tools that never quite integrate properly. A purpose built manufacturing ERP handles these requirements natively. Production scheduling, material requirements planning, and shop floor data capture are part of the core platform rather than afterthoughts bolted on through customisation.",
+        actions: [
+          "Audit your current system for manufacturing specific gaps being filled by spreadsheets or workarounds",
+          "List the processes that are unique to your production environment and check whether your ERP handles them natively",
+          "Evaluate whether your existing platform was designed for manufacturing or adapted from another industry",
+        ],
+      },
+      {
+        number: "02",
+        icon: Settings,
+        title: "Production Planning and Scheduling",
+        content:
+          "Effective production planning is the backbone of any manufacturing operation. The best ERP for manufacturers supports work order management, production routing, capacity planning, and material requirements planning out of the box. It should handle the way you actually manufacture, whether that is make to stock, make to order, engineer to order, or a combination of all three. A strong manufacturing ERP lets you plan production runs against available capacity, sequence work orders intelligently, and adjust schedules dynamically when priorities shift or materials are delayed. NetSuite for manufacturing provides these capabilities within a single platform, giving planners a clear view of what needs to be produced, when, and with what resources.",
+        actions: [
+          "Map your current production planning process and identify where manual intervention slows things down",
+          "Check whether your ERP supports your manufacturing modes: make to stock, make to order, and engineer to order",
+          "Look for dynamic scheduling that adjusts automatically when priorities or material availability change",
+        ],
+      },
+      {
+        number: "03",
+        icon: Package,
+        title: "Inventory and Supply Chain Management",
+        content:
+          "Manufacturers carry more inventory complexity than almost any other type of business. Raw materials, work in progress, sub assemblies, and finished goods all need tracking across multiple locations, often with different units of measure and lead times. The best manufacturing ERP provides real time stock visibility across every warehouse and production area, automates reorder points based on demand forecasts, and manages supplier relationships from purchase order through to goods receipt. Demand planning capabilities help you balance stock levels against production schedules, reducing both excess inventory and stockouts.",
+        actions: [
+          "Ensure the ERP supports multi location inventory with real time visibility across all sites",
+          "Look for demand planning tools that connect sales forecasts directly to procurement and production",
+          "Evaluate supplier management features including automated purchase orders, lead time tracking, and vendor scorecards",
+        ],
+      },
+      {
+        number: "04",
+        icon: Shield,
+        title: "Quality Control and Compliance",
+        content:
+          "For manufacturers, quality is not optional. Whether you are working to ISO standards, managing FDA compliance, or simply meeting customer specifications, your ERP needs to support lot tracking, serial number management, inspection workflows, and full traceability from raw material to finished product. A manufacturing ERP with built in quality management lets you define inspection points at goods receipt, during production, and before dispatch. Failed inspections can automatically quarantine stock, trigger non conformance reports, and notify the right people. Lot and serial tracking means you can trace any finished product back to its component materials, supplier batches, and production runs.",
+        actions: [
+          "Check whether the ERP supports lot and serial number tracking throughout the entire production process",
+          "Look for configurable inspection workflows at receiving, in process, and final stages",
+          "Verify that traceability reporting can trace a finished product back to specific raw material batches and suppliers",
+        ],
+      },
+      {
+        number: "05",
+        icon: Eye,
+        title: "Real Time Shop Floor Visibility",
+        content:
+          "Too many manufacturers still rely on paper based tracking, whiteboard schedules, and end of day data entry to understand what is happening on the shop floor. By the time that information reaches management, it is already out of date. The best ERP for manufacturers provides live production dashboards that show work in progress status, machine utilisation, labour hours, and output rates in real time. Operators can log production data directly from the shop floor, eliminating the lag between what is happening and what the system shows. Moving from paper to digital shop floor tracking is one of the highest impact changes a manufacturer can make.",
+        actions: [
+          "Identify where your current shop floor reporting relies on paper, whiteboards, or end of day data entry",
+          "Look for ERP solutions with shop floor data capture that operators can use directly at their workstations",
+          "Prioritise real time dashboards that show WIP status, machine utilisation, and output against plan",
+        ],
+      },
+      {
+        number: "06",
+        icon: BarChart3,
+        title: "Costing and Margin Analysis",
+        content:
+          "Understanding your true cost of goods manufactured is fundamental to profitability, yet it is one of the areas where generic ERPs fall shortest. A proper manufacturing ERP supports standard costing, actual costing, and variance analysis so you can see exactly where your margins are being made or lost. Landed cost tracking captures freight, duties, and handling charges against specific items, giving you an accurate picture of what each product truly costs to produce and deliver. Margin analysis by product, customer, and channel helps you make informed decisions about pricing, product mix, and customer profitability. This is where the best ERP for manufacturers pays for itself.",
+        actions: [
+          "Evaluate whether the ERP supports both standard and actual costing with variance reporting",
+          "Check for landed cost tracking that captures all costs associated with getting materials to your facility",
+          "Look for margin analysis capabilities that break down profitability by product, customer, and sales channel",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Cpu,
+        title: "Integrate with Machinery and IoT",
+        content:
+          "Ensure the ERP can connect with your existing machinery, PLCs, and IoT devices. Automated data capture from the production line eliminates manual entry and gives you a far more accurate picture of what is actually happening on the shop floor.",
+      },
+      {
+        icon: Globe,
+        title: "Plan for Multi Site from the Start",
+        content:
+          "Even if you only have one facility today, choose an ERP that handles multi site operations natively. Retrofitting multi location support later is painful and expensive, and manufacturers that grow often do so by adding production capacity in new locations.",
+      },
+      {
+        icon: Layers,
+        title: "Look for Industry Specific Modules",
+        content:
+          "Avoid forcing a generic system to fit manufacturing workflows through heavy customisation. Purpose built industry modules deliver better results, lower maintenance costs, and faster time to value than bespoke workarounds ever will.",
+      },
+      {
+        icon: GraduationCap,
+        title: "Train Shop Floor Staff, Not Just Office Users",
+        content:
+          "The best manufacturing ERP in the world fails if your operators do not use it properly. Invest in hands on training for shop floor teams, not just finance and management. Adoption on the production line is where the real operational gains are made.",
+      },
+    ],
+
+    conclusion:
+      "The best ERP for manufacturers is one that was designed for manufacturing from the ground up, not a generic platform with production bolted on as an afterthought. From production planning and inventory management to quality control and costing, the capabilities covered in this guide are what separate a system that genuinely supports manufacturing operations from one that creates more problems than it solves. If you are evaluating ERP for your manufacturing business, start with the capabilities that matter most to your operation and work from there.",
+
+    disclaimer:
+      "Every manufacturing business is different. Contact ERP Experts for a candid conversation about whether NetSuite is the right fit for your production environment.",
+  },
+
+  "benefits-of-erp-systems": {
+    title: "Top Benefits of ERP Systems",
+    subtitle: "How the Right ERP Transforms Operations, Finance, and Growth",
+    cardDescription:
+      "A practical guide to the top benefits of ERP systems. Each advantage is backed by a concrete business outcome so you can build the case for change with confidence.",
+    metaDescription:
+      "Discover the top benefits of ERP systems. Eight key advantages of ERP backed by real business outcomes, from financial visibility to measurable ROI.",
+    keywords:
+      "benefits of ERP systems, top benefits of ERP, advantages of ERP, ERP system benefits, ERP benefits for business, why implement ERP",
+    date: "Mar 2026",
+    readTime: "7 min read",
+    type: "Guide",
+    layoutVariant: 7,
+    heroImage: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1400&q=80",
+
+    intro:
+      "Businesses invest in ERP systems for one reason: to run better. But the phrase 'benefits of ERP systems' gets thrown around so loosely that it can be hard to separate genuine advantages from marketing fluff. This guide takes a different approach. We walk through eight core benefits of ERP, each backed by a concrete business outcome you can measure. Whether you are building a business case for your board or simply trying to understand what an ERP system can realistically deliver, this is the practical overview you need.",
+
+    overviewHeading: 'Why ERP System Benefits <span class="text-primary">Actually Matter</span>',
+    overviewSubtext:
+      "The real advantages of ERP are not about technology for its own sake. They are about eliminating the operational friction that slows growing businesses down. When every department works from the same data, when manual processes are automated, and when decisions are based on real time insight rather than gut feeling, the impact compounds across the entire organisation.",
+    tipsHeading: '8 Key Benefits of <span class="text-primary">ERP Systems</span>',
+
+    takeaways: [
+      "Eliminate data silos with a single source of truth",
+      "Make financial decisions based on real time data, not month end reports",
+      "Automate repetitive tasks and free up staff for higher value work",
+      "Scale into new markets, entities, and currencies without replacing systems",
+      "Achieve measurable ROI through reduced errors and faster processes",
+    ],
+
+    tips: [
+      {
+        number: "01",
+        icon: Database,
+        title: "A Single Source of Truth Across Departments",
+        content:
+          "One of the most fundamental benefits of ERP systems is unifying your data. Without an ERP, finance maintains its own spreadsheets, sales tracks opportunities in a separate CRM, operations manages inventory in yet another tool, and the warehouse runs off a different system entirely. The result is conflicting reports, version control nightmares, and hours wasted reconciling numbers that should match but never quite do. An ERP brings all of this into a single platform. When a sales order is created, inventory is updated instantly. When goods are dispatched, finance sees the revenue impact in real time.",
+        actions: [
+          "Audit how many separate systems and spreadsheets your teams currently rely on",
+          "Identify the reports that regularly conflict between departments",
+          "Map the data that needs to flow between functions so nothing falls through the cracks",
+        ],
+      },
+      {
+        number: "02",
+        icon: LineChart,
+        title: "Real Time Financial Visibility",
+        content:
+          "Waiting until month end to understand your financial position is like driving with your eyes closed and checking the road every thirty seconds. One of the most valued advantages of ERP is the ability to see live dashboards showing profit and loss, cash flow, outstanding receivables, and budget performance at any moment. CFOs and finance teams can make decisions today rather than reacting to numbers that are already weeks old. When cash flow is tight or a large order lands unexpectedly, having instant visibility means you can respond with confidence instead of scrambling for data.",
+        actions: [
+          "Identify the financial metrics your leadership team checks most frequently",
+          "Calculate how long it currently takes to produce a reliable P&L or cash flow snapshot",
+          "Define the dashboards each role needs so reporting is relevant, not overwhelming",
+        ],
+      },
+      {
+        number: "03",
+        icon: Zap,
+        title: "Streamlined Operations and Automation",
+        content:
+          "Every hour your team spends manually keying invoices, chasing purchase order approvals, or copying data between systems is an hour they are not spending on work that actually grows the business. ERP system benefits include automating these repetitive, low value tasks so they happen reliably in the background. Invoice generation, approval workflows, payment reminders, stock reorder triggers, and intercompany transactions can all be automated within the system. The immediate gains are speed and accuracy, fewer manual errors and faster cycle times. The longer term gain is capacity.",
+        actions: [
+          "List the manual, repetitive tasks each department performs weekly",
+          "Prioritise automation by volume and error rate to get the biggest wins first",
+          "Set measurable targets for time saved so you can track the impact over the first six months",
+        ],
+      },
+      {
+        number: "04",
+        icon: TrendingUp,
+        title: "Better Forecasting and Planning",
+        content:
+          "Good forecasting depends on good data, and good data depends on having it all in one place. An ERP system gives you a rich foundation of historical transactions, seasonal patterns, and real time pipeline data that makes demand planning, resource allocation, and budget forecasting significantly more accurate. Instead of building forecasts from disconnected spreadsheets where half the inputs are out of date, you are working from a single, continuously updated dataset. The result is smarter purchasing decisions, less excess stock, fewer stockouts, and budgets that reflect reality rather than hope.",
+        actions: [
+          "Compare your current forecast accuracy against actual outcomes for the past twelve months",
+          "Identify the data gaps that make your current planning unreliable",
+          "Start building rolling forecasts rather than relying solely on annual budgets",
+        ],
+      },
+      {
+        number: "05",
+        icon: Shield,
+        title: "Regulatory Compliance Made Simple",
+        content:
+          "Compliance is not optional, but it does not have to be painful. One of the underappreciated benefits of ERP systems is the way they handle regulatory requirements as a built in part of the process rather than something bolted on after the fact. Automated tax calculations, full audit trails, role based access controls, and structured data governance all sit within the platform. For UK businesses, this means HMRC Making Tax Digital requirements, VAT calculations, and financial reporting standards are handled within the system. The compliance burden reduces significantly, and your audit preparation goes from weeks of scrambling to a straightforward report export.",
+        actions: [
+          "List the regulations your business must comply with and how you currently manage each one",
+          "Identify where compliance processes are manual, error prone, or dependent on individual knowledge",
+          "Evaluate how your current systems handle audit trail requirements and data retention",
+        ],
+      },
+      {
+        number: "06",
+        icon: Layers,
+        title: "Scalability Without Growing Pains",
+        content:
+          "Growing businesses often hit a wall where their systems simply cannot keep up. Adding a new entity means setting up a separate set of books. Expanding into a new country means bolting on another tool for local tax compliance. Doubling your headcount means the old system grinds to a halt. A well implemented ERP removes these ceilings. You can add new subsidiaries, currencies, countries, and users without ripping out your infrastructure or starting again. The platform is designed to scale with you, which means your technology investment today continues to deliver value as you grow.",
+        actions: [
+          "Map your growth plan for the next three to five years and identify where current systems will break",
+          "Assess whether adding a new entity or currency today would require a new tool or a painful workaround",
+          "Consider the cost of migrating to a scalable platform now versus the cost of doing it under pressure later",
+        ],
+      },
+      {
+        number: "07",
+        icon: Handshake,
+        title: "Improved Customer Experience",
+        content:
+          "Your customers never see your ERP system, but they feel the effects of it every day. When your back office runs smoothly, orders are processed faster, delivery estimates are accurate, stock availability is reliable, and customer queries are resolved quickly because your team has all the information at their fingertips. Without an ERP, a simple question like 'where is my order?' can involve three people checking two different systems before anyone can give an answer. With a unified platform, that answer is available in seconds.",
+        actions: [
+          "Track how long it takes your team to answer common customer queries today",
+          "Identify the internal bottlenecks that cause delays in order processing and fulfilment",
+          "Measure customer satisfaction before and after implementation to quantify the improvement",
+        ],
+      },
+      {
+        number: "08",
+        icon: PiggyBank,
+        title: "Measurable ROI and Cost Reduction",
+        content:
+          "Every ERP investment should deliver a return you can measure. The ERP system benefits that contribute most directly to ROI include reduced manual data entry, fewer order errors, lower inventory carrying costs, faster financial close, and the elimination of redundant software subscriptions. Businesses that track these metrics typically see meaningful savings within the first twelve to eighteen months of going live. The key is defining your baseline metrics before implementation so you can prove the impact with real numbers, not assumptions.",
+        actions: [
+          "Document your current costs for manual processes, error correction, and redundant tool subscriptions",
+          "Define baseline metrics for order accuracy, close time, and inventory carrying costs before go live",
+          "Set a twelve month review point to measure actual ROI against your original business case",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: BarChart3,
+        title: "Measure Your Baseline First",
+        content:
+          "Start tracking your current process times, error rates, and costs before implementation. Without a baseline, you cannot prove ROI or demonstrate the value of the investment.",
+      },
+      {
+        icon: Users,
+        title: "Involve Department Heads Early",
+        content:
+          "The benefits of ERP systems are felt across every function. Involving department heads from the start ensures the system serves the whole business, not just one team's priorities.",
+      },
+      {
+        icon: Cloud,
+        title: "Consider Cloud First",
+        content:
+          "Cloud ERP platforms offer lower upfront costs, faster deployment, automatic updates, and the flexibility to scale without managing infrastructure.",
+      },
+      {
+        icon: Rocket,
+        title: "Plan a Phased Rollout",
+        content:
+          "A phased approach reduces risk and lets your team build confidence with the system before adding complexity. Start with core financials and expand from there.",
+      },
+    ],
+
+    conclusion:
+      "The benefits of ERP systems are real and measurable, but they do not happen automatically. The organisations that get the most value are the ones that go in with clear objectives, involve their people from the start, and treat implementation as a business transformation rather than a technology project. If you are evaluating whether an ERP is right for your business, focus on the specific outcomes that matter to you and build your business case around those.",
+
+    disclaimer:
+      "Every organisation is different. Contact ERP Experts for an honest conversation about which ERP system benefits are most relevant to your business and how to realise them.",
+  },
+
+  "value-of-investing-in-a-netsuite-partner": {
+    title: "The Value of Investing in a NetSuite Partner",
+    subtitle: "Why the Right Partner Makes the Difference Between Adoption and Friction",
+    cardDescription:
+      "A practical guide to choosing a NetSuite partner that protects your budget, timeline, and outcomes. Learn what good looks like and where projects usually fail.",
+    metaDescription:
+      "Understand the value of a NetSuite partner, what services matter most, and how to choose a partner that delivers measurable outcomes.",
+    keywords:
+      "NetSuite partner, value of NetSuite partner, why work with a NetSuite partner, NetSuite implementation partner UK",
+    date: "Mar 2026",
+    readTime: "7 min read",
+    type: "Guide",
+    layoutVariant: 8,
+    heroImage: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1400&q=80",
+
+    intro:
+      "Most NetSuite projects do not fail because the software is wrong. They fail because delivery is rushed, ownership is unclear, or decisions are made without enough operational context. This is where the right implementation partner adds value. A strong NetSuite partner turns a software project into a business change program with clear scope, accountable delivery, and measurable outcomes. This guide explains what that value looks like in practice and how to evaluate whether a partner is genuinely capable before you commit.",
+
+    overviewHeading: 'What a Good NetSuite <span class="text-primary">Partner</span> Actually Does',
+    overviewSubtext:
+      "A partner should do more than configure fields and workflows. They should reduce project risk, challenge weak assumptions, and help your team build confidence in the system. The best partners protect your timeline and budget while making sure the solution works in the real world, not just in demos.",
+    tipsHeading: '6 Ways the Right Partner Creates <span class="text-primary">Real Value</span>',
+    comparison: {
+      heading: 'NetSuite Partner Quality <span class="text-primary">Compared</span>',
+      intro:
+        "Use this matrix to distinguish a delivery-focused partner from a partner that mostly sells implementation hours.",
+      columns: ["High-performing partner", "Weak partner", "Business impact"],
+      rows: [
+        {
+          criterion: "Discovery and scope quality",
+          values: [
+            {
+              text: "Defines measurable outcomes, scope boundaries, and release phases early.",
+              tone: "positive",
+            },
+            {
+              text: "Starts build quickly with limited discovery or outcome definition.",
+              tone: "negative",
+            },
+            {
+              text: "Clear scope controls cost and reduces late-stage rework.",
+              tone: "neutral",
+            },
+          ],
+        },
+        {
+          criterion: "Data and integration risk management",
+          values: [
+            {
+              text: "Front-loads data quality checks and staged integration testing.",
+              tone: "positive",
+            },
+            {
+              text: "Leaves migration and interfaces until late delivery phases.",
+              tone: "negative",
+            },
+            {
+              text: "Early risk handling protects timeline and go-live stability.",
+              tone: "neutral",
+            },
+          ],
+        },
+        {
+          criterion: "Process design depth",
+          values: [
+            {
+              text: "Challenges weak workflows and redesigns processes with end users.",
+              tone: "positive",
+            },
+            {
+              text: "Replicates old workflows with minimal process challenge.",
+              tone: "warning",
+            },
+            {
+              text: "Better process design drives adoption and long-term ROI.",
+              tone: "neutral",
+            },
+          ],
+        },
+        {
+          criterion: "Training and adoption model",
+          values: [
+            {
+              text: "Delivers role-based training and practical hypercare support.",
+              tone: "positive",
+            },
+            {
+              text: "Relies on generic training with limited post go-live cover.",
+              tone: "negative",
+            },
+            {
+              text: "Practical training lowers support load and raises confidence.",
+              tone: "neutral",
+            },
+          ],
+        },
+        {
+          criterion: "Governance and accountability",
+          values: [
+            {
+              text: "Defines decision owners, escalation paths, and weekly risk reporting.",
+              tone: "positive",
+            },
+            {
+              text: "Runs ad-hoc governance with inconsistent reporting and ownership.",
+              tone: "negative",
+            },
+            {
+              text: "Strong governance keeps delivery moving and decisions visible.",
+              tone: "neutral",
+            },
+          ],
+        },
+        {
+          criterion: "Post go-live optimisation",
+          values: [
+            {
+              text: "Maintains roadmap reviews and targeted optimisation sprints.",
+              tone: "positive",
+            },
+            {
+              text: "Disengages after go-live and leaves improvements unmanaged.",
+              tone: "warning",
+            },
+            {
+              text: "Continuous optimisation compounds value over time.",
+              tone: "neutral",
+            },
+          ],
+        },
+      ],
+      recommendationTitle: "Partner Selection Rule",
+      recommendationText:
+        "Choose the partner that can explain trade-offs clearly and show how scope links to measurable outcomes. If they cannot do that before contract, they will not do it during delivery.",
+    },
+
+    takeaways: [
+      "Good partners reduce project risk before build starts",
+      "Process design matters more than feature checklists",
+      "Training and adoption drive long-term ROI",
+      "Governance and accountability prevent scope drift",
+      "Partner quality directly impacts time-to-value",
+    ],
+
+    tips: [
+      {
+        number: "01",
+        icon: Target,
+        title: "Translate Business Goals Into Delivery Scope",
+        content:
+          "A strong partner starts with outcomes, not system screens. They map your commercial priorities to an implementation scope that can actually be delivered. That means documenting what must be live at go-live, what can wait, and which requests are out of scope. This reduces confusion and protects the project from late-stage scope creep.",
+        actions: [
+          "Define three business outcomes the project must deliver in year one",
+          "Separate must-have requirements from nice-to-have requests",
+          "Ask the partner to show how each requirement maps to measurable outcomes",
+        ],
+      },
+      {
+        number: "02",
+        icon: AlertTriangle,
+        title: "De-Risk Data Migration and Integrations Early",
+        content:
+          "Data and integrations are where projects often slip. Experienced partners front-load discovery around data quality, mapping rules, and integration dependencies, then test these paths repeatedly before go-live. This prevents surprises in the final weeks and avoids emergency decisions under pressure.",
+        actions: [
+          "Audit your source data quality before configuration starts",
+          "List all integration points and agree ownership for each",
+          "Ask for a staged migration test plan with clear sign-off gates",
+        ],
+      },
+      {
+        number: "03",
+        icon: Settings,
+        title: "Design Processes, Not Just Configuration",
+        content:
+          "A weak partner will replicate your current pain points in a new system. A good partner will redesign workflows so teams can work faster with less manual intervention. That includes approval chains, exception handling, reporting logic, and handoffs between departments.",
+        actions: [
+          "Identify where your current process has delays or duplicate effort",
+          "Require process walkthroughs before final build decisions",
+          "Validate process design with end users before sign-off",
+        ],
+      },
+      {
+        number: "04",
+        icon: GraduationCap,
+        title: "Build Adoption Through Practical Training",
+        content:
+          "System value appears only when teams use it correctly. The best partners deliver role-based training and real scenarios, not generic slide decks. They also include hypercare support after go-live so issues are resolved quickly while confidence is still forming.",
+        actions: [
+          "Insist on role-specific training plans for each team",
+          "Use real business scenarios during UAT and training",
+          "Plan hypercare support for the first 4 to 6 weeks post go-live",
+        ],
+      },
+      {
+        number: "05",
+        icon: BarChart3,
+        title: "Create Governance and Accountability",
+        content:
+          "Clear governance is one of the most underrated benefits of working with an experienced partner. Good partners establish decision owners, escalation paths, and weekly reporting so blockers are handled quickly. This keeps momentum and prevents silent drift in scope or timelines.",
+        actions: [
+          "Agree a decision-making framework before delivery begins",
+          "Set weekly reporting with risks, decisions, and next actions",
+          "Define escalation paths for timeline or budget risks",
+        ],
+      },
+      {
+        number: "06",
+        icon: Handshake,
+        title: "Support Continuous Improvement After Go-Live",
+        content:
+          "NetSuite is not a one-time project. A capable partner helps you evolve the platform as your business changes, through optimisation sprints, reporting improvements, and quarterly roadmap reviews. This is where long-term ROI compounds.",
+        actions: [
+          "Schedule a 90-day post go-live optimisation review",
+          "Prioritise improvements based on operational pain and ROI",
+          "Maintain a quarterly roadmap to keep delivery focused",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Search,
+        title: "Ask for Relevant References",
+        content:
+          "Request references from businesses with similar complexity and sector needs. Generic references are less useful than comparable delivery contexts.",
+      },
+      {
+        icon: Users,
+        title: "Check Delivery Team Continuity",
+        content:
+          "Confirm who will actually deliver the project, not just who runs sales. Continuity across discovery, build, and go-live reduces handover risk.",
+      },
+      {
+        icon: Shield,
+        title: "Pressure-Test the Plan",
+        content:
+          "Ask what assumptions could break the timeline and how those risks are managed. Good partners surface risk early rather than hiding it.",
+      },
+      {
+        icon: Wrench,
+        title: "Start With a Focused Phase 1",
+        content:
+          "A scoped first phase builds confidence and protects time-to-value. Add complexity in planned releases once the foundation is stable.",
+      },
+    ],
+
+    conclusion:
+      "The value of a NetSuite partner is not theoretical. It appears in cleaner scope, lower delivery risk, stronger adoption, and faster business outcomes. Choosing the right partner is often the highest-leverage decision in the whole program.",
+
+    disclaimer:
+      "Project outcomes depend on scope, internal capacity, and delivery discipline. Speak to ERP Experts for a practical assessment of your implementation approach.",
+  },
+
+  "10-signs-of-a-poor-netsuite-implementation": {
+    title: "10 Signs of a Poor NetSuite Implementation",
+    subtitle: "How to Spot Problems Early and Recover Before They Become Expensive",
+    cardDescription:
+      "A practical checklist of warning signs that your NetSuite implementation is drifting. Includes recovery actions to stabilise delivery and rebuild confidence.",
+    metaDescription:
+      "Discover 10 signs of a poor NetSuite implementation and practical steps to recover project momentum, adoption, and ROI.",
+    keywords:
+      "poor NetSuite implementation, failed NetSuite implementation, NetSuite implementation problems, NetSuite project recovery",
+    date: "Mar 2026",
+    readTime: "8 min read",
+    type: "Guide",
+    layoutVariant: 7,
+    heroImage: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1400&q=80",
+
+    intro:
+      "Most implementation problems are visible long before go-live. The challenge is that teams normalise warning signs until timelines slip, trust drops, and rework becomes unavoidable. This guide highlights ten common indicators of a weak NetSuite implementation and the actions that help you recover quickly.",
+
+    overviewHeading: 'Spot the Warning Signs <span class="text-primary">Before Go-Live</span>',
+    overviewSubtext:
+      "A healthy implementation has clear scope, reliable governance, and confident users. If any of those pillars are weak, risk compounds quickly. Use this checklist to identify drift early and course-correct while options are still open.",
+    tipsHeading: '10 Signs Your NetSuite Project Needs <span class="text-primary">Intervention</span>',
+
+    takeaways: [
+      "Project drift shows up first in unclear scope and weak decisions",
+      "Late testing is one of the biggest delivery risks",
+      "Low user confidence predicts poor adoption after go-live",
+      "Data and integration issues must be addressed early",
+      "Recovery is possible with focused governance and scope discipline",
+    ],
+
+    tips: [
+      {
+        number: "01",
+        icon: AlertTriangle,
+        title: "Scope Changes Every Week",
+        content:
+          "If priorities keep shifting without formal impact analysis, the project is drifting. Constant change leads to rework, conflicting expectations, and unstable timelines.",
+        actions: [
+          "Freeze scope for current sprint cycles",
+          "Route all changes through formal impact review",
+          "Track scope decisions in one shared log",
+        ],
+      },
+      {
+        number: "02",
+        icon: Clock,
+        title: "No Clear Decision Owners",
+        content:
+          "When decisions are delayed or revisited repeatedly, delivery slows and teams lose confidence. Ambiguity around ownership creates bottlenecks at every stage.",
+        actions: [
+          "Assign an owner for each workstream",
+          "Set decision SLAs for open issues",
+          "Escalate unresolved blockers within 48 hours",
+        ],
+      },
+      {
+        number: "03",
+        icon: Database,
+        title: "Data Migration Is Still Unclear Late in the Project",
+        content:
+          "If mapping rules and cleansing standards are still being debated near go-live, risk is high. Data problems are rarely fixed quickly at the end.",
+        actions: [
+          "Lock migration mappings and data ownership now",
+          "Run full-volume test loads before cutover",
+          "Document reconciliation checks for each key dataset",
+        ],
+      },
+      {
+        number: "04",
+        icon: Link2,
+        title: "Integration Testing Keeps Slipping",
+        content:
+          "Delays in integration testing often hide dependency issues. If interfaces are not tested in realistic end-to-end flows, go-live stability is at risk.",
+        actions: [
+          "Prioritise critical integration paths first",
+          "Use production-like test data where possible",
+          "Track integration defects by business impact",
+        ],
+      },
+      {
+        number: "05",
+        icon: Users,
+        title: "End Users Are Not Involved in UAT",
+        content:
+          "If only project team members test the system, adoption will suffer. Real users surface practical workflow issues that technical teams can miss.",
+        actions: [
+          "Include role-based user groups in UAT sessions",
+          "Capture usability feedback separately from defect logs",
+          "Require business sign-off by process owner",
+        ],
+      },
+      {
+        number: "06",
+        icon: BarChart3,
+        title: "Reporting Requirements Are an Afterthought",
+        content:
+          "Teams quickly lose trust if core reports are missing or unreliable at go-live. Reporting should be designed as part of process design, not bolted on later.",
+        actions: [
+          "Define must-have reports before final build",
+          "Validate report outputs with finance and operations",
+          "Set data definitions for shared KPI terms",
+        ],
+      },
+      {
+        number: "07",
+        icon: Wrench,
+        title: "Too Many Workarounds Are Being Added",
+        content:
+          "Workarounds can be useful short term, but too many indicate a design mismatch. Over time they create complexity and reduce confidence in the platform.",
+        actions: [
+          "Review all current workarounds and classify by risk",
+          "Replace high-risk workarounds with native process design",
+          "Set expiry dates for temporary exceptions",
+        ],
+      },
+      {
+        number: "08",
+        icon: Shield,
+        title: "Testing Is Compressed Into the Final Weeks",
+        content:
+          "Compressed testing nearly always means avoidable production issues. A stable go-live depends on repeated cycles across process, data, and integrations.",
+        actions: [
+          "Run phased testing gates with clear exit criteria",
+          "Protect testing time from scope expansion",
+          "Track defect closure trends weekly",
+        ],
+      },
+      {
+        number: "09",
+        icon: GraduationCap,
+        title: "Training Is Generic or Too Late",
+        content:
+          "Users need practical, role-specific training close to go-live. Generic sessions create uncertainty and increase support load in the first weeks.",
+        actions: [
+          "Deliver role-based training with real scenarios",
+          "Publish quick-reference guides per process",
+          "Plan floor support for the first month after launch",
+        ],
+      },
+      {
+        number: "10",
+        icon: Target,
+        title: "No Post Go-Live Optimisation Plan",
+        content:
+          "Without a structured improvement plan, unresolved issues linger and adoption stalls. Go-live should be the start of optimisation, not the end of delivery.",
+        actions: [
+          "Schedule 30, 60, and 90-day optimisation reviews",
+          "Prioritise fixes by operational impact and ROI",
+          "Maintain a transparent backlog owned by business leads",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Eye,
+        title: "Use a Health Check Mid-Project",
+        content:
+          "An independent delivery health check can surface hidden risk early and give stakeholders a clear recovery plan before deadlines are compromised.",
+      },
+      {
+        icon: Handshake,
+        title: "Reset Expectations Transparently",
+        content:
+          "If recovery is needed, communicate clearly on scope, dates, and decisions. Honest resets create trust faster than optimistic estimates.",
+      },
+      {
+        icon: Settings,
+        title: "Simplify Before You Optimise",
+        content:
+          "Stabilise core processes first. Avoid adding complexity until the team can run day-to-day operations reliably in NetSuite.",
+      },
+      {
+        icon: TrendingUp,
+        title: "Measure Adoption Weekly",
+        content:
+          "Track usage, defects, and turnaround times each week after go-live. Early visibility helps you fix friction before it becomes resistance.",
+      },
+    ],
+
+    conclusion:
+      "A poor NetSuite implementation is not a dead end, but recovery requires discipline. Clear ownership, controlled scope, stronger testing, and practical training are usually enough to restore momentum and protect long-term ROI.",
+
+    disclaimer:
+      "Every project context is different. Contact ERP Experts if you want a practical implementation health check and recovery plan.",
+  },
+
+  "how-to-choose-the-right-erp-consultant": {
+    title: "How to Choose the Right ERP Consultant",
+    subtitle: "A Practical Buyer’s Guide for Selecting a Delivery Partner You Can Trust",
+    cardDescription:
+      "A practical framework for choosing an ERP consultant, including capability checks, delivery red flags, and the questions to ask before you sign.",
+    metaDescription:
+      "Learn how to choose the right ERP consultant with practical evaluation criteria, risk checks, and interview questions for UK businesses.",
+    keywords:
+      "how to choose an ERP consultant, ERP consultant, ERP consulting, NetSuite consultant, choosing ERP implementation partner",
+    date: "Mar 2026",
+    readTime: "9 min read",
+    type: "Guide",
+    layoutVariant: 6,
+    heroImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1400&q=80",
+
+    intro:
+      "Choosing an ERP consultant is one of the highest-impact decisions in your programme. Software matters, but delivery quality, governance discipline, and change leadership are what decide whether implementation creates value or avoidable rework.",
+
+    challengeHeading:
+      'Avoiding the Wrong <span class="text-primary">Partner Fit</span>',
+    challengeText:
+      "Most consultancy proposals sound strong in a sales deck. Real quality shows up in delivery behaviour: clear trade-offs, honest risk reporting, and accountable decision-making. Weak partners overpromise, under-scope risk, and hand avoidable rework back to your team.",
+
+    overviewHeading:
+      'Choose a Consultant Who Can <span class="text-primary">Deliver Outcomes</span>',
+    overviewSubtext:
+      "Strong consultants do more than configure NetSuite. They challenge low-value scope, align stakeholders around outcomes, and keep delivery momentum from discovery through post go-live optimisation.",
+    tipsHeading:
+      '6 Checks Before You <span class="text-primary">Commit</span>',
+
+    takeaways: [
+      "Evaluate delivery method, not just certifications",
+      "References must match your business complexity",
+      "Data and integration planning should start early",
+      "Clear governance is a non-negotiable quality marker",
+      "Post go-live support is part of implementation quality",
+    ],
+
+    tips: [
+      {
+        number: "01",
+        icon: Search,
+        title: "Check Their Delivery Method in Detail",
+        content:
+          "Ask to see how the consultant runs discovery, design, build, testing, and go-live support. Strong teams explain their delivery stages clearly, with decision gates and expected outputs for each phase.",
+        actions: [
+          "Request a real project plan, not a summary deck",
+          "Confirm how scope change is controlled after sign-off",
+          "Define who logs, owns, and escalates delivery risks",
+        ],
+      },
+      {
+        number: "02",
+        icon: Target,
+        title: "Validate Sector and Complexity Fit",
+        content:
+          "Consultants can be technically capable but still a poor fit for your operating model. Prioritise teams with proven experience in your sector, transaction complexity, and reporting requirements.",
+        actions: [
+          "Ask for two references with matching business models",
+          "Review business outcomes, not just go-live dates",
+          "Probe how complexity was handled under pressure",
+        ],
+      },
+      {
+        number: "03",
+        icon: Users,
+        title: "Assess the Actual Team, Not Just Sales",
+        content:
+          "You need clarity on who will do the work day to day. A strong consultancy introduces delivery leads early and explains each person’s role through implementation and aftercare.",
+        actions: [
+          "Meet the solution lead and project manager before signing",
+          "Confirm team continuity from discovery to hypercare",
+          "Check named escalation cover and consultant capacity",
+        ],
+      },
+      {
+        number: "04",
+        icon: Handshake,
+        title: "Test How They Communicate Trade-Offs",
+        content:
+          "High-quality consultants are candid about constraints. They should explain what to phase, what to simplify, and what will add risk if included too early.",
+        actions: [
+          "Present a hard scenario and ask how they would scope it",
+          "Check whether they challenge low-value complexity",
+          "Ask for examples where they advised a client to de-scope",
+        ],
+      },
+      {
+        number: "05",
+        icon: BarChart3,
+        title: "Require Governance and Reporting Discipline",
+        content:
+          "Implementation success depends on transparency. Weekly reporting on risks, decisions, blockers, and next actions should be standard from week one.",
+        actions: [
+          "Agree reporting cadence and format before signature",
+          "Define named decision owners across both teams",
+          "Set clear escalation paths for quality and timeline risk",
+        ],
+      },
+      {
+        number: "06",
+        icon: Shield,
+        title: "Confirm Post Go-Live Support and Optimisation",
+        content:
+          "The best consultants stay engaged after launch to stabilise adoption and improve performance. If post go-live support is vague, long-term value is at risk.",
+        actions: [
+          "Ask for a 30/60/90 day support and optimisation plan",
+          "Confirm SLA expectations for early post go-live issues",
+          "Agree named ownership for the improvement backlog",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Eye,
+        title: "Look for Early Red Flags",
+        content:
+          "If timelines are guaranteed before discovery or risk conversations are avoided, that is a warning sign.",
+      },
+      {
+        icon: Clock,
+        title: "Prioritise Pace With Control",
+        content:
+          "Fast is useful only when decisions, testing, and governance remain disciplined.",
+      },
+      {
+        icon: Layers,
+        title: "Start With a Focused Phase 1",
+        content:
+          "A scoped first release reduces risk and helps your team build confidence before expanding complexity.",
+      },
+      {
+        icon: Wrench,
+        title: "Measure Value, Not Activity",
+        content:
+          "Track business outcomes such as close speed, reporting accuracy, and process lead times, not only task completion.",
+      },
+    ],
+
+    conclusion:
+      "The right ERP consultant protects outcomes, not just dates. Use a structured evaluation process, ask difficult questions early, and choose the team that demonstrates delivery discipline as clearly as technical capability.",
+
+    disclaimer:
+      "Consultant suitability depends on your goals, constraints, and internal capacity. Speak to ERP Experts for a practical evaluation of delivery options for your business.",
+  },
 };
 
 // Type icons for listing page badges
@@ -1186,10 +2849,37 @@ const cardImages = {
     "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&q=80",
   "spreadsheet-hidden-costs":
     "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80",
+  "accounts-receivable-reports":
+    "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80",
+  "csv-import-errors":
+    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=80",
+  "maximise-profits":
+    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80",
+  "what-is-an-erp-system":
+    "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80",
+  "best-erp-for-manufacturers":
+    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80",
+  "benefits-of-erp-systems":
+    "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80",
+  "value-of-investing-in-a-netsuite-partner":
+    "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&q=80",
+  "10-signs-of-a-poor-netsuite-implementation":
+    "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80",
+  "how-to-choose-the-right-erp-consultant":
+    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80",
 };
 
 // Ordered list of article slugs for the listing page
 const articleOrder = [
+  "what-is-an-erp-system",
+  "best-erp-for-manufacturers",
+  "benefits-of-erp-systems",
+  "value-of-investing-in-a-netsuite-partner",
+  "10-signs-of-a-poor-netsuite-implementation",
+  "how-to-choose-the-right-erp-consultant",
+  "maximise-profits",
+  "csv-import-errors",
+  "accounts-receivable-reports",
   "netsuite-for-small-businesses",
   "is-netsuite-right-for-your-business",
   "future-of-work-generative-ai",

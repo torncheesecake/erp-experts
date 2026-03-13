@@ -3,14 +3,33 @@
  * Data imported from src/data/articles.js — single source of truth.
  */
 
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, FileText, Clock } from "lucide-react";
+import { ArrowRight, FileText, Clock, Search } from "lucide-react";
 import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
 import { articlesList, typeIcons } from "../../data/articles";
-import LeadMagnet from "../../components/ui/LeadMagnet";
 
 export default function Resources() {
+  const [activeFilter, setActiveFilter] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const types = useMemo(() => {
+    const unique = [...new Set(articlesList.map((a) => a.type))];
+    return ["All", ...unique];
+  }, []);
+
+  const filtered = useMemo(() => {
+    return articlesList.filter((a) => {
+      const matchesType = activeFilter === "All" || a.type === activeFilter;
+      const matchesSearch =
+        !searchQuery ||
+        a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        a.desc.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesType && matchesSearch;
+    });
+  }, [activeFilter, searchQuery]);
+
   return (
     <main id="main-content">
       <SEO
@@ -99,13 +118,54 @@ export default function Resources() {
         </div>
       </section>
 
+      {/* Filter Bar */}
+      <section className="border-t border-(--color-text)/10" style={{ padding: "1.5rem 0" }}>
+        <div className="container">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-lg">
+            {/* Left: filters + count */}
+            <div className="flex flex-wrap items-center gap-md">
+              {types.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setActiveFilter(type)}
+                  className="px-4 py-2 rounded-full text-sm font-bold transition-all"
+                  style={{
+                    backgroundColor: activeFilter === type ? "var(--color-primary)" : "transparent",
+                    color: activeFilter === type ? "white" : "var(--color-text-muted)",
+                    border: activeFilter === type ? "1px solid var(--color-primary)" : "1px solid rgba(0,0,0,0.1)",
+                  }}
+                >
+                  {type}
+                </button>
+              ))}
+              <span className="text-sm text-muted ml-sm">
+                {filtered.length} {filtered.length === 1 ? "resource" : "resources"}
+              </span>
+            </div>
+
+            {/* Right: search */}
+            <div className="relative w-full md:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+              <input
+                type="text"
+                placeholder="Search resources..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 rounded-full text-sm border border-(--color-text)/10 focus:border-primary focus:outline-none transition-colors"
+                style={{ backgroundColor: "transparent" }}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Resources Grid */}
-      <section className="section-padding-lg border-t border-(--color-text)/10">
+      <section className="section-padding-lg">
         <div className="container">
           <div className="grid md:grid-cols-2 gap-lg md:gap-xl">
-            {articlesList.map((resource, i) => (
+            {filtered.map((resource, i) => (
               <Link
-                key={i}
+                key={resource.slug}
                 to={`/resources/${resource.slug}`}
                 className="group block overflow-hidden rounded-2xl md:rounded-3xl border border-(--color-text)/15 hover:border-(--color-primary)/30 transition-all hover:-translate-y-2 hover:shadow-lg"
               >
@@ -150,18 +210,30 @@ export default function Resources() {
                     {resource.title}
                   </h4>
                   <p className="text-base text-muted mb-md">{resource.desc}</p>
-                  <span className="inline-flex items-center gap-sm text-primary font-bold group-hover:gap-md transition-all">
-                    Read more
-                    <ArrowRight className="w-4 h-4" />
+                  <span
+                    className="inline-flex items-center gap-sm px-4 py-2 rounded-full text-sm font-bold transition-all group-hover:scale-105"
+                    style={{ backgroundColor: "var(--color-primary)", color: "white" }}
+                  >
+                    Read more <ArrowRight className="w-4 h-4" />
                   </span>
                 </div>
               </Link>
             ))}
           </div>
+
+          {filtered.length === 0 && (
+            <div className="text-center py-2xl">
+              <p className="text-lg text-muted">No resources match your search.</p>
+              <button
+                onClick={() => { setSearchQuery(""); setActiveFilter("All"); }}
+                className="text-primary font-bold mt-md hover:underline"
+              >
+                Clear filters
+              </button>
+            </div>
+          )}
         </div>
       </section>
-
-      <LeadMagnet trackingName="resources_guide" trackingPage="resources" />
 
       {/* CTA */}
       <section className="section-padding-lg border-t border-(--color-text)/10">

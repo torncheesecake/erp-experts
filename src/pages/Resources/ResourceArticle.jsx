@@ -1,14 +1,34 @@
 /**
  * ERP Experts Resource Article Page
  * Data imported from src/data/articles.js — single source of truth.
+ *
+ * Layout variants 1–3: rendered inline (existing articles).
+ * Layout variants 4–8: dispatched to dedicated layout components.
  */
 
 import { useParams, Link } from "react-router-dom";
-import { ArrowRight, Clock, Calendar, BookOpen, Lightbulb, CheckCircle } from "lucide-react";
+import { ArrowRight, Clock, Calendar, BookOpen, CheckCircle } from "lucide-react";
 import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
 import Breadcrumb from "../../components/ui/Breadcrumb";
 import { articles } from "../../data/articles";
+
+import LayoutAlternating from "./layouts/LayoutAlternating";
+import LayoutCards from "./layouts/LayoutCards";
+import LayoutEditorial from "./layouts/LayoutEditorial";
+import LayoutTimeline from "./layouts/LayoutTimeline";
+import LayoutComparison from "./layouts/LayoutComparison";
+import SharedGuideBar from "./layouts/SharedGuideBar";
+import SharedBonusTips from "./layouts/SharedBonusTips";
+import SharedFeatureIcon from "./layouts/SharedFeatureIcon";
+
+const layoutComponents = {
+  4: LayoutAlternating,
+  5: LayoutCards,
+  6: LayoutEditorial,
+  7: LayoutTimeline,
+  8: LayoutComparison,
+};
 
 export default function ResourceArticle() {
   const { slug } = useParams();
@@ -29,13 +49,30 @@ export default function ResourceArticle() {
     );
   }
 
+  // Variants 4–8 use dedicated layout components
+  const Layout = layoutComponents[article.layoutVariant];
+  if (Layout) {
+    return (
+      <main id="main-content" className="resource-article">
+        <SEO
+          title={article.title}
+          description={article.metaDescription || article.intro}
+          path={`/resources/${slug}`}
+          keywords={article.keywords || "NetSuite tips, NetSuite optimisation, ERP best practices, NetSuite performance"}
+        />
+        <Layout article={article} slug={slug} />
+      </main>
+    );
+  }
+
+  // Variants 1–3: legacy inline layout
   return (
-    <main id="main-content">
+    <main id="main-content" className="resource-article">
       <SEO
         title={article.title}
-        description={article.intro}
+        description={article.metaDescription || article.intro}
         path={`/resources/${slug}`}
-        keywords="NetSuite tips, NetSuite optimisation, ERP best practices, NetSuite performance"
+        keywords={article.keywords || "NetSuite tips, NetSuite optimisation, ERP best practices, NetSuite performance"}
       />
 
       {/* Hero - Similar to case studies */}
@@ -58,15 +95,20 @@ export default function ResourceArticle() {
           }}
         />
 
-        <div className="container relative z-20 pt-(--space-4xl)">
-          <Breadcrumb
-            items={[
-              { label: "Home", to: "/" },
-              { label: "Resources", to: "/resources" },
-              { label: article.title },
-            ]}
-            light
-          />
+        <div
+          className="container relative z-20"
+          style={{ paddingTop: "clamp(5.75rem, 15vw, 8.75rem)" }}
+        >
+          <div className="hidden sm:block">
+            <Breadcrumb
+              items={[
+                { label: "Home", to: "/" },
+                { label: "Resources", to: "/resources" },
+                { label: article.title },
+              ]}
+              light
+            />
+          </div>
 
           <div style={{ maxWidth: "800px" }}>
             {/* Meta badges */}
@@ -86,58 +128,25 @@ export default function ResourceArticle() {
             </div>
 
             <h1
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading text-white"
-              style={{ marginBottom: "var(--space-lg)", textWrap: "balance" }}
+              className="resource-hero-title font-heading text-white"
+              style={{ marginBottom: "var(--space-lg)" }}
             >
               {article.title}
             </h1>
-            <p className="text-xl md:text-2xl text-white/70 leading-relaxed max-w-2xl">
+            <p className="resource-hero-subtitle">
               {article.subtitle}
             </p>
           </div>
         </div>
       </section>
 
-      {/* In This Guide Bar */}
-      <section style={{ backgroundColor: "rgba(230, 48, 125, 0.03)", padding: "2rem 0" }}>
-        <div className="container">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-lg">
-            <div className="flex items-center gap-md">
-              <div
-                style={{
-                  width: "20px",
-                  height: "17px",
-                  clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                  backgroundColor: "var(--color-primary)",
-                }}
-              />
-              <span className="text-base font-bold text-primary">In This Guide</span>
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-lg md:gap-xl">
-              <div className="flex items-center gap-sm">
-                <div className="icon-box icon-box-sm rounded-lg bg-primary/10">
-                  <Lightbulb className="w-4 h-4 text-primary" />
-                </div>
-                <span className="text-base font-medium">{article.tips.length} Key Tips</span>
-              </div>
-              <div className="flex items-center gap-sm">
-                <div className="icon-box icon-box-sm rounded-lg bg-primary/10">
-                  <CheckCircle className="w-4 h-4 text-primary" />
-                </div>
-                <span className="text-base font-medium">
-                  {article.bonusTips.length} Bonus Strategies
-                </span>
-              </div>
-              <div className="flex items-center gap-sm">
-                <div className="icon-box icon-box-sm rounded-lg bg-primary/10">
-                  <Clock className="w-4 h-4 text-primary" />
-                </div>
-                <span className="text-base font-medium">{article.readTime}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <SharedGuideBar
+        tipsCount={article.tips.length}
+        tipsLabel="Key Tips"
+        bonusCount={article.bonusTips.length}
+        bonusLabel="Bonus Strategies"
+        readTime={article.readTime}
+      />
 
       {/* Intro + Key Takeaways */}
       <section className="section-padding-lg">
@@ -147,8 +156,8 @@ export default function ResourceArticle() {
             <div>
               <p className="text-label text-primary mb-md">Overview</p>
               <h2 className="mb-lg" dangerouslySetInnerHTML={{ __html: article.overviewHeading }} />
-              <p className="text-lg text-muted leading-relaxed mb-lg">{article.intro}</p>
-              <p className="text-lg text-muted leading-relaxed">{article.overviewSubtext}</p>
+              <p className="resource-lead mb-lg">{article.intro}</p>
+              <p className="resource-body">{article.overviewSubtext}</p>
             </div>
 
             {/* Key takeaways box */}
@@ -156,17 +165,9 @@ export default function ResourceArticle() {
               <p className="text-label text-primary mb-lg">Quick Wins</p>
               <ul className="flex flex-col gap-md">
                 {article.takeaways.map((takeaway, i) => (
-                  <li key={i} className="flex items-center gap-md">
-                    <div
-                      className="shrink-0"
-                      style={{
-                        width: "24px",
-                        height: "21px",
-                        clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                        backgroundColor: "var(--color-primary)",
-                      }}
-                    />
-                    <span className="text-base font-medium">{takeaway}</span>
+                  <li key={i} className="flex items-start gap-md">
+                    <SharedFeatureIcon icon={CheckCircle} size="sm" className="shrink-0 mt-0.5" />
+                    <span className="resource-body">{takeaway}</span>
                   </li>
                 ))}
               </ul>
@@ -202,7 +203,7 @@ export default function ResourceArticle() {
                           'Why This <span class="text-primary">Matters</span>',
                       }}
                     />
-                    <p className="text-lg text-muted leading-relaxed">
+                    <p className="resource-body">
                       {article.challengeText || article.overviewSubtext}
                     </p>
                   </div>
@@ -214,7 +215,7 @@ export default function ResourceArticle() {
                     <h3 className="mb-lg">
                       There's a <span className="text-primary">Better Way</span>
                     </h3>
-                    <p className="text-lg text-muted leading-relaxed">
+                    <p className="resource-body">
                       A comprehensive ERP system provides a single source of truth for business
                       data, accessible anytime, anywhere. Moving data to an ERP system ensures that
                       reporting is streamlined, data quality is improved, and insights are instantly
@@ -255,25 +256,25 @@ export default function ResourceArticle() {
                   <span className="text-4xl md:text-5xl font-heading font-bold text-primary/15">
                     {tip.number}
                   </span>
-                  <div className="icon-box icon-box-lg rounded-xl bg-primary/10 md:mt-sm">
-                    <tip.icon className="w-7 h-7 text-primary" />
-                  </div>
+                  <SharedFeatureIcon icon={tip.icon} size="lg" className="md:mt-sm" />
                 </div>
 
                 {/* Content */}
                 <div>
                   <h4 className="mb-md">{tip.title}</h4>
-                  <p className="text-lg text-muted leading-relaxed">{tip.content}</p>
+                  <p className="resource-body">{tip.content}</p>
                 </div>
 
                 {/* Actions */}
                 <div className="bg-(--color-text)/[0.02] rounded-xl p-lg">
-                  <p className="text-base font-bold text-primary mb-md">Action Items</p>
+                  <p className="text-base font-bold text-primary mb-md">At a Glance</p>
                   <ul className="flex flex-col gap-md">
                     {tip.actions.map((action, j) => (
                       <li key={j} className="flex items-start gap-sm">
-                        <CheckCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                        <span className="text-base text-muted">{action}</span>
+                        <span className="shrink-0 w-7 h-7 rounded-full bg-primary/10 text-primary font-heading font-bold text-sm flex items-center justify-center">
+                          {j + 1}
+                        </span>
+                        <span className="resource-body">{action}</span>
                       </li>
                     ))}
                   </ul>
@@ -328,41 +329,16 @@ export default function ResourceArticle() {
             <div>
               <p className="text-label text-primary mb-md">The Bottom Line</p>
               <h3 className="mb-lg">
-                Ready to <span className="text-primary">Take Action</span>?
+                Bringing It All <span className="text-primary">Together</span>
               </h3>
-              <p className="text-xl text-muted leading-relaxed mb-lg">{article.conclusion}</p>
-              <p className="text-sm text-muted/50 italic">{article.disclaimer}</p>
+              <p className="resource-lead mb-lg">{article.conclusion}</p>
+              {article.disclaimer && <p className="resource-fine italic">{article.disclaimer}</p>}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Bonus Tips */}
-      <section
-        className="section-padding-lg"
-        style={{ backgroundColor: "rgba(230, 48, 125, 0.03)" }}
-      >
-        <div className="container">
-          <div className="text-center mb-2xl">
-            <p className="text-label text-primary mb-md">Bonus Tips</p>
-            <h3>
-              Keep the Momentum <span className="text-primary">Going</span>
-            </h3>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-lg">
-            {article.bonusTips.map((tip, i) => (
-              <div key={i} className="bg-white rounded-xl p-lg">
-                <div className="icon-box icon-box-md rounded-xl bg-primary/10 mb-md">
-                  <tip.icon className="w-5 h-5 text-primary" />
-                </div>
-                <h5 style={{ marginBottom: "var(--space-sm)" }}>{tip.title}</h5>
-                <p className="text-sm text-muted">{tip.content}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <SharedBonusTips article={article} />
 
       {/* CTA */}
       <section className="section-padding-lg">
