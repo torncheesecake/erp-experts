@@ -111,8 +111,8 @@ function ImportWorkflowHero({ article }) {
           />
         </div>
 
-        <div className="grid lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.78fr)] gap-xl lg:gap-2xl items-end">
-          <div style={{ maxWidth: "960px" }}>
+        <div className="grid lg:grid-cols-[minmax(0,1.42fr)_minmax(320px,0.68fr)] gap-xl lg:gap-[3.5rem] items-end">
+          <div style={{ maxWidth: "none" }}>
             <div className="flex flex-wrap items-center gap-md mb-lg">
               <span className="inline-flex items-center gap-sm px-4 py-2 rounded-full bg-primary text-white text-sm font-bold">
                 <BookOpen className="w-4 h-4" />
@@ -135,19 +135,19 @@ function ImportWorkflowHero({ article }) {
               className="resource-hero-title font-heading text-white"
               style={{
                 marginBottom: "var(--space-lg)",
-                maxWidth: "13.6ch",
+                maxWidth: "760px",
                 fontSize: "clamp(2.5rem, 3.45vw + 0.95rem, 5.15rem)",
                 lineHeight: 0.96,
               }}
             >
               {article.title}
             </h1>
-            <p className="resource-hero-subtitle text-white/76 max-w-[40ch]">
+            <p className="resource-hero-subtitle text-white/76 max-w-[48ch]">
               {article.subtitle}
             </p>
           </div>
 
-          <div className="lg:justify-self-end w-full max-w-[460px]">
+          <div className="lg:justify-self-end w-full max-w-[430px]">
             <div className="rounded-[2rem] border border-white/12 bg-white/[0.06] backdrop-blur-sm shadow-[0_24px_80px_rgba(0,0,0,0.34)] overflow-hidden">
               <div className="flex items-center justify-between border-b border-white/10 px-lg py-md">
                 <div className="flex items-center gap-sm">
