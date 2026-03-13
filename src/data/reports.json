@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-27",
+  "lastUpdated": "2026-03-13",
   "actions": [
     {
       "id": "404-redirects",
@@ -31,61 +31,169 @@
     }
   ],
   "ga4Period": {
-    "start": "2026-01-01",
-    "end": "2026-02-27",
-    "totalSessions": 320,
-    "totalPageViews": 1648,
-    "totalUsers": 199,
-    "totalNewUsers": 127,
-    "totalCTAClicks": 130,
-    "totalLeads": 0,
+    "start": "2026-02-13",
+    "end": "2026-03-12",
+    "totalSessions": 169,
+    "totalPageViews": 447,
+    "totalUsers": 77,
+    "totalNewUsers": 68,
+    "totalCTAClicks": 38,
+    "totalLeads": 37,
     "countries": [
-      { "country": "United Kingdom", "users": 73 },
-      { "country": "India", "users": 9 },
-      { "country": "China", "users": 3 },
-      { "country": "Iraq", "users": 3 },
-      { "country": "Philippines", "users": 3 },
-      { "country": "Switzerland", "users": 3 },
-      { "country": "United States", "users": 3 },
-      { "country": "Netherlands", "users": 2 },
-      { "country": "Other", "users": 8 }
+      {
+        "country": "United Kingdom",
+        "users": 49
+      },
+      {
+        "country": "United States",
+        "users": 15
+      },
+      {
+        "country": "India",
+        "users": 5
+      },
+      {
+        "country": "China",
+        "users": 3
+      },
+      {
+        "country": "Netherlands",
+        "users": 2
+      },
+      {
+        "country": "Ireland",
+        "users": 1
+      },
+      {
+        "country": "Philippines",
+        "users": 1
+      },
+      {
+        "country": "Thailand",
+        "users": 1
+      }
     ],
     "trafficSources": {
-      "organic": 147,
-      "direct": 157,
-      "referral": 13,
+      "organic": 58,
+      "direct": 107,
+      "referral": 1,
       "social": 1,
-      "unassigned": 8
+      "unassigned": 4
     },
     "funnel": [
-      { "step": "Landed on site", "users": 92, "description": "First-time visitors who arrived on the site" },
-      { "step": "Viewed homepage", "users": 82, "description": "Visited the homepage" },
-      { "step": "Browsed a second page", "users": 71, "description": "Viewed at least one other page (case studies, support, etc.)" },
-      { "step": "Visited contact page", "users": 19, "description": "Made it to the contact page" },
-      { "step": "Clicked a CTA", "users": 17, "description": "Clicked a call-to-action button" },
-      { "step": "Became a lead", "users": 0, "description": "Submitted a form or enquiry" }
+      {
+        "step": "Landed on site",
+        "users": 77,
+        "description": "Active users who visited the site"
+      },
+      {
+        "step": "Viewed homepage",
+        "users": 47,
+        "description": "Viewed the homepage"
+      },
+      {
+        "step": "Visited contact page",
+        "users": 4,
+        "description": "Viewed the contact page"
+      },
+      {
+        "step": "Clicked a CTA",
+        "users": 7,
+        "description": "Triggered a CTA click event"
+      },
+      {
+        "step": "Became a lead",
+        "users": 4,
+        "description": "Triggered a generate_lead event"
+      }
     ],
     "pageBounceRates": [
-      { "page": "Homepage", "bounceRate": 32.4 },
-      { "page": "Case Studies", "bounceRate": 7.5 },
-      { "page": "Support", "bounceRate": 0 },
-      { "page": "Implementation", "bounceRate": 5.9 },
-      { "page": "About Us", "bounceRate": 9.5 },
-      { "page": "Contact", "bounceRate": 2.9 },
-      { "page": "Resources", "bounceRate": 7.7 },
-      { "page": "eco2solar Case Study", "bounceRate": 23.5 },
-      { "page": "What is NetSuite?", "bounceRate": 0 }
+      {
+        "page": "Homepage",
+        "bounceRate": 43.2
+      },
+      {
+        "page": "About Us",
+        "bounceRate": 4.5
+      },
+      {
+        "page": "Resources",
+        "bounceRate": 21.1
+      },
+      {
+        "page": "Contact",
+        "bounceRate": 7.1
+      },
+      {
+        "page": "Case Studies",
+        "bounceRate": 17.6
+      },
+      {
+        "page": "Implementation",
+        "bounceRate": 0.0
+      },
+      {
+        "page": "Support",
+        "bounceRate": 21.4
+      },
+      {
+        "page": "One Score to Rule Them All",
+        "bounceRate": 44.4
+      },
+      {
+        "page": "Partners",
+        "bounceRate": 0.0
+      }
     ],
     "ctaBreakdown": [
-      { "button": "Navbar — Let's Talk", "clicks": 30 },
-      { "button": "Hero — Start a Project", "clicks": 24 },
-      { "button": "Footer CTA — Book a Call", "clicks": 20 },
-      { "button": "Footer CTA — Start a Project", "clicks": 16 },
-      { "button": "Contact — Form Submit", "clicks": 17 },
-      { "button": "Implementation — Book a Call", "clicks": 10 },
-      { "button": "Support — Book a Call", "clicks": 7 },
-      { "button": "Journey — Get Started", "clicks": 5 },
-      { "button": "About — Start a Conversation", "clicks": 4 }
+      {
+        "button": "Navbar - Let's Talk",
+        "clicks": 13
+      },
+      {
+        "button": "Contact - Form Submit",
+        "clicks": 10
+      },
+      {
+        "button": "Project Delivery - NETscore CTA",
+        "clicks": 3
+      },
+      {
+        "button": "Footer - Start a Conversation",
+        "clicks": 2
+      },
+      {
+        "button": "Support - NETscore CTA",
+        "clicks": 2
+      },
+      {
+        "button": "Hero - Start a Project",
+        "clicks": 1
+      },
+      {
+        "button": "Implementation - What is NetSuite?",
+        "clicks": 1
+      },
+      {
+        "button": "Journey - Explore Support",
+        "clicks": 1
+      },
+      {
+        "button": "Partners - Case Studies",
+        "clicks": 1
+      },
+      {
+        "button": "Project Delivery - Guarantee CTA",
+        "clicks": 1
+      },
+      {
+        "button": "Project Delivery - Hero Audit CTA",
+        "clicks": 1
+      },
+      {
+        "button": "Resource Article - Contact",
+        "clicks": 1
+      }
     ],
     "navigationFlow": {
       "period": "2026-01-30 to 2026-02-26",
@@ -95,12 +203,30 @@
           "from": "Homepage",
           "visitors": 137,
           "nextPages": [
-            { "page": "About Us", "visitors": 17 },
-            { "page": "Case Studies", "visitors": 17 },
-            { "page": "Contact", "visitors": 15 },
-            { "page": "Implementation", "visitors": 13 },
-            { "page": "Resources", "visitors": 7 },
-            { "page": "Other pages", "visitors": 18 }
+            {
+              "page": "About Us",
+              "visitors": 17
+            },
+            {
+              "page": "Case Studies",
+              "visitors": 17
+            },
+            {
+              "page": "Contact",
+              "visitors": 15
+            },
+            {
+              "page": "Implementation",
+              "visitors": 13
+            },
+            {
+              "page": "Resources",
+              "visitors": 7
+            },
+            {
+              "page": "Other pages",
+              "visitors": 18
+            }
           ]
         },
         {
@@ -125,90 +251,312 @@
         }
       ],
       "step3": [
-        { "page": "Homepage (returned)", "visitors": 8 },
-        { "page": "eco2solar Case Study", "visitors": 4 },
-        { "page": "About Us", "visitors": 1 },
-        { "page": "Carallon Case Study", "visitors": 1 },
-        { "page": "Contact", "visitors": 1 },
-        { "page": "Other pages", "visitors": 2 }
+        {
+          "page": "Homepage (returned)",
+          "visitors": 8
+        },
+        {
+          "page": "eco2solar Case Study",
+          "visitors": 4
+        },
+        {
+          "page": "About Us",
+          "visitors": 1
+        },
+        {
+          "page": "Carallon Case Study",
+          "visitors": 1
+        },
+        {
+          "page": "Contact",
+          "visitors": 1
+        },
+        {
+          "page": "Other pages",
+          "visitors": 2
+        }
       ]
     },
     "pageEngagement": [
-      { "page": "Homepage", "avgTimeOnPage": 72, "views": 586, "sessions": 185, "bounceRate": 32.4 },
-      { "page": "Case Studies", "avgTimeOnPage": 97, "views": 168, "sessions": 40, "bounceRate": 7.5 },
-      { "page": "Support", "avgTimeOnPage": 165, "views": 112, "sessions": 30, "bounceRate": 0 },
-      { "page": "Implementation", "avgTimeOnPage": 138, "views": 94, "sessions": 34, "bounceRate": 5.9 },
-      { "page": "About Us", "avgTimeOnPage": 53, "views": 87, "sessions": 42, "bounceRate": 9.5 },
-      { "page": "Contact", "avgTimeOnPage": 55, "views": 82, "sessions": 34, "bounceRate": 2.9 },
-      { "page": "Resources", "avgTimeOnPage": 64, "views": 60, "sessions": 13, "bounceRate": 7.7 },
-      { "page": "eco2solar Case Study", "avgTimeOnPage": 16, "views": 44, "sessions": 17, "bounceRate": 23.5 },
-      { "page": "What is NetSuite?", "avgTimeOnPage": 48, "views": 14, "sessions": 10, "bounceRate": 0 }
+      {
+        "page": "Homepage",
+        "avgTimeOnPage": 142,
+        "views": 178,
+        "sessions": 111,
+        "activeUsers": 47,
+        "bounceRate": 43.2
+      },
+      {
+        "page": "About Us",
+        "avgTimeOnPage": 175,
+        "views": 48,
+        "sessions": 22,
+        "activeUsers": 15,
+        "bounceRate": 4.5
+      },
+      {
+        "page": "Resources",
+        "avgTimeOnPage": 126,
+        "views": 36,
+        "sessions": 19,
+        "activeUsers": 12,
+        "bounceRate": 21.1
+      },
+      {
+        "page": "Contact",
+        "avgTimeOnPage": 171,
+        "views": 35,
+        "sessions": 14,
+        "activeUsers": 4,
+        "bounceRate": 7.1
+      },
+      {
+        "page": "Case Studies",
+        "avgTimeOnPage": 41,
+        "views": 32,
+        "sessions": 17,
+        "activeUsers": 10,
+        "bounceRate": 17.6
+      },
+      {
+        "page": "Implementation",
+        "avgTimeOnPage": 60,
+        "views": 28,
+        "sessions": 11,
+        "activeUsers": 8,
+        "bounceRate": 0.0
+      },
+      {
+        "page": "Support",
+        "avgTimeOnPage": 63,
+        "views": 23,
+        "sessions": 14,
+        "activeUsers": 7,
+        "bounceRate": 21.4
+      },
+      {
+        "page": "One Score to Rule Them All",
+        "avgTimeOnPage": 88,
+        "views": 10,
+        "sessions": 9,
+        "activeUsers": 2,
+        "bounceRate": 44.4
+      },
+      {
+        "page": "Partners",
+        "avgTimeOnPage": 10,
+        "views": 8,
+        "sessions": 4,
+        "activeUsers": 2,
+        "bounceRate": 0.0
+      }
     ],
     "exitPages": [
-      { "page": "Homepage", "exitRate": 32.4, "exits": 60 },
-      { "page": "eco2solar Case Study", "exitRate": 23.5, "exits": 4 },
-      { "page": "Page Not Found (404)", "exitRate": 20.0, "exits": 2 },
-      { "page": "About Us", "exitRate": 9.5, "exits": 4 },
-      { "page": "Case Studies", "exitRate": 7.5, "exits": 3 },
-      { "page": "Resources", "exitRate": 7.7, "exits": 1 },
-      { "page": "Implementation", "exitRate": 5.9, "exits": 2 },
-      { "page": "Contact", "exitRate": 2.9, "exits": 1 },
-      { "page": "Support", "exitRate": 0, "exits": 0 }
+      {
+        "page": "One Score to Rule Them All",
+        "exitRate": 44.4,
+        "exits": 4
+      },
+      {
+        "page": "Homepage",
+        "exitRate": 43.2,
+        "exits": 48
+      },
+      {
+        "page": "Support",
+        "exitRate": 21.4,
+        "exits": 3
+      },
+      {
+        "page": "Resources",
+        "exitRate": 21.1,
+        "exits": 4
+      },
+      {
+        "page": "Case Studies",
+        "exitRate": 17.6,
+        "exits": 3
+      },
+      {
+        "page": "Contact",
+        "exitRate": 7.1,
+        "exits": 1
+      },
+      {
+        "page": "About Us",
+        "exitRate": 4.5,
+        "exits": 1
+      },
+      {
+        "page": "Implementation",
+        "exitRate": 0.0,
+        "exits": 0
+      },
+      {
+        "page": "Partners",
+        "exitRate": 0.0,
+        "exits": 0
+      }
     ],
     "seoInsights": {
-      "period": "2026-01-30 to 2026-02-26",
-      "totalImpressions": 21518,
-      "totalClicks": 64,
-      "avgCTR": 0.30,
+      "period": "2026-02-13 to 2026-03-12",
+      "totalImpressions": 9715,
+      "totalClicks": 20,
+      "avgCTR": 0.21,
       "topLandingPages": [
-        { "path": "/", "impressions": 4126, "clicks": 39, "ctr": 0.95, "avgPosition": 19.7 },
-        { "path": "/post/what-is-an-erp-system", "impressions": 3475, "clicks": 3, "ctr": 0.09, "avgPosition": 41.8 },
-        { "path": "/post/which-is-the-best-erp-for-manufacturers", "impressions": 2947, "clicks": 2, "ctr": 0.07, "avgPosition": 41.1 },
-        { "path": "/netsuite-experts", "impressions": 2127, "clicks": 3, "ctr": 0.14, "avgPosition": 26.7 },
-        { "path": "/post/6-essential-accounts-receivable-reports", "impressions": 1440, "clicks": 4, "ctr": 0.28, "avgPosition": 13.7 }
+        {
+          "path": "/",
+          "impressions": 2022,
+          "clicks": 8,
+          "ctr": 0.4,
+          "avgPosition": 6.61
+        },
+        {
+          "path": "/post/which-is-the-best-erp-for-manufacturers",
+          "impressions": 2363,
+          "clicks": 3,
+          "ctr": 0.13,
+          "avgPosition": 37.03
+        },
+        {
+          "path": "/netsuite-experts",
+          "impressions": 974,
+          "clicks": 2,
+          "ctr": 0.21,
+          "avgPosition": 25.17
+        },
+        {
+          "path": "/netsuite-products",
+          "impressions": 501,
+          "clicks": 2,
+          "ctr": 0.4,
+          "avgPosition": 36.68
+        },
+        {
+          "path": "/case-studies",
+          "impressions": 238,
+          "clicks": 1,
+          "ctr": 0.42,
+          "avgPosition": 19.29
+        }
       ]
     }
   },
   "linkedinYear": {
-    "start": "2025-02-27",
-    "end": "2026-02-27",
-    "totalImpressions": 47532,
-    "membersReached": 6385,
+    "start": "2025-03-07",
+    "end": "2026-03-06",
+    "totalImpressions": 48262,
+    "membersReached": 6281,
     "demographics": {
       "jobTitles": [
-        { "title": "Founder", "pct": 9.5 },
-        { "title": "Financial Director", "pct": 4.6 },
-        { "title": "CEO", "pct": 3.8 },
-        { "title": "Co-Founder", "pct": 3.5 },
-        { "title": "Managing Director", "pct": 3.5 }
+        {
+          "title": "Founder",
+          "pct": 9.5
+        },
+        {
+          "title": "Financial Director",
+          "pct": 4.4
+        },
+        {
+          "title": "CEO",
+          "pct": 3.8
+        },
+        {
+          "title": "Co-Founder",
+          "pct": 3.5
+        },
+        {
+          "title": "Managing Director",
+          "pct": 3.3
+        }
       ],
       "locations": [
-        { "location": "London", "pct": 19.3 },
-        { "location": "Manchester", "pct": 9.5 },
-        { "location": "Leeds", "pct": 1.8 },
-        { "location": "Bristol", "pct": 1.6 },
-        { "location": "Oxford", "pct": 1.5 }
+        {
+          "location": "London",
+          "pct": 19.1
+        },
+        {
+          "location": "Manchester",
+          "pct": 9.2
+        },
+        {
+          "location": "Leeds Area",
+          "pct": 1.8
+        },
+        {
+          "location": "Bristol",
+          "pct": 1.6
+        },
+        {
+          "location": "Oxford Area",
+          "pct": 1.5
+        }
       ],
       "industries": [
-        { "industry": "IT Services & Consulting", "pct": 16.4 },
-        { "industry": "Business Consulting", "pct": 9.8 },
-        { "industry": "Software Development", "pct": 9.5 },
-        { "industry": "Financial Services", "pct": 5.4 },
-        { "industry": "Technology & Internet", "pct": 3.7 }
+        {
+          "industry": "IT Services & Consulting",
+          "pct": 16.7
+        },
+        {
+          "industry": "Business Consulting and Services",
+          "pct": 9.6
+        },
+        {
+          "industry": "Software Development",
+          "pct": 9.5
+        },
+        {
+          "industry": "Financial Services",
+          "pct": 5.4
+        },
+        {
+          "industry": "Technology, Information and Internet",
+          "pct": 3.7
+        }
       ],
       "seniority": [
-        { "level": "Senior", "pct": 29.3 },
-        { "level": "Director", "pct": 18.7 },
-        { "level": "Entry", "pct": 11.1 },
-        { "level": "Owner", "pct": 10.4 },
-        { "level": "CXO", "pct": 10.3 }
+        {
+          "level": "Senior",
+          "pct": 29.3
+        },
+        {
+          "level": "Director",
+          "pct": 18.8
+        },
+        {
+          "level": "Entry",
+          "pct": 10.9
+        },
+        {
+          "level": "CXO",
+          "pct": 10.7
+        },
+        {
+          "level": "Owner",
+          "pct": 10.1
+        }
       ],
       "companySize": [
-        { "size": "11-50", "pct": 22.9 },
-        { "size": "1-10", "pct": 22.6 },
-        { "size": "51-200", "pct": 17.3 },
-        { "size": "10,001+", "pct": 6.3 },
-        { "size": "201-500", "pct": 4.9 }
+        {
+          "size": "11-50 employees",
+          "pct": 22.9
+        },
+        {
+          "size": "1-10 employees",
+          "pct": 22.6
+        },
+        {
+          "size": "51-200 employees",
+          "pct": 17.3
+        },
+        {
+          "size": "10,001+ employees",
+          "pct": 6.1
+        },
+        {
+          "size": "201-500 employees",
+          "pct": 4.9
+        }
       ]
     }
   },
@@ -261,6 +609,139 @@
   ],
   "weeks": [
     {
+      "weekEnding": "2026-03-13",
+      "ga": {
+        "sessions": 31,
+        "pageViews": 94,
+        "users": 15,
+        "newUsers": 9,
+        "avgSessionDuration": 225,
+        "topPages": [
+          {
+            "path": "/",
+            "views": 21
+          },
+          {
+            "path": "/case-studies",
+            "views": 8
+          },
+          {
+            "path": "/resources",
+            "views": 8
+          },
+          {
+            "path": "/about",
+            "views": 5
+          },
+          {
+            "path": "/project-delivery",
+            "views": 5
+          },
+          {
+            "path": "/contact",
+            "views": 4
+          },
+          {
+            "path": "/resources/best-erp-for-manufacturers",
+            "views": 4
+          },
+          {
+            "path": "/support",
+            "views": 4
+          }
+        ],
+        "trafficSources": {
+          "organic": 29,
+          "direct": 68,
+          "referral": 0,
+          "social": 0,
+          "unassigned": 10
+        },
+        "ctaClicks": 4,
+        "leads": 4
+      },
+      "linkedin": {
+        "followers": 1451,
+        "impressions": 823,
+        "engagementRate": 1.5,
+        "engagements": 12,
+        "newFollowers": 30
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
+    {
+      "weekEnding": "2026-03-06",
+      "ga": {
+        "sessions": 40,
+        "pageViews": 105,
+        "users": 16,
+        "newUsers": 14,
+        "avgSessionDuration": 327,
+        "topPages": [
+          {
+            "path": "/",
+            "views": 41
+          },
+          {
+            "path": "/about",
+            "views": 14
+          },
+          {
+            "path": "/resources",
+            "views": 9
+          },
+          {
+            "path": "/contact",
+            "views": 8
+          },
+          {
+            "path": "/case-studies",
+            "views": 7
+          },
+          {
+            "path": "/implementation",
+            "views": 6
+          },
+          {
+            "path": "/support",
+            "views": 6
+          },
+          {
+            "path": "/one-score-to-rule-them-all",
+            "views": 2
+          }
+        ],
+        "trafficSources": {
+          "organic": 47,
+          "direct": 49,
+          "referral": 3,
+          "social": 1
+        },
+        "ctaClicks": 9,
+        "leads": 9
+      },
+      "linkedin": {
+        "followers": 1422,
+        "impressions": 338,
+        "engagementRate": 1.2,
+        "engagements": 4,
+        "newFollowers": 31
+      },
+      "email": {
+        "campaignsSent": 0,
+        "totalRecipients": 0,
+        "openRate": 0,
+        "clickRate": 0,
+        "unsubscribes": 0
+      }
+    },
+    {
       "weekEnding": "2026-02-27",
       "ga": {
         "sessions": 35,
@@ -269,14 +750,38 @@
         "newUsers": 19,
         "avgSessionDuration": 40,
         "topPages": [
-          { "path": "/", "views": 22 },
-          { "path": "/about", "views": 8 },
-          { "path": "/contact", "views": 7 },
-          { "path": "/case-studies", "views": 6 },
-          { "path": "/support", "views": 5 },
-          { "path": "/resources", "views": 5 },
-          { "path": "/implementation", "views": 4 },
-          { "path": "/what-is-netsuite", "views": 3 }
+          {
+            "path": "/",
+            "views": 22
+          },
+          {
+            "path": "/about",
+            "views": 8
+          },
+          {
+            "path": "/contact",
+            "views": 7
+          },
+          {
+            "path": "/case-studies",
+            "views": 6
+          },
+          {
+            "path": "/support",
+            "views": 5
+          },
+          {
+            "path": "/resources",
+            "views": 5
+          },
+          {
+            "path": "/implementation",
+            "views": 4
+          },
+          {
+            "path": "/what-is-netsuite",
+            "views": 3
+          }
         ],
         "trafficSources": {
           "organic": 46,
@@ -311,14 +816,38 @@
         "newUsers": 20,
         "avgSessionDuration": 35,
         "topPages": [
-          { "path": "/", "views": 26 },
-          { "path": "/about", "views": 7 },
-          { "path": "/case-studies", "views": 6 },
-          { "path": "/support", "views": 4 },
-          { "path": "/implementation", "views": 4 },
-          { "path": "/what-is-netsuite", "views": 3 },
-          { "path": "/contact", "views": 2 },
-          { "path": "/resources", "views": 1 }
+          {
+            "path": "/",
+            "views": 26
+          },
+          {
+            "path": "/about",
+            "views": 7
+          },
+          {
+            "path": "/case-studies",
+            "views": 6
+          },
+          {
+            "path": "/support",
+            "views": 4
+          },
+          {
+            "path": "/implementation",
+            "views": 4
+          },
+          {
+            "path": "/what-is-netsuite",
+            "views": 3
+          },
+          {
+            "path": "/contact",
+            "views": 2
+          },
+          {
+            "path": "/resources",
+            "views": 1
+          }
         ],
         "trafficSources": {
           "organic": 55,
@@ -353,14 +882,38 @@
         "newUsers": 29,
         "avgSessionDuration": 57,
         "topPages": [
-          { "path": "/", "views": 200 },
-          { "path": "/support", "views": 36 },
-          { "path": "/case-studies", "views": 19 },
-          { "path": "/about", "views": 16 },
-          { "path": "/implementation", "views": 12 },
-          { "path": "/contact", "views": 11 },
-          { "path": "/resources", "views": 9 },
-          { "path": "/case-studies/carallon", "views": 8 }
+          {
+            "path": "/",
+            "views": 200
+          },
+          {
+            "path": "/support",
+            "views": 36
+          },
+          {
+            "path": "/case-studies",
+            "views": 19
+          },
+          {
+            "path": "/about",
+            "views": 16
+          },
+          {
+            "path": "/implementation",
+            "views": 12
+          },
+          {
+            "path": "/contact",
+            "views": 11
+          },
+          {
+            "path": "/resources",
+            "views": 9
+          },
+          {
+            "path": "/case-studies/carallon",
+            "views": 8
+          }
         ],
         "trafficSources": {
           "organic": 49,
@@ -395,14 +948,38 @@
         "newUsers": 51,
         "avgSessionDuration": 45,
         "topPages": [
-          { "path": "/", "views": 290 },
-          { "path": "/case-studies", "views": 82 },
-          { "path": "/support", "views": 56 },
-          { "path": "/implementation", "views": 47 },
-          { "path": "/contact", "views": 35 },
-          { "path": "/about", "views": 34 },
-          { "path": "/resources", "views": 25 },
-          { "path": "/case-studies/eco2solar", "views": 22 }
+          {
+            "path": "/",
+            "views": 290
+          },
+          {
+            "path": "/case-studies",
+            "views": 82
+          },
+          {
+            "path": "/support",
+            "views": 56
+          },
+          {
+            "path": "/implementation",
+            "views": 47
+          },
+          {
+            "path": "/contact",
+            "views": 35
+          },
+          {
+            "path": "/about",
+            "views": 34
+          },
+          {
+            "path": "/resources",
+            "views": 25
+          },
+          {
+            "path": "/case-studies/eco2solar",
+            "views": 22
+          }
         ],
         "trafficSources": {
           "organic": 43,
@@ -437,14 +1014,38 @@
         "newUsers": 16,
         "avgSessionDuration": 42,
         "topPages": [
-          { "path": "/", "views": 100 },
-          { "path": "/case-studies", "views": 28 },
-          { "path": "/support", "views": 20 },
-          { "path": "/implementation", "views": 16 },
-          { "path": "/contact", "views": 12 },
-          { "path": "/about", "views": 12 },
-          { "path": "/resources", "views": 9 },
-          { "path": "/case-studies/totalkare", "views": 6 }
+          {
+            "path": "/",
+            "views": 100
+          },
+          {
+            "path": "/case-studies",
+            "views": 28
+          },
+          {
+            "path": "/support",
+            "views": 20
+          },
+          {
+            "path": "/implementation",
+            "views": 16
+          },
+          {
+            "path": "/contact",
+            "views": 12
+          },
+          {
+            "path": "/about",
+            "views": 12
+          },
+          {
+            "path": "/resources",
+            "views": 9
+          },
+          {
+            "path": "/case-studies/totalkare",
+            "views": 6
+          }
         ],
         "trafficSources": {
           "organic": 43,
@@ -479,12 +1080,30 @@
         "newUsers": 4,
         "avgSessionDuration": 38,
         "topPages": [
-          { "path": "/", "views": 38 },
-          { "path": "/case-studies", "views": 11 },
-          { "path": "/support", "views": 7 },
-          { "path": "/implementation", "views": 6 },
-          { "path": "/about", "views": 5 },
-          { "path": "/contact", "views": 5 }
+          {
+            "path": "/",
+            "views": 38
+          },
+          {
+            "path": "/case-studies",
+            "views": 11
+          },
+          {
+            "path": "/support",
+            "views": 7
+          },
+          {
+            "path": "/implementation",
+            "views": 6
+          },
+          {
+            "path": "/about",
+            "views": 5
+          },
+          {
+            "path": "/contact",
+            "views": 5
+          }
         ],
         "trafficSources": {
           "organic": 43,

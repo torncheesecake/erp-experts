@@ -1,33 +1,36 @@
-name: Stale Reports Data Reminder
+name: Reports Updated Notification
 
 on:
-  schedule:
-    - cron: "0 9 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - src/data/reports.json
   workflow_dispatch:
 
 jobs:
-  check-staleness:
+  notify-updated:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check if reports data is stale
-        id: check
+      - name: Read reports summary
+        id: reports
         run: |
           LAST_UPDATED=$(jq -r '.lastUpdated' src/data/reports.json)
-          LAST_EPOCH=$(date -d "$LAST_UPDATED" +%s)
-          NOW_EPOCH=$(date +%s)
-          DAYS_OLD=$(( (NOW_EPOCH - LAST_EPOCH) / 86400 ))
-          echo "days_old=$DAYS_OLD" >> "$GITHUB_OUTPUT"
           echo "last_updated=$LAST_UPDATED" >> "$GITHUB_OUTPUT"
-          if [ "$DAYS_OLD" -gt 7 ]; then
-            echo "stale=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "stale=false" >> "$GITHUB_OUTPUT"
-          fi
+          echo "week_ending=$(jq -r '.weeks[0].weekEnding' src/data/reports.json)" >> "$GITHUB_OUTPUT"
+          echo "ga_sessions=$(jq -r '.weeks[0].ga.sessions' src/data/reports.json)" >> "$GITHUB_OUTPUT"
+          echo "ga_page_views=$(jq -r '.weeks[0].ga.pageViews' src/data/reports.json)" >> "$GITHUB_OUTPUT"
+          echo "ga_leads=$(jq -r '.weeks[0].ga.leads' src/data/reports.json)" >> "$GITHUB_OUTPUT"
+          echo "linkedin_followers=$(jq -r '.weeks[0].linkedin.followers' src/data/reports.json)" >> "$GITHUB_OUTPUT"
+          echo "linkedin_impressions=$(jq -r '.weeks[0].linkedin.impressions' src/data/reports.json)" >> "$GITHUB_OUTPUT"
+          echo "linkedin_engagement_rate=$(jq -r '.weeks[0].linkedin.engagementRate' src/data/reports.json)" >> "$GITHUB_OUTPUT"
+          echo "seo_period=$(jq -r '.ga4Period.seoInsights.period' src/data/reports.json)" >> "$GITHUB_OUTPUT"
+          echo "seo_impressions=$(jq -r '.ga4Period.seoInsights.totalImpressions' src/data/reports.json)" >> "$GITHUB_OUTPUT"
+          echo "seo_clicks=$(jq -r '.ga4Period.seoInsights.totalClicks' src/data/reports.json)" >> "$GITHUB_OUTPUT"
 
-      - name: Send email reminder
-        if: steps.check.outputs.stale == 'true'
+      - name: Send email notification
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -35,17 +38,32 @@ jobs:
           secure: true
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "ERP Experts — Reports data is ${{ steps.check.outputs.days_old }} days old"
+          subject: "ERP Experts - Reports updated (${{ steps.reports.outputs.last_updated }})"
           to: mhillman@erpexperts.co.uk
           from: ERP Experts Website <${{ secrets.SMTP_USERNAME }}>
           body: |
             Hi Matt,
 
-            The marketing reports dashboard at erpexperts.co.uk/reports hasn't been updated in ${{ steps.check.outputs.days_old }} days (last updated: ${{ steps.check.outputs.last_updated }}).
+            The marketing reports data in GitHub has been updated.
 
-            To update:
-            1. Export fresh data from GA4 and LinkedIn into src/exports/
-            2. Run the parse scripts or update src/data/reports.json manually
-            3. Build and deploy via FTP
+            Reports date: ${{ steps.reports.outputs.last_updated }}
+            Latest week ending: ${{ steps.reports.outputs.week_ending }}
 
-            — Automated reminder from GitHub Actions
+            Website:
+            - Sessions: ${{ steps.reports.outputs.ga_sessions }}
+            - Page views: ${{ steps.reports.outputs.ga_page_views }}
+            - Leads: ${{ steps.reports.outputs.ga_leads }}
+
+            LinkedIn:
+            - Followers: ${{ steps.reports.outputs.linkedin_followers }}
+            - Impressions: ${{ steps.reports.outputs.linkedin_impressions }}
+            - Engagement rate: ${{ steps.reports.outputs.linkedin_engagement_rate }}%
+
+            Search Console:
+            - Period: ${{ steps.reports.outputs.seo_period }}
+            - Impressions: ${{ steps.reports.outputs.seo_impressions }}
+            - Clicks: ${{ steps.reports.outputs.seo_clicks }}
+
+            Commit: ${{ github.sha }}
+
+            This email is sent only when src/data/reports.json changes on main.

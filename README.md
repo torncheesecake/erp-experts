@@ -75,7 +75,40 @@ The marketing dashboard at `/reports` is powered by `src/data/reports.json`. To 
 2. **Update** `src/data/reports.json` — either manually or via `python scripts/parse_all.py`
 3. **Build and deploy** via the steps above
 
-A GitHub Actions workflow runs daily at 9am and sends an email reminder when the data is more than 7 days old. This requires `SMTP_USERNAME` and `SMTP_PASSWORD` repository secrets to be configured.
+### LinkedIn Export Helper
+
+For a supervised LinkedIn export, run:
+
+```bash
+./scripts/download_linkedin_export.sh
+python3 scripts/refresh_reports.py
+```
+
+What it does:
+
+- opens LinkedIn content analytics in headed Chrome
+- reuses a saved local browser state from `~/.codex/linkedin-erp-experts-state.json` if present
+- lets you complete login or MFA if LinkedIn asks for it
+- saves the latest workbook into `~/Downloads`, where `scripts/refresh_reports.py` will pick it up
+
+This is intended as a supervised fallback. It is not a good candidate for unattended scheduling because LinkedIn login and export flows are brittle.
+
+### One Command Refresh
+
+If you want the LinkedIn export and reports refresh in one step, run:
+
+```bash
+./scripts/refresh_reports_with_linkedin.sh
+```
+
+That will:
+
+- open LinkedIn analytics in Chrome
+- export the latest LinkedIn workbook into `~/Downloads`
+- refresh `src/data/reports.json` from LinkedIn, GA4, and Search Console
+- remove LinkedIn export workbooks from `~/Downloads` after a successful refresh
+
+A GitHub Actions workflow sends an email when `src/data/reports.json` is updated on `main`. This requires `SMTP_USERNAME` and `SMTP_PASSWORD` repository secrets to be configured.
 
 ## SEO Redirects
 
