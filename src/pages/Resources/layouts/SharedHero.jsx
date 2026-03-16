@@ -19,54 +19,77 @@ export default function SharedHero({ article, slug }) {
     return <ImportWorkflowHero article={article} slug={slug} />;
   }
 
+  const isCentered = article.heroAlignment !== "left";
+  const heroShellClass = isCentered ? "mx-auto text-center" : "";
+  const metaRowClass = isCentered
+    ? "flex flex-wrap items-center justify-center gap-sm md:gap-md mb-xl"
+    : "flex flex-wrap items-center gap-md mb-lg";
+  const detailPillClass = isCentered
+    ? "inline-flex items-center gap-sm rounded-full border border-white/22 bg-black/44 px-4 py-2 text-sm font-semibold text-white/96 backdrop-blur-[8px] shadow-[0_12px_28px_rgba(0,0,0,0.24)]"
+    : "flex items-center gap-sm text-white/60 text-sm";
+  const iconClass = isCentered ? "w-4 h-4 text-white/92" : "w-4 h-4";
+
   return (
     <section className="relative min-h-[45vh] md:min-h-[50vh] flex items-center overflow-hidden">
       {/* Background image */}
       <div className="absolute inset-0">
         <img src={article.heroImage} alt={article.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/70 to-black/40" />
+        <div
+          className={`absolute inset-0 ${
+            isCentered
+              ? "bg-[linear-gradient(180deg,rgba(0,0,0,0.68)_0%,rgba(0,0,0,0.42)_38%,rgba(0,0,0,0.58)_100%)]"
+              : "bg-gradient-to-r from-black/85 via-black/70 to-black/40"
+          }`}
+        />
       </div>
 
       {/* Decorative triangle */}
-      <div
-        className="absolute bottom-0 right-0 opacity-20 hidden lg:block pointer-events-none"
-        style={{
-          width: "700px",
-          height: "600px",
-          clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-          backgroundColor: "var(--color-primary)",
-          transform: "translateX(20%)",
-        }}
-      />
+      {!isCentered && (
+        <div
+          className="absolute bottom-0 right-0 opacity-20 hidden lg:block pointer-events-none"
+          style={{
+            width: "700px",
+            height: "600px",
+            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+            backgroundColor: "var(--color-primary)",
+            transform: "translateX(20%)",
+          }}
+        />
+      )}
 
       <div
         className="container relative z-20"
         style={{ paddingTop: "clamp(5.75rem, 15vw, 8.75rem)" }}
       >
-        <div className="hidden sm:block">
-          <Breadcrumb
-            items={[
-              { label: "Home", to: "/" },
-              { label: "Resources", to: "/resources" },
-              { label: article.title },
-            ]}
-            light
-          />
-        </div>
+        <div
+          className={heroShellClass}
+          style={{ maxWidth: isCentered ? "1040px" : "960px" }}
+        >
+          <div className={`hidden sm:block ${isCentered ? "mb-xl" : ""}`.trim()}>
+            <Breadcrumb
+              items={[
+                { label: "Home", to: "/" },
+                { label: "Resources", to: "/resources" },
+                { label: article.title },
+              ]}
+              light
+              align={isCentered ? "center" : "left"}
+              variant={isCentered ? "hero-pills" : "default"}
+            />
+          </div>
 
-        <div style={{ maxWidth: "960px" }}>
           {/* Meta badges */}
-          <div className="flex flex-wrap items-center gap-md mb-lg">
-            <span className="inline-flex items-center gap-sm px-4 py-2 rounded-full bg-primary text-white text-sm font-bold">
+          <div className={metaRowClass}>
+            <span className={`inline-flex items-center gap-sm px-4 py-2 rounded-full text-sm font-bold text-white ${isCentered ? "border border-white/14 bg-primary shadow-[0_14px_28px_rgba(230,58,122,0.34)]" : "bg-primary"}`.trim()}>
               <BookOpen className="w-4 h-4" />
               {article.type}
             </span>
-            <span className="flex items-center gap-sm text-white/60 text-sm">
-              <Calendar className="w-4 h-4" />
+            <span className={detailPillClass}>
+              <Calendar className={iconClass} />
               {article.date}
             </span>
-            <span className="flex items-center gap-sm text-white/60 text-sm">
-              <Clock className="w-4 h-4" />
+            <span className={detailPillClass}>
+              <Clock className={iconClass} />
               {article.readTime}
             </span>
           </div>
@@ -77,9 +100,27 @@ export default function SharedHero({ article, slug }) {
           >
             {article.title}
           </h1>
-          <p className="resource-hero-subtitle">
+          <p
+            className={`resource-hero-subtitle ${isCentered ? "mx-auto" : ""}`.trim()}
+            style={isCentered ? { color: "rgba(255,255,255,0.92)", maxWidth: "38ch" } : undefined}
+          >
             {article.subtitle}
           </p>
+
+          {isCentered && article.heroAccent === "brand-marker" && (
+            <div className="flex justify-center mt-lg" aria-hidden="true">
+              <div className="relative h-4 w-24 sm:w-28">
+                <span
+                  className="absolute inset-0 translate-x-2 translate-y-1 bg-primary/24 blur-[1px]"
+                  style={{ clipPath: "polygon(0 0, 90% 0, 100% 100%, 0 100%)" }}
+                />
+                <span
+                  className="absolute inset-x-0 top-0 h-3 bg-primary shadow-[0_0_20px_rgba(230,58,122,0.24)]"
+                  style={{ clipPath: "polygon(0 0, 88% 0, 100% 100%, 0 100%)" }}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -111,8 +152,8 @@ function ImportWorkflowHero({ article }) {
           />
         </div>
 
-        <div className="grid lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.78fr)] gap-xl lg:gap-2xl items-end">
-          <div style={{ maxWidth: "960px" }}>
+        <div className="grid lg:grid-cols-[minmax(0,1.42fr)_minmax(320px,0.68fr)] gap-xl lg:gap-[3.5rem] items-end">
+          <div style={{ maxWidth: "none" }}>
             <div className="flex flex-wrap items-center gap-md mb-lg">
               <span className="inline-flex items-center gap-sm px-4 py-2 rounded-full bg-primary text-white text-sm font-bold">
                 <BookOpen className="w-4 h-4" />
@@ -135,19 +176,19 @@ function ImportWorkflowHero({ article }) {
               className="resource-hero-title font-heading text-white"
               style={{
                 marginBottom: "var(--space-lg)",
-                maxWidth: "13.6ch",
+                maxWidth: "760px",
                 fontSize: "clamp(2.5rem, 3.45vw + 0.95rem, 5.15rem)",
                 lineHeight: 0.96,
               }}
             >
               {article.title}
             </h1>
-            <p className="resource-hero-subtitle text-white/76 max-w-[40ch]">
+            <p className="resource-hero-subtitle text-white/76 max-w-[48ch]">
               {article.subtitle}
             </p>
           </div>
 
-          <div className="lg:justify-self-end w-full max-w-[460px]">
+          <div className="lg:justify-self-end w-full max-w-[430px]">
             <div className="rounded-[2rem] border border-white/12 bg-white/[0.06] backdrop-blur-sm shadow-[0_24px_80px_rgba(0,0,0,0.34)] overflow-hidden">
               <div className="flex items-center justify-between border-b border-white/10 px-lg py-md">
                 <div className="flex items-center gap-sm">

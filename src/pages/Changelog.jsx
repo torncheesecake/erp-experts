@@ -8,6 +8,146 @@ import { Plus, Wrench, Zap, FileText } from "lucide-react";
 
 const changelog = [
   {
+    date: "5 March 2026",
+    entries: [
+      {
+        type: "added",
+        title: "New resource: What is an ERP System? A Beginner's Guide",
+        description:
+          "Comprehensive educational guide covering what ERP systems are, core modules, cloud vs on-premise, signs you need an ERP, decision-making improvements, implementation mistakes, vendor evaluation, and the future of AI in ERP. Uses Editorial layout (variant 6). Targets 12,679 monthly impressions for high-volume ERP education keywords.",
+      },
+      {
+        type: "added",
+        title: "New resource: Best ERP for Manufacturers",
+        description:
+          "Manufacturing-focused ERP guide covering purpose-built ERP needs, production planning, inventory and supply chain, quality control, shop floor visibility, and costing analysis. Uses Alternating layout (variant 4). Targets 6,180 monthly impressions for manufacturing ERP keywords.",
+      },
+      {
+        type: "added",
+        title: "New resource: Top Benefits of ERP Systems",
+        description:
+          "Top-of-funnel guide covering 8 key ERP benefits: single source of truth, financial visibility, automation, forecasting, compliance, scalability, customer experience, and measurable ROI. Uses Timeline layout (variant 7). Targets 1,497 monthly impressions.",
+      },
+      {
+        type: "improved",
+        title: "Per-article SEO meta descriptions and keywords",
+        description:
+          "Added metaDescription and keywords fields to the article data model. ResourceArticle.jsx now uses per-article SEO fields instead of hardcoded generic keywords. Keyword-optimised AR Reports, Maximise Profits, and NetSuite for Small Businesses with targeted meta descriptions.",
+      },
+      {
+        type: "improved",
+        title: "SEO roadmap updated: Phases 1 and 2 complete",
+        description:
+          "Marked 5 roadmap items as done: AR Reports (1a), Maximise Profits (1c), What is an ERP System (2a), Best ERP for Manufacturers (2b), and Top Benefits of ERP Systems (2c). All Phase 1 quick wins and Phase 2 high-volume content now published.",
+      },
+      {
+        type: "added",
+        title: "New resource: 10 Tips to Maximise Profits",
+        description:
+          "Comprehensive guide covering 10 profit maximisation strategies: reducing operating costs, COGS optimisation, portfolio review, upselling and cross-selling, customer lifetime value, overhead reduction, demand forecasting, order efficiency, recurring revenue, and KPI benchmarking. Cards layout with actionable takeaways for each tip.",
+      },
+      {
+        type: "improved",
+        title: "LayoutCards redesigned to editorial newspaper style",
+        description:
+          "Complete overhaul of the Cards layout variant. Overview section now uses a 3-column grid with drop cap intro, thin vertical rule divider, and newspaper-ruled Quick Wins list. Tips section uses horizontal rows with large faded numbers and pink-accented Action Items masthead. Bonus section converted from dark to light with editorial treatment and Related Reading CTA column.",
+      },
+      {
+        type: "improved",
+        title: "Enriched tip action items with more detail",
+        description:
+          "All 10 tip action item sets expanded with descriptive why/how clauses for clearer guidance. Fixed broken Unsplash feature image URL for the Maximise Profits article.",
+      },
+      {
+        type: "improved",
+        title: "NetSuite Certainty Projects copy polish",
+        description:
+          "Replaced 'firm' with 'partner' or 'business' throughout. Removed all hyphens from copy per brand guidelines. Widened hero body copy, added more breathing room above and below. Swapped NETscore CTA for 'Book a free NetSuite audit' secondary CTA. Removed duplicate CTA from Done Right Guarantee section. All section body copy widened to max-w-4xl.",
+      },
+    ],
+  },
+  {
+    date: "3 March 2026",
+    entries: [
+      {
+        type: "improved",
+        title: "Project Delivery rebranded to NetSuite Certainty Projects",
+        description:
+          "Renamed the page throughout - hero eyebrow, SEO title/description, footer link label. Reflects the new positioning as a distinct product offering rather than a generic service page.",
+      },
+      {
+        type: "added",
+        title: "What's Included value stack and Also Included bonuses",
+        description:
+          "New two-column card grid showcasing the 6 core deliverables (Discovery & Scoping, Fixed-Price Proposal, Dedicated PM, Go-Live Guarantee, Post-Go-Live Support, Transparent Reporting) plus 2 bonus items (Data Migration and Staff Training). Horizontal card layout with gold icon accents.",
+      },
+      {
+        type: "added",
+        title: "Done Right Guarantee callout block",
+        description:
+          "New dark-background guarantee section with radial gold gradient, shield icon, and CTA. Reinforces the fixed-price, no-surprise commitment messaging.",
+      },
+      {
+        type: "improved",
+        title: "Stats bar redesigned and relocated",
+        description:
+          "Moved the stats bar from inside the comparison section to directly beneath the hero. Updated figures to 350+ projects, £0 hidden costs, 100% fixed price, and 20+ years experience. Light background with vertical dividers replacing the previous dark strip.",
+      },
+      {
+        type: "added",
+        title: "Secondary CTA in hero",
+        description:
+          "Added a 'Book a free NetSuite audit' outline button alongside the main CTA in the hero section, linking to the contact page with a pre-filled subject.",
+      },
+      {
+        type: "added",
+        title: "New resource: CSV Imports - Why They Fail and How to Fix It",
+        description:
+          "Technical troubleshooting guide covering the 6 most common CSV import failures in NetSuite: encoding issues, header mismatches, date/number format conflicts, missing record references, duplicate detection, and file structure problems. Targets page-1 keyword opportunity from SEO roadmap.",
+      },
+    ],
+  },
+  {
+    date: "2 March 2026",
+    entries: [
+      {
+        type: "added",
+        title: "New resource: Accounts Receivable Reports",
+        description:
+          "New resource article covering the 6 essential accounts receivable reports every business should run. Includes unique feature image, rewritten conclusion, and concise disclaimer.",
+      },
+      {
+        type: "improved",
+        title: "Resource article template polish",
+        description:
+          "Renamed 'Action Items' to 'At a Glance' for a more descriptive tone. Changed conclusion heading to 'Bringing It All Together'. Bonus tips grid now uses 3 columns when there are 3 items instead of always 4.",
+      },
+      {
+        type: "removed",
+        title: "Removed free guide lead magnet from Resources",
+        description:
+          "Removed the LeadMagnet / 'Free Guide' email capture section from the Resources page.",
+      },
+    ],
+  },
+  {
+    date: "27 February 2026",
+    entries: [
+      {
+        type: "added",
+        title: "Project Delivery page",
+        description:
+          "New page comparing E3's fixed-price project delivery model vs freelance contractors. Features a head-to-head comparison table, 3-step process (Tell us → MOT → PRD), and key differentiators. Route at /project-delivery, linked from footer.",
+      },
+      {
+        type: "fixed",
+        title: "Sitemap overhaul",
+        description:
+          "Complete sitemap rewrite — added all 10 resource articles, Project Delivery, FAQ, Reports, Partners, Coats4Kids case study, and /services/netsuite. Removed stale and dead links.",
+      },
+    ],
+  },
+  {
     date: "24 February 2026",
     entries: [
       {

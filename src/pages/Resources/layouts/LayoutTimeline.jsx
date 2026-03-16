@@ -7,144 +7,198 @@
 import { CheckCircle } from "lucide-react";
 import SharedHero from "./SharedHero";
 import SharedCTA from "./SharedCTA";
-import SharedGuideBar from "./SharedGuideBar";
 import SharedBonusTips from "./SharedBonusTips";
-import SharedFeatureIcon from "./SharedFeatureIcon";
-
 export default function LayoutTimeline({ article, slug }) {
+  const prioritiesLabel = article.prioritiesLabel || "Core Priorities";
+  const stepsLabel = article.tipsSectionLabel || "Step by Step";
+  const stepsIntro =
+    article.tipsIntro ||
+    "Use these chapters to connect each ERP benefit to a measurable operational outcome, not just a feature list in a sales deck.";
+  const stepMarkerLabel = article.stepLabel || "Step";
+  const tipContentLabel = article.tipContentLabel || "Business Benefit";
+  const tipAsideLabel = article.tipAsideLabel || "How to Validate It";
+  const tipAsideIntro =
+    article.tipAsideIntro ||
+    "These checks help you turn a broad ERP promise into something concrete and measurable.";
+  const showSummaryCard = article.timelineSummary !== false;
+  const summaryLabel = article.summaryLabel || "Next";
+  const summaryNumber = article.summaryNumber || "09";
+  const summaryTitle = article.summaryTitle || "Ready to Build the Case";
+  const summaryText =
+    article.summaryText ||
+    "These are the ERP benefits worth measuring first when you compare platforms, build internal support, and define what success should look like after go-live.";
+  const bottomLineAsideLabel = article.bottomLineAsideLabel || "What to Measure First";
+  const bottomLineAsideItems = article.bottomLineAsideItems || article.takeaways.slice(0, 3);
+
   return (
     <>
       <SharedHero article={article} slug={slug} />
 
-      <SharedGuideBar
-        tipsCount={article.tips.length}
-        tipsLabel="Key Steps"
-        bonusCount={article.bonusTips.length}
-        bonusLabel="Bonus Strategies"
-        readTime={article.readTime}
-      />
-
       {/* Intro + Key Takeaways */}
-      <section className="section-padding-lg">
+      <section className="section-padding">
         <div className="container">
-          <div className="grid lg:grid-cols-[1fr_420px] gap-2xl items-start">
-            <div>
+          <div className="grid xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)] gap-2xl xl:gap-3xl items-start">
+            <div className="min-w-0 xl:pr-xl">
               <p className="text-label text-primary mb-md">Overview</p>
-              <h2 className="mb-lg" dangerouslySetInnerHTML={{ __html: article.overviewHeading }} />
-              <p className="resource-lead mb-lg">{article.intro}</p>
+              <h2 className="mb-xl" dangerouslySetInnerHTML={{ __html: article.overviewHeading }} />
+              <p className="resource-lead mb-xl">{article.intro}</p>
               <p className="resource-body">{article.overviewSubtext}</p>
             </div>
-            <div className="rounded-2xl p-xl border border-primary/15 bg-primary/5">
-              <p className="text-label text-primary mb-lg">Execution Priorities</p>
-              <ul className="flex flex-col gap-md">
+
+            <aside className="min-w-0 pt-2xl mt-2xl border-t border-(--color-text)/10 xl:sticky xl:top-24 xl:pt-0 xl:mt-0 xl:border-t-0">
+              <p className="text-label text-primary mb-lg">{prioritiesLabel}</p>
+              <ul className="flex flex-col gap-lg">
                 {article.takeaways.map((takeaway, i) => (
-                  <li key={i} className="flex items-start gap-sm">
-                    <SharedFeatureIcon icon={CheckCircle} size="sm" className="shrink-0 mt-0.5" />
+                  <li key={i} className="flex items-start gap-lg md:gap-xl min-w-0">
+                    <span className="shrink-0 mt-0.5 inline-flex items-center justify-center w-11 h-11 rounded-[0.95rem] border border-primary/18 bg-primary/8 text-primary">
+                      <CheckCircle className="w-5 h-5" strokeWidth={2.65} aria-hidden="true" />
+                    </span>
                     <span className="resource-body">{takeaway}</span>
                   </li>
                 ))}
               </ul>
-            </div>
+            </aside>
           </div>
+
+          {article.challengeHeading && article.challengeText && (
+            <div className="mt-2xl pt-2xl border-t border-(--color-text)/10">
+              <p className="text-label text-primary mb-md">
+                {article.challengeLabel || "Why This Matters"}
+              </p>
+              <h3 className="mb-lg" dangerouslySetInnerHTML={{ __html: article.challengeHeading }} />
+              <p className="resource-body max-w-5xl">{article.challengeText}</p>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Tips as Timeline */}
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
-          <div className="text-center mb-2xl">
-            <p className="text-label text-primary mb-md">Step by Step</p>
-            <h2 dangerouslySetInnerHTML={{ __html: article.tipsHeading }} />
+          <div className="text-center mb-2xl md:mb-3xl">
+            <p className="text-label text-primary mb-md">{stepsLabel}</p>
+            <h2 className="mb-lg" dangerouslySetInnerHTML={{ __html: article.tipsHeading }} />
+            <p className="resource-body max-w-3xl mx-auto">{stepsIntro}</p>
           </div>
 
-          <div className="relative max-w-5xl mx-auto">
-            <div
-              className="absolute top-0 bottom-0"
-              style={{
-                left: "25px",
-                width: "2px",
-                backgroundColor: "var(--color-primary)",
-                opacity: 0.2,
-              }}
-            />
-
-            <div className="flex flex-col gap-xl md:gap-2xl">
-              {article.tips.map((tip, i) => (
-                <article key={i} className="relative pl-[62px] md:pl-[88px]">
-                  <div
-                    className="absolute left-0 top-0 w-[52px] h-[52px] rounded-full border-4 border-white shadow-[0_8px_18px_rgba(26,26,26,0.15)] flex items-center justify-center"
-                    style={{ backgroundColor: "var(--color-primary)" }}
-                  >
-                    <span className="text-white font-heading font-bold text-sm">{tip.number}</span>
-                  </div>
-
-                  <div className="rounded-2xl border border-(--color-text)/10 bg-white p-lg md:p-xl shadow-[0_10px_28px_rgba(26,26,26,0.04)]">
-                    <div className="flex items-center gap-md mb-md">
-                      <SharedFeatureIcon icon={tip.icon} size="lg" />
-                      <h4>{tip.title}</h4>
+          <div>
+            <div className="flex flex-col gap-lg md:gap-xl">
+              {article.tips.map((tip, i) => {
+                return (
+                <article
+                  key={i}
+                  className={`rounded-[1.5rem] p-lg md:p-xl lg:p-2xl ${
+                    i % 2 === 0
+                      ? "bg-[linear-gradient(165deg,rgba(255,255,255,0.98)_0%,rgba(251,251,251,0.92)_100%)]"
+                      : "bg-[linear-gradient(165deg,rgba(255,250,253,0.98)_0%,rgba(252,252,252,0.92)_100%)]"
+                  }`}
+                >
+                  <div className="grid gap-xl lg:grid-cols-[72px_minmax(0,1.2fr)_minmax(300px,0.8fr)] lg:gap-2xl items-start">
+                    <div className="flex items-start gap-md lg:block">
+                      <div className="shrink-0">
+                        <p className="text-[0.68rem] font-bold uppercase tracking-[0.14em] text-primary/58 mb-1">
+                          {stepMarkerLabel}
+                        </p>
+                        <span className="font-heading font-bold text-[2.7rem] leading-none tracking-[-0.05em] text-primary/78">
+                          {tip.number}
+                        </span>
+                      </div>
                     </div>
 
-                    <p className="resource-body mb-lg">{tip.content}</p>
-
-                    <div className="rounded-xl p-md border border-(--color-text)/10 bg-(--color-text)/[0.02]">
-                      <p className="text-sm font-bold text-primary mb-md uppercase tracking-[0.08em]">
-                        At a Glance
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold uppercase tracking-[0.08em] text-primary/65 mb-sm">
+                        {tipContentLabel}
                       </p>
-                      <ul className="grid md:grid-cols-2 gap-sm md:gap-md">
+                      <h4 className="mb-md">{tip.title}</h4>
+                      <p className="resource-body">{tip.content}</p>
+                    </div>
+
+                    <aside className="min-w-0 rounded-[1.05rem] bg-[linear-gradient(165deg,rgba(230,58,122,0.08)_0%,rgba(230,58,122,0.03)_100%)] p-lg md:p-xl">
+                      <p className="text-sm font-bold uppercase tracking-[0.08em] text-primary/75 mb-sm">
+                        {tipAsideLabel}
+                      </p>
+                      <p className="resource-fine mb-md">{tipAsideIntro}</p>
+                      <ul className="space-y-sm">
                         {tip.actions.map((action, j) => (
-                          <li key={j} className="flex items-start gap-sm">
-                            <span className="shrink-0 w-7 h-7 rounded-full bg-primary/10 text-primary font-heading font-bold text-sm flex items-center justify-center">
-                              {j + 1}
+                          <li
+                            key={j}
+                            className="grid grid-cols-[2rem_minmax(0,1fr)] items-start gap-md rounded-[0.85rem] bg-white/92 p-md min-w-0"
+                          >
+                            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-heading font-bold text-sm">
+                              {String(j + 1).padStart(2, "0")}
                             </span>
                             <span className="resource-body">{action}</span>
                           </li>
                         ))}
                       </ul>
-                    </div>
+                    </aside>
                   </div>
                 </article>
-              ))}
+                );
+              })}
 
-              <div className="relative pl-[62px] md:pl-[88px]">
-                <div
-                  className="absolute left-0 top-0 w-[52px] h-[52px] rounded-full border-4 border-white shadow-[0_8px_18px_rgba(26,26,26,0.15)] flex items-center justify-center"
-                  style={{ backgroundColor: "var(--color-primary)" }}
-                >
-                  <CheckCircle className="w-5 h-5 text-white" />
+              {showSummaryCard && (
+                <div className="rounded-[1.45rem] bg-[linear-gradient(160deg,rgba(255,245,250,0.9)_0%,rgba(255,255,255,0.96)_100%)] p-lg md:p-xl lg:p-2xl">
+                  <div className="grid gap-lg lg:grid-cols-[72px_minmax(0,1fr)] items-center">
+                    <div className="flex items-start">
+                      <div>
+                        <p className="text-[0.68rem] font-bold uppercase tracking-[0.14em] text-primary/58 mb-1">
+                          {summaryLabel}
+                        </p>
+                        <span className="font-heading font-bold text-[2.7rem] leading-none tracking-[-0.05em] text-primary/78">
+                          {summaryNumber}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold uppercase tracking-[0.08em] text-primary/72 mb-sm">
+                        {summaryTitle}
+                      </p>
+                      <p className="resource-body">{summaryText}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-lg md:p-xl">
-                  <p className="font-heading font-bold text-primary text-xl">All key steps complete</p>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
       </section>
 
       {/* Conclusion */}
-      <section className="section-padding-lg relative overflow-hidden" style={{ backgroundColor: "var(--color-bg-dark)" }}>
+      <section className="section-padding border-t border-(--color-text)/10 relative overflow-hidden">
         <div
-          className="absolute right-0 top-0 opacity-10 hidden lg:block"
+          className="absolute inset-0"
           style={{
-            width: "500px",
-            height: "430px",
-            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-            backgroundColor: "var(--color-primary)",
-            transform: "translateX(30%) translateY(-20%)",
+            background:
+              "linear-gradient(180deg, rgba(230, 58, 122, 0.05) 0%, rgba(230, 58, 122, 0.015) 55%, transparent 100%)",
           }}
         />
         <div className="container relative z-10">
-          <div className="max-w-4xl mx-auto rounded-2xl border border-white/15 bg-white/[0.03] backdrop-blur-sm p-xl md:p-2xl text-center">
-            <p className="text-label text-primary mb-md">The Bottom Line</p>
-            <h3 className="text-(--color-text-on-dark) mb-lg">
-              Bringing It All <span className="text-primary">Together</span>
-            </h3>
-            <p className="resource-lead text-(--color-text-on-dark)/75 mb-lg">
-              {article.conclusion}
-            </p>
-            {article.disclaimer && (
-              <p className="resource-fine text-(--color-text-on-dark)/45 italic">{article.disclaimer}</p>
-            )}
+          <div className="grid xl:grid-cols-[320px_minmax(0,1fr)] gap-2xl xl:gap-3xl items-start">
+            <aside className="min-w-0 xl:pt-sm">
+              <p className="text-label text-primary mb-lg">{bottomLineAsideLabel}</p>
+              <ul className="space-y-lg">
+                {bottomLineAsideItems.map((takeaway, i) => (
+                  <li key={i} className="flex items-start gap-md min-w-0">
+                    <span className="shrink-0 mt-3 h-1.5 w-8 rounded-full bg-primary/75" />
+                    <span className="resource-body">{takeaway}</span>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+
+            <div className="min-w-0">
+              <p className="text-label text-primary mb-md">The Bottom Line</p>
+              <h2 className="mb-lg">
+                Bringing It All <span className="text-primary">Together</span>
+              </h2>
+              <p className="resource-lead mb-lg">{article.conclusion}</p>
+              {article.disclaimer && (
+                <p className="resource-fine italic pt-lg mt-lg border-t border-(--color-text)/10 max-w-3xl">
+                  {article.disclaimer}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </section>

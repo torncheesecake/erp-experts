@@ -65,7 +65,7 @@ export const articles = {
     date: "Feb 2026",
     readTime: "5 min read",
     type: "Guide",
-    layoutVariant: 2,
+    layoutVariant: 7,
     heroImage: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=1400&q=80",
     featureImage: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80",
     challengeLabel: "The Real Question",
@@ -86,7 +86,27 @@ export const articles = {
     overviewHeading: 'Making the Right <span class="text-primary">Decision</span>',
     overviewSubtext:
       "A poor ERP choice costs far more than money. It costs time, morale, and competitive advantage. The organisations that get this right are the ones that invest in honest evaluation before they sign anything. Here is what that evaluation should look like.",
+    prioritiesLabel: "Core Priorities",
     tipsHeading: '5 Steps to an Honest <span class="text-primary">Evaluation</span>',
+    tipsSectionLabel: "Step by Step",
+    tipsIntro:
+      "Use these five checks to separate genuine fit from a polished sales process, so your decision is grounded in operational reality rather than optimism.",
+    stepLabel: "Step",
+    tipContentLabel: "Evaluation Focus",
+    tipAsideLabel: "What to Confirm",
+    tipAsideIntro:
+      "Use these prompts to turn a broad platform claim into something concrete, commercial, and testable.",
+    summaryLabel: "Next",
+    summaryNumber: "06",
+    summaryTitle: "Ready to Make the Call",
+    summaryText:
+      "By this stage you should know whether NetSuite fits your size, complexity, budget, and growth plans, and whether the partner in front of you is helping you decide honestly.",
+    bottomLineAsideLabel: "What to Be Sure Of",
+    bottomLineAsideItems: [
+      "You are solving real operational pain, not buying software because it sounds strategic",
+      "You understand the full cost and implementation commitment before signing anything",
+      "You trust the implementation partner to challenge scope, not just agree to everything",
+    ],
 
     tips: [
       {
@@ -193,7 +213,7 @@ export const articles = {
     date: "Feb 2026",
     readTime: "4 min read",
     type: "Guide",
-    layoutVariant: 1,
+    layoutVariant: 5,
     heroImage: "https://images.unsplash.com/photo-1639322537228-f710d846310a?w=1400&q=80",
     featureImage: "https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=800&q=80",
     challengeLabel: "The Challenge",
@@ -216,6 +236,15 @@ export const articles = {
     overviewSubtext:
       "One answer to today's volatile business environment is artificial intelligence. The CFO Alliance confirms that finance leaders know AI can help them make faster and more-informed decisions. The question is: will you use it to drive competitive advantage?",
     tipsHeading: 'How AI Transforms <span class="text-primary">Finance</span>',
+    tipsIntro:
+      "These are the core areas where AI helps finance teams move faster, see more clearly, and spend less time trapped in manual work.",
+    tipEyebrowLabel: "AI Use Case",
+    tipPanelLabel: "What to Apply",
+    tipPanelIntro:
+      "Focus first on the AI capability that will improve decision speed or reporting clarity fastest for your team.",
+    primaryActionLabel: "Start Here",
+    secondaryActionLabel: "Then Build On It",
+    usePanelIcon: false,
 
     tips: [
       {
@@ -322,7 +351,7 @@ export const articles = {
     date: "2025",
     readTime: "3 min read",
     type: "Guide",
-    layoutVariant: 3,
+    layoutVariant: 5,
     heroImage: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1400&q=80",
     featureImage: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80",
     challengeLabel: "The Shift",
@@ -344,6 +373,15 @@ export const articles = {
     overviewSubtext:
       "Finance leaders who master these skills position themselves and their organisations for long-term success. It's no longer enough to be technically proficient; the best CFOs combine financial expertise with strong interpersonal and analytical capabilities.",
     tipsHeading: '4 Skills Every CFO <span class="text-primary">Needs</span>',
+    tipsIntro:
+      "These four capabilities separate finance leaders who simply report the numbers from those who shape direction across the business.",
+    tipEyebrowLabel: "Leadership Skill",
+    tipPanelLabel: "What Good Looks Like",
+    tipPanelIntro:
+      "Treat these as behaviours to develop deliberately, not soft skills you either happen to have or do not.",
+    primaryActionLabel: "Core Habit",
+    secondaryActionLabel: "Build It Further",
+    usePanelIcon: false,
 
     tips: [
       {
@@ -438,7 +476,7 @@ export const articles = {
     date: "Jul 4, 2025",
     readTime: "3 min read",
     type: "Guide",
-    layoutVariant: 1,
+    layoutVariant: 5,
     heroImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1400&q=80",
     intro:
       "Getting the most out of NetSuite requires regular attention and smart optimisation. Whether you're new to the platform or a seasoned user, these essential tips will help keep your system running smoothly and efficiently.",
@@ -549,6 +587,15 @@ export const articles = {
     overviewSubtext:
       "From data hygiene to performance settings, we'll cover the essential practices that separate a sluggish system from one that truly empowers your team.",
     tipsHeading: '5 Ways to Optimise <span class="text-primary">Your NetSuite</span>',
+    tipsIntro:
+      "Work through these optimisation habits to remove drag from the system before poor performance becomes normal for the team.",
+    tipEyebrowLabel: "Optimisation Move",
+    tipPanelLabel: "What to Do",
+    tipPanelIntro:
+      "Start with the clean-up or setting change most likely to reduce friction quickly, then build from there.",
+    primaryActionLabel: "Do First",
+    secondaryActionLabel: "Then Review",
+    usePanelIcon: false,
 
     conclusion:
       "A well-maintained system not only improves performance but also contributes to sustainable growth. Start with one tip and work your way through.",
@@ -565,7 +612,7 @@ export const articles = {
     date: "Nov 11, 2025",
     readTime: "2 min read",
     type: "Article",
-    layoutVariant: 2,
+    layoutVariant: 7,
     heroImage: erpWorkForYouHero,
     featureImage: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80",
     challengeLabel: "The Problem",
@@ -678,6 +725,26 @@ export const articles = {
     overviewSubtext:
       "This is exactly what companies like Eco2Solar and Totalkare experienced before their transformation. Their old systems created frustration, limited capacity, and made scaling feel impossible.",
     tipsHeading: 'From Problem to <span class="text-primary">Solution</span>',
+    prioritiesLabel: "Core Priorities",
+    tipsSectionLabel: "Step by Step",
+    tipsIntro:
+      "Follow this sequence to recognise when your current systems are holding you back and what changes once the platform starts working with the business instead of against it.",
+    stepLabel: "Stage",
+    tipContentLabel: "Business Shift",
+    tipAsideLabel: "What Changes",
+    tipAsideIntro:
+      "These are usually the first signs that the system is removing friction rather than creating more of it.",
+    summaryLabel: "Next",
+    summaryNumber: "06",
+    summaryTitle: "Ready to Stop Wrestling with Systems",
+    summaryText:
+      "At this point the question is not whether better systems matter. It is whether you are ready to remove the friction that is slowing growth down today.",
+    bottomLineAsideLabel: "What Good Looks Like",
+    bottomLineAsideItems: [
+      "Teams spend less time chasing data and more time making decisions",
+      "Processes scale without adding the same level of manual effort",
+      "Growth feels supported by the system rather than constrained by it",
+    ],
 
     conclusion:
       "Your systems should free up capacity in your business, not consume it. When you get this right, growth stops being a struggle and becomes inevitable.",
@@ -694,7 +761,7 @@ export const articles = {
     date: "Jan 24, 2025",
     readTime: "4 min read",
     type: "Guide",
-    layoutVariant: 3,
+    layoutVariant: 7,
     heroImage: erpImplementationHero,
     featureImage: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
     challengeLabel: "The Challenge",
@@ -717,6 +784,26 @@ export const articles = {
     overviewSubtext:
       "Here's how to take the stress out of your ERP implementation and make it a success.",
     tipsHeading: '5 Steps to a Successful <span class="text-primary">Implementation</span>',
+    prioritiesLabel: "Core Priorities",
+    tipsSectionLabel: "Step by Step",
+    tipsIntro:
+      "These five steps are the parts of the project most likely to decide whether implementation feels controlled and practical or chaotic and exhausting.",
+    stepLabel: "Step",
+    tipContentLabel: "Implementation Focus",
+    tipAsideLabel: "What to Lock In",
+    tipAsideIntro:
+      "Use these checks to keep the project realistic, reduce avoidable risk, and make life easier for the team living through the change.",
+    summaryLabel: "Next",
+    summaryNumber: "06",
+    summaryTitle: "Ready for Go-Live Without the Panic",
+    summaryText:
+      "By this stage you should have a project plan, a committed partner, engaged users, tested processes, and a support path that continues after launch.",
+    bottomLineAsideLabel: "What to Keep in View",
+    bottomLineAsideItems: [
+      "A clear plan matters more than early optimism",
+      "Change adoption needs just as much attention as configuration",
+      "Go-live is only sustainable when support and optimisation continue afterwards",
+    ],
 
     tips: [
       {
@@ -820,7 +907,7 @@ export const articles = {
     date: "2025",
     readTime: "3 min read",
     type: "Guide",
-    layoutVariant: 2,
+    layoutVariant: 5,
     heroImage: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1400&q=80",
     featureImage: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80",
     challengeLabel: "The Challenge",
@@ -842,6 +929,15 @@ export const articles = {
     overviewSubtext:
       "In addition to driving automation and operational efficiency, AI has the potential to elevate human cognitive performance by enabling deeper creativity, more effective problem-solving, and strategic thinking. When implemented effectively, it can also contribute to greater employee satisfaction and well-being.",
     tipsHeading: 'How GenAI Transforms <span class="text-primary">Work</span>',
+    tipsIntro:
+      "These are the main ways generative AI strengthens human performance when it is used to support work rather than replace people.",
+    tipEyebrowLabel: "Work Shift",
+    tipPanelLabel: "What It Changes",
+    tipPanelIntro:
+      "Use these lenses to judge whether GenAI is genuinely improving the way people work, not just adding novelty to the process.",
+    primaryActionLabel: "Immediate Impact",
+    secondaryActionLabel: "What It Unlocks",
+    usePanelIcon: false,
 
     tips: [
       {
@@ -974,6 +1070,9 @@ export const articles = {
     overviewSubtext:
       "Choosing an ERP system is one of the most significant technology investments a small business will make. Getting it right means years of smooth operations and confident growth. Getting it wrong means wasted budget, frustrated staff, and a painful migration you did not need.",
     tipsHeading: '5 Things Small Businesses Should <span class="text-primary">Know</span>',
+    tipsStyle: "decision-panels",
+    tipsIntro:
+      "Use these five checks to decide whether NetSuite fits your current size, your budget, and the way you expect the business to grow.",
 
     tips: [
       {
@@ -1063,6 +1162,14 @@ export const articles = {
         content:
           "See your entire business at a glance — cash flow, orders, inventory — without waiting for someone to build a report.",
       },
+    ],
+
+    bottomLineStyle: "editorial-summary",
+    bottomLineAsideLabel: "Best Fit Signals",
+    bottomLineAsideItems: [
+      "You are already juggling finance, inventory, orders, or reporting across separate tools",
+      "You expect the business to grow in complexity over the next three to five years",
+      "You want a partner who will keep scope tight rather than oversell from day one",
     ],
 
     conclusion:
@@ -1361,7 +1468,7 @@ export const articles = {
     date: "2024",
     readTime: "3 min read",
     type: "Guide",
-    layoutVariant: 3,
+    layoutVariant: 5,
     heroImage: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1400&q=80",
     featureImage: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&q=80",
     intro:
@@ -1380,6 +1487,15 @@ export const articles = {
     overviewSubtext:
       "Here are four critical areas where spreadsheets fall short as an ERP intelligence tool, and how an advanced ERP solution can transform these challenges into advantages.",
     tipsHeading: 'The Hidden Costs of <span class="text-primary">Spreadsheets</span>',
+    tipsIntro:
+      "These are the hidden costs spreadsheets introduce once the business outgrows ad hoc reporting, disconnected files, and manual data handling.",
+    tipEyebrowLabel: "Hidden Cost",
+    tipPanelLabel: "ERP Advantage",
+    tipPanelIntro:
+      "Use these comparisons to weigh the operational drag of spreadsheets against what a connected ERP platform removes.",
+    primaryActionLabel: "Biggest Gain",
+    secondaryActionLabel: "Then Improve",
+    usePanelIcon: false,
 
     tips: [
       {
@@ -1672,6 +1788,8 @@ export const articles = {
     readTime: "8 min read",
     type: "Guide",
     layoutVariant: 6,
+    heroAlignment: "center",
+    heroAccent: "brand-marker",
     heroImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1400&q=80",
 
     intro:
@@ -1835,6 +1953,7 @@ export const articles = {
     readTime: "7 min read",
     type: "Guide",
     layoutVariant: 8,
+    heroAlignment: "center",
     heroImage: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1400&q=80",
 
     intro:
@@ -1848,6 +1967,7 @@ export const articles = {
       heading: 'Manufacturing ERP Options <span class="text-primary">Compared</span>',
       intro:
         "This matrix helps you separate platforms that are built for production teams from stacks that rely on workarounds and manual control.",
+      recommendedColumn: 0,
       columns: ["NetSuite for Manufacturing", "Generic ERP", "Spreadsheet Stack"],
       rows: [
         {
@@ -2088,6 +2208,7 @@ export const articles = {
     readTime: "7 min read",
     type: "Guide",
     layoutVariant: 7,
+    heroAlignment: "center",
     heroImage: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1400&q=80",
 
     intro:

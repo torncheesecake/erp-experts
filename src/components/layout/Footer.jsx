@@ -9,6 +9,7 @@ const footerLinks = [
     links: [
       { label: "Implementation", href: "/implementation" },
       { label: "Support", href: "/support" },
+      { label: "NetSuite Certainty Projects", href: "/project-delivery" },
       { label: "What is NetSuite?", href: "/what-is-netsuite" },
     ],
   },

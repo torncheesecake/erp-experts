@@ -7,10 +7,9 @@
  */
 
 import { useParams, Link } from "react-router-dom";
-import { ArrowRight, Clock, Calendar, BookOpen, CheckCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
-import Breadcrumb from "../../components/ui/Breadcrumb";
 import { articles } from "../../data/articles";
 
 import LayoutAlternating from "./layouts/LayoutAlternating";
@@ -18,9 +17,10 @@ import LayoutCards from "./layouts/LayoutCards";
 import LayoutEditorial from "./layouts/LayoutEditorial";
 import LayoutTimeline from "./layouts/LayoutTimeline";
 import LayoutComparison from "./layouts/LayoutComparison";
-import SharedGuideBar from "./layouts/SharedGuideBar";
 import SharedBonusTips from "./layouts/SharedBonusTips";
 import SharedFeatureIcon from "./layouts/SharedFeatureIcon";
+import SharedHero from "./layouts/SharedHero";
+import SharedOverview from "./layouts/SharedOverview";
 
 const layoutComponents = {
   4: LayoutAlternating,
@@ -75,106 +75,9 @@ export default function ResourceArticle() {
         keywords={article.keywords || "NetSuite tips, NetSuite optimisation, ERP best practices, NetSuite performance"}
       />
 
-      {/* Hero - Similar to case studies */}
-      <section className="relative min-h-[45vh] md:min-h-[50vh] flex items-center overflow-hidden">
-        {/* Background image */}
-        <div className="absolute inset-0">
-          <img src={article.heroImage} alt={article.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/70 to-black/40" />
-        </div>
+      <SharedHero article={article} slug={slug} />
 
-        {/* Decorative triangle */}
-        <div
-          className="absolute bottom-0 right-0 opacity-20 hidden lg:block pointer-events-none"
-          style={{
-            width: "700px",
-            height: "600px",
-            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-            backgroundColor: "var(--color-primary)",
-            transform: "translateX(20%)",
-          }}
-        />
-
-        <div
-          className="container relative z-20"
-          style={{ paddingTop: "clamp(5.75rem, 15vw, 8.75rem)" }}
-        >
-          <div className="hidden sm:block">
-            <Breadcrumb
-              items={[
-                { label: "Home", to: "/" },
-                { label: "Resources", to: "/resources" },
-                { label: article.title },
-              ]}
-              light
-            />
-          </div>
-
-          <div style={{ maxWidth: "800px" }}>
-            {/* Meta badges */}
-            <div className="flex flex-wrap items-center gap-md mb-lg">
-              <span className="inline-flex items-center gap-sm px-4 py-2 rounded-full bg-primary text-white text-sm font-bold">
-                <BookOpen className="w-4 h-4" />
-                {article.type}
-              </span>
-              <span className="flex items-center gap-sm text-white/60 text-sm">
-                <Calendar className="w-4 h-4" />
-                {article.date}
-              </span>
-              <span className="flex items-center gap-sm text-white/60 text-sm">
-                <Clock className="w-4 h-4" />
-                {article.readTime}
-              </span>
-            </div>
-
-            <h1
-              className="resource-hero-title font-heading text-white"
-              style={{ marginBottom: "var(--space-lg)" }}
-            >
-              {article.title}
-            </h1>
-            <p className="resource-hero-subtitle">
-              {article.subtitle}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <SharedGuideBar
-        tipsCount={article.tips.length}
-        tipsLabel="Key Tips"
-        bonusCount={article.bonusTips.length}
-        bonusLabel="Bonus Strategies"
-        readTime={article.readTime}
-      />
-
-      {/* Intro + Key Takeaways */}
-      <section className="section-padding-lg">
-        <div className="container">
-          <div className="grid lg:grid-cols-[1fr_400px] gap-2xl items-center">
-            {/* Intro text */}
-            <div>
-              <p className="text-label text-primary mb-md">Overview</p>
-              <h2 className="mb-lg" dangerouslySetInnerHTML={{ __html: article.overviewHeading }} />
-              <p className="resource-lead mb-lg">{article.intro}</p>
-              <p className="resource-body">{article.overviewSubtext}</p>
-            </div>
-
-            {/* Key takeaways box */}
-            <div className="bg-primary/5 rounded-2xl p-xl border border-primary/10">
-              <p className="text-label text-primary mb-lg">Quick Wins</p>
-              <ul className="flex flex-col gap-md">
-                {article.takeaways.map((takeaway, i) => (
-                  <li key={i} className="flex items-start gap-md">
-                    <SharedFeatureIcon icon={CheckCircle} size="sm" className="shrink-0 mt-0.5" />
-                    <span className="resource-body">{takeaway}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
+      <SharedOverview article={article} />
 
       {/* Feature Image - for layout variants 2 and 3 */}
       {article.featureImage && (
@@ -240,103 +143,198 @@ export default function ResourceArticle() {
       {/* Main Tips */}
       <section className="section-padding-lg border-t border-(--color-text)/10">
         <div className="container">
-          <div className="text-center mb-2xl">
+          <div className={article.tipsStyle === "decision-panels" ? "max-w-4xl mb-2xl" : "text-center mb-2xl"}>
             <p className="text-label text-primary mb-md">The Essentials</p>
             <h2 dangerouslySetInnerHTML={{ __html: article.tipsHeading }} />
+            {article.tipsStyle === "decision-panels" && article.tipsIntro && (
+              <p className="resource-body mt-lg">{article.tipsIntro}</p>
+            )}
           </div>
 
-          <div className="grid gap-lg">
-            {article.tips.map((tip, i) => (
-              <div
-                key={i}
-                className="grid md:grid-cols-[100px_1fr_1fr] gap-lg md:gap-xl items-start p-lg md:p-xl rounded-2xl border border-(--color-text)/5 hover:border-primary/20 transition-colors"
-              >
-                {/* Number */}
-                <div className="flex md:flex-col items-center gap-md">
-                  <span className="text-4xl md:text-5xl font-heading font-bold text-primary/15">
-                    {tip.number}
-                  </span>
-                  <SharedFeatureIcon icon={tip.icon} size="lg" className="md:mt-sm" />
-                </div>
+          {article.tipsStyle === "decision-panels" ? (
+            <div className="space-y-xl md:space-y-2xl">
+              {article.tips.map((tip, i) => (
+                <article
+                  key={i}
+                  className={`${i === 0 ? "pt-0 border-t-0" : "pt-xl md:pt-2xl border-t border-(--color-text)/10"}`}
+                >
+                  <div className="grid gap-xl lg:grid-cols-[minmax(16rem,0.82fr)_minmax(0,1.18fr)] lg:gap-2xl items-start">
+                    <div
+                      className="rounded-[1.2rem] p-lg md:p-xl"
+                      style={{
+                        background:
+                          i % 2 === 0
+                            ? "linear-gradient(165deg, rgba(230, 48, 125, 0.08) 0%, rgba(230, 48, 125, 0.03) 100%)"
+                            : "linear-gradient(165deg, rgba(26, 26, 26, 0.05) 0%, rgba(26, 26, 26, 0.02) 100%)",
+                      }}
+                    >
+                      <span className="block text-5xl md:text-6xl font-heading font-bold tracking-[-0.05em] text-primary/20 leading-[0.9]">
+                        {tip.number}
+                      </span>
+                      <p className="text-xs md:text-sm font-bold tracking-[0.09em] uppercase text-primary/65 mt-md mb-sm">
+                        Decision Point
+                      </p>
+                      <h4>{tip.title}</h4>
+                    </div>
 
-                {/* Content */}
-                <div>
-                  <h4 className="mb-md">{tip.title}</h4>
-                  <p className="resource-body">{tip.content}</p>
-                </div>
+                    <div className="min-w-0">
+                      <p className="resource-body">{tip.content}</p>
 
-                {/* Actions */}
-                <div className="bg-(--color-text)/[0.02] rounded-xl p-lg">
-                  <p className="text-base font-bold text-primary mb-md">At a Glance</p>
-                  <ul className="flex flex-col gap-md">
-                    {tip.actions.map((action, j) => (
-                      <li key={j} className="flex items-start gap-sm">
-                        <span className="shrink-0 w-7 h-7 rounded-full bg-primary/10 text-primary font-heading font-bold text-sm flex items-center justify-center">
-                          {j + 1}
-                        </span>
-                        <span className="resource-body">{action}</span>
-                      </li>
-                    ))}
-                  </ul>
+                      <div className="mt-lg pt-lg border-t border-(--color-text)/10">
+                        <p className="text-sm font-bold tracking-[0.08em] uppercase text-primary/70 mb-md">
+                          What to Check
+                        </p>
+
+                        <div className="grid gap-sm md:grid-cols-3">
+                          {tip.actions.map((action, j) => (
+                            <div
+                              key={j}
+                              className="rounded-[1rem] bg-(--color-text)/[0.03] p-md md:p-lg min-w-0"
+                            >
+                              <span className="text-primary/75 font-heading font-bold leading-none">
+                                {String(j + 1).padStart(2, "0")}
+                              </span>
+                              <p className="resource-body mt-sm">{action}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="grid gap-lg">
+              {article.tips.map((tip, i) => (
+                <div
+                  key={i}
+                  className="grid md:grid-cols-[100px_1fr_1fr] gap-lg md:gap-xl items-start p-lg md:p-xl rounded-2xl border border-(--color-text)/5 hover:border-primary/20 transition-colors"
+                >
+                  {/* Number */}
+                  <div className="flex md:flex-col items-center gap-md">
+                    <span className="text-4xl md:text-5xl font-heading font-bold text-primary/15">
+                      {tip.number}
+                    </span>
+                    <SharedFeatureIcon icon={tip.icon} size="lg" className="md:mt-sm" />
+                  </div>
+
+                  {/* Content */}
+                  <div>
+                    <h4 className="mb-md">{tip.title}</h4>
+                    <p className="resource-body">{tip.content}</p>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="bg-(--color-text)/[0.02] rounded-xl p-lg">
+                    <p className="text-base font-bold text-primary mb-md">At a Glance</p>
+                    <ul className="flex flex-col gap-md">
+                      {tip.actions.map((action, j) => (
+                        <li key={j} className="flex items-start gap-sm">
+                          <span className="shrink-0 w-7 h-7 rounded-full bg-primary/10 text-primary font-heading font-bold text-sm flex items-center justify-center">
+                            {j + 1}
+                          </span>
+                          <span className="resource-body">{action}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       {/* Conclusion */}
-      <section className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden">
-        {/* Background image */}
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=1400&q=80"
-            alt=""
-            loading="lazy"
-            className="w-full h-full object-cover opacity-[0.12]"
-          />
-        </div>
+      {article.bottomLineStyle === "editorial-summary" ? (
+        <section className="section-padding border-t border-(--color-text)/10">
+          <div className="container">
+            <div className="grid xl:grid-cols-[320px_minmax(0,1fr)] gap-2xl xl:gap-3xl items-start">
+              <aside className="min-w-0 xl:pt-sm">
+                <p className="text-label text-primary mb-lg">
+                  {article.bottomLineAsideLabel || "What to Confirm First"}
+                </p>
+                <ul className="space-y-lg">
+                  {(article.bottomLineAsideItems || article.takeaways?.slice(0, 3) || []).map(
+                    (item, i) => (
+                      <li key={i} className="flex items-start gap-md min-w-0">
+                        <span className="shrink-0 mt-3 h-1.5 w-8 rounded-full bg-primary/75" />
+                        <span className="resource-body">{item}</span>
+                      </li>
+                    )
+                  )}
+                </ul>
+              </aside>
 
-        {/* Large decorative triangle on left - part of background overlay */}
-        <div
-          className="absolute left-0 bottom-0 -translate-x-1/4 hidden lg:block"
-          style={{
-            width: "700px",
-            height: "606px",
-            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-            backgroundColor: "var(--color-primary)",
-            opacity: 0.08,
-          }}
-        />
-        {/* Smaller solid triangle overlapping */}
-        <div
-          className="absolute left-[120px] bottom-[80px] hidden lg:block"
-          style={{
-            width: "220px",
-            height: "190px",
-            clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-            backgroundColor: "var(--color-primary)",
-            opacity: 0.9,
-          }}
-        />
-
-        <div className="container relative z-10">
-          <div className="grid lg:grid-cols-2 gap-2xl items-center">
-            {/* Left side - spacer for visual balance on desktop */}
-            <div className="hidden lg:block" />
-
-            {/* Right side - content */}
-            <div>
-              <p className="text-label text-primary mb-md">The Bottom Line</p>
-              <h3 className="mb-lg">
-                Bringing It All <span className="text-primary">Together</span>
-              </h3>
-              <p className="resource-lead mb-lg">{article.conclusion}</p>
-              {article.disclaimer && <p className="resource-fine italic">{article.disclaimer}</p>}
+              <div className="min-w-0">
+                <p className="text-label text-primary mb-md">The Bottom Line</p>
+                <h2 className="mb-lg">
+                  Bringing It All <span className="text-primary">Together</span>
+                </h2>
+                <p className="resource-lead mb-lg">{article.conclusion}</p>
+                {article.disclaimer && (
+                  <p className="resource-fine italic pt-lg mt-lg border-t border-(--color-text)/10 max-w-3xl">
+                    {article.disclaimer}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : (
+        <section className="section-padding-lg border-t border-(--color-text)/10 relative overflow-hidden">
+          {/* Background image */}
+          <div className="absolute inset-0">
+            <img
+              src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=1400&q=80"
+              alt=""
+              loading="lazy"
+              className="w-full h-full object-cover opacity-[0.12]"
+            />
+          </div>
+
+          {/* Large decorative triangle on left - part of background overlay */}
+          <div
+            className="absolute left-0 bottom-0 -translate-x-1/4 hidden lg:block"
+            style={{
+              width: "700px",
+              height: "606px",
+              clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+              backgroundColor: "var(--color-primary)",
+              opacity: 0.08,
+            }}
+          />
+          {/* Smaller solid triangle overlapping */}
+          <div
+            className="absolute left-[120px] bottom-[80px] hidden lg:block"
+            style={{
+              width: "220px",
+              height: "190px",
+              clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+              backgroundColor: "var(--color-primary)",
+              opacity: 0.9,
+            }}
+          />
+
+          <div className="container relative z-10">
+            <div className="grid lg:grid-cols-2 gap-2xl items-center">
+              {/* Left side - spacer for visual balance on desktop */}
+              <div className="hidden lg:block" />
+
+              {/* Right side - content */}
+              <div>
+                <p className="text-label text-primary mb-md">The Bottom Line</p>
+                <h2 className="mb-lg">
+                  Bringing It All <span className="text-primary">Together</span>
+                </h2>
+                <p className="resource-lead mb-lg">{article.conclusion}</p>
+                {article.disclaimer && <p className="resource-fine italic">{article.disclaimer}</p>}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       <SharedBonusTips article={article} />
 
@@ -376,7 +374,7 @@ export default function ResourceArticle() {
             <div className="relative z-10 p-xl md:p-2xl">
               <div className="grid md:grid-cols-[1fr_auto] gap-xl items-center">
                 <div>
-                  <h3 className="text-white mb-sm">Need help optimising your NetSuite?</h3>
+                  <h2 className="text-white mb-sm">Need help optimising your NetSuite?</h2>
                   <p className="text-white/70 text-base">
                     Our team can help you implement these tips and more.
                   </p>

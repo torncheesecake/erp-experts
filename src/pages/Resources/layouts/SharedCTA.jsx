@@ -43,7 +43,7 @@ export default function SharedCTA() {
           <div className="relative z-10 p-xl md:p-2xl">
             <div className="grid md:grid-cols-[1fr_auto] gap-xl items-center">
               <div>
-                <h3 className="text-white mb-sm">Need help optimising your NetSuite?</h3>
+                <h2 className="text-white mb-sm">Need help optimising your NetSuite?</h2>
                 <p className="text-white/70 text-base">
                   Our team can help you implement these tips and more.
                 </p>

@@ -102,10 +102,10 @@ function FadeIn({ children, delay = 0, className = "" }) {
 
 /* ───────────────────────── helpers ───────────────────────── */
 
-/** Convert YYYY-MM-DD to DD-MM-YY. Handles "YYYY-MM-DD to YYYY-MM-DD" ranges too. */
+/** Convert YYYY-MM-DD to UK format DD/MM/YYYY. Handles ranges too. */
 function britDate(s) {
   if (!s) return s;
-  return s.replace(/(\d{4})-(\d{2})-(\d{2})/g, (_, y, m, d) => `${d}-${m}-${y.slice(2)}`);
+  return s.replace(/(\d{4})-(\d{2})-(\d{2})/g, (_, y, m, d) => `${d}/${m}/${y}`);
 }
 
 function fmt(n, type) {
@@ -1371,7 +1371,7 @@ export default function Reports() {
       {hasEnoughForTrends &&
         (() => {
           const gaWeeksWithData = weeks.filter((w) => w.ga.sessions != null);
-          const gaLabels = gaWeeksWithData.map((w) => { const [,m,d] = w.weekEnding.split("-"); return `${d}-${m}`; }).reverse();
+          const gaLabels = gaWeeksWithData.map((w) => { const [,m,d] = w.weekEnding.split("-"); return `${d}/${m}`; }).reverse();
           if (gaWeeksWithData.length < 2) return null;
           const websiteTrends = [
             { label: "Sessions", tooltip: "sessions", values: gaWeeksWithData.map((w) => w.ga.sessions).reverse(), color: "#2d6ad4", labels: gaLabels },
@@ -2127,6 +2127,21 @@ export default function Reports() {
               </div>
             </FadeIn>
 
+            {/* SEO Roadmap link */}
+            <FadeIn>
+              <Link
+                to="/seo-roadmap"
+                className="mt-lg flex items-center justify-between gap-md rounded-2xl border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors group"
+                style={{ padding: "16px 20px" }}
+              >
+                <div>
+                  <p className="font-heading font-bold text-(--color-text)">SEO Content Roadmap</p>
+                  <p className="text-sm text-(--color-text)/60 mt-1">Prioritised articles to write based on Search Console data — 35,000+ monthly impressions to capture</p>
+                </div>
+                <ArrowRight className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform shrink-0" />
+              </Link>
+            </FadeIn>
+
         </CollapsibleSection>
       )}
 
@@ -2418,7 +2433,7 @@ export default function Reports() {
 
           {/* LinkedIn Trends */}
           {hasEnoughForTrends && (() => {
-            const dateLabels = weeks.map((w) => { const [,m,d] = w.weekEnding.split("-"); return `${d}-${m}`; }).reverse();
+            const dateLabels = weeks.map((w) => { const [,m,d] = w.weekEnding.split("-"); return `${d}/${m}`; }).reverse();
             const linkedinTrends = [
               {
                 label: "Followers",

@@ -4,50 +4,18 @@
  * Best for: Guides with 4–6 tips, visual/process-heavy content.
  */
 
-import { CheckCircle } from "lucide-react";
 import SharedHero from "./SharedHero";
 import SharedCTA from "./SharedCTA";
-import SharedGuideBar from "./SharedGuideBar";
 import SharedBonusTips from "./SharedBonusTips";
 import SharedFeatureIcon from "./SharedFeatureIcon";
+import SharedOverview from "./SharedOverview";
 
 export default function LayoutAlternating({ article, slug }) {
   return (
     <>
       <SharedHero article={article} slug={slug} />
 
-      <SharedGuideBar
-        tipsCount={article.tips.length}
-        tipsLabel="Key Tips"
-        bonusCount={article.bonusTips.length}
-        bonusLabel="Bonus Strategies"
-        readTime={article.readTime}
-      />
-
-      {/* Intro + Key Takeaways */}
-      <section className="section-padding-lg">
-        <div className="container">
-          <div className="grid lg:grid-cols-[1fr_420px] gap-2xl items-start">
-            <div>
-              <p className="text-label text-primary mb-md">Overview</p>
-              <h2 className="mb-lg" dangerouslySetInnerHTML={{ __html: article.overviewHeading }} />
-              <p className="resource-lead mb-lg">{article.intro}</p>
-              <p className="resource-body">{article.overviewSubtext}</p>
-            </div>
-            <div className="rounded-2xl p-xl border border-primary/15 bg-primary/5">
-              <p className="text-label text-primary mb-lg">Priorities This Week</p>
-              <ul className="flex flex-col gap-md">
-                {article.takeaways.map((takeaway, i) => (
-                  <li key={i} className="flex items-start gap-sm">
-                    <SharedFeatureIcon icon={CheckCircle} size="sm" className="shrink-0 mt-0.5" />
-                    <span className="resource-body">{takeaway}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
+      <SharedOverview article={article} />
 
       {/* Tips — Alternating Rows */}
       <section className="border-t border-(--color-text)/10">
@@ -142,9 +110,9 @@ export default function LayoutAlternating({ article, slug }) {
             </div>
             <div className="rounded-2xl border border-(--color-text)/10 bg-white p-xl md:p-2xl shadow-[0_12px_32px_rgba(26,26,26,0.05)]">
               <p className="text-label text-primary mb-md">The Bottom Line</p>
-              <h3 className="mb-lg">
+              <h2 className="mb-lg">
                 Bringing It All <span className="text-primary">Together</span>
-              </h3>
+              </h2>
               <p className="resource-lead mb-lg">{article.conclusion}</p>
               {article.disclaimer && <p className="resource-fine italic">{article.disclaimer}</p>}
             </div>

@@ -3,58 +3,31 @@
  * Clean long-form layout with wider spacing and minimal card framing.
  */
 
-import { CheckCircle } from "lucide-react";
 import SharedHero from "./SharedHero";
 import SharedCTA from "./SharedCTA";
-import SharedFeatureIcon from "./SharedFeatureIcon";
+import SharedOverview from "./SharedOverview";
 
 export default function LayoutEditorial({ article, slug }) {
   return (
     <>
       <SharedHero article={article} slug={slug} />
 
-      {/* Overview */}
-      <section className="section-padding">
-        <div className="container">
-          <div className="grid xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)] gap-2xl xl:gap-3xl items-start">
-            <div className="min-w-0 xl:pr-xl">
-              <p className="text-label text-primary mb-md">Overview</p>
-              <h4 className="mb-xl" dangerouslySetInnerHTML={{ __html: article.overviewHeading }} />
-              <p className="resource-lead mb-xl">{article.intro}</p>
-              <p className="resource-body">{article.overviewSubtext}</p>
-            </div>
-
-            {article.takeaways?.length > 0 && (
-              <aside className="min-w-0 pt-2xl mt-2xl border-t border-(--color-text)/10 xl:sticky xl:top-24 xl:pt-0 xl:mt-0 xl:border-t-0">
-                <p className="text-label text-primary mb-lg">Core Priorities</p>
-                <ul className="flex flex-col gap-lg">
-                  {article.takeaways.map((takeaway, i) => (
-                    <li key={i} className="flex items-start gap-md min-w-0">
-                      <SharedFeatureIcon icon={CheckCircle} size="sm" className="shrink-0 mt-0.5" />
-                      <span className="resource-body">{takeaway}</span>
-                    </li>
-                  ))}
-                </ul>
-              </aside>
-            )}
+      <SharedOverview article={article}>
+        {article.challengeHeading && article.challengeText && (
+          <div className="mt-2xl pt-2xl border-t border-(--color-text)/10">
+            <p className="text-label text-primary mb-md">Risk Check</p>
+            <h3 className="mb-lg" dangerouslySetInnerHTML={{ __html: article.challengeHeading }} />
+            <p className="resource-body">{article.challengeText}</p>
           </div>
-
-          {article.challengeHeading && article.challengeText && (
-            <div className="mt-2xl pt-2xl border-t border-(--color-text)/10">
-              <p className="text-label text-primary mb-md">Risk Check</p>
-              <h5 className="mb-lg" dangerouslySetInnerHTML={{ __html: article.challengeHeading }} />
-              <p className="resource-body">{article.challengeText}</p>
-            </div>
-          )}
-        </div>
-      </section>
+        )}
+      </SharedOverview>
 
       {/* Core tips */}
       <section className="section-padding border-t border-(--color-text)/10">
         <div className="container">
           <div>
             <p className="text-label text-primary mb-md">The Essentials</p>
-            <h4 className="mb-lg" dangerouslySetInnerHTML={{ __html: article.tipsHeading }} />
+            <h2 className="mb-lg" dangerouslySetInnerHTML={{ __html: article.tipsHeading }} />
             <p className="resource-body max-w-4xl">
               Use this sequence to shortlist partners, pressure-test delivery quality, and avoid
               expensive surprises after contract signature.
@@ -144,7 +117,7 @@ export default function LayoutEditorial({ article, slug }) {
           <div className="container">
             <div>
               <p className="text-label text-primary mb-md">Follow-On Focus</p>
-              <h4 className="mb-xl">Keep the Momentum <span className="text-primary">Moving</span></h4>
+              <h2 className="mb-xl">Keep the Momentum <span className="text-primary">Moving</span></h2>
 
               <div className="grid gap-xl lg:grid-cols-2 lg:gap-2xl">
                 {article.bonusTips.map((tip, i) => (
@@ -166,7 +139,7 @@ export default function LayoutEditorial({ article, slug }) {
         <div className="container">
           <div>
             <p className="text-label text-primary mb-md">The Bottom Line</p>
-            <h4 className="mb-lg">Bringing It All <span className="text-primary">Together</span></h4>
+            <h2 className="mb-lg">Bringing It All <span className="text-primary">Together</span></h2>
             <p className="resource-lead mb-xl">{article.conclusion}</p>
             {article.disclaimer && <p className="resource-fine italic">{article.disclaimer}</p>}
           </div>

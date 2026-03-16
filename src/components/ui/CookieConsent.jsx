@@ -5,7 +5,6 @@
 
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { X } from "lucide-react";
 import { initGA } from "../Analytics";
 
 export default function CookieConsent() {
@@ -35,15 +34,14 @@ export default function CookieConsent() {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-md md:p-lg animate-slideUp">
-      <div className="container">
-        <div className="bg-white rounded-2xl shadow-2xl border border-(--color-text)/10 p-lg md:p-xl max-w-4xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-center gap-lg">
-            <div className="flex-1">
-              <p className="font-bold mb-sm">We value your privacy</p>
-              <p className="text-sm text-muted">
-                We use cookies to enhance your browsing experience and analyse site traffic. By
-                clicking "Accept", you consent to our use of cookies.{" "}
+    <div className="fixed left-0 right-0 bottom-sm md:bottom-lg z-50 px-sm md:px-lg animate-slideUp">
+      <div className="max-w-xl md:ml-auto">
+        <div className="bg-white rounded-xl md:rounded-2xl shadow-2xl border border-(--color-text)/10 p-md md:p-lg">
+          <div className="flex flex-col gap-md">
+            <div>
+              <p className="font-bold text-base mb-xs">We value your privacy</p>
+              <p className="text-sm text-muted leading-relaxed">
+                We use cookies to improve site performance and analytics.{" "}
                 <Link to="/cookies" className="text-primary hover:underline">
                   Cookie Policy
                 </Link>
@@ -53,7 +51,7 @@ export default function CookieConsent() {
                 </Link>
               </p>
             </div>
-            <div className="flex items-center gap-md shrink-0">
+            <div className="flex items-center gap-sm md:gap-md">
               <button
                 onClick={handleDecline}
                 className="btn btn-sm border border-(--color-text)/20 hover:bg-(--color-text)/5"
