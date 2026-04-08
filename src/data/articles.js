@@ -1329,7 +1329,7 @@ export const articles = {
     type: "Guide",
     layoutVariant: 6,
     heroImage:
-      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1400&q=80",
+      "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1400&q=80",
     featureImage:
       "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80",
 
@@ -1469,7 +1469,7 @@ export const articles = {
     readTime: "3 min read",
     type: "Guide",
     layoutVariant: 5,
-    heroImage: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1400&q=80",
+    heroImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1400&q=80",
     featureImage: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&q=80",
     intro:
       "Spreadsheets have long served as the backbone for financial and operational reporting, scenario modeling, and data tracking. Yet, as ERP data requirements expand and business environments grow more complex, spreadsheets reveal their limitations, introducing hidden costs that can impact productivity, accuracy, and decision-making.",
@@ -2947,6 +2947,506 @@ export const articles = {
     disclaimer:
       "Consultant suitability depends on your goals, constraints, and internal capacity. Speak to ERP Experts for a practical evaluation of delivery options for your business.",
   },
+
+  "why-netsuite-is-the-best-accounting-software-choice": {
+    title: "Why NetSuite Is the Best Choice of Accounting Software",
+    subtitle: "A Consolidated Finance Guide for Growing UK Organisations",
+    cardDescription:
+      "A single practical guide that consolidates legacy accounting-software content into one decision framework for finance leaders evaluating NetSuite.",
+    metaDescription:
+      "Why NetSuite is often the best choice of accounting software for growing organisations. Compare controls, reporting, automation, scale, and total cost in one guide.",
+    keywords:
+      "why NetSuite is the best choice of accounting software, NetSuite accounting software, is NetSuite accounting software, NetSuite vs accounting software, NetSuite pricing UK",
+    date: "Apr 2026",
+    readTime: "8 min read",
+    type: "Guide",
+    layoutVariant: 7,
+    heroImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1400&q=80",
+
+    intro:
+      "Choosing accounting software is now a strategic decision, not an admin purchase. As complexity grows, finance needs more than ledgers and invoicing. It needs controls, operational visibility, and faster decision support. This guide consolidates our legacy accounting-software advice, including the old Sage, Xero, and QuickBooks comparison content, into one framework so you can decide whether NetSuite is the right platform for your current model and next stage of growth.",
+
+    challengeLabel: "The Decision",
+    challengeHeading:
+      'Accounting Tool or <span class="text-primary">Finance Platform</span>',
+    challengeText:
+      "Many teams buy for current size, then rebuild within two years when entities, reporting requirements, and delivery complexity increase. If finance is becoming more operationally central, the key question is not whether NetSuite can do accounting. It is whether your current accounting tool can still support control, speed, and confidence as the business scales.",
+
+    overviewHeading:
+      'Choosing the Best Fit for <span class="text-primary">Finance, Control, and Growth</span>',
+    overviewSubtext:
+      "NetSuite is often the best choice when finance must run with tighter controls, board-ready reporting, and clear scalability across entities, currencies, and teams. Use these checks to validate fit against real operating needs rather than feature lists.",
+    prioritiesLabel: "Finance Priorities",
+    tipsHeading:
+      '8 Checks Before You Choose <span class="text-primary">Accounting Software</span>',
+    tipsSectionLabel: "Step by Step",
+    tipsIntro:
+      "Run these checks in order to confirm whether NetSuite is the right accounting platform for your complexity, reporting model, and growth plan.",
+    stepLabel: "Check",
+    tipContentLabel: "Decision Lens",
+    tipAsideLabel: "What to Validate",
+    tipAsideIntro:
+      "Keep evaluation grounded in business outcomes and controls, not generic demos.",
+    summaryLabel: "Next",
+    summaryNumber: "09",
+    summaryTitle: "Make the Platform Decision with Evidence",
+    summaryText:
+      "By this point you should have clear evidence on whether NetSuite improves control, reporting speed, and scalability enough to justify change now rather than later.",
+    bottomLineAsideLabel: "When NetSuite Is a Strong Fit",
+    bottomLineAsideItems: [
+      "Finance must control operations, not just publish monthly numbers",
+      "Board and management reporting needs near real-time drill-down",
+      "Complexity is rising across entities, projects, stock, or international operations",
+    ],
+
+    takeaways: [
+      "The best accounting software is defined by future complexity, not just current headcount",
+      "NetSuite combines accounting, control, and operational visibility in one platform",
+      "It is often the next step when Sage, Xero, or QuickBooks no longer cover operational complexity",
+      "Automation and approval controls reduce manual effort and compliance risk",
+      "Multi-entity and multi-currency structure supports scale without replatforming",
+      "Total cost and implementation quality matter more than initial licence price",
+    ],
+
+    tips: [
+      {
+        number: "01",
+        icon: Target,
+        title: "Define the Work Finance Must Actually Control",
+        content:
+          "Start by mapping the real workload in finance, not just nominal accounting tasks. If your team manages multiple entities, stock-linked margin, deferred or staged revenue, or project-based billing, basic accounting tools often push critical logic into spreadsheets. NetSuite is strongest when complexity is already present or clearly approaching.",
+        actions: [
+          "List complexity already present across entities, projects, and reporting",
+          "Document manual workarounds and where errors or delays occur",
+          "Separate short-term exceptions from structural complexity",
+        ],
+      },
+      {
+        number: "02",
+        icon: Shield,
+        title: "Check Governance, Controls, and Auditability",
+        content:
+          "Strong accounting software should improve governance, not just speed. NetSuite supports role-based permissions, configurable approvals, posting controls, and auditable workflows that reduce control gaps and manual override risk.",
+        actions: [
+          "Define approval, segregation, and audit-trail requirements by process",
+          "Validate exception handling when automation or integrations fail",
+          "Confirm whether controls are enforceable or policy-only",
+        ],
+      },
+      {
+        number: "03",
+        icon: BarChart3,
+        title: "Test Reporting Depth and Management Visibility",
+        content:
+          "If reporting depends on offline consolidation, leadership decisions lag. NetSuite provides role-based dashboards and near real-time reporting across financial and operational dimensions, helping finance shift from retrospective explanation to forward guidance.",
+        actions: [
+          "List board and management reports that must run without manual consolidation",
+          "Test drill-down from KPI to transaction-level evidence",
+          "Confirm shared data definitions across finance and operations",
+        ],
+      },
+      {
+        number: "04",
+        icon: ClipboardCheck,
+        title: "Assess Revenue, Billing, and Close Complexity",
+        content:
+          "Where revenue timing is complex, accounting software becomes a control system. If your model includes milestone billing, subscription blends, contract renewals, project delivery, or accrual-heavy close cycles, NetSuite can automate revenue recognition schedules, improve billing consistency, and reduce reconciliation overhead.",
+        actions: [
+          "Map how operational events trigger billing and recognition entries",
+          "Validate reporting by project, service line, entity, and period",
+          "Review evidence trails for revenue treatment and close adjustments",
+        ],
+      },
+      {
+        number: "05",
+        icon: Link2,
+        title: "Compare Core Finance Capability Depth",
+        content:
+          "A key legacy lesson is that feature depth matters as complexity rises. Compare general ledger flexibility, accounts payable approvals, accounts receivable visibility, fixed asset lifecycle management, inventory tracking, and multidimensional reporting. NetSuite tends to outperform entry-level tools when these capabilities must work together without manual stitching.",
+        actions: [
+          "Score each platform across GL, AP, AR, fixed assets, inventory, and reporting",
+          "Identify where manual spreadsheets are still required to close each month",
+          "Test whether drill-down works from summary reports to source transactions",
+        ],
+      },
+      {
+        number: "06",
+        icon: Globe,
+        title: "Stress-Test Scale Across Entities and Currencies",
+        content:
+          "Software that works for one entity can fail quickly when expansion begins. NetSuite's multi-entity, multi-currency, and consolidated reporting model is often decisive for organisations planning acquisitions, group growth, or international operations.",
+        actions: [
+          "Model your likely structure for the next two to three years",
+          "Check consolidation requirements for management and statutory reporting",
+          "Validate tax and localisation needs for target markets",
+        ],
+      },
+      {
+        number: "07",
+        icon: PiggyBank,
+        title: "Evaluate Automation and Integration Load",
+        content:
+          "Accounting performance is tied to connected systems. If your process relies on CRM, eCommerce, warehousing, payroll, or data platforms, finance software must support reliable integration and controlled automation. NetSuite is often preferred when integration volume and process dependency are high.",
+        actions: [
+          "List critical integrations and current failure points",
+          "Measure reconciliation time caused by disconnected systems",
+          "Define data ownership and sync frequency by source system",
+        ],
+      },
+      {
+        number: "08",
+        icon: PiggyBank,
+        title: "Compare Total Cost and Delivery Realism",
+        content:
+          "The cheapest licence is rarely the cheapest result. Compare 12 to 24 month total cost, implementation quality, and post go-live support. NetSuite value depends heavily on delivery discipline, scope control, and adoption support, not software alone.",
+        actions: [
+          "Request a full 12 to 24 month cost model including support and optimisation",
+          "Review partner outcomes for businesses with similar complexity",
+          "Assess time-to-value against your current finance pain points",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Clock,
+        title: "Measure Decision Latency",
+        content:
+          "Track how long finance takes to move from leadership question to trusted answer under the current stack.",
+      },
+      {
+        icon: Eye,
+        title: "Challenge Demo Narratives",
+        content:
+          "Ask vendors to show your hardest reporting and control scenarios, not idealised workflows.",
+      },
+      {
+        icon: Layers,
+        title: "Consolidate Tool Decisions",
+        content:
+          "Evaluate accounting, reporting, and integration together. Separate decisions usually create overlap and rework.",
+      },
+      {
+        icon: Zap,
+        title: "Protect Phase One Scope",
+        content:
+          "Prioritise high-value controls and reporting first. Expansion is easier than rescuing an over-scoped launch.",
+      },
+    ],
+
+    conclusion:
+      "NetSuite is often the best choice of accounting software when finance must operate as a strategic control layer, not just a transaction processor. If complexity, reporting demands, and growth requirements are rising, a platform approach usually outperforms a basic accounting tool over time.",
+
+    disclaimer:
+      "Software fit depends on business model, risk profile, and delivery capability. Speak to ERP Experts for a practical assessment of whether NetSuite is the right accounting platform for your organisation.",
+  },
+
+  "understanding-the-role-of-erp-systems": {
+    title: "Understanding the Role of ERP Systems",
+    subtitle: "What ERP Actually Does in a Modern Growing Business",
+    cardDescription:
+      "A practical guide to the real role ERP systems play across finance, operations, reporting, and decision-making as organisations scale.",
+    metaDescription:
+      "Learn the role of ERP systems in modern businesses, including how ERP supports control, visibility, process consistency, and scalable growth.",
+    keywords:
+      "role of ERP systems, ERP systems UK, what ERP does, ERP for growing business",
+    date: "Mar 2026",
+    readTime: "7 min read",
+    type: "Guide",
+    layoutVariant: 5,
+    heroImage: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1400&q=80",
+
+    intro:
+      "Many teams describe ERP as just another software category, but that misses the point. The role of an ERP system is to connect how the business operates, reports, and decides. As organisations grow, disconnected tools create friction between departments, duplicated effort, and inconsistent data. ERP exists to remove that friction and create operational coherence.",
+
+    overviewHeading:
+      'The Role of ERP Systems in <span class="text-primary">Real Operations</span>',
+    overviewSubtext:
+      "ERP is not simply a finance product. It is an operating backbone that links data, process, and accountability across the business so leaders can scale without multiplying manual work.",
+    tipsHeading:
+      '5 Core Roles an <span class="text-primary">ERP System</span> Plays',
+    tipsIntro:
+      "Use these five roles to assess whether your current systems are supporting growth or forcing teams into avoidable workarounds.",
+    tipEyebrowLabel: "ERP Role",
+    tipPanelLabel: "What It Enables",
+    tipPanelIntro:
+      "Focus on measurable operating improvements rather than abstract system features.",
+    primaryActionLabel: "Start Here",
+    secondaryActionLabel: "Then Strengthen",
+    usePanelIcon: false,
+
+    takeaways: [
+      "ERP creates a shared source of truth across departments",
+      "Process consistency improves speed and data quality",
+      "Financial control and auditability become easier to maintain",
+      "Leadership gets clearer, faster insight for decision-making",
+      "Scalable growth is easier when core processes are connected",
+    ],
+
+    tips: [
+      {
+        number: "01",
+        icon: Database,
+        title: "Single Source of Truth",
+        content:
+          "ERP unifies key data domains so teams stop maintaining conflicting versions of reality. Finance, operations, and leadership work from consistent information, reducing reconciliation effort and reporting disputes.",
+        actions: [
+          "Consolidate core operational and financial data into one platform",
+          "Remove duplicated spreadsheets and disconnected local trackers",
+          "Define shared data ownership and quality standards",
+        ],
+      },
+      {
+        number: "02",
+        icon: Settings,
+        title: "Process Orchestration Across Teams",
+        content:
+          "The role of ERP is not just to store data but to run repeatable processes end to end. Orders, purchasing, fulfilment, billing, and reporting should connect without manual handoffs at every step.",
+        actions: [
+          "Map current cross-functional handoffs and bottlenecks",
+          "Standardise approval paths and exception handling",
+          "Automate repeatable process steps where control allows",
+        ],
+      },
+      {
+        number: "03",
+        icon: Shield,
+        title: "Financial Control and Compliance",
+        content:
+          "ERP strengthens governance by embedding approval controls, audit trails, and role-based permissions in day-to-day workflows. This reduces dependency on manual policing and makes compliance easier to sustain.",
+        actions: [
+          "Implement role-based access and segregation of duties",
+          "Track approvals and posting changes through audit logs",
+          "Align control design with finance and audit requirements",
+        ],
+      },
+      {
+        number: "04",
+        icon: BarChart3,
+        title: "Decision Support and Forecasting",
+        content:
+          "ERP turns reporting from a backward-looking monthly exercise into a decision support capability. With timely data and consistent definitions, leadership can identify issues and opportunities earlier.",
+        actions: [
+          "Define decision-critical KPIs with consistent ownership",
+          "Build role-based dashboards for operations and leadership",
+          "Use trend visibility to support rolling forecasts and planning",
+        ],
+      },
+      {
+        number: "05",
+        icon: Rocket,
+        title: "Scalable Growth Infrastructure",
+        content:
+          "As headcount, entities, and transaction volumes increase, fragmented tools become a growth tax. ERP provides the operational structure needed to scale without proportional increases in administrative overhead.",
+        actions: [
+          "Model future growth scenarios and process impact",
+          "Prioritise modules that remove the biggest scaling bottlenecks first",
+          "Set a phased roadmap so capability expands in controlled steps",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Users,
+        title: "Design Around User Roles",
+        content:
+          "ERP adoption improves when each team sees only what is relevant to their responsibilities.",
+      },
+      {
+        icon: Search,
+        title: "Audit Current Workarounds",
+        content:
+          "Workarounds reveal where process design or data flow is currently weak.",
+      },
+      {
+        icon: Wrench,
+        title: "Treat ERP as an Operating Programme",
+        content:
+          "The strongest results come when ERP is managed as ongoing operational improvement, not a one-off IT project.",
+      },
+      {
+        icon: Globe,
+        title: "Build for Future Complexity",
+        content:
+          "Choose an ERP path that can support new markets, entities, and reporting requirements before they become urgent.",
+      },
+    ],
+
+    conclusion:
+      "Understanding the role of ERP systems means looking beyond features to operating impact. A well-designed ERP approach creates consistency, control, and visibility that help organisations grow with less friction and better decisions.",
+
+    disclaimer:
+      "ERP outcomes depend on process design, adoption, and delivery quality. ERP Experts can help you assess where ERP should play the biggest role in your business.",
+  },
+
+  "netsuite-project-management-financials": {
+    title: "NetSuite Project Management & Financials",
+    subtitle: "How to Align Delivery Execution with Financial Control",
+    cardDescription:
+      "A practical guide to connecting project delivery and finance in NetSuite for clearer margin visibility, better forecasting, and stronger control.",
+    metaDescription:
+      "Learn how to connect project management and financials in NetSuite with practical steps for billing, revenue, forecasting, and governance.",
+    keywords:
+      "NetSuite project management, NetSuite financials, project financial management, project margin tracking in NetSuite",
+    date: "Mar 2026",
+    readTime: "8 min read",
+    type: "Guide",
+    layoutVariant: 7,
+    heroImage: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1400&q=80",
+
+    intro:
+      "Project-based organisations often struggle because delivery plans and financial reporting live in separate systems. That creates lag, margin surprises, and weak forecasting confidence. NetSuite can reduce that gap by connecting project execution, billing, and financial control in one platform, but only when implementation is designed around real delivery behaviour.",
+
+    challengeLabel: "The Gap",
+    challengeHeading:
+      'When Projects and Financials <span class="text-primary">Do Not Reconcile</span>',
+    challengeText:
+      "Teams can appear busy while project profitability remains unclear. Without consistent structure, timely time capture, and reliable billing controls, leadership often sees project reality too late. The objective is to create one connected operating picture from task progress through to margin and cash.",
+
+    overviewHeading:
+      'Connect Project Delivery with <span class="text-primary">Financial Reality</span>',
+    overviewSubtext:
+      "NetSuite project management and financials should work as one control loop: delivery plans drive financial outcomes, and financial data informs delivery decisions. These six steps help build that loop.",
+    prioritiesLabel: "Delivery Priorities",
+    tipsHeading:
+      '6 Ways to Integrate <span class="text-primary">Project Management and Financials</span>',
+    tipsSectionLabel: "Step by Step",
+    tipsIntro:
+      "Use this sequence to improve project visibility, billing discipline, and margin control without overcomplicating the delivery model.",
+    stepLabel: "Step",
+    tipContentLabel: "Delivery Focus",
+    tipAsideLabel: "What to Track",
+    tipAsideIntro:
+      "Use these checks to confirm your project financial model is improving control and predictability, not adding admin.",
+    summaryLabel: "Next",
+    summaryNumber: "07",
+    summaryTitle: "Ready to Run Projects With Financial Clarity",
+    summaryText:
+      "By this stage, project delivery and financial reporting should move together, giving leadership a clearer view of margin, risk, and cash impact.",
+    bottomLineAsideLabel: "Control Signals to Watch",
+    bottomLineAsideItems: [
+      "Project margin variance is visible early enough to act",
+      "Billing and revenue timing follow agreed commercial rules",
+      "Forecast updates are driven by current project data, not assumptions",
+    ],
+
+    takeaways: [
+      "Project and financial data should be connected in one workflow",
+      "Time, expense, and change control discipline protects margin",
+      "Billing and revenue recognition need clear operating rules",
+      "Project-level forecasting improves leadership confidence",
+      "Governance cadence is essential after go-live",
+    ],
+
+    tips: [
+      {
+        number: "01",
+        icon: ClipboardCheck,
+        title: "Model Projects with Clear Financial Structure",
+        content:
+          "Start by defining consistent project templates that align tasks, milestones, resource plans, and cost categories. If project structures vary too much without reason, reporting quality drops quickly.",
+        actions: [
+          "Define standard project templates by service type",
+          "Align task design with cost and revenue reporting needs",
+          "Set ownership for template governance and updates",
+        ],
+      },
+      {
+        number: "02",
+        icon: Clock,
+        title: "Enforce Time and Expense Capture Discipline",
+        content:
+          "Project financial accuracy depends on timely capture of effort and costs. Late or inconsistent entry weakens margin visibility and forecast quality.",
+        actions: [
+          "Set submission deadlines and approval SLAs",
+          "Track compliance by project and role",
+          "Escalate repeated late entries through delivery leadership",
+        ],
+      },
+      {
+        number: "03",
+        icon: FileSpreadsheet,
+        title: "Automate Billing and Revenue Rules",
+        content:
+          "Billing should follow commercial terms consistently, whether milestone, fixed fee, or time and materials. Revenue recognition logic should be explicit and testable across common scenarios.",
+        actions: [
+          "Document billing triggers for each contract model",
+          "Validate revenue timing rules with finance before go-live",
+          "Test exception paths such as disputed or partial milestones",
+        ],
+      },
+      {
+        number: "04",
+        icon: AlertTriangle,
+        title: "Control Scope Changes and Change Orders",
+        content:
+          "Uncontrolled scope changes are one of the fastest ways to erode project margin. Change requests need operational and financial assessment before approval.",
+        actions: [
+          "Route all change requests through a single approval path",
+          "Track budget and timeline impact before sign-off",
+          "Maintain a transparent log for commercial and delivery teams",
+        ],
+      },
+      {
+        number: "05",
+        icon: BarChart3,
+        title: "Track Margin and Forecast at Project Level",
+        content:
+          "Leaders need project-level margin insight that updates with current delivery data. Forecasting should be updated from actual progress, resource utilisation, and committed scope.",
+        actions: [
+          "Monitor margin variance by project and portfolio",
+          "Review forecast confidence alongside delivery risk indicators",
+          "Use project trend data to prioritise management attention",
+        ],
+      },
+      {
+        number: "06",
+        icon: Handshake,
+        title: "Run a Strong Post Go-Live Governance Rhythm",
+        content:
+          "Go-live is where weak discipline appears quickly. Establish a regular cadence for reviewing billing quality, revenue accuracy, and project reporting performance, then improve iteratively.",
+        actions: [
+          "Schedule weekly operational-financial review meetings",
+          "Prioritise defects and improvements by business impact",
+          "Maintain a 90-day optimisation roadmap with named owners",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Search,
+        title: "Audit Margin Leakage Early",
+        content:
+          "Use early post go-live data to identify where write-offs, rework, or billing delays are reducing profitability.",
+      },
+      {
+        icon: Users,
+        title: "Align PM and Finance Ownership",
+        content:
+          "Shared governance between project leads and finance reduces handoff delays and reporting conflict.",
+      },
+      {
+        icon: Settings,
+        title: "Keep Configuration Practical",
+        content:
+          "Over-customising project workflows can hurt adoption. Start with clear essentials and evolve in phases.",
+      },
+      {
+        icon: TrendingUp,
+        title: "Measure Improvement Over Time",
+        content:
+          "Track close speed, billing cycle time, margin variance, and forecast accuracy to verify delivery value.",
+      },
+    ],
+
+    conclusion:
+      "NetSuite project management and financials deliver the most value when delivery and finance operate from one shared model. With clear structure, disciplined capture, and consistent governance, project organisations gain stronger control over margin, cash, and forecasting.",
+
+    disclaimer:
+      "Project models vary by sector and commercial structure. ERP Experts can help you design a practical NetSuite approach that aligns project execution with financial control.",
+  },
 };
 
 // Type icons for listing page badges
@@ -2969,9 +3469,9 @@ const cardImages = {
   "netsuite-for-small-businesses":
     "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&q=80",
   "spreadsheet-hidden-costs":
-    "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80",
+    "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80",
   "accounts-receivable-reports":
-    "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80",
+    "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&q=80",
   "csv-import-errors":
     "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=80",
   "maximise-profits":
@@ -2988,6 +3488,12 @@ const cardImages = {
     "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80",
   "how-to-choose-the-right-erp-consultant":
     "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80",
+  "why-netsuite-is-the-best-accounting-software-choice":
+    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80",
+  "understanding-the-role-of-erp-systems":
+    "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&q=80",
+  "netsuite-project-management-financials":
+    "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80",
 };
 
 // Ordered list of article slugs for the listing page
@@ -2998,6 +3504,9 @@ const articleOrder = [
   "value-of-investing-in-a-netsuite-partner",
   "10-signs-of-a-poor-netsuite-implementation",
   "how-to-choose-the-right-erp-consultant",
+  "why-netsuite-is-the-best-accounting-software-choice",
+  "understanding-the-role-of-erp-systems",
+  "netsuite-project-management-financials",
   "maximise-profits",
   "csv-import-errors",
   "accounts-receivable-reports",

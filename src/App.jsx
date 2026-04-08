@@ -22,6 +22,7 @@ function PageLoader() {
 const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About/About"));
 const NetSuiteServices = lazy(() => import("./pages/NetSuiteServices/NetSuiteServices"));
+const ProjectDelivery = lazy(() => import("./pages/ProjectDelivery"));
 
 const Implementation = lazy(() => import("./pages/Implementation/Implementation"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies/CaseStudies"));
@@ -111,6 +112,15 @@ function App() {
             <Route path="/case-studies-totalkare" element={<Navigate to="/case-studies/totalkare" replace />} />
             <Route path="/case-studies-kynetec" element={<Navigate to="/case-studies/kynetec" replace />} />
             <Route path="/post/netsuite-for-small-businesses" element={<Navigate to="/resources/netsuite-for-small-businesses" replace />} />
+            <Route
+              path="/post/why-netsuite-is-the-best-choice-of-accounting-software"
+              element={
+                <Navigate
+                  to="/resources/why-netsuite-is-the-best-accounting-software-choice"
+                  replace
+                />
+              }
+            />
             <Route path="/post/*" element={<Navigate to="/resources" replace />} />
             <Route path="/implementation" element={<Implementation />} />
             <Route path="/case-studies" element={<CaseStudies />} />
@@ -121,6 +131,7 @@ function App() {
             <Route path="/resources/:slug" element={<ResourceArticle />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/support" element={<Support />} />
+            <Route path="/project-delivery" element={<ProjectDelivery />} />
             <Route path="/what-is-netsuite" element={<WhatIsNetSuite />} />
             <Route path="/design-guide" element={<DesignGuide />} />
             <Route path="/changelog" element={<Changelog />} />

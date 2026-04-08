@@ -208,11 +208,11 @@ const initialPhases = [
       },
       {
         priority: "3d",
-        title: "Why NetSuite is the Best Accounting Software Choice",
+        title: "Why NetSuite Is the Best Choice of Accounting Software",
         impressions: 462,
         position: 42.7,
         clicks: 1,
-        status: "todo",
+        status: "done",
         why: "Targets finance decision-makers specifically.",
         keywords: ["NetSuite accounting software", "best accounting software", "NetSuite vs accounting software"],
       },
