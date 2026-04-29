@@ -1,34 +1,46 @@
-# Environment variables
+# Environment & Credentials
 .env
 .env.local
 .env.production
-
-# FTP credentials
 .ftpconfig
+credentials/google-service-account.json
+credentials/linkedin.env
+google-service-account.json
 
-# Logs
-logs
+# Build outputs
+node_modules/
+dist/
+dist-ssr/
+
+# Logs & temporary files
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+output/
+logs/
+*.tmp
+*.bak
+*~
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# OS & Editor files
 .DS_Store
+Thumbs.db
+.vscode/
+.zed/
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-src/Exports/
-scripts/
+
+# Playwright & browser profiles
+.playwright-cli/
+*-automation-profile/
+
+# Exports (keep the folder, ignore contents if needed)
+src/exports/*.xlsx
+src/exports/*.csv
+
+# Only ignore specific large temp files, not the scripts folder
+!scripts/
+!scripts/*.sh
+!scripts/*.py
