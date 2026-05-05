@@ -146,7 +146,7 @@ export default function LayoutEditorial({ article, slug }) {
         </div>
       </section>
 
-      <SharedCTA />
+      <SharedCTA article={article} />
     </>
   );
 }

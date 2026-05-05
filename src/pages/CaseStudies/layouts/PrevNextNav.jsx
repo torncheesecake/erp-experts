@@ -15,7 +15,7 @@ export default function PrevNextNav({ currentId }) {
         <div className="flex justify-between items-center">
           {prev ? (
             <Link
-              to={`/case-studies/${prev.id}`}
+              to={`/case-studies/${prev.slug || prev.id}`}
               className="flex items-center gap-md text-muted hover:text-quaternary transition-colors group"
             >
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -29,7 +29,7 @@ export default function PrevNextNav({ currentId }) {
           )}
           {next ? (
             <Link
-              to={`/case-studies/${next.id}`}
+              to={`/case-studies/${next.slug || next.id}`}
               className="flex items-center gap-md text-muted hover:text-quaternary transition-colors group text-right"
             >
               <div>

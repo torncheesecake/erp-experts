@@ -82,7 +82,7 @@ export default function Footer() {
               to="/contact"
               trackingName="footer_start_conversation"
               trackingPage="footer"
-              className="inline-flex items-center gap-sm bg-(--color-primary) text-white py-3 px-8 text-base font-bold rounded-full hover:scale-105 transition-transform w-fit mb-xl lg:mb-0"
+              className="inline-flex items-center gap-sm bg-(--color-primary) text-white py-3 px-8 text-base font-bold rounded-full hover:scale-105 transition-transform w-fit min-w-fit shrink-0 whitespace-nowrap mb-xl lg:mb-0"
             >
               Start a conversation
               <ArrowRight className="w-4 h-4" />

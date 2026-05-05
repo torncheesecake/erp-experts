@@ -122,7 +122,7 @@ export default function LayoutAlternating({ article, slug }) {
 
       <SharedBonusTips article={article} />
 
-      <SharedCTA />
+      <SharedCTA article={article} />
     </>
   );
 }

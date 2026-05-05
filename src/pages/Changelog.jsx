@@ -258,7 +258,7 @@ const changelog = [
         type: "added",
         title: "Partners page",
         description:
-          "New Partners section at /partners with listing page and individual detail pages for Phocas and Levy Global. Clean light gradient hero, horizontal card layout on the listing page. Detail pages feature side-by-side intro, brand cards, stats, and industry information pulled from partner websites. Black colour scheme throughout. Link added to footer.",
+          "New Partners section at /partners with listing page and individual detail pages. Clean light gradient hero, horizontal card layout on the listing page. Detail pages feature side-by-side intro, brand cards, stats, and industry information pulled from partner websites. Black colour scheme throughout. Link added to footer.",
       },
     ],
   },

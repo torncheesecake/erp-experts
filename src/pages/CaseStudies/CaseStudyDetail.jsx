@@ -6,7 +6,7 @@
 
 import { useParams, Link } from "react-router-dom";
 import SEO from "../../components/ui/SEO";
-import { caseStudies } from "../../data/caseStudies";
+import { caseStudies, caseStudySlugMap } from "../../data/caseStudies";
 
 import LayoutVariant1 from "./layouts/LayoutVariant1";
 import LayoutVariant2 from "./layouts/LayoutVariant2";
@@ -26,7 +26,8 @@ const layoutComponents = {
 
 export default function CaseStudyDetail() {
   const { id } = useParams();
-  const caseStudy = caseStudies[id];
+  const caseStudyId = caseStudySlugMap[id] || Number(id) || id;
+  const caseStudy = caseStudies[caseStudyId];
 
   if (!caseStudy) {
     return (
@@ -48,7 +49,7 @@ export default function CaseStudyDetail() {
       <SEO
         title={`${caseStudy.client} - Case Study`}
         description={caseStudy.subtitle}
-        path={`/case-studies/${id}`}
+        path={`/case-studies/${caseStudy.slug || id}`}
         keywords={caseStudy.seoKeywords || "NetSuite case study, ERP implementation success"}
       />
 

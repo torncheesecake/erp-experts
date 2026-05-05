@@ -12,6 +12,49 @@ export default function LayoutVariant5({ caseStudy }) {
       <SharedHero caseStudy={caseStudy} />
       <HighlightsBar highlights={caseStudy.highlights} />
 
+      {caseStudy.localVideoUrl && (
+        <section className="section-padding-lg border-b border-(--color-text)/10">
+          <div className="container">
+            <div className="grid xl:grid-cols-[minmax(0,0.95fr)_minmax(18rem,0.5fr)] gap-xl md:gap-2xl items-center">
+              <div className="max-w-4xl">
+                <p className="text-label text-quaternary mb-md">
+                  {caseStudy.videoLabel || "Watch the story"}
+                </p>
+                <h3 className="mb-lg">
+                  {caseStudy.videoHeading || (
+                    <>
+                      Hear it from <span className="text-quaternary">{caseStudy.client}</span>
+                    </>
+                  )}
+                </h3>
+                {caseStudy.videoDescription && (
+                  <p className="text-lg md:text-xl text-muted leading-relaxed">
+                    {caseStudy.videoDescription}
+                  </p>
+                )}
+              </div>
+
+              <div className="relative max-w-sm mx-auto w-full">
+                <div className="absolute -inset-4 rounded-[2rem] bg-(--color-quaternary)/10" />
+                <div className="relative aspect-[9/16] rounded-[1.75rem] overflow-hidden shadow-2xl border border-(--color-text)/10 bg-black">
+                  <video
+                    className="w-full h-full object-cover"
+                    controls
+                    playsInline
+                    preload="metadata"
+                    poster={caseStudy.videoPoster}
+                    aria-label={`${caseStudy.client} case study video`}
+                  >
+                    <source src={caseStudy.localVideoUrl} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Intro + Feature Image — full width two-column */}
       <section className="section-padding-lg">
         <div className="container">

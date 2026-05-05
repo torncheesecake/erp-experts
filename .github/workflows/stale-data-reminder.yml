@@ -1,4 +1,4 @@
-name: Reports Updated Notification
+name: Automation Run Notification
 
 on:
   push:
@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - src/data/reports.json
+      - src/data/articles.js
+      - public/api/seo-statuses.json
+      - memory.md
   workflow_dispatch:
 
 jobs:
@@ -13,12 +16,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed files
+        id: changed
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            BEFORE="$(git rev-parse HEAD~1)"
+          fi
+          CHANGED="$(git diff --name-only "$BEFORE" "${{ github.sha }}" | tr '\n' ';')"
+          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
+          if echo "$CHANGED" | grep -q "src/data/reports.json"; then echo "reports_changed=true" >> "$GITHUB_OUTPUT"; else echo "reports_changed=false" >> "$GITHUB_OUTPUT"; fi
+          if echo "$CHANGED" | grep -q "src/data/articles.js"; then echo "articles_changed=true" >> "$GITHUB_OUTPUT"; else echo "articles_changed=false" >> "$GITHUB_OUTPUT"; fi
+          if echo "$CHANGED" | grep -q "public/api/seo-statuses.json"; then echo "statuses_changed=true" >> "$GITHUB_OUTPUT"; else echo "statuses_changed=false" >> "$GITHUB_OUTPUT"; fi
 
       - name: Read reports summary
         id: reports
         run: |
           LAST_UPDATED=$(jq -r '.lastUpdated' src/data/reports.json)
+          DATA_THROUGH=$(jq -r '(.dataThrough // .weeks[0].weekEnding)' src/data/reports.json)
           echo "last_updated=$LAST_UPDATED" >> "$GITHUB_OUTPUT"
+          echo "data_through=$DATA_THROUGH" >> "$GITHUB_OUTPUT"
           echo "week_ending=$(jq -r '.weeks[0].weekEnding' src/data/reports.json)" >> "$GITHUB_OUTPUT"
           echo "ga_sessions=$(jq -r '.weeks[0].ga.sessions' src/data/reports.json)" >> "$GITHUB_OUTPUT"
           echo "ga_page_views=$(jq -r '.weeks[0].ga.pageViews' src/data/reports.json)" >> "$GITHUB_OUTPUT"
@@ -29,6 +49,45 @@ jobs:
           echo "seo_period=$(jq -r '.ga4Period.seoInsights.period' src/data/reports.json)" >> "$GITHUB_OUTPUT"
           echo "seo_impressions=$(jq -r '.ga4Period.seoInsights.totalImpressions' src/data/reports.json)" >> "$GITHUB_OUTPUT"
           echo "seo_clicks=$(jq -r '.ga4Period.seoInsights.totalClicks' src/data/reports.json)" >> "$GITHUB_OUTPUT"
+          echo "seo_demand_queries=$(jq -r '(.ga4Period.seoInsights.demandSignals.erpNetsuiteQueries | length) // 0' src/data/reports.json)" >> "$GITHUB_OUTPUT"
+          echo "seo_gap_candidates=$(jq -r '(.ga4Period.seoInsights.demandSignals.contentGaps | length) // 0' src/data/reports.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Read latest article summary
+        id: articles
+        shell: bash
+        run: |
+          ARTICLE_SUMMARY=$(node --input-type=module <<'EOF'
+          import { articles } from "./src/data/articles.js";
+          const list = [...articles]
+            .filter(a => a?.publishedAt)
+            .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
+            .slice(0, 3)
+            .map(a => `${a.slug} | ${a.title} | ${a.publishedAt}`);
+          console.log(list.join("\n"));
+          EOF
+          )
+          {
+            echo 'latest<<EOF'
+            echo "$ARTICLE_SUMMARY"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Read latest memory log excerpt
+        id: memory
+        run: |
+          if [ -f memory.md ]; then
+            {
+              echo 'tail<<EOF'
+              tail -n 25 memory.md
+              echo 'EOF'
+            } >> "$GITHUB_OUTPUT"
+          else
+            {
+              echo 'tail<<EOF'
+              echo "memory.md not found"
+              echo 'EOF'
+            } >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Send email notification
         uses: dawidd6/action-send-mail@v3
@@ -38,15 +97,24 @@ jobs:
           secure: true
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "ERP Experts - Reports updated (${{ steps.reports.outputs.last_updated }})"
+          subject: "ERP Experts - Automation update (${{ steps.reports.outputs.last_updated }})"
           to: mhillman@erpexperts.co.uk
           from: ERP Experts Website <${{ secrets.SMTP_USERNAME }}>
           body: |
             Hi Matt,
 
-            The marketing reports data in GitHub has been updated.
+            An automation-related update has been pushed to main.
 
-            Reports date: ${{ steps.reports.outputs.last_updated }}
+            Changed files:
+            ${{ steps.changed.outputs.changed }}
+
+            Flags:
+            - Reports changed: ${{ steps.changed.outputs.reports_changed }}
+            - Articles changed: ${{ steps.changed.outputs.articles_changed }}
+            - SEO statuses changed: ${{ steps.changed.outputs.statuses_changed }}
+
+            Refreshed on: ${{ steps.reports.outputs.last_updated }}
+            Data through: ${{ steps.reports.outputs.data_through }}
             Latest week ending: ${{ steps.reports.outputs.week_ending }}
 
             Website:
@@ -63,7 +131,15 @@ jobs:
             - Period: ${{ steps.reports.outputs.seo_period }}
             - Impressions: ${{ steps.reports.outputs.seo_impressions }}
             - Clicks: ${{ steps.reports.outputs.seo_clicks }}
+            - ERP/NetSuite demand queries tracked: ${{ steps.reports.outputs.seo_demand_queries }}
+            - SEO gap candidates tracked: ${{ steps.reports.outputs.seo_gap_candidates }}
+
+            Latest published articles (top 3 by publishedAt):
+            ${{ steps.articles.outputs.latest }}
+
+            Latest run log excerpt (issues/resolution context):
+            ${{ steps.memory.outputs.tail }}
 
             Commit: ${{ github.sha }}
 
-            This email is sent only when src/data/reports.json changes on main.
+            This email is sent when automation-linked files change on main.

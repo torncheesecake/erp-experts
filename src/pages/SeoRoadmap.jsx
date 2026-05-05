@@ -29,6 +29,7 @@ import reportData from "../data/reports.json";
 
 const seoSnapshotDate =
   reportData?.ga4Period?.seoInsights?.period?.split(" to ").at(-1) || reportData?.lastUpdated;
+const demandSignals = reportData?.ga4Period?.seoInsights?.demandSignals || {};
 
 /* ── passwords ── */
 const ADMIN_PIN = "seo2026admin";
@@ -179,10 +180,10 @@ const initialPhases = [
       {
         priority: "3a",
         title: "The Value of Investing in a NetSuite Partner",
-        impressions: 1030,
-        position: 56.0,
+        impressions: 443,
+        position: 57.8,
         clicks: 0,
-        status: "in_progress",
+        status: "done",
         why: "Directly sells E3's service. Explain what a good partner looks like (and make it clear E3 ticks every box).",
         keywords: ["NetSuite partner", "value of NetSuite partner", "why work with a NetSuite partner"],
       },
@@ -243,10 +244,25 @@ const alreadyCovered = [
   { title: "Stress-Free ERP Implementation", impressions: 85, note: "Already have this article on the new site." },
 ];
 
+const phasePresentation = {
+  1: { icon: Zap, colour: "from-green-500 to-emerald-600", accent: "border-green-500", bg: "rgba(16, 185, 129, 0.04)" },
+  2: { icon: TrendingUp, colour: "from-primary to-violet-600", accent: "border-primary", bg: "rgba(232, 58, 122, 0.04)" },
+  3: { icon: Target, colour: "from-amber-500 to-orange-600", accent: "border-amber-500", bg: "rgba(245, 158, 11, 0.04)" },
+  4: { icon: Layers, colour: "from-slate-500 to-slate-600", accent: "border-slate-400", bg: "rgba(100, 116, 139, 0.04)" },
+};
+
+function getRoadmapPhases() {
+  const dynamicPhases = reportData?.ga4Period?.seoInsights?.roadmapPhases;
+  const sourcePhases = Array.isArray(dynamicPhases) && dynamicPhases.length ? dynamicPhases : initialPhases;
+  return sourcePhases.map((phase, index) => ({
+    ...phase,
+    ...phasePresentation[phase.id || index + 1],
+  }));
+}
+
 /* ── helpers ── */
 const fmt = (n) => n.toLocaleString("en-GB");
 const britDate = (s) => (s ? s.replace(/(\d{4})-(\d{2})-(\d{2})/g, (_, y, m, d) => `${d}/${m}/${y}`) : s);
-
 const API_URL = "/api/seo-statuses.php";
 
 async function loadStatuses() {
@@ -338,9 +354,10 @@ export default function SeoRoadmap() {
 }
 
 function useRoadmapState() {
+  const roadmapPhases = getRoadmapPhases();
   const [statusMap, setStatusMap] = useState(() => {
     const map = {};
-    for (const phase of initialPhases) {
+    for (const phase of roadmapPhases) {
       for (const item of phase.items) {
         map[item.priority] = item.status;
       }
@@ -370,7 +387,7 @@ function useRoadmapState() {
     });
   };
 
-  const phases = initialPhases.map((phase) => ({
+  const phases = roadmapPhases.map((phase) => ({
     ...phase,
     items: phase.items.map((item) => ({
       ...item,
@@ -379,8 +396,18 @@ function useRoadmapState() {
   }));
 
   const allItems = phases.flatMap((p) => p.items);
+  const doneItems = allItems.filter((item) => item.status === "done");
+  const openItems = allItems.filter((item) => item.status !== "done");
+  const openPhases = phases
+    .map((phase) => ({
+      ...phase,
+      totalItems: phase.items.length,
+      doneItems: phase.items.filter((item) => item.status === "done").length,
+      items: phase.items.filter((item) => item.status !== "done"),
+    }))
+    .filter((phase) => phase.items.length > 0);
 
-  return { phases, allItems, updateStatus, loaded };
+  return { phases: openPhases, allItems, openItems, doneItems, updateStatus, loaded };
 }
 
 function RoadmapContent({ role, logout }) {
@@ -399,7 +426,7 @@ function RoadmapContent({ role, logout }) {
    ════════════════════════════════════════════════════════════ */
 
 function AdminView({ logout, onPreview }) {
-  const { phases, allItems, updateStatus, loaded } = useRoadmapState();
+  const { phases, allItems, openItems, doneItems, updateStatus, loaded } = useRoadmapState();
 
   if (!loaded) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -408,20 +435,20 @@ function AdminView({ logout, onPreview }) {
   );
 
   const countByStatus = (s) => allItems.filter((i) => i.status === s).length;
-  const doneCount = countByStatus("done");
+  const doneCount = doneItems.length;
   const progressCount = countByStatus("in_progress");
   const todoCount = countByStatus("todo");
   const pct = Math.round((doneCount / allItems.length) * 100);
 
   // Find current + next up
-  const inProgress = allItems.find((i) => i.status === "in_progress");
-  const firstTodo = allItems.find((i) => i.status === "todo");
+  const inProgress = openItems.find((i) => i.status === "in_progress");
+  const firstTodo = openItems.find((i) => i.status === "todo");
 
   // Figure out what's next after the current in-progress item
   let nextUp = null;
   if (inProgress) {
-    const idx = allItems.indexOf(inProgress);
-    nextUp = allItems.slice(idx + 1).find((i) => i.status !== "done") || firstTodo;
+    const idx = openItems.indexOf(inProgress);
+    nextUp = openItems.slice(idx + 1).find((i) => i.status !== "done") || firstTodo;
   }
 
   return (
@@ -446,7 +473,7 @@ function AdminView({ logout, onPreview }) {
             </div>
           </div>
           <h1 className="font-heading text-white" style={{ fontSize: "clamp(1.5rem, 4vw, 2.25rem)", marginBottom: "var(--space-sm)" }}>SEO Content Checklist</h1>
-          <p className="text-white/50 text-sm">{allItems.length} articles across 4 phases</p>
+          <p className="text-white/50 text-sm">{allItems.length} articles across {phases.length} phases</p>
         </div>
       </header>
 
@@ -486,7 +513,7 @@ function AdminView({ logout, onPreview }) {
             {inProgress ? (
               <>
                 <div className="flex items-center gap-md" style={{ marginBottom: "var(--space-sm)" }}>
-                  <span className="text-sm font-bold text-white bg-amber-500 rounded-lg px-2.5 py-0.5 font-mono">{inProgress.priority.toUpperCase()}</span>
+                  <span className="text-sm font-bold text-white bg-amber-500 rounded-lg px-2.5 py-0.5 font-mono">{(inProgress.queuePriority || inProgress.priority).toUpperCase()}</span>
                   <p className="font-heading text-slate-800" style={{ fontSize: "1.15rem" }}>{inProgress.title}</p>
                 </div>
                 <p className="text-sm text-slate-600 leading-relaxed">{inProgress.why}</p>
@@ -505,7 +532,7 @@ function AdminView({ logout, onPreview }) {
             {nextUp || firstTodo ? (
               <>
                 <div className="flex items-center gap-md" style={{ marginBottom: "var(--space-sm)" }}>
-                  <span className="text-sm font-bold text-primary bg-primary/10 rounded-lg px-2.5 py-0.5 font-mono">{(nextUp || firstTodo).priority.toUpperCase()}</span>
+                  <span className="text-sm font-bold text-primary bg-primary/10 rounded-lg px-2.5 py-0.5 font-mono">{((nextUp || firstTodo).queuePriority || (nextUp || firstTodo).priority).toUpperCase()}</span>
                   <p className="font-heading text-slate-800" style={{ fontSize: "1.15rem" }}>{(nextUp || firstTodo).title}</p>
                 </div>
                 <p className="text-sm text-slate-600 leading-relaxed">{(nextUp || firstTodo).why}</p>
@@ -520,8 +547,8 @@ function AdminView({ logout, onPreview }) {
       {/* ── Phase checklists ── */}
       {phases.map((phase) => {
         const Icon = phase.icon;
-        const phaseDone = phase.items.filter((i) => i.status === "done").length;
-        const phaseAll = phase.items.length;
+        const phaseDone = phase.doneItems ?? 0;
+        const phaseAll = phase.totalItems ?? phase.items.length;
         const phasePct = Math.round((phaseDone / phaseAll) * 100);
         return (
           <section key={phase.id}>
@@ -588,7 +615,14 @@ function AdminRow({ item, accent, colour, onStatusChange }) {
           <div className="flex-1 min-w-0">
             <p className={`font-heading leading-snug ${isDone ? "line-through text-slate-500" : "text-slate-800"}`} style={{ fontSize: "1.05rem" }}>{item.title}</p>
             {!isDone && (
-              <p className="text-sm text-slate-600 leading-relaxed" style={{ marginTop: "var(--space-xs)" }}>{item.why}</p>
+              <>
+                <p className="text-sm text-slate-600 leading-relaxed" style={{ marginTop: "var(--space-xs)" }}>{item.why}</p>
+                <div className="flex items-center gap-md text-xs text-slate-500" style={{ marginTop: "var(--space-xs)" }}>
+                  <span>Impressions: <strong>{fmt(item.impressions || 0)}</strong></span>
+                  <span>Position: <strong>{Number(item.position || 0).toFixed(1)}</strong></span>
+                  <span>Clicks/mo: <strong>{item.clicks || 0}</strong></span>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -605,7 +639,7 @@ function AdminRow({ item, accent, colour, onStatusChange }) {
    ════════════════════════════════════════════════════════════ */
 
 function ViewerView({ logout, showBackToAdmin = false, onBackToAdmin }) {
-  const { phases, allItems, loaded } = useRoadmapState();
+  const { phases, allItems, doneItems, loaded } = useRoadmapState();
 
   if (!loaded) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -616,6 +650,9 @@ function ViewerView({ logout, showBackToAdmin = false, onBackToAdmin }) {
   const totalImpressions = allItems.reduce((sum, i) => sum + i.impressions, 0);
   const seoImpressions = reportData?.ga4Period?.seoInsights?.totalImpressions || totalImpressions;
   const countByStatus = (s) => allItems.filter((i) => i.status === s).length;
+  const demandQueries = demandSignals.erpNetsuiteQueries || [];
+  const erpPatterns = demandSignals.erpInPatterns || [];
+  const demandGaps = demandSignals.contentGaps || [];
 
   return (
     <div className="min-h-screen">
@@ -669,8 +706,73 @@ function ViewerView({ logout, showBackToAdmin = false, onBackToAdmin }) {
           <div className="bg-amber-50 border border-amber-200 rounded-2xl" style={{ padding: "var(--space-xl) var(--space-2xl)" }}>
             <h2 className="font-heading text-amber-900" style={{ fontSize: "1.25rem", marginBottom: "var(--space-sm)" }}>The Opportunity</h2>
             <p className="text-amber-800 text-base leading-relaxed">
-              The old blog posts are generating <strong>~{fmt(seoImpressions)} Google impressions per month</strong> across 40+ URLs, but almost none convert to clicks because they rank poorly (position 40–60) and redirect to a generic listing page. The new site has 9 excellent resource articles, but none target the keywords Google already associates with ERP Experts. Writing targeted replacement articles is the single biggest lever for organic traffic growth.
+              Legacy blog URLs still generate <strong>~{fmt(seoImpressions)} Google impressions per month</strong> across 40+ pages, but click-through remains weak because many queries still rank outside the top positions and some traffic pathways are broad redirects rather than tightly matched landing pages. We now have several targeted replacement resources live, but there are still clear keyword gaps in the roadmap queue. Closing those remaining gaps is the biggest lever for sustained organic growth.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ QUERY DEMAND ════════ */}
+      <section className="bg-white border-b border-slate-200">
+        <div className="container" style={{ paddingTop: "var(--space-2xl)", paddingBottom: "var(--space-2xl)" }}>
+          <h2 className="font-heading" style={{ fontSize: "1.4rem", marginBottom: "var(--space-sm)" }}>
+            Live Search Demand Snapshot (ERP and NetSuite)
+          </h2>
+          <p className="text-sm text-slate-600" style={{ marginBottom: "var(--space-lg)" }}>
+            This section shows what people are actively searching now so we can capture missing intent with new or refreshed content.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-lg">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-lg)" }}>
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-sm)" }}>
+                Top ERP and NetSuite queries
+              </p>
+              {demandQueries.length > 0 ? (
+                <ul className="space-y-2 text-sm text-slate-700">
+                  {demandQueries.slice(0, 5).map((q, idx) => (
+                    <li key={`${q.query}-${idx}`}>
+                      <strong>{q.query}</strong> ({fmt(q.impressions)} imp, {q.clicks} clicks, pos {Number(q.position || 0).toFixed(1)})
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-slate-500">No query-level demand data available in the current dataset.</p>
+              )}
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-lg)" }}>
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-sm)" }}>
+                ERP in/for X patterns
+              </p>
+              {erpPatterns.length > 0 ? (
+                <ul className="space-y-2 text-sm text-slate-700">
+                  {erpPatterns.slice(0, 5).map((p, idx) => (
+                    <li key={`${p.term}-${idx}`}>
+                      <strong>ERP for {p.term}</strong> ({fmt(p.impressions)} imp across {p.queryCount} queries)
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-slate-500">No strong ERP-in/for pattern demand detected yet.</p>
+              )}
+            </div>
+
+            <div className="rounded-2xl border border-amber-200 bg-amber-50" style={{ padding: "var(--space-lg)" }}>
+              <p className="text-xs font-bold uppercase tracking-wide text-amber-700" style={{ marginBottom: "var(--space-sm)" }}>
+                Gap candidates (high demand, low traction)
+              </p>
+              {demandGaps.length > 0 ? (
+                <ul className="space-y-2 text-sm text-amber-900">
+                  {demandGaps.slice(0, 5).map((g, idx) => (
+                    <li key={`${g.query}-${idx}`}>
+                      <strong>{g.query}</strong> ({fmt(g.impressions)} imp, {g.clicks} clicks, CTR {g.ctr}%)
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-amber-800">No obvious gap candidates in the current signal window.</p>
+              )}
+            </div>
           </div>
         </div>
       </section>
@@ -699,7 +801,7 @@ function ViewerView({ logout, showBackToAdmin = false, onBackToAdmin }) {
           />
           <div className="relative z-10">
             <p className="text-label text-green-600" style={{ marginBottom: "var(--space-md)" }}>Already Done</p>
-            <h2 className="font-heading" style={{ fontSize: "1.75rem", marginBottom: "var(--space-xl)" }}>Already Covered ({alreadyCovered.length + allItems.filter((i) => i.status === "done").length})</h2>
+            <h2 className="font-heading" style={{ fontSize: "1.75rem", marginBottom: "var(--space-xl)" }}>Already Covered ({alreadyCovered.length + doneItems.length})</h2>
             <div className="bg-white border border-green-200 rounded-2xl overflow-hidden shadow-sm">
               <table className="w-full text-left">
                 <thead>
@@ -722,7 +824,7 @@ function ViewerView({ logout, showBackToAdmin = false, onBackToAdmin }) {
                     </tr>
                   ))}
                   {/* Roadmap articles marked as published */}
-                  {allItems.filter((i) => i.status === "done").map((item) => (
+                  {doneItems.map((item) => (
                     <tr key={item.priority} className="border-t border-green-100">
                       <td style={{ padding: "var(--space-lg) var(--space-xl)" }}>
                         <p className="font-semibold text-slate-800">{item.title}</p>
@@ -907,7 +1009,7 @@ function ArticleCard({ item, accent }) {
         {/* Top row */}
         <div className="flex items-start gap-md" style={{ marginBottom: "var(--space-md)" }}>
           <span className="text-sm font-bold text-primary bg-primary/10 rounded-lg px-3 py-1 flex-shrink-0">
-            {item.priority.toUpperCase()}
+            {(item.queuePriority || item.priority).toUpperCase()}
           </span>
           <h3 className="font-heading flex-1" style={{ fontSize: "1.15rem" }}>{item.title}</h3>
           <div className="flex items-center gap-md flex-shrink-0">

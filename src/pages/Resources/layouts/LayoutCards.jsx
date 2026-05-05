@@ -174,7 +174,7 @@ export default function LayoutCards({ article, slug }) {
         </div>
       </section>
 
-      <SharedCTA />
+      <SharedCTA article={article} />
     </>
   );
 }

@@ -20,7 +20,7 @@ export default function Resources() {
   }, []);
 
   const filtered = useMemo(() => {
-    return articlesList.filter((a) => {
+    const matched = articlesList.filter((a) => {
       const matchesType = activeFilter === "All" || a.type === activeFilter;
       const matchesSearch =
         !searchQuery ||
@@ -28,6 +28,9 @@ export default function Resources() {
         a.desc.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesType && matchesSearch;
     });
+
+    // Keep featured resources pinned first while preserving the existing order for all others.
+    return matched.sort((a, b) => Number(b.featured === true) - Number(a.featured === true));
   }, [activeFilter, searchQuery]);
 
   return (
@@ -163,62 +166,84 @@ export default function Resources() {
       <section className="section-padding-lg">
         <div className="container">
           <div className="grid md:grid-cols-2 gap-lg md:gap-xl">
-            {filtered.map((resource, i) => (
-              <Link
-                key={resource.slug}
-                to={`/resources/${resource.slug}`}
-                className="group block overflow-hidden rounded-2xl md:rounded-3xl border border-(--color-text)/15 hover:border-(--color-primary)/30 transition-all hover:-translate-y-2 hover:shadow-lg"
-              >
-                <div className="aspect-[16/9] relative overflow-hidden">
-                  <img
-                    src={resource.image}
-                    alt={resource.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading={i < 2 ? undefined : "lazy"}
-                  />
-                  {/* Triangle accent */}
-                  <div
-                    className="absolute bottom-0 right-0 opacity-80"
-                    style={{
-                      width: "80px",
-                      height: "69px",
-                      clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-                      backgroundColor: "var(--color-primary)",
-                      transform: "translateX(20px) translateY(20px)",
-                    }}
-                  />
-                  {/* Type badge */}
-                  <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm">
-                    <div className="flex items-center gap-1.5">
-                      {(() => {
-                        const TypeIcon = typeIcons[resource.type] || FileText;
-                        return <TypeIcon className="w-3.5 h-3.5 text-primary" />;
-                      })()}
-                      <span className="text-xs font-bold">{resource.type}</span>
+            {filtered.map((resource, i) => {
+              const featuredCard = resource.featured;
+
+              return (
+                <Link
+                  key={resource.slug}
+                  to={`/resources/${resource.slug}`}
+                  className={`group block overflow-hidden rounded-2xl md:rounded-3xl border transition-all hover:-translate-y-2 hover:shadow-lg ${
+                    featuredCard
+                      ? "border-primary/70 shadow-[0_12px_28px_rgba(230,48,125,0.18)] ring-2 ring-primary/25 hover:border-primary"
+                      : "border-(--color-text)/15 hover:border-(--color-primary)/30"
+                  }`}
+                >
+                  <div className="aspect-[16/9] relative overflow-hidden">
+                    <img
+                      src={resource.image}
+                      alt={resource.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading={i < 2 ? undefined : "lazy"}
+                    />
+                    {/* Triangle accent */}
+                    <div
+                      className="absolute bottom-0 right-0 opacity-80"
+                      style={{
+                        width: "80px",
+                        height: "69px",
+                        clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
+                        backgroundColor: "var(--color-primary)",
+                        transform: "translateX(20px) translateY(20px)",
+                      }}
+                    />
+                    {/* Type badge */}
+                    <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm">
+                      <div className="flex items-center gap-1.5">
+                        {(() => {
+                          const TypeIcon = typeIcons[resource.type] || FileText;
+                          return <TypeIcon className="w-3.5 h-3.5 text-primary" />;
+                        })()}
+                        <span className="text-xs font-bold">{resource.type}</span>
+                      </div>
                     </div>
+                    {featuredCard && (
+                      <div className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-primary text-white text-[11px] font-bold tracking-[0.08em] uppercase">
+                        Featured
+                      </div>
+                    )}
+                    {resource.isNew && (
+                      <div
+                        className={`absolute right-4 px-2.5 py-1 rounded-full bg-black/80 text-white text-[11px] font-bold tracking-[0.08em] uppercase ${
+                          featuredCard ? "top-[3.25rem]" : "top-4"
+                        }`}
+                      >
+                        New
+                      </div>
+                    )}
                   </div>
-                </div>
-                <div className="p-lg md:p-xl">
-                  <div className="flex items-center gap-sm mb-md text-muted">
-                    <Clock className="w-4 h-4" />
-                    <span className="text-sm">{resource.readTime}</span>
+                  <div className="p-lg md:p-xl">
+                    <div className="flex items-center gap-sm mb-md text-muted">
+                      <Clock className="w-4 h-4" />
+                      <span className="text-sm">{resource.readTime}</span>
+                    </div>
+                    <h4
+                      className="text-xl group-hover:text-primary transition-colors"
+                      style={{ marginBottom: "var(--space-sm)" }}
+                    >
+                      {resource.title}
+                    </h4>
+                    <p className="text-base text-muted mb-md">{resource.desc}</p>
+                    <span
+                      className="inline-flex items-center gap-sm px-4 py-2 rounded-full text-sm font-bold transition-all group-hover:scale-105"
+                      style={{ backgroundColor: "var(--color-primary)", color: "white" }}
+                    >
+                      Read more <ArrowRight className="w-4 h-4" />
+                    </span>
                   </div>
-                  <h4
-                    className="text-xl group-hover:text-primary transition-colors"
-                    style={{ marginBottom: "var(--space-sm)" }}
-                  >
-                    {resource.title}
-                  </h4>
-                  <p className="text-base text-muted mb-md">{resource.desc}</p>
-                  <span
-                    className="inline-flex items-center gap-sm px-4 py-2 rounded-full text-sm font-bold transition-all group-hover:scale-105"
-                    style={{ backgroundColor: "var(--color-primary)", color: "white" }}
-                  >
-                    Read more <ArrowRight className="w-4 h-4" />
-                  </span>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
 
           {filtered.length === 0 && (

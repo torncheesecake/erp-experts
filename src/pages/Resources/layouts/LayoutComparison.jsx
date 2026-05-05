@@ -167,7 +167,7 @@ export default function LayoutComparison({ article, slug }) {
                   Criteria
                 </p>
                 <p className="font-heading text-xl leading-tight my-auto">
-                  What actually matters on the shop floor
+                  What actually matters for your business
                 </p>
               </div>
               {columns.map((column, i) => (
@@ -204,7 +204,7 @@ export default function LayoutComparison({ article, slug }) {
                       </p>
                       <h5 className="mb-md">{row.criterion}</h5>
                       <p className="resource-fine">
-                        Compare how each option handles this in real manufacturing conditions.
+                        Compare how each option handles this in real operating conditions.
                       </p>
                     </div>
 

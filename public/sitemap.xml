@@ -49,11 +49,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://erpexperts.co.uk/reports</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://erpexperts.co.uk/partners</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -98,6 +93,27 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://erpexperts.co.uk/resources/netsuite-next-ai-ui-overhaul</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://erpexperts.co.uk/resources/netsuite-apps-extensions</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://erpexperts.co.uk/resources/how-to-set-up-mcp-in-netsuite</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://erpexperts.co.uk/resources/why-netsuite-aftercare-is-essential</loc>
+    <lastmod>2026-05-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://erpexperts.co.uk/resources/what-is-an-erp-system</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -124,6 +140,21 @@
   </url>
   <url>
     <loc>https://erpexperts.co.uk/resources/how-to-choose-the-right-erp-consultant</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://erpexperts.co.uk/resources/why-netsuite-is-the-best-accounting-software-choice</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://erpexperts.co.uk/resources/understanding-the-role-of-erp-systems</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://erpexperts.co.uk/resources/netsuite-project-management-financials</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

@@ -6,7 +6,12 @@
 import { ArrowRight } from "lucide-react";
 import TrackedLink from "../../../components/ui/TrackedLink";
 
-export default function SharedCTA() {
+export default function SharedCTA({ article }) {
+  const ctaTo = article?.ctaTo || "/contact";
+  const ctaLabel = article?.ctaLabel || "Start a conversation";
+  const ctaTrackingName =
+    article?.ctaTrackingName || (ctaTo === "/contact" ? "resource_article_contact" : "resource_article_cta");
+
   return (
     <section className="section-padding-lg">
       <div className="container">
@@ -50,12 +55,12 @@ export default function SharedCTA() {
               </div>
               <div className="flex flex-col sm:flex-row gap-md">
                 <TrackedLink
-                  to="/contact"
-                  trackingName="resource_article_contact"
+                  to={ctaTo}
+                  trackingName={ctaTrackingName}
                   trackingPage="resource-article"
                   className="btn btn-lg justify-center bg-white text-primary hover:scale-105 transition-transform"
                 >
-                  Start a conversation
+                  {ctaLabel}
                   <ArrowRight className="w-5 h-5" />
                 </TrackedLink>
               </div>

@@ -21,6 +21,7 @@ import {
   ArrowDownRight,
   Target,
   Heart,
+  HeartHandshake,
   MessageSquare,
   ThumbsUp,
   Repeat2,
@@ -943,6 +944,18 @@ export default function Reports() {
   const hasGAData = ga.sessions.current != null && ga.sessions.current !== 0;
   const hasEmailData = current.email && current.email.openRate > 0;
   const hasEnoughForTrends = weeks.length >= 3;
+  const dataThrough = reportData.dataThrough || current.weekEnding;
+  const trafficMix = aggregateTrafficSources(activeWeeks) || current.ga.trafficSources || {};
+  const topTrafficSource = Object.entries(trafficMix)
+    .sort((a, b) => b[1] - a[1])[0];
+  const topJourneyPages = aggregateTopPages(activeWeeks).slice(0, 3);
+  const contactPageViews = aggregateTopPages(activeWeeks)
+    .filter((page) => page.path === "/contact")
+    .reduce((sum, page) => sum + page.views, 0);
+  const currentCountry =
+    reportData.ga4Period?.countries?.length > 0
+      ? reportData.ga4Period.countries[0]
+      : null;
 
   const periodLabel = isGoLive
     ? `Since go-live: ${britDate(GO_LIVE_DATE)} to ${britDate(goLiveWeeks[0].weekEnding)} (${goLiveWeeks.length} wks) vs ${preGoLiveComp.length} wks before`
@@ -996,7 +1009,8 @@ export default function Reports() {
                 icons for plain-English explanations.
               </p>
               <p className="text-sm text-(--color-text)/70 flex items-center gap-md flex-wrap" style={{ marginTop: "var(--space-lg)" }}>
-                <span>Last updated: {britDate(reportData.lastUpdated)}</span>
+                <span>Last refreshed: {britDate(reportData.lastUpdated)}</span>
+                <span>Data through: {britDate(dataThrough)}</span>
                 <Link to="/changelog" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
                   View changelog <ArrowUpRight className="w-3.5 h-3.5" />
                 </Link>
@@ -1157,6 +1171,98 @@ export default function Reports() {
                 </>
               )}
             </p>
+          </div>
+        </section>
+      )}
+
+      {hasGAData && (
+        <section
+          className="border-b-2 border-(--color-text)/10"
+          style={{
+            padding: "var(--space-xl) 0",
+            background:
+              "linear-gradient(135deg, rgba(45,106,212,0.05) 0%, rgba(26,26,46,0.04) 100%)",
+          }}
+        >
+          <div className="container">
+            <FadeIn>
+              <div
+                className="rounded-2xl md:rounded-3xl border-2 border-primary/15 bg-white"
+                style={{ padding: "var(--space-xl)" }}
+              >
+                <div className="flex items-start gap-md mb-lg">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-primary/12">
+                    <Search className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-heading font-bold">How People Found And Used The Site</h2>
+                    <p className="text-sm text-(--color-text)/70 mt-xs">
+                      A quick read on acquisition, behaviour, and conversion for this view.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-md">
+                  <div className="rounded-2xl border-2 border-(--color-text)/10" style={{ padding: "var(--space-lg)" }}>
+                    <p className="text-xs font-bold uppercase tracking-wider text-(--color-text)/55 mb-sm">How They Got Here</p>
+                    <p className="text-base leading-relaxed text-(--color-text)/80">
+                      {topTrafficSource
+                        ? <>
+                            The biggest source was <span className="font-bold text-primary">{topTrafficSource[0]}</span> at{" "}
+                            <span className="font-bold">{fmt(topTrafficSource[1], "number")}</span>
+                            {isMonthly || isGoLive ? " average weekly visits" : "% of weekly traffic"}.
+                          </>
+                        : "Traffic source data is not available for this period."}
+                    </p>
+                    {currentCountry && (
+                      <p className="text-sm text-(--color-text)/65 mt-md">
+                        Biggest country in the current 28-day window: <span className="font-bold">{currentCountry.country}</span> ({fmt(currentCountry.users, "number")} users).
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="rounded-2xl border-2 border-(--color-text)/10" style={{ padding: "var(--space-lg)" }}>
+                    <p className="text-xs font-bold uppercase tracking-wider text-(--color-text)/55 mb-sm">Where They Went</p>
+                    {topJourneyPages.length > 0 ? (
+                      <div className="space-y-sm">
+                        {topJourneyPages.map((page, idx) => (
+                          <div key={page.path} className="flex items-center justify-between gap-sm">
+                            <span className="text-sm text-(--color-text)/75 truncate">
+                              {idx + 1}. {page.path}
+                            </span>
+                            <span className="text-sm font-bold shrink-0">{fmt(page.views, "number")}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-base leading-relaxed text-(--color-text)/80">No top-page data is available for this period.</p>
+                    )}
+                  </div>
+
+                  <div className="rounded-2xl border-2 border-(--color-text)/10" style={{ padding: "var(--space-lg)" }}>
+                    <p className="text-xs font-bold uppercase tracking-wider text-(--color-text)/55 mb-sm">How Far They Got</p>
+                    <div className="space-y-sm text-sm text-(--color-text)/80">
+                      <div className="flex items-center justify-between gap-sm">
+                        <span>Visited site</span>
+                        <span className="font-bold">{fmt(ga.users.current, "number")}</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-sm">
+                        <span>Viewed contact page</span>
+                        <span className="font-bold">{fmt(contactPageViews, "number")}</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-sm">
+                        <span>Clicked a CTA</span>
+                        <span className="font-bold">{fmt(ga.ctaClicks.current, "number")}</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-sm">
+                        <span>Became a lead</span>
+                        <span className="font-bold text-green-600">{fmt(ga.leads.current, "number")}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
           </div>
         </section>
       )}
@@ -2276,7 +2382,7 @@ export default function Reports() {
             <SectionHeading
               icon={Users}
               title="Who's Following Us on LinkedIn?"
-              subtitle={`Audience demographics from the last 12 months (${britDate(reportData.linkedinYear.start)} to ${britDate(reportData.linkedinYear.end)}). Total impressions: ${reportData.linkedinYear.totalImpressions.toLocaleString("en-GB")}. Unique members reached: ${reportData.linkedinYear.membersReached.toLocaleString("en-GB")}.`}
+              subtitle={`Latest available LinkedIn audience snapshot (${britDate(reportData.linkedinYear.start)} to ${britDate(reportData.linkedinYear.end)}). Total impressions: ${reportData.linkedinYear.totalImpressions.toLocaleString("en-GB")}. Unique members reached: ${reportData.linkedinYear.membersReached.toLocaleString("en-GB")}.${weeks[0] && reportData.linkedinYear.end < weeks[0].weekEnding ? ` This audience snapshot is older than the weekly LinkedIn metrics above.` : ""}`}
             />
             {(() => {
               const d = reportData.linkedinYear.demographics;
@@ -2388,9 +2494,20 @@ export default function Reports() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-(--color-text)/70 mb-xs">{britDate(post.date)}</p>
-                      <p className="text-base font-medium text-(--color-text)/80">
-                        &ldquo;{post.excerpt}&rdquo;
-                      </p>
+                      {post.url ? (
+                        <a
+                          href={post.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-base font-medium text-(--color-text)/80 underline decoration-primary/30 underline-offset-4 hover:text-primary"
+                        >
+                          {post.excerpt || "Open post on LinkedIn"}
+                        </a>
+                      ) : (
+                        <p className="text-base font-medium text-(--color-text)/80">
+                          &ldquo;{post.excerpt}&rdquo;
+                        </p>
+                      )}
                     </div>
                     <div className="flex items-center gap-lg shrink-0 flex-wrap">
                       <div
@@ -2402,15 +2519,24 @@ export default function Reports() {
                           {post.impressions.toLocaleString("en-GB")}
                         </span>
                       </div>
-                      <div className="flex items-center gap-xs text-sm" title="Likes">
-                        <ThumbsUp className="w-4 h-4 text-(--color-text)/70" />
-                        <span className="font-bold text-(--color-text)/80">{post.votes}</span>
-                      </div>
-                      <div className="flex items-center gap-xs text-sm" title="Comments">
-                        <MessageSquare className="w-4 h-4 text-(--color-text)/70" />
-                        <span className="font-bold text-(--color-text)/80">{post.comments}</span>
-                      </div>
-                      {post.reposts > 0 && (
+                      {typeof post.engagements === "number" ? (
+                        <div className="flex items-center gap-xs text-sm" title="Total engagements">
+                          <HeartHandshake className="w-4 h-4 text-(--color-text)/70" />
+                          <span className="font-bold text-(--color-text)/80">{post.engagements}</span>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-xs text-sm" title="Likes">
+                            <ThumbsUp className="w-4 h-4 text-(--color-text)/70" />
+                            <span className="font-bold text-(--color-text)/80">{post.votes}</span>
+                          </div>
+                          <div className="flex items-center gap-xs text-sm" title="Comments">
+                            <MessageSquare className="w-4 h-4 text-(--color-text)/70" />
+                            <span className="font-bold text-(--color-text)/80">{post.comments}</span>
+                          </div>
+                        </>
+                      )}
+                      {typeof post.engagements !== "number" && post.reposts > 0 && (
                         <div className="flex items-center gap-xs text-sm" title="Reposts / shares">
                           <Repeat2 className="w-4 h-4 text-(--color-text)/70" />
                           <span className="font-bold text-(--color-text)/80">{post.reposts}</span>

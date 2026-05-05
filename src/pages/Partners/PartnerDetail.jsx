@@ -69,6 +69,24 @@ export default function PartnerDetail() {
             style={{ marginTop: "var(--space-2xl)" }}
           >
             <div>
+              {partner.logoUrl && (
+                <div
+                  className={`inline-flex items-center rounded-2xl px-lg py-md mb-lg ${
+                    partner.logoStyle === "dark"
+                      ? "bg-[#1a1a2e] border border-[#1a1a2e]"
+                      : "bg-white border border-(--color-text)/10"
+                  }`}
+                  style={{ maxWidth: "260px" }}
+                >
+                  <div style={{ paddingInline: "22px" }}>
+                    <img
+                      src={partner.logoUrl}
+                      alt={`${partner.name} logo`}
+                      className="h-8 md:h-10 w-auto object-contain"
+                    />
+                  </div>
+                </div>
+              )}
               <p className="text-label mb-md" style={{ color: partner.color }}>
                 {partner.tagline}
               </p>
@@ -78,6 +96,14 @@ export default function PartnerDetail() {
               >
                 {partner.name}
               </h1>
+              <div style={{ marginBottom: "var(--space-lg)" }}>
+                <span
+                  className="inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold"
+                  style={{ backgroundColor: `${partner.color}12`, color: partner.color }}
+                >
+                  {partner.industry}
+                </span>
+              </div>
               <p className="text-lg md:text-xl text-muted leading-relaxed mb-xl">{partner.intro}</p>
               <div className="flex flex-wrap gap-md">
                 <a
@@ -91,16 +117,29 @@ export default function PartnerDetail() {
                   Visit {partner.name}
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
-                <TrackedLink
-                  to="/contact"
-                  trackingName={`partner_${slug}_hero_cta`}
-                  trackingPage="partner_detail"
-                  className="btn text-white hover:scale-105 transition-transform"
-                  style={{ backgroundColor: partner.color }}
-                >
-                  Talk to us about {partner.name}
-                  <ArrowRight className="w-4 h-4" />
-                </TrackedLink>
+                {partner.ctaUrl ? (
+                  <a
+                    href={partner.ctaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn text-white hover:scale-105 transition-transform"
+                    style={{ backgroundColor: partner.color }}
+                  >
+                    {partner.ctaLabel || `Get started with ${partner.name}`}
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                ) : (
+                  <TrackedLink
+                    to="/contact"
+                    trackingName={`partner_${slug}_hero_cta`}
+                    trackingPage="partner_detail"
+                    className="btn text-white hover:scale-105 transition-transform"
+                    style={{ backgroundColor: partner.color }}
+                  >
+                    Talk to us about {partner.name}
+                    <ArrowRight className="w-4 h-4" />
+                  </TrackedLink>
+                )}
               </div>
             </div>
             <div className="relative">
@@ -133,11 +172,15 @@ export default function PartnerDetail() {
             <div
               className="grid gap-lg text-center"
               style={{
-                gridTemplateColumns: `repeat(${partner.stats.length}, 1fr)`,
+                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
               }}
             >
               {partner.stats.map((stat, i) => (
-                <div key={i}>
+                <div
+                  key={i}
+                  className="rounded-2xl border border-(--color-text)/10 bg-white p-lg md:p-xl shadow-sm"
+                  style={{ boxShadow: `inset 0 4px 0 0 ${partner.color}` }}
+                >
                   <div
                     className="text-3xl md:text-4xl font-heading font-bold mb-sm"
                     style={{ color: partner.color }}
@@ -222,7 +265,7 @@ export default function PartnerDetail() {
         </section>
       )}
 
-      {/* Locations (Levy Global) */}
+      {/* Locations */}
       {partner.locations && (
         <section
           className="border-t border-(--color-text)/10"
@@ -252,23 +295,45 @@ export default function PartnerDetail() {
           <p className="text-label text-center mb-md" style={{ color: partner.color }}>
             Partnership
           </p>
-          <h2 className="text-center" style={{ marginBottom: "var(--space-3xl)" }}>
+          <h2
+            className="text-center text-4xl md:text-5xl lg:text-6xl"
+            style={{ marginBottom: "var(--space-3xl)" }}
+          >
             Why <span style={{ color: partner.color }}>{partner.name}</span> + ERP Experts
           </h2>
-          <div className="max-w-3xl mx-auto flex flex-col" style={{ gap: "var(--space-2xl)" }}>
-            {partner.sections.map((section, i) => (
-              <div key={i} className="flex gap-lg">
-                <div className="shrink-0 pt-1">
-                  <CheckCircle className="w-6 h-6" style={{ color: partner.color }} />
-                </div>
-                <div>
-                  <h3 className="mb-md" style={{ fontSize: "1.25rem" }}>
+          <div className="grid md:grid-cols-2 gap-xl lg:gap-2xl max-w-7xl mx-auto">
+            {partner.sections.map((section, i) => {
+              const isOddLast =
+                partner.sections.length % 2 !== 0 && i === partner.sections.length - 1;
+
+              return (
+                <div
+                  key={i}
+                  className={`rounded-2xl md:rounded-3xl border border-(--color-text)/10 bg-white p-xl md:p-2xl lg:p-3xl shadow-sm hover:shadow-md transition-shadow ${
+                    isOddLast ? "md:col-span-2 md:max-w-3xl md:mx-auto" : ""
+                  }`}
+                  style={{ boxShadow: `inset 0 5px 0 0 ${partner.color}` }}
+                >
+                  <div className="flex items-center justify-between mb-lg">
+                    <div className="flex items-center gap-sm">
+                      <div
+                        className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+                        style={{ backgroundColor: `${partner.color}12` }}
+                      >
+                        <CheckCircle className="w-6 h-6" style={{ color: partner.color }} />
+                      </div>
+                      <span className="text-base md:text-lg font-bold text-muted">
+                        Focus Area {i + 1}
+                      </span>
+                    </div>
+                  </div>
+                  <h3 className="mb-lg text-2xl md:text-3xl" style={{ lineHeight: 1.2 }}>
                     {section.title}
                   </h3>
-                  <p className="text-muted text-lg leading-relaxed">{section.content}</p>
+                  <p className="text-muted text-lg md:text-xl leading-relaxed">{section.content}</p>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -318,16 +383,29 @@ export default function PartnerDetail() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-md justify-center">
-                  <TrackedLink
-                    to="/contact"
-                    trackingName={`partner_${slug}_footer_cta`}
-                    trackingPage="partner_detail"
-                    className="btn justify-center bg-white hover:scale-105 transition-transform"
-                    style={{ color: partner.color }}
-                  >
-                    Start a conversation
-                    <ArrowRight className="w-5 h-5" />
-                  </TrackedLink>
+                  {partner.ctaUrl ? (
+                    <a
+                      href={partner.ctaUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn justify-center bg-white hover:scale-105 transition-transform"
+                      style={{ color: partner.color }}
+                    >
+                      {partner.ctaLabel || `Get started with ${partner.name}`}
+                      <ArrowRight className="w-5 h-5" />
+                    </a>
+                  ) : (
+                    <TrackedLink
+                      to="/contact"
+                      trackingName={`partner_${slug}_footer_cta`}
+                      trackingPage="partner_detail"
+                      className="btn justify-center bg-white hover:scale-105 transition-transform"
+                      style={{ color: partner.color }}
+                    >
+                      Start a conversation
+                      <ArrowRight className="w-5 h-5" />
+                    </TrackedLink>
+                  )}
                   <Link
                     to="/partners"
                     className="btn justify-center bg-white/20 text-white border-2 border-white/30 hover:bg-white/30 transition-all"

@@ -3,7 +3,7 @@
  * Data imported from src/data/articles.js — single source of truth.
  *
  * Layout variants 1–3: rendered inline (existing articles).
- * Layout variants 4–8: dispatched to dedicated layout components.
+ * Layout variants 4–9: dispatched to dedicated layout components.
  */
 
 import { useParams, Link } from "react-router-dom";
@@ -17,6 +17,7 @@ import LayoutCards from "./layouts/LayoutCards";
 import LayoutEditorial from "./layouts/LayoutEditorial";
 import LayoutTimeline from "./layouts/LayoutTimeline";
 import LayoutComparison from "./layouts/LayoutComparison";
+import LayoutPoster from "./layouts/LayoutPoster";
 import SharedBonusTips from "./layouts/SharedBonusTips";
 import SharedFeatureIcon from "./layouts/SharedFeatureIcon";
 import SharedHero from "./layouts/SharedHero";
@@ -28,7 +29,92 @@ const layoutComponents = {
   6: LayoutEditorial,
   7: LayoutTimeline,
   8: LayoutComparison,
+  9: LayoutPoster,
 };
+
+const SITE_URL = "https://erpexperts.co.uk";
+
+function absoluteUrl(value) {
+  if (!value) return undefined;
+  if (value.startsWith("http")) return value;
+  return `${SITE_URL}${value.startsWith("/") ? value : `/${value}`}`;
+}
+
+function removeEmptyValues(value) {
+  if (Array.isArray(value)) {
+    return value.map(removeEmptyValues).filter((item) => item !== undefined);
+  }
+
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value)
+        .map(([key, item]) => [key, removeEmptyValues(item)])
+        .filter(([, item]) => item !== undefined && item !== "" && !(Array.isArray(item) && item.length === 0))
+    );
+  }
+
+  return value === undefined || value === null || value === "" ? undefined : value;
+}
+
+function buildResourceStructuredData(article, slug) {
+  const pageUrl = `${SITE_URL}/resources/${slug}`;
+  const imageUrl = absoluteUrl(article.schemaImage || article.heroImage);
+  const publishedAt = article.publishedAt || article.datePublished;
+  const modifiedAt = article.modifiedAt || article.dateModified || publishedAt;
+
+  return [
+    removeEmptyValues({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: article.title,
+      description: article.metaDescription || article.intro || article.subtitle,
+      image: imageUrl ? [imageUrl] : undefined,
+      datePublished: publishedAt,
+      dateModified: modifiedAt,
+      author: {
+        "@type": "Organization",
+        name: "ERP Experts",
+        url: `${SITE_URL}/about`,
+      },
+      publisher: {
+        "@type": "Organization",
+        name: "ERP Experts",
+        logo: {
+          "@type": "ImageObject",
+          url: `${SITE_URL}/og-image.jpg`,
+        },
+      },
+      mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": pageUrl,
+      },
+    }),
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: SITE_URL,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Resources",
+          item: `${SITE_URL}/resources`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: article.title,
+          item: pageUrl,
+        },
+      ],
+    },
+  ];
+}
 
 export default function ResourceArticle() {
   const { slug } = useParams();
@@ -49,7 +135,9 @@ export default function ResourceArticle() {
     );
   }
 
-  // Variants 4–8 use dedicated layout components
+  const structuredData = buildResourceStructuredData(article, slug);
+
+  // Variants 4–9 use dedicated layout components
   const Layout = layoutComponents[article.layoutVariant];
   if (Layout) {
     return (
@@ -58,7 +146,9 @@ export default function ResourceArticle() {
           title={article.title}
           description={article.metaDescription || article.intro}
           path={`/resources/${slug}`}
+          type="article"
           keywords={article.keywords || "NetSuite tips, NetSuite optimisation, ERP best practices, NetSuite performance"}
+          structuredData={structuredData}
         />
         <Layout article={article} slug={slug} />
       </main>
@@ -72,7 +162,9 @@ export default function ResourceArticle() {
         title={article.title}
         description={article.metaDescription || article.intro}
         path={`/resources/${slug}`}
+        type="article"
         keywords={article.keywords || "NetSuite tips, NetSuite optimisation, ERP best practices, NetSuite performance"}
+        structuredData={structuredData}
       />
 
       <SharedHero article={article} slug={slug} />

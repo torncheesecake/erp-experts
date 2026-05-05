@@ -4,7 +4,7 @@
  */
 
 import { Link } from "react-router-dom";
-import { ArrowRight, Globe, ExternalLink } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import SEO from "../../components/ui/SEO";
 import TrackedLink from "../../components/ui/TrackedLink";
 import { partnersList } from "../../data/partners";
@@ -16,7 +16,7 @@ export default function Partners() {
         title="Partners"
         description="We work with best-in-class technology partners to deliver complete solutions for your business. Meet our trusted partners."
         path="/partners"
-        keywords="NetSuite partners, ERP partners, Phocas, Levy Global, business intelligence, technology consulting"
+        keywords="NetSuite partners, ERP partners, Phocas, business intelligence, technology consulting"
       />
 
       {/* Hero — matching detail page style */}
@@ -78,29 +78,68 @@ export default function Partners() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
                     />
+                    <div
+                      className="absolute inset-0 pointer-events-none"
+                      style={{
+                        background: `linear-gradient(155deg, ${partner.color}22 0%, transparent 55%)`,
+                      }}
+                    />
                   </div>
 
                   {/* Content */}
                   <div
                     className="flex flex-col justify-center"
-                    style={{ padding: "var(--space-xl) var(--space-2xl)" }}
+                    style={{
+                      padding: "var(--space-xl) var(--space-2xl)",
+                      boxShadow: `inset 0 5px 0 0 ${partner.color}`,
+                    }}
                   >
-                    <p className="text-label mb-md" style={{ color: "#1a1a2e" }}>
+                    {partner.logoUrl && (
+                      <div
+                        className={`inline-flex items-center rounded-2xl px-lg py-md mb-lg w-fit ${
+                          partner.logoStyle === "dark"
+                            ? "bg-[#1a1a2e] border border-[#1a1a2e]"
+                            : "bg-white border border-(--color-text)/10"
+                        }`}
+                        style={{ maxWidth: "260px" }}
+                      >
+                        <div style={{ paddingInline: "22px" }}>
+                          <img
+                            src={partner.logoUrl}
+                            alt={`${partner.name} logo`}
+                            className="h-7 md:h-9 w-auto object-contain"
+                            loading="lazy"
+                          />
+                        </div>
+                      </div>
+                    )}
+                    <p className="text-label mb-md" style={{ color: partner.color }}>
                       {partner.tagline}
                     </p>
-                    <h2
+                    <h3
                       className="font-heading font-bold"
                       style={{ marginBottom: "var(--space-lg)" }}
                     >
                       {partner.name}
-                    </h2>
+                    </h3>
+                    <div style={{ marginBottom: "var(--space-lg)" }}>
+                      <span
+                        className="inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold"
+                        style={{ backgroundColor: `${partner.color}12`, color: partner.color }}
+                      >
+                        {partner.industry}
+                      </span>
+                    </div>
                     <p
                       className="text-base md:text-lg text-muted leading-relaxed"
                       style={{ marginBottom: "var(--space-xl)" }}
                     >
                       {partner.description}
                     </p>
-                    <div className="flex items-center gap-sm font-bold group-hover:gap-md transition-all">
+                    <div
+                      className="flex items-center gap-sm font-bold group-hover:gap-md transition-all"
+                      style={{ color: partner.color }}
+                    >
                       <span>Learn more</span>
                       <ArrowRight className="w-4 h-4" />
                     </div>

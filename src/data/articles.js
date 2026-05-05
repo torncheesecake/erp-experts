@@ -9,6 +9,7 @@
  *   6    Editorial: narrow blog style, pull quotes. Best for thought-leadership, opinion, long-form.
  *   7    Timeline: vertical timeline with connecting line. Best for step-by-step how-tos.
  *   8    Comparison: side-by-side matrix. Best for evaluations and partner/vendor selection.
+ *   9    Poster: infographic poster layout. Best for ecosystem maps and app extension overviews.
  */
 
 import {
@@ -47,6 +48,7 @@ import {
   Cpu,
   Factory,
   Package,
+  Puzzle,
   Shield,
   Globe,
   Rocket,
@@ -55,6 +57,8 @@ import {
 
 import erpWorkForYouHero from "../assets/521dfd_8d98556467bd405188ecbb172caa3b1f~mv2.png.jpeg";
 import erpImplementationHero from "../assets/521dfd_d357dbfbc21d409792ca92d69250c49a~mv2.webp";
+import netsuiteNextHero from "../assets/netsuite-next-hero.jpg";
+import netsuiteMcpHero from "../assets/netsuite-mcp-hero.jpg";
 
 export const articles = {
   "is-netsuite-right-for-your-business": {
@@ -2362,130 +2366,135 @@ export const articles = {
 
   "value-of-investing-in-a-netsuite-partner": {
     title: "The Value of Investing in a NetSuite Partner",
-    subtitle: "Why the Right Partner Makes the Difference Between Adoption and Friction",
+    subtitle: "A Consolidated Guide for Finance and Operations Leaders",
     cardDescription:
-      "A practical guide to choosing a NetSuite partner that protects your budget, timeline, and outcomes. Learn what good looks like and where projects usually fail.",
+      "Consolidated legacy guidance on NetSuite partners, with practical checks for team quality, speed, risk control, and long-term value.",
     metaDescription:
-      "Understand the value of a NetSuite partner, what services matter most, and how to choose a partner that delivers measurable outcomes.",
+      "Understand the value of investing in a NetSuite partner, from specialist expertise and faster deployment to lower risk, better adoption, and stronger ROI.",
     keywords:
-      "NetSuite partner, value of NetSuite partner, why work with a NetSuite partner, NetSuite implementation partner UK",
-    date: "Mar 2026",
+      "NetSuite partner, value of NetSuite partner, NetSuite solution partner, why work with a NetSuite partner, NetSuite implementation partner UK",
+    date: "Apr 2026",
     readTime: "7 min read",
     type: "Guide",
+    isNew: true,
+    newUntil: "2026-05-19",
     layoutVariant: 8,
     heroImage: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1400&q=80",
+    ctaTo: "/partners",
+    ctaLabel: "View partners",
+    ctaTrackingName: "resource_article_partners",
 
     intro:
-      "Most NetSuite projects do not fail because the software is wrong. They fail because delivery is rushed, ownership is unclear, or decisions are made without enough operational context. This is where the right implementation partner adds value. A strong NetSuite partner turns a software project into a business change program with clear scope, accountable delivery, and measurable outcomes. This guide explains what that value looks like in practice and how to evaluate whether a partner is genuinely capable before you commit.",
+      "Most NetSuite projects do not fail because the software is wrong. They fail because delivery is rushed, ownership is unclear, or key risks are discovered too late. Legacy content on this topic highlighted the same pattern repeatedly: organisations that work with specialist NetSuite partners usually move faster, reduce avoidable mistakes, and get stronger long-term outcomes. This guide consolidates those lessons into a practical selection framework you can use before signing.",
 
     overviewHeading: 'What a Good NetSuite <span class="text-primary">Partner</span> Actually Does',
     overviewSubtext:
-      "A partner should do more than configure fields and workflows. They should reduce project risk, challenge weak assumptions, and help your team build confidence in the system. The best partners protect your timeline and budget while making sure the solution works in the real world, not just in demos.",
-    tipsHeading: '6 Ways the Right Partner Creates <span class="text-primary">Real Value</span>',
+      "A partner should do far more than configure fields and workflows. They should provide specialist expertise, structured delivery teams, clear governance, and practical aftercare that helps your business keep improving after go-live.",
+    tipsHeading: '7 Ways the Right Partner Creates <span class="text-primary">Real Value</span>',
     comparison: {
       heading: 'NetSuite Partner Quality <span class="text-primary">Compared</span>',
       intro:
-        "Use this matrix to distinguish a delivery-focused partner from a partner that mostly sells implementation hours.",
+        "Use this matrix to distinguish a partner that protects outcomes from one that mainly sells implementation hours.",
       columns: ["High-performing partner", "Weak partner", "Business impact"],
       rows: [
         {
-          criterion: "Discovery and scope quality",
+          criterion: "Team depth and specialist roles",
           values: [
             {
-              text: "Defines measurable outcomes, scope boundaries, and release phases early.",
+              text: "Uses a structured team with consulting, solution architecture, technical, and delivery management skills.",
               tone: "positive",
             },
             {
-              text: "Starts build quickly with limited discovery or outcome definition.",
+              text: "Relies on a generic team with limited role clarity or NetSuite depth.",
               tone: "negative",
             },
             {
-              text: "Clear scope controls cost and reduces late-stage rework.",
+              text: "Specialist ownership reduces delivery errors and shortens issue resolution time.",
               tone: "neutral",
             },
           ],
         },
         {
-          criterion: "Data and integration risk management",
+          criterion: "Discovery and deployment speed",
           values: [
             {
-              text: "Front-loads data quality checks and staged integration testing.",
+              text: "Defines measurable outcomes, phased scope, and realistic deployment milestones early.",
               tone: "positive",
             },
             {
-              text: "Leaves migration and interfaces until late delivery phases.",
+              text: "Starts build quickly without strong discovery or outcome mapping.",
               tone: "negative",
             },
             {
-              text: "Early risk handling protects timeline and go-live stability.",
+              text: "Better upfront definition protects timeline, budget, and decision quality.",
               tone: "neutral",
             },
           ],
         },
         {
-          criterion: "Process design depth",
+          criterion: "Customisation and scalability",
           values: [
             {
-              text: "Challenges weak workflows and redesigns processes with end users.",
+              text: "Designs around business requirements with scalable configuration and controlled customisation.",
               tone: "positive",
             },
             {
-              text: "Replicates old workflows with minimal process challenge.",
+              text: "Copies current processes directly with little thought for future scale.",
               tone: "warning",
             },
             {
-              text: "Better process design drives adoption and long-term ROI.",
+              text: "Scalable design reduces rework as complexity grows.",
               tone: "neutral",
             },
           ],
         },
         {
-          criterion: "Training and adoption model",
+          criterion: "Risk, compliance, and governance",
           values: [
             {
-              text: "Delivers role-based training and practical hypercare support.",
+              text: "Runs active risk management, clear escalation paths, and compliance-aware process design.",
               tone: "positive",
             },
             {
-              text: "Relies on generic training with limited post go-live cover.",
+              text: "Treats governance as ad-hoc and handles risk reactively.",
               tone: "negative",
             },
             {
-              text: "Practical training lowers support load and raises confidence.",
+              text: "Stronger governance lowers disruption risk and improves delivery confidence.",
               tone: "neutral",
             },
           ],
         },
         {
-          criterion: "Governance and accountability",
+          criterion: "Training and post go-live aftercare",
           values: [
             {
-              text: "Defines decision owners, escalation paths, and weekly risk reporting.",
+              text: "Provides role-based training, hypercare, and optimisation support after go-live.",
               tone: "positive",
             },
             {
-              text: "Runs ad-hoc governance with inconsistent reporting and ownership.",
-              tone: "negative",
-            },
-            {
-              text: "Strong governance keeps delivery moving and decisions visible.",
-              tone: "neutral",
-            },
-          ],
-        },
-        {
-          criterion: "Post go-live optimisation",
-          values: [
-            {
-              text: "Maintains roadmap reviews and targeted optimisation sprints.",
-              tone: "positive",
-            },
-            {
-              text: "Disengages after go-live and leaves improvements unmanaged.",
+              text: "Delivers generic training and disengages quickly after launch.",
               tone: "warning",
             },
             {
-              text: "Continuous optimisation compounds value over time.",
+              text: "Practical aftercare increases adoption and turns support into measurable value.",
+              tone: "neutral",
+            },
+          ],
+        },
+        {
+          criterion: "Commercial value and accelerators",
+          values: [
+            {
+              text: "Brings proven accelerators, templates, and update discipline from past deployments.",
+              tone: "positive",
+            },
+            {
+              text: "Rebuilds from scratch each time and cannot show reusable delivery assets.",
+              tone: "warning",
+            },
+            {
+              text: "Better methods lower total delivery effort and improve long-term ROI.",
               tone: "neutral",
             },
           ],
@@ -2497,20 +2506,20 @@ export const articles = {
     },
 
     takeaways: [
-      "Good partners reduce project risk before build starts",
-      "Process design matters more than feature checklists",
-      "Training and adoption drive long-term ROI",
-      "Governance and accountability prevent scope drift",
-      "Partner quality directly impacts time-to-value",
+      "Specialist NetSuite expertise reduces avoidable implementation risk",
+      "Structured delivery teams improve speed and quality",
+      "Scalable design and governance protect long-term value",
+      "Role-based training and aftercare drive real adoption",
+      "Partner methods and accelerators affect total cost and ROI",
     ],
 
     tips: [
       {
         number: "01",
         icon: Target,
-        title: "Translate Business Goals Into Delivery Scope",
+        title: "Translate Business Goals Into Measurable Scope",
         content:
-          "A strong partner starts with outcomes, not system screens. They map your commercial priorities to an implementation scope that can actually be delivered. That means documenting what must be live at go-live, what can wait, and which requests are out of scope. This reduces confusion and protects the project from late-stage scope creep.",
+          "A strong partner starts with outcomes, not system screens. They map commercial priorities to delivery scope with clear release boundaries, ownership, and success criteria. This protects the project from late-stage scope creep and vague accountability.",
         actions: [
           "Define three business outcomes the project must deliver in year one",
           "Separate must-have requirements from nice-to-have requests",
@@ -2519,10 +2528,22 @@ export const articles = {
       },
       {
         number: "02",
+        icon: Users,
+        title: "Validate Specialist Team Structure",
+        content:
+          "Legacy projects that performed well usually had clear specialist roles, not one generalist covering everything. Confirm who owns process design, architecture, technical build, data migration, and project governance before signature.",
+        actions: [
+          "Request named roles and responsibilities for each delivery phase",
+          "Confirm whether the same team stays involved through go-live",
+          "Check credentials and comparable project experience by role",
+        ],
+      },
+      {
+        number: "03",
         icon: AlertTriangle,
         title: "De-Risk Data Migration and Integrations Early",
         content:
-          "Data and integrations are where projects often slip. Experienced partners front-load discovery around data quality, mapping rules, and integration dependencies, then test these paths repeatedly before go-live. This prevents surprises in the final weeks and avoids emergency decisions under pressure.",
+          "Data and integrations are where projects often slip. Experienced partners front-load discovery around data quality, mapping rules, and integration dependencies, then test repeatedly before go-live. This avoids emergency decisions in the final weeks.",
         actions: [
           "Audit your source data quality before configuration starts",
           "List all integration points and agree ownership for each",
@@ -2530,11 +2551,11 @@ export const articles = {
         ],
       },
       {
-        number: "03",
+        number: "04",
         icon: Settings,
-        title: "Design Processes, Not Just Configuration",
+        title: "Design for Scale, Not Just Go-Live",
         content:
-          "A weak partner will replicate your current pain points in a new system. A good partner will redesign workflows so teams can work faster with less manual intervention. That includes approval chains, exception handling, reporting logic, and handoffs between departments.",
+          "A weak partner will replicate current pain points in a new system. A strong partner redesigns workflows with growth in mind, including approval chains, exception handling, and reporting logic that still work when complexity increases.",
         actions: [
           "Identify where your current process has delays or duplicate effort",
           "Require process walkthroughs before final build decisions",
@@ -2542,11 +2563,23 @@ export const articles = {
         ],
       },
       {
-        number: "04",
-        icon: GraduationCap,
-        title: "Build Adoption Through Practical Training",
+        number: "05",
+        icon: Shield,
+        title: "Pressure-Test Governance and Compliance Readiness",
         content:
-          "System value appears only when teams use it correctly. The best partners deliver role-based training and real scenarios, not generic slide decks. They also include hypercare support after go-live so issues are resolved quickly while confidence is still forming.",
+          "A capable partner should run disciplined governance and surface compliance implications early, especially in regulated contexts. If reporting, approvals, and risk escalation are unclear, delivery quality will drift.",
+        actions: [
+          "Agree decision owners, risk owners, and escalation thresholds early",
+          "Review governance cadence and reporting templates before build starts",
+          "Confirm how compliance requirements are embedded in process design",
+        ],
+      },
+      {
+        number: "06",
+        icon: GraduationCap,
+        title: "Build Adoption Through Aftercare and Training",
+        content:
+          "System value appears only when teams use it correctly. Strong partners deliver role-based training with real scenarios, then provide practical hypercare and optimisation support. This is where support can shift from cost centre to value driver.",
         actions: [
           "Insist on role-specific training plans for each team",
           "Use real business scenarios during UAT and training",
@@ -2554,27 +2587,15 @@ export const articles = {
         ],
       },
       {
-        number: "05",
+        number: "07",
         icon: BarChart3,
-        title: "Create Governance and Accountability",
+        title: "Assess Total Value, Not Day Rate",
         content:
-          "Clear governance is one of the most underrated benefits of working with an experienced partner. Good partners establish decision owners, escalation paths, and weekly reporting so blockers are handled quickly. This keeps momentum and prevents silent drift in scope or timelines.",
+          "Low day rates can hide weak delivery methods. Compare total 12 to 24 month value, including rework risk, adoption quality, and optimisation capability. Strong partners often bring accelerators and proven templates that reduce effort and improve outcomes.",
         actions: [
-          "Agree a decision-making framework before delivery begins",
-          "Set weekly reporting with risks, decisions, and next actions",
-          "Define escalation paths for timeline or budget risks",
-        ],
-      },
-      {
-        number: "06",
-        icon: Handshake,
-        title: "Support Continuous Improvement After Go-Live",
-        content:
-          "NetSuite is not a one-time project. A capable partner helps you evolve the platform as your business changes, through optimisation sprints, reporting improvements, and quarterly roadmap reviews. This is where long-term ROI compounds.",
-        actions: [
-          "Schedule a 90-day post go-live optimisation review",
-          "Prioritise improvements based on operational pain and ROI",
-          "Maintain a quarterly roadmap to keep delivery focused",
+          "Request full cost models including support and post go-live optimisation",
+          "Ask what proprietary tools or templates reduce delivery effort",
+          "Review how the partner handles updates and continuous improvement",
         ],
       },
     ],
@@ -2584,7 +2605,7 @@ export const articles = {
         icon: Search,
         title: "Ask for Relevant References",
         content:
-          "Request references from businesses with similar complexity and sector needs. Generic references are less useful than comparable delivery contexts.",
+          "Request references from businesses with similar complexity and sector needs. Then call them and ask what went wrong, not only what went well.",
       },
       {
         icon: Users,
@@ -2593,24 +2614,24 @@ export const articles = {
           "Confirm who will actually deliver the project, not just who runs sales. Continuity across discovery, build, and go-live reduces handover risk.",
       },
       {
-        icon: Shield,
-        title: "Pressure-Test the Plan",
+        icon: AlertTriangle,
+        title: "Inspect a Real Risk Register",
         content:
-          "Ask what assumptions could break the timeline and how those risks are managed. Good partners surface risk early rather than hiding it.",
+          "Ask to see a redacted risk register from a past project. It shows how honestly the partner handles delivery risk.",
       },
       {
-        icon: Wrench,
-        title: "Start With a Focused Phase 1",
+        icon: Handshake,
+        title: "Test How They Handle Pushback",
         content:
-          "A scoped first phase builds confidence and protects time-to-value. Add complexity in planned releases once the foundation is stable.",
+          "Good partners challenge weak assumptions and explain trade-offs clearly. If they agree with everything, expect issues later.",
       },
     ],
 
     conclusion:
-      "The value of a NetSuite partner is not theoretical. It appears in cleaner scope, lower delivery risk, stronger adoption, and faster business outcomes. Choosing the right partner is often the highest-leverage decision in the whole program.",
+      "The value of a NetSuite partner is practical, not theoretical. It appears in cleaner scope, faster deployment, lower delivery risk, stronger adoption, and better long-term return. In most projects, partner quality is the highest-leverage decision you make.",
 
     disclaimer:
-      "Project outcomes depend on scope, internal capacity, and delivery discipline. Speak to ERP Experts for a practical assessment of your implementation approach.",
+      "Project outcomes depend on scope, internal capacity, and delivery discipline. Speak to ERP Experts for a practical assessment of partner fit and delivery approach.",
   },
 
   "10-signs-of-a-poor-netsuite-implementation": {
@@ -2961,7 +2982,7 @@ export const articles = {
     readTime: "8 min read",
     type: "Guide",
     layoutVariant: 7,
-    heroImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1400&q=80",
+    heroImage: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1400&q=80",
 
     intro:
       "Choosing accounting software is now a strategic decision, not an admin purchase. As complexity grows, finance needs more than ledgers and invoicing. It needs controls, operational visibility, and faster decision support. This guide consolidates our legacy accounting-software advice, including the old Sage, Xero, and QuickBooks comparison content, into one framework so you can decide whether NetSuite is the right platform for your current model and next stage of growth.",
@@ -3447,6 +3468,1153 @@ export const articles = {
     disclaimer:
       "Project models vary by sector and commercial structure. ERP Experts can help you design a practical NetSuite approach that aligns project execution with financial control.",
   },
+  "why-netsuite-aftercare-is-essential": {
+    title: "Why NetSuite Aftercare Is Essential",
+    subtitle: "A Practical Guide to Protecting ERP Value After Go-Live",
+    cardDescription:
+      "NetSuite value is won or lost after go-live. Learn the operating model, controls, and support cadence that keep performance high and risk low.",
+    date: "May 2026",
+    publishedAt: "2026-05-05T09:00:00+01:00",
+    modifiedAt: "2026-05-05T09:00:00+01:00",
+    isNew: true,
+    newUntil: "2026-05-19",
+    readTime: "6 min read",
+    type: "Guide",
+    layoutVariant: 7,
+    heroImage: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1400&q=80",
+    featureImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
+    challengeLabel: "The Risk",
+    challengeHeading: 'Go-Live Is Not the Finish <span class="text-primary">Line</span>',
+    challengeText:
+      "Many ERP programmes slow down after launch, and that is exactly when business risk increases. Without structured aftercare, small defects become recurring workarounds, reporting trust drops, and teams fall back to manual processes.",
+    intro:
+      "A successful NetSuite implementation does not end at go-live. The real business value arrives in the months after launch, when teams settle into new processes, reporting reliability is proven, and improvement priorities are handled quickly. Aftercare is the operating model that protects that value. This guide explains what good aftercare looks like, what to measure, and how to avoid the common failure pattern where a technically sound deployment underdelivers commercially.",
+    takeaways: [
+      "Stabilise adoption in the first 90 days",
+      "Reduce defects before they become process debt",
+      "Protect data quality and reporting confidence",
+      "Create clear ownership for support and change",
+      "Build an optimisation rhythm beyond launch",
+    ],
+    overviewHeading: 'Build a Reliable <span class="text-primary">Aftercare Model</span>',
+    overviewSubtext:
+      "Strong aftercare combines support responsiveness, governance discipline, and measurable improvement. It keeps users productive while the platform matures.",
+    prioritiesLabel: "Aftercare Priorities",
+    tipsHeading: '6 Steps to Strong <span class="text-primary">NetSuite Aftercare</span>',
+    tipsSectionLabel: "Step by Step",
+    tipsIntro:
+      "Use this sequence to move from reactive support to controlled optimisation without overwhelming your internal team.",
+    stepLabel: "Step",
+    tipContentLabel: "Aftercare Focus",
+    tipAsideLabel: "What to Confirm",
+    tipAsideIntro:
+      "Each step should produce clear ownership, measurable output, and less dependence on workarounds.",
+    summaryLabel: "Next",
+    summaryNumber: "07",
+    summaryTitle: "Move from Stabilisation to Improvement",
+    summaryText:
+      "By this stage, your support model should be reducing incidents, increasing user confidence, and producing consistent performance gains.",
+    bottomLineAsideLabel: "What Good Looks Like",
+    bottomLineAsideItems: [
+      "Support response and resolution times are transparent and consistently met",
+      "Reporting issues are tracked, prioritised, and reduced each month",
+      "Change requests are governed by business value, not urgency alone",
+    ],
+    tips: [
+      {
+        number: "01",
+        icon: HeadphonesIcon,
+        title: "Define a Clear Support Operating Model",
+        content:
+          "Start by defining who handles incidents, questions, and minor enhancements. Users need one clear support path, expected response windows, and escalation rules. Ambiguity here creates duplicated requests and delayed fixes.",
+        actions: [
+          "Publish support channels and owner responsibilities",
+          "Set response and resolution targets by severity",
+          "Define escalation points for finance-critical issues",
+        ],
+      },
+      {
+        number: "02",
+        icon: Shield,
+        title: "Protect Data Quality and Control",
+        content:
+          "After launch, poor data entry and inconsistent process use can quickly degrade reporting quality. Build simple controls early: validation checks, exception reports, and ownership for correction.",
+        actions: [
+          "Track high-impact data exceptions weekly",
+          "Assign named owners to each recurring issue type",
+          "Review role permissions to prevent avoidable errors",
+        ],
+      },
+      {
+        number: "03",
+        icon: BarChart3,
+        title: "Monitor Adoption and Process Compliance",
+        content:
+          "If teams bypass the system, value leaks immediately. Monitor adoption by role, identify low-use workflows, and target practical retraining where behaviour is drifting.",
+        actions: [
+          "Review role-level usage trends every two weeks",
+          "Prioritise retraining for low-compliance processes",
+          "Document and retire manual workarounds",
+        ],
+      },
+      {
+        number: "04",
+        icon: Clock,
+        title: "Run a 30-60-90 Day Stabilisation Plan",
+        content:
+          "The first 90 days should be structured. Separate urgent fixes from optimisation opportunities, and report progress against a visible plan so leadership can see risk reducing over time.",
+        actions: [
+          "Create a ranked backlog with severity and business impact",
+          "Review progress weekly with operational and finance leads",
+          "Close high-risk defects before adding low-value enhancements",
+        ],
+      },
+      {
+        number: "05",
+        icon: Wrench,
+        title: "Control Enhancements with Governance",
+        content:
+          "Aftercare often fails when every request is treated as urgent. Introduce light governance so changes are approved by business value, delivery effort, and control impact.",
+        actions: [
+          "Use a standard change request template",
+          "Require clear benefit and owner for each enhancement",
+          "Bundle related changes into planned release windows",
+        ],
+      },
+      {
+        number: "06",
+        icon: Award,
+        title: "Measure Outcomes, Not Ticket Volume",
+        content:
+          "Closing tickets is not the goal. The goal is better operational performance. Use a small KPI set to show whether aftercare is improving close speed, issue recurrence, and user confidence.",
+        actions: [
+          "Track repeat-incident rate and mean time to resolve",
+          "Measure month-end close speed and reporting stability",
+          "Review stakeholder confidence each month",
+        ],
+      },
+    ],
+    bonusTips: [
+      {
+        icon: Users,
+        title: "Keep Super Users Active",
+        content:
+          "Nominate department super users to triage common issues early and improve feedback quality before tickets are raised.",
+      },
+      {
+        icon: Search,
+        title: "Audit Recurring Incidents",
+        content:
+          "If the same ticket appears repeatedly, treat it as a root-cause investigation, not a quick fix.",
+      },
+      {
+        icon: Settings,
+        title: "Standardise Before Customising",
+        content:
+          "Stabilise core process adoption before introducing additional custom workflows.",
+      },
+      {
+        icon: Rocket,
+        title: "Plan Quarterly Optimisation",
+        content:
+          "Once stable, run quarterly improvements tied to margin, cash flow, and service outcomes.",
+      },
+    ],
+    conclusion:
+      "NetSuite aftercare is where implementation value is protected or lost. With clear ownership, measurable controls, and disciplined change governance, organisations can turn go-live momentum into reliable long-term performance.",
+    disclaimer:
+      "Aftercare design should reflect your operating model, risk profile, and internal capability. ERP Experts can help you define a practical support and optimisation structure for your NetSuite environment.",
+  },
+
+  "why-choose-netsuite-support-from-erp-experts": {
+    title: "Why Choose NetSuite Support From ERP Experts",
+    subtitle: "Why Directors Choose ERP Experts for NetSuite Aftercare",
+    cardDescription:
+      "A practical commercial case for choosing ERP Experts for NetSuite Aftercare, with proof points, plan clarity, and a clear delivery model.",
+    metaDescription:
+      "Learn why directors choose ERP Experts for NetSuite Aftercare, including response speed, UK ownership model, clear plans, and proven delivery outcomes.",
+    keywords:
+      "NetSuite support, NetSuite Aftercare, NetSuite support UK, ERP Experts support plans, NetSuite managed support",
+    date: "Apr 2026",
+    readTime: "7 min read",
+    type: "Guide",
+    layoutVariant: 8,
+    heroImage: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=1400&q=80",
+    ctaTo: "/support",
+    ctaLabel: "Compare Aftercare plans",
+    ctaTrackingName: "resource_article_support",
+
+    intro:
+      "If NetSuite is central to finance and operations, poor support quickly becomes a commercial problem. Delayed fixes, unclear ownership, and recurring issues create risk for reporting, service, and growth. Directors choose ERP Experts Aftercare because it combines fast response with clear accountability and continuous improvement.",
+
+    overviewHeading: 'Why Businesses Choose ERP Experts for <span class="text-primary">NetSuite Aftercare</span>',
+    overviewSubtext:
+      "Our Aftercare model is designed for operational confidence. You get a UK-based team, one accountable point of contact, clear Bronze, Silver, and Gold plans, and unused hours that roll over for up to six months. The result is predictable support cost, quicker resolution, and a platform that keeps improving.",
+    tipsHeading: '8 Reasons Directors Choose <span class="text-primary">ERP Experts Aftercare</span>',
+    checklistEyebrow: "Aftercare Buyer Guide",
+    checklistHeading:
+      "What to Check Before You Commit to a NetSuite Support Partner",
+    checklistIntro:
+      "Use these checkpoints to evaluate capability, ownership, and commercial clarity so you can choose with confidence, not guesswork.",
+    criteriaPanelText: "What directors should compare before signing",
+    rowComparisonText:
+      "Compare each option against service quality, ownership model, and long-term commercial fit.",
+    startHereLabel: "Ask This First",
+    thenVerifyLabel: "Then Pressure-Test",
+    thenVerifyIntro:
+      "These checks help you separate real capability from sales language.",
+
+    comparison: {
+      heading: 'ERP Experts Aftercare <span class="text-primary">Compared</span>',
+      intro:
+        "If you are comparing providers, this is the practical difference between ERP Experts Aftercare and a typical reactive support setup.",
+      columns: ["ERP Experts Aftercare", "Typical reactive support", "What it means for your business"],
+      recommendedColumn: 0,
+      rows: [
+        {
+          criterion: "Team model and ownership",
+          values: [
+            {
+              text: "UK-based team, single point of contact, and clear ownership from assessment through resolution.",
+              tone: "positive",
+            },
+            {
+              text: "Queue-based support with repeated handoffs and limited context on your setup.",
+              tone: "negative",
+            },
+            {
+              text: "Faster decisions, fewer repeated explanations, and less operational disruption.",
+              tone: "neutral",
+            },
+          ],
+        },
+        {
+          criterion: "Response performance",
+          values: [
+            {
+              text: "Proven delivery record with over 33,000 support tickets handled and under 30-minute average response time.",
+              tone: "positive",
+            },
+            {
+              text: "Variable response quality and limited evidence on real support performance.",
+              tone: "negative",
+            },
+            {
+              text: "Critical issues are contained faster, protecting productivity and confidence.",
+              tone: "neutral",
+            },
+          ],
+        },
+        {
+          criterion: "Plan clarity and commercial control",
+          values: [
+            {
+              text: "Clear Bronze, Silver, and Gold structures with transparent monthly hours and a fixed rate model.",
+              tone: "positive",
+            },
+            {
+              text: "Unclear scope, blended rates, and uncertain monthly value.",
+              tone: "warning",
+            },
+            {
+              text: "Better budgeting, clearer expectations, and fewer invoice surprises.",
+              tone: "neutral",
+            },
+          ],
+        },
+        {
+          criterion: "Unused capacity and value retention",
+          values: [
+            {
+              text: "Unused support hours roll over for up to six months, helping you protect value.",
+              tone: "positive",
+            },
+            {
+              text: "Use-it-or-lose-it structures where unused effort disappears at month end.",
+              tone: "warning",
+            },
+            {
+              text: "You can align support usage with actual business demand.",
+              tone: "neutral",
+            },
+          ],
+        },
+        {
+          criterion: "Capability beyond helpdesk tickets",
+          values: [
+            {
+              text: "From core support and maintenance through to training, consulting, and enhancement capacity, including 577 custom solutions delivered.",
+              tone: "positive",
+            },
+            {
+              text: "Primarily break-fix support with limited ability to improve processes and system value.",
+              tone: "negative",
+            },
+            {
+              text: "Support becomes a growth lever, not just a cost centre.",
+              tone: "neutral",
+            },
+          ],
+        },
+        {
+          criterion: "Alignment to your stage of maturity",
+          values: [
+            {
+              text: "Bronze for everyday support, Silver for enablement and team development, Gold for strategic extension of your team.",
+              tone: "positive",
+            },
+            {
+              text: "One-size-fits-all support that does not adapt as complexity increases.",
+              tone: "warning",
+            },
+            {
+              text: "You can choose the right level now and scale support without changing provider.",
+              tone: "neutral",
+            },
+          ],
+        },
+      ],
+      recommendationTitle: "Why This Matters",
+      recommendationText:
+        "The right support partner protects business continuity, not just ticket closure. ERP Experts is strongest when you need fast issue resolution, commercial clarity, and a team that improves NetSuite over time.",
+    },
+
+    takeaways: [
+      "33,000+ support tickets handled with under 30-minute average response time",
+      "UK-based team and single point of contact reduce handoff delays",
+      "Bronze, Silver, and Gold plans align to your maturity and demand",
+      "Unused support hours roll over for up to six months",
+      "Support includes maintenance, enablement, and improvement work, not just break-fix tickets",
+    ],
+
+    proofSnapshots: [
+      {
+        title: "Kynetec: Rescue to long-term Aftercare",
+        summary:
+          "Replaced a failing NetSuite environment in six months, delivered on time and on budget, then moved into a five-year aftercare contract.",
+        to: "/case-studies/3",
+      },
+      {
+        title: "Totalkare: From rescue project to growth partner",
+        summary:
+          "After stabilising the platform, Totalkare tripled headcount with real-time visibility and continues to run a long-term improvement partnership.",
+        to: "/case-studies/4",
+      },
+    ],
+
+    tips: [
+      {
+        number: "01",
+        icon: Target,
+        title: "Choose the Right Plan Without Overbuying",
+        content:
+          "You should only pay for the level of support you actually need. Bronze gives dependable day-to-day cover. Silver adds capability uplift through structured training. Gold gives wider strategic capacity for consulting, development, and enhancements.",
+        actions: [
+          "Compare Bronze, Silver, and Gold against your real monthly demand",
+          "Map your expected monthly workload to available support hours",
+          "Choose based on risk, complexity, and growth plans, not headline price",
+        ],
+      },
+      {
+        number: "02",
+        icon: Clock,
+        title: "Buy on Evidence, Not Promises",
+        content:
+          "Support quality should be measurable. ERP Experts can point to over 33,000 support tickets handled and under 30-minute average response time, which gives decision-makers a factual basis for confidence.",
+        actions: [
+          "Ask for response and resolution evidence",
+          "Clarify how urgent issues are escalated and owned",
+          "Confirm what communication you receive while an issue is in progress",
+        ],
+      },
+      {
+        number: "03",
+        icon: Users,
+        title: "Keep Ownership Clear From Day One",
+        content:
+          "The operating model matters as much as technical skill. ERP Experts uses a UK-based team and single point of contact model, reducing repeated briefings and slow handoffs.",
+        actions: [
+          "Confirm who owns your account day to day",
+          "Ask how handoffs are managed between functional and technical work",
+          "Confirm how escalation works for critical issues",
+        ],
+      },
+      {
+        number: "04",
+        icon: Shield,
+        title: "Protect Commercial Control",
+        content:
+          "Support should be commercially straightforward. ERP Experts provides clear plan inclusions, a transparent rate model, and rollover terms that protect value when demand fluctuates.",
+        actions: [
+          "Confirm how unused hours are treated month to month",
+          "Check whether rates are consistent across specialist roles",
+          "Review exactly what each plan includes before procurement sign-off",
+        ],
+      },
+      {
+        number: "05",
+        icon: Settings,
+        title: "Keep NetSuite Stable Through Change",
+        content:
+          "Aftercare should cover preventive maintenance and release discipline as well as issue resolution. That keeps the platform reliable as your processes and users evolve.",
+        actions: [
+          "Ask how updates, patches, and security tasks are planned",
+          "Confirm testing and communication approach around release windows",
+          "Check how post-release issues are triaged and resolved",
+        ],
+      },
+      {
+        number: "06",
+        icon: GraduationCap,
+        title: "Increase User Confidence and Adoption",
+        content:
+          "Strong support improves team capability, not only ticket metrics. Silver and Gold include structured training elements that reduce avoidable tickets and help users work with confidence.",
+        actions: [
+          "Identify where users need role-based training most",
+          "Plan enablement around onboarding and process changes",
+          "Track whether training reduces repeated support demand",
+        ],
+      },
+      {
+        number: "07",
+        icon: Puzzle,
+        title: "Turn Support Time Into Improvement Value",
+        content:
+          "As complexity grows, you need more than helpdesk cover. Gold-level support includes consulting and enhancement capacity so your support partner can help improve process, reporting, and performance.",
+        actions: [
+          "Review how change requests are prioritised and delivered",
+          "Confirm available capacity for enhancement and integration work",
+          "Assess whether your partner can support both run and improve activity",
+        ],
+      },
+      {
+        number: "08",
+        icon: TrendingUp,
+        title: "Ask What the First 30 Days Will Look Like",
+        content:
+          "A capable partner should explain onboarding clearly before contract: triage model, escalation path, communication cadence, and what good looks like by day 30. If that plan is vague, service quality usually is too.",
+        actions: [
+          "Request a clear 30-day onboarding and stabilisation plan",
+          "Confirm meeting cadence, escalation path, and reporting format",
+          "Agree measurable outcomes for response quality, closure speed, and user confidence",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Search,
+        title: "Use Case Studies as Proof",
+        content:
+          "Read real delivery examples to verify that support quality is not just a sales claim.",
+      },
+      {
+        icon: MessageSquare,
+        title: "Prioritise Clear Communication",
+        content:
+          "Strong support should give clear options, expected effort, and commercial impact before work starts.",
+      },
+      {
+        icon: Clock,
+        title: "Protect Value in Quiet Months",
+        content:
+          "Hour rollover can materially improve value if demand fluctuates through the year.",
+      },
+      {
+        icon: Award,
+        title: "Choose Proven Teams Over Generic Providers",
+        content:
+          "NetSuite-specific depth and consistent ownership reduce both risk and rework.",
+      },
+    ],
+
+    relatedLinks: [
+      {
+        label: "Support plans and inclusions",
+        to: "/support",
+        description: "Compare Bronze, Silver, and Gold Aftercare in detail.",
+      },
+      {
+        label: "Meet the team behind delivery",
+        to: "/about",
+        description: "See who you will work with and how ERP Experts is structured.",
+      },
+      {
+        label: "Read client case studies",
+        to: "/case-studies",
+        description: "Review real outcomes and how support enabled ongoing success.",
+      },
+      {
+        label: "Kynetec NetSuite rescue and aftercare",
+        to: "/case-studies/3",
+        description: "Delivered in half the original timeline and moved to a five-year aftercare contract.",
+      },
+      {
+        label: "Totalkare long-term partnership story",
+        to: "/case-studies/4",
+        description: "From implementation rescue to a growth platform supporting a much larger team.",
+      },
+      {
+        label: "Common support and aftercare questions",
+        to: "/faq",
+        description: "Clarify support hours, process, and practical expectations.",
+      },
+      {
+        label: "Book a support conversation",
+        to: "/contact",
+        description: "Talk through your setup and get a recommendation on the right plan.",
+      },
+    ],
+
+    conclusion:
+      "Businesses choose ERP Experts for NetSuite Aftercare because the offer is clear, proven, and commercially practical. You get accountable UK ownership, rapid response, predictable support structure, and the capacity to improve the platform as your business evolves. For directors, that means less operational risk and more confidence in NetSuite as a long-term system.",
+
+    disclaimer:
+      "Support and Aftercare needs vary by organisation size, internal capability, and operating complexity. Speak to ERP Experts for a tailored recommendation.",
+  },
+
+  "how-to-set-up-mcp-in-netsuite": {
+    title: "How to Set Up MCP in NetSuite",
+    subtitle: "A Practical Guide to the NetSuite AI Connector Service",
+    cardDescription:
+      "Step-by-step setup guidance for NetSuite MCP using official Oracle documentation, including features, permissions, URLs, SuiteApp setup, testing, and governance.",
+    metaDescription:
+      "Learn how to set up MCP in NetSuite with the AI Connector Service. Follow a clear setup sequence for features, permissions, endpoints, SuiteApp tools, and safe rollout.",
+    keywords:
+      "NetSuite MCP setup, NetSuite AI Connector Service, MCP Standard Tools SuiteApp, NetSuite Claude connector, NetSuite ChatGPT connector",
+    date: "Apr 2026",
+    readTime: "8 min read",
+    type: "Guide",
+    isNew: true,
+    newUntil: "2026-05-08",
+    layoutVariant: 7,
+    heroImage: netsuiteMcpHero,
+    ctaTo: "/contact",
+    ctaLabel: "Book an MCP setup session",
+    ctaTrackingName: "resource_article_mcp_setup_contact",
+
+    challengeLabel: "The Common Failure Point",
+    challengeHeading: 'Most MCP Setups Break at <span class="text-primary">Permissions and Endpoint Choice</span>',
+    challengeText:
+      "The connector itself is straightforward, but production-ready setup is not just pasting a URL. The usual blockers are missing NetSuite features, incorrect role permissions, use of the Administrator role, and endpoint mismatch between SuiteApp-only and account-wide tools.",
+
+    intro:
+      "NetSuite now supports Model Context Protocol through the NetSuite AI Connector Service, which allows AI clients to invoke governed tools against NetSuite. That does not mean every setup is safe by default. To get reliable results, you need the right feature switches, a dedicated role model, clear endpoint scoping, and controlled validation before broader rollout.",
+
+    overviewHeading: 'What This Setup Guide <span class="text-primary">Covers</span>',
+    overviewSubtext:
+      "This sequence follows Oracle NetSuite help documentation and aligns with the current connector behaviour, including role-based controls, SuiteApp options, endpoint formats, integration record behaviour, and concurrency governance.",
+
+    takeaways: [
+      "Enable the right features first, including Server SuiteScript and OAuth 2.0",
+      "Use a dedicated non-admin role with MCP-specific permissions",
+      "Choose the correct endpoint format for SuiteApp-only or account-wide tools",
+      "Validate with read-first prompts and review execution logs",
+      "Treat MCP as a governed capability with risk and concurrency controls",
+    ],
+
+    prioritiesLabel: "Core Priorities",
+    tipsHeading: '7 Steps to Set Up <span class="text-primary">MCP in NetSuite</span>',
+    tipsSectionLabel: "Step by Step",
+    tipsIntro:
+      "Use this sequence in order. It reduces setup friction and avoids the most common security and reliability errors.",
+    stepLabel: "Step",
+    tipContentLabel: "Setup Action",
+    tipAsideLabel: "What to Confirm",
+    tipAsideIntro:
+      "Complete these checks before moving to the next step so your rollout stays controlled.",
+    summaryLabel: "Next",
+    summaryNumber: "08",
+    summaryTitle: "Move from Pilot to Controlled Rollout",
+    summaryText:
+      "Once your pilot flow is stable, expand tool exposure and user access in stages, with clear ownership and audit review.",
+    bottomLineAsideLabel: "Non-Negotiables",
+    bottomLineAsideItems: [
+      "Never connect with Administrator-level access",
+      "Use endpoint scoping intentionally: `/suiteapp/<applicationid>` or `/all`",
+      "Validate permissions and logs before enabling write-heavy workflows",
+    ],
+
+    tips: [
+      {
+        number: "01",
+        icon: Target,
+        title: "Decide Your Initial Scope",
+        content:
+          "Pick one business flow to validate first, such as customer lookup, report retrieval, or saved search execution. Do not begin with broad write access. A narrow pilot makes permissions and outcomes easier to validate.",
+        actions: [
+          "Define one read-first use case and success criteria",
+          "Choose whether you need standard tools only or custom tools",
+          "Agree pilot owners across NetSuite admin and business users",
+        ],
+      },
+      {
+        number: "02",
+        icon: Settings,
+        title: "Enable Required NetSuite Features",
+        content:
+          "For the AI Connector Service, enable Server SuiteScript and OAuth 2.0. If you plan to use MCP Standard Tools SuiteApp, also enable REST Web Services. For custom tool development, include SuiteCloud Development Framework.",
+        actions: [
+          "Go to Setup > Company > Enable Features > SuiteCloud",
+          "Enable Server SuiteScript and OAuth 2.0",
+          "Enable REST Web Services for MCP Standard Tools use cases",
+        ],
+      },
+      {
+        number: "03",
+        icon: Shield,
+        title: "Create a Dedicated MCP Role",
+        content:
+          "Assign MCP access to a non-administrator role only. Add the setup permissions MCP Server Connection and Log in using OAuth 2.0 Access Tokens. For write actions, grant record-level permissions deliberately by role.",
+        actions: [
+          "Create or select a low-privilege role for MCP",
+          "Add MCP Server Connection and OAuth 2.0 Access Token login permissions",
+          "Grant REST and record permissions only where business-approved",
+        ],
+      },
+      {
+        number: "04",
+        icon: Package,
+        title: "Install the MCP Standard Tools SuiteApp (Optional but Recommended)",
+        content:
+          "If you want ready-made tools, install MCP Standard Tools from SuiteApp Marketplace. The SuiteApp is managed and receives automatic updates, so treat updates as change events and test critical prompts after each update.",
+        actions: [
+          "Install MCP Standard Tools from SuiteApp Marketplace",
+          "Confirm installation status before connector testing",
+          "Document regression checks for managed SuiteApp updates",
+        ],
+      },
+      {
+        number: "05",
+        icon: Link2,
+        title: "Use the Correct Connector URL",
+        content:
+          "NetSuite supports two common endpoint patterns. Use `/services/mcp/v1/suiteapp/<applicationid>` when you want toolset scoping by SuiteApp. Use `/services/mcp/v1/all` when you need all available tools across SuiteApps and ACPs.",
+        actions: [
+          "Confirm your account-specific domain and account ID format",
+          "Choose `/suiteapp/<applicationid>` or `/all` intentionally",
+          "For standard tools, verify `com.netsuite.mcpstandardtools` endpoint format",
+        ],
+      },
+      {
+        number: "06",
+        icon: ClipboardCheck,
+        title: "Authorize and Validate in a Read-First Pilot",
+        content:
+          "Complete OAuth connection from your AI client, then validate using read-only prompts first. Check that tool visibility, returned data, and execution behaviour match role expectations before enabling broader actions.",
+        actions: [
+          "Run report, saved search, and SuiteQL read tests first",
+          "Review AI Connector Service (MCP) execution logs in the integration record",
+          "Confirm role-based visibility and response correctness with business owners",
+        ],
+      },
+      {
+        number: "07",
+        icon: AlertTriangle,
+        title: "Apply Risk and Performance Controls Before Scale",
+        content:
+          "NetSuite highlights risks such as prompt injection, hallucination, unintended actions, and sensitive data exposure. Pair role controls with operational safeguards. Also account for integration concurrency limits and retry patterns in your AI client.",
+        actions: [
+          "Set clear guardrails for write operations and approvals",
+          "Monitor concurrency limits and handle Too Many Requests retries",
+          "Use NetSuite reporting and saved searches before custom SuiteQL where possible",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Search,
+        title: "Use Tool-Specific Prompts",
+        content:
+          "Reference exact report and saved search names in prompts to reduce ambiguity and improve response quality.",
+      },
+      {
+        icon: Database,
+        title: "Use External IDs for Record Creation",
+        content:
+          "When creating records via `ns_createRecord`, set `externalId` to improve traceability and reduce duplicate risk.",
+      },
+      {
+        icon: Clock,
+        title: "Plan for Ongoing Connector Operations",
+        content:
+          "Managed SuiteApp updates and AI client changes can affect behaviour, so include MCP checks in your regular release process.",
+      },
+      {
+        icon: Users,
+        title: "Separate Admin and End-User Responsibilities",
+        content:
+          "Keep role and integration governance with admins, and prompt quality and process validation with business users.",
+      },
+    ],
+
+    conclusion:
+      "Setting up MCP in NetSuite is less about a quick connector toggle and more about disciplined configuration. If you sequence features, permissions, endpoint scope, and validation properly, you can deliver useful AI-assisted workflows without losing control of data, approvals, or operational stability.",
+
+    disclaimer:
+      "Based on Oracle NetSuite documentation pages including Required Features and Permissions, Connect to the NetSuite AI Connector Service, MCP Standard Tools SuiteApp guidance, FAQ, and concurrency governance (accessed April 2026). Product behaviour and client support can change, so always validate in your own account before production rollout.",
+  },
+
+  "netsuite-apps-extensions": {
+    title: "NetSuite Apps & Extensions",
+    subtitle: "Useful for showing the wider NetSuite ecosystem.",
+    cardDescription:
+      "A visual, easy-read guide to real NetSuite apps and extensions across shipping, tax, AP automation, warehouse operations, and eCommerce integration.",
+    metaDescription:
+      "Explore the wider NetSuite ecosystem with a visual guide to real apps and SuiteApps including Shiptheory, Celigo, RF-SMART, Avalara, Tipalti, and ZoneCapture.",
+    keywords:
+      "NetSuite apps, NetSuite SuiteApps, Shiptheory NetSuite, Celigo NetSuite, RF-SMART NetSuite, Avalara NetSuite, Tipalti NetSuite, ZoneCapture NetSuite",
+    date: "Apr 2026",
+    readTime: "7 min read",
+    type: "Guide",
+    isNew: true,
+    newUntil: "2026-05-08",
+    layoutVariant: 9,
+    heroImage: "https://images.unsplash.com/photo-1553413077-190dd305871c?w=1600&q=80",
+    ctaTo: "/contact",
+    ctaLabel: "Map your NetSuite app stack",
+    ctaTrackingName: "resource_article_apps_extensions_contact",
+
+    intro:
+      "NetSuite is strongest when it is treated as a platform, not just a finance system. Most growing businesses end up adding specialist apps around fulfilment, warehouse control, tax, AP automation, and eCommerce integration. This guide focuses on real products in that wider ecosystem so you can see where each one fits.",
+
+    overviewHeading: 'The Wider NetSuite <span class="text-primary">Ecosystem</span>',
+    overviewSubtext:
+      "Use this page as a practical map. It highlights actual apps and SuiteApps that extend NetSuite in specific operational areas, from shipping and warehouse execution to tax compliance and payables.",
+
+    posterStats: [
+      { value: "90+", label: "Carrier integrations in Shiptheory" },
+      { value: "5,000+", label: "NetSuite customers highlighted by Celigo" },
+      { value: "2,800+", label: "NetSuite customers referenced by RF-SMART" },
+      { value: "1,500+", label: "Customers highlighted by ZoneCapture" },
+    ],
+
+    ecosystemFlow: [
+      {
+        icon: Package,
+        title: "NetSuite Core",
+        description:
+          "Financials, inventory, orders, and reporting stay as the system of record.",
+      },
+      {
+        icon: Link2,
+        title: "Operational Apps",
+        description:
+          "Add specialist apps for fulfilment, tax, warehouse execution, and AP automation.",
+      },
+      {
+        icon: Rocket,
+        title: "Commerce Connectors",
+        description:
+          "Use managed connectors to synchronise orders, inventory, fulfilments, and refunds.",
+      },
+      {
+        icon: BarChart3,
+        title: "Execution Layer",
+        description:
+          "Push real-time operational actions into the warehouse, AP, and shipping workflows.",
+      },
+      {
+        icon: Bot,
+        title: "Governance & Scale",
+        description:
+          "Keep data, approvals, and process ownership aligned as your app stack expands.",
+      },
+    ],
+
+    appCards: [
+      {
+        name: "Shiptheory",
+        category: "Shipping Automation",
+        image:
+          "https://shiptheory.com/wp-content/uploads/2023/12/label_printer_st.png",
+        summary:
+          "A NetSuite shipping app used to automate booking, label printing, tracking updates, and carrier rules.",
+        highlights: [
+          "90+ carrier integrations for UK and international fulfilment",
+          "Rules-based shipping logic by service, destination, and order profile",
+          "Strong fit for teams handling multi-carrier dispatch volume inside NetSuite-led fulfilment",
+        ],
+        internalTo: "/implementation",
+        internalLabel: "Plan rollout with ERP Experts",
+        internalTrackingName: "resource_poster_shiptheory_implementation",
+        externalHref:
+          "https://shiptheory.com/?utm_source=landingpage&utm_medium=partnersend&utm_campaign=erp_expert_launch&utm_content=erp_expert_siteclick",
+        externalLabel: "Visit Shiptheory",
+        externalTrackingName: "resource_poster_shiptheory_site",
+      },
+      {
+        name: "Celigo Shopify-NetSuite Integration App",
+        category: "eCommerce Integration",
+        image:
+          "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=1400&q=80",
+        summary:
+          "A managed integration app for syncing Shopify and NetSuite across orders, customers, inventory, fulfilments, refunds, and cancellations.",
+        highlights: [
+          "Prebuilt flows for Shopify orders, inventory, fulfilments, and refunds",
+          "Useful when manual eCommerce rekeying is creating delays and mismatch risk",
+          "Fits merchants that need a stronger order-to-cash connection between storefront and ERP",
+        ],
+        internalTo: "/implementation",
+        internalLabel: "Plan rollout with ERP Experts",
+        internalTrackingName: "resource_poster_celigo_implementation",
+        externalHref: "https://www.celigo.com/integrations/netsuite-shopify/",
+        externalLabel: "Visit Celigo app",
+        externalTrackingName: "resource_poster_celigo_site",
+      },
+      {
+        name: "RF-SMART WMS for NetSuite",
+        category: "Warehouse Management",
+        image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1400&q=80",
+        summary:
+          "A Built-for-NetSuite warehouse and barcoding solution designed to improve inventory accuracy, picking, shipping, and warehouse execution.",
+        highlights: [
+          "Barcode-driven warehouse workflows directly against NetSuite data",
+          "Strong fit for businesses that need more control than standard warehouse processes provide",
+          "Useful for scale, traceability, and reducing warehouse error rates",
+        ],
+        internalTo: "/implementation",
+        internalLabel: "Plan rollout with ERP Experts",
+        internalTrackingName: "resource_poster_rfsmart_implementation",
+        externalHref: "https://www.rfsmart.com/netsuite",
+        externalLabel: "Visit RF-SMART",
+        externalTrackingName: "resource_poster_rfsmart_site",
+      },
+      {
+        name: "Avalara for NetSuite",
+        category: "Tax Compliance",
+        image: "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=1400&q=80",
+        summary:
+          "A tax automation app for calculating tax, managing compliance, and reducing manual tax handling inside NetSuite-led processes.",
+        highlights: [
+          "Automates tax calculation and compliance workflows across transactions",
+          "Useful where tax complexity has outgrown manual review or spreadsheet methods",
+          "Helps finance teams improve accuracy across channels and jurisdictions",
+        ],
+        internalTo: "/implementation",
+        internalLabel: "Plan rollout with ERP Experts",
+        internalTrackingName: "resource_poster_avalara_implementation",
+        externalHref: "https://www.avalara.com/us/en/products/integrations/netsuite.html",
+        externalLabel: "Visit Avalara",
+        externalTrackingName: "resource_poster_avalara_site",
+      },
+      {
+        name: "Tipalti for NetSuite",
+        category: "AP Automation",
+        image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1400&q=80",
+        summary:
+          "An AP and payments automation app for supplier workflows, approvals, and payment execution connected to NetSuite financial operations.",
+        highlights: [
+          "Reduces manual invoice, supplier, and payment processing effort",
+          "Useful for multi-entity or higher-volume AP operations",
+          "Helps tighten payables control while speeding finance execution",
+        ],
+        internalTo: "/implementation",
+        internalLabel: "Plan rollout with ERP Experts",
+        internalTrackingName: "resource_poster_tipalti_implementation",
+        externalHref: "https://tipalti.com/product/integrations/oracle-netsuite/",
+        externalLabel: "Visit Tipalti",
+        externalTrackingName: "resource_poster_tipalti_site",
+      },
+      {
+        name: "ZoneCapture",
+        category: "Invoice Capture",
+        image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1400&q=80",
+        summary:
+          "A native NetSuite AP automation app that uses OCR and AI to capture invoices, create bills, and speed approvals within NetSuite.",
+        highlights: [
+          "Designed to reduce manual invoice entry and AP inbox overload",
+          "Supports cleaner bill creation, matching, and approval workflows",
+          "Strong fit where AP teams want automation without leaving the NetSuite environment",
+        ],
+        internalTo: "/support",
+        internalLabel: "See support and optimisation",
+        internalTrackingName: "resource_poster_zonecapture_support",
+        externalHref: "https://www.zoneandco.com/ap-automation/zonecapture",
+        externalLabel: "Visit ZoneCapture",
+        externalTrackingName: "resource_poster_zonecapture_site",
+      },
+    ],
+
+    resourceLinks: [
+      {
+        label: "Integration delivery overview",
+        description:
+          "Understand how ERP Experts plans, builds, and supports app and integration work.",
+        to: "/implementation",
+        ctaLabel: "Open implementation page",
+        trackingName: "resource_poster_link_implementation",
+      },
+      {
+        label: "Project delivery approach",
+        description:
+          "See how ERP Experts scopes, controls, and delivers NetSuite transformation work.",
+        to: "/project-delivery",
+        ctaLabel: "Open project delivery page",
+        trackingName: "resource_poster_link_project_delivery",
+      },
+      {
+        label: "NetSuite MCP setup guide",
+        description:
+          "Follow our detailed setup process for AI connector governance, permissions, and endpoint choice.",
+        to: "/resources/how-to-set-up-mcp-in-netsuite",
+        ctaLabel: "Open MCP guide",
+        trackingName: "resource_poster_link_mcp_guide",
+      },
+      {
+        label: "NetSuite Next AI overview",
+        description:
+          "Read our practical breakdown of Oracle's NetSuite Next positioning and rollout considerations.",
+        to: "/resources/netsuite-next-ai-ui-overhaul",
+        ctaLabel: "Open NetSuite Next guide",
+        trackingName: "resource_poster_link_netsuite_next",
+      },
+      {
+        label: "Support and Aftercare plans",
+        description:
+          "Compare Bronze, Silver, and Gold options for ongoing optimisation once apps are live.",
+        to: "/support",
+        ctaLabel: "Open support plans",
+        trackingName: "resource_poster_link_support",
+      },
+      {
+        label: "What is NetSuite?",
+        description:
+          "Useful background for stakeholders who need the broader platform context before reviewing add-ons.",
+        to: "/what-is-netsuite",
+        ctaLabel: "Open NetSuite overview",
+        trackingName: "resource_poster_link_what_is_netsuite",
+      },
+      {
+        label: "Book an app-stack review",
+        description:
+          "Talk through your current stack and which apps should come first.",
+        to: "/contact",
+        ctaLabel: "Open contact page",
+        trackingName: "resource_poster_link_contact",
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: ClipboardCheck,
+        title: "Prioritise by commercial impact",
+        content:
+          "Start with the extension that removes the biggest operational bottleneck first.",
+      },
+      {
+        icon: Shield,
+        title: "Keep governance explicit",
+        content:
+          "Define data ownership, permissions, and exception handling before scaling app usage.",
+      },
+      {
+        icon: Clock,
+        title: "Phase app rollout in waves",
+        content:
+          "A staged rollout reduces risk and helps teams adopt each extension properly.",
+      },
+      {
+        icon: Users,
+        title: "Pair delivery with training",
+        content:
+          "User confidence and process clarity are critical to getting full value from integrations.",
+      },
+    ],
+
+    conclusion:
+      "The wider NetSuite ecosystem is strongest when every app has a clear job. Shipping, warehouse control, tax, AP, and commerce each need different specialist capability. The best results come from choosing the right app for the real bottleneck, integrating it cleanly, and then supporting adoption properly after go-live.",
+
+    disclaimer:
+      "App fit depends on your industry, process complexity, data quality, and internal capacity. Speak to ERP Experts for a practical recommendation based on your current stack and growth goals.",
+  },
+
+  "netsuite-next-ai-ui-overhaul": {
+    title: "NetSuite Next: The AI UI Overhaul",
+    subtitle: "What Oracle Is Positioning, and How to Evaluate It in Practice",
+    cardDescription:
+      "A practical guide to NetSuite Next, based on Oracle's product page, covering Ask Oracle, agentic collaboration, AI canvases, trust controls, and adoption planning.",
+    metaDescription:
+      "Understand NetSuite Next and the AI UI overhaul. Learn Oracle's core capability claims and how to assess them in your own NetSuite environment.",
+    keywords:
+      "NetSuite Next, NetSuite AI UI, Ask Oracle, AI Canvas, NetSuite agentic workflows, NetSuite Redwood",
+    date: "Apr 2026",
+    readTime: "6 min read",
+    type: "Guide",
+    featured: true,
+    isNew: true,
+    newUntil: "2026-05-08",
+    layoutVariant: 5,
+    heroImage: netsuiteNextHero,
+    ctaTo: "/contact",
+    ctaLabel: "Plan your NetSuite Next rollout",
+    ctaTrackingName: "resource_article_netsuite_next_rollout",
+
+    intro:
+      "NetSuite Next is the most significant user experience shift in NetSuite for years. It is not a visual refresh on its own. It combines a new Redwood interface with embedded AI capabilities designed to help users search, analyse, decide, and act in fewer steps. For leadership teams, the real question is not whether it looks more modern. It is whether it improves operating speed and decision quality without weakening controls.",
+
+    challengeHeading: 'From Menu Navigation to <span class="text-primary">AI Collaboration</span>',
+    challengeText:
+      "Oracle describes NetSuite Next as the future NetSuite experience, built to make AI a natural extension of everyday work. The headline claim is simple: it can be enabled with the press of a button, without migrating data or disrupting existing customisations. That is compelling, but it still needs structured validation in your own environment before broad rollout.",
+
+    overviewHeading: 'What NetSuite Next <span class="text-primary">Actually Introduces</span>',
+    overviewSubtext:
+      "On the product page, Oracle positions seven practical shifts: Ask Oracle for natural language search and action, agentic collaboration with human decisions still in control, interactive canvases for planning and analysis, a reworked Redwood interface including smart filters and infinite scrolling, transparency and governance features grounded in existing roles and approvals, OCI-backed scale and performance, and extensibility through SuiteCloud and AI tooling.",
+
+    takeaways: [
+      "Ask Oracle is the centre of natural language search, analysis, and action",
+      "Agentic workflows are positioned as collaborative, with humans retaining final control",
+      "Canvases are designed for side-by-side work between users and AI",
+      "Redwood UI updates include smarter lists, filters, and faster transaction handling",
+      "Oracle links Next performance to OCI and platform reengineering",
+      "SuiteCloud extensibility is positioned as AI-ready for partners, admins, and developers",
+      "Oracle states Next can be enabled without data migration or customisation disruption",
+    ],
+
+    tipsSectionLabel: "Leadership Priorities",
+    tipsHeading: '8 Areas to Assess Before You Enable <span class="text-primary">NetSuite Next</span>',
+    tipsIntro:
+      "Treat NetSuite Next as an operating model change. These checks help you protect controls while capturing real productivity gains.",
+    tipEyebrowLabel: "Decision Area",
+    tipPanelLabel: "What to Confirm",
+    tipPanelIntro:
+      "Use these prompts to move from product messaging to practical, testable decisions.",
+    primaryActionLabel: "Start Here",
+    secondaryActionLabel: "Then Validate",
+
+    tips: [
+      {
+        number: "01",
+        icon: Bot,
+        title: "Define Where Ask Oracle Will Add the Most Value",
+        content:
+          "Ask Oracle is designed to let users search, navigate, analyse, and act in natural language. Start by identifying workflows where users currently lose time switching screens or waiting on reports.",
+        actions: [
+          "Select 3 high-friction workflows to pilot first",
+          "Measure baseline time-to-answer before enablement",
+          "Set success criteria for speed, quality, and adoption",
+        ],
+      },
+      {
+        number: "02",
+        icon: Presentation,
+        title: "Use AI Canvas for Cross-Functional Problem Solving",
+        content:
+          "Oracle positions AI Canvas as a collaborative workspace for analysis and action. It is best used where finance, operations, and supply chain teams currently coordinate decisions across separate tools.",
+        actions: [
+          "Choose one monthly planning process as a pilot",
+          "Map handoffs and decision points currently handled outside NetSuite",
+          "Confirm whether AI Canvas reduces meeting and rework time",
+        ],
+      },
+      {
+        number: "03",
+        icon: LineChart,
+        title: "Validate Narrative Summaries Against Existing Reporting",
+        content:
+          "Narrative summaries and insights can help teams spot trends faster, but they should support judgement rather than replace it. Validate summary quality against known KPI patterns and management reporting.",
+        actions: [
+          "Compare AI-generated narratives to current board pack commentary",
+          "Check summary accuracy for known exceptions and outliers",
+          "Define where human review remains mandatory",
+        ],
+      },
+      {
+        number: "04",
+        icon: Settings,
+        title: "Introduce Agentic Workflows With Governance First",
+        content:
+          "Oracle positions agents as collaborative participants that can run tasks and suggest trade-offs while users remain in charge of key decisions. This is powerful, but governance must be explicit before autonomy is expanded.",
+        actions: [
+          "Start with approval-required mode before autonomous actions",
+          "Define decision thresholds, approval owners, and audit requirements",
+          "Review exception handling and rollback procedures",
+        ],
+      },
+      {
+        number: "05",
+        icon: Database,
+        title: "Validate the New Redwood UI in Real Workflows",
+        content:
+          "The NetSuite Next interface is positioned as faster and more intuitive, with smart filters, infinite scrolling, and clearer reporting layouts. Validate these gains in transaction-heavy workflows where speed and accuracy matter.",
+        actions: [
+          "Test high-volume transaction tasks against current UI baseline",
+          "Measure click reduction, completion time, and error rate",
+          "Confirm improvements for both power users and occasional users",
+        ],
+      },
+      {
+        number: "06",
+        icon: Shield,
+        title: "Pressure-Test Transparency, Trust, and Control Claims",
+        content:
+          "Oracle highlights explainability features, including visibility of data sources and user ability to confirm or correct outcomes. It also states agents remain constrained by existing roles, permissions, and approval flows. Verify these claims with real scenarios before broad enablement.",
+        actions: [
+          "Run role-based tests for finance, operations, and admin users",
+          "Confirm AI responses reference valid sources and respect data boundaries",
+          "Document control evidence for compliance and audit teams",
+        ],
+      },
+      {
+        number: "07",
+        icon: Users,
+        title: "Validate Scale and Performance in Your Own Data Volumes",
+        content:
+          "Oracle ties NetSuite Next performance to OCI delivery and reengineered platform foundations. Confirm real response-time gains in your own busiest periods, not only in controlled demos.",
+        actions: [
+          "Benchmark reporting and transaction latency before and after pilot enablement",
+          "Test month-end, quarter-end, and high-volume scenarios",
+          "Define acceptable performance thresholds by business-critical process",
+        ],
+      },
+      {
+        number: "08",
+        icon: Search,
+        title: "Treat 'Press of a Button' as a Controlled Programme",
+        content:
+          "Oracle's low-disruption activation claim is commercially attractive. In practice, you still need controlled rollout, clear communication, and staged enablement. Include admin and partner readiness too, because NetSuite Next also positions new AI extensibility through SuiteCloud.",
+        actions: [
+          "Pilot with one function before enabling account-wide",
+          "Create a role-based enablement plan for users, admins, and internal owners",
+          "Track usage, confidence, and process outcomes weekly",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Compass,
+        title: "Treat NetSuite Next as a Change Programme",
+        content:
+          "Frame enablement around outcomes, ownership, and control, not just new interface features.",
+      },
+      {
+        icon: Clock,
+        title: "Pilot in a High-Value Workflow First",
+        content:
+          "Early wins in one measurable workflow build internal confidence and improve rollout quality.",
+      },
+      {
+        icon: Cpu,
+        title: "Keep Human Oversight Where Risk Is Material",
+        content:
+          "Autonomy should increase only where controls and exception handling are already strong.",
+      },
+      {
+        icon: Lightbulb,
+        title: "Measure Business Outcomes, Not Feature Usage",
+        content:
+          "Success should be defined by faster close, better forecast quality, and fewer manual handoffs.",
+      },
+    ],
+
+    conclusion:
+      "NetSuite Next is a meaningful AI UI overhaul, but the opportunity is operational, not cosmetic. The businesses that benefit most will be the ones that pilot in high-value workflows, enforce governance early, and scale in stages. Done well, it can reduce friction across daily work while improving decision speed and confidence.",
+
+    disclaimer:
+      "Based primarily on Oracle's NetSuite Next product page at https://www.netsuite.com/portal/products/netsuite-next.shtml (accessed April 2026). Product capability, rollout, and account-level availability should always be validated before final decisions.",
+  },
 };
 
 // Type icons for listing page badges
@@ -3489,15 +4657,29 @@ const cardImages = {
   "how-to-choose-the-right-erp-consultant":
     "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80",
   "why-netsuite-is-the-best-accounting-software-choice":
-    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80",
+    "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80",
   "understanding-the-role-of-erp-systems":
     "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&q=80",
   "netsuite-project-management-financials":
     "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80",
+  "why-choose-netsuite-support-from-erp-experts":
+    "https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&q=80",
+  "how-to-set-up-mcp-in-netsuite":
+    netsuiteMcpHero,
+  "netsuite-apps-extensions":
+    "https://images.unsplash.com/photo-1553413077-190dd305871c?w=600&q=80",
+  "netsuite-next-ai-ui-overhaul":
+    netsuiteNextHero,
+  "why-netsuite-aftercare-is-essential":
+    "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80",
 };
 
 // Ordered list of article slugs for the listing page
 const articleOrder = [
+  "why-netsuite-aftercare-is-essential",
+  "netsuite-next-ai-ui-overhaul",
+  "netsuite-apps-extensions",
+  "how-to-set-up-mcp-in-netsuite",
   "what-is-an-erp-system",
   "best-erp-for-manufacturers",
   "benefits-of-erp-systems",
@@ -3507,6 +4689,7 @@ const articleOrder = [
   "why-netsuite-is-the-best-accounting-software-choice",
   "understanding-the-role-of-erp-systems",
   "netsuite-project-management-financials",
+  "why-choose-netsuite-support-from-erp-experts",
   "maximise-profits",
   "csv-import-errors",
   "accounts-receivable-reports",
@@ -3521,12 +4704,64 @@ const articleOrder = [
   "spreadsheet-hidden-costs",
 ];
 
+const isArticleNew = (article) => {
+  if (article.isNew !== true) return false;
+  if (!article.newUntil) return true;
+
+  const expiry = new Date(`${article.newUntil}T23:59:59`);
+  return Number.isNaN(expiry.getTime()) || new Date() <= expiry;
+};
+
+const normaliseImageKey = (imageValue) => {
+  if (typeof imageValue !== "string") return String(imageValue);
+
+  // Compare base asset identity so URL query differences do not bypass duplicate checks.
+  if (imageValue.startsWith("http://") || imageValue.startsWith("https://")) {
+    try {
+      const parsed = new URL(imageValue);
+      return `${parsed.origin}${parsed.pathname}`;
+    } catch {
+      return imageValue;
+    }
+  }
+
+  return imageValue;
+};
+
+const validateUniqueListingImages = () => {
+  const byImage = new Map();
+
+  for (const slug of articleOrder) {
+    const article = articles[slug];
+    const image = cardImages[slug] || article?.heroImage;
+    if (!image) continue;
+
+    const key = normaliseImageKey(image);
+    const slugs = byImage.get(key) || [];
+    slugs.push(slug);
+    byImage.set(key, slugs);
+  }
+
+  const duplicates = [...byImage.entries()].filter(([, slugs]) => slugs.length > 1);
+  if (duplicates.length === 0) return;
+
+  const message = duplicates
+    .map(([image, slugs]) => `Image "${image}" is used by: ${slugs.join(", ")}`)
+    .join("\n");
+
+  throw new Error(`Duplicate resource listing images detected.\n${message}`);
+};
+
+validateUniqueListingImages();
+
 // Derived list for the listing page
 export const articlesList = articleOrder.map((slug) => {
   const a = articles[slug];
   return {
     slug,
     type: a.type,
+    featured: a.featured === true,
+    isNew: isArticleNew(a),
     title: a.title,
     subtitle: a.subtitle,
     desc: a.cardDescription || a.subtitle,

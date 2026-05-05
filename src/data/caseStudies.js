@@ -44,6 +44,7 @@ export { caseStudiesHeroImage };
 export const caseStudies = {
   1: {
     id: 1,
+    slug: "carallon",
     layoutVariant: 1,
     client: "Carallon",
     industry: "Entertainment Technology",
@@ -97,6 +98,7 @@ export const caseStudies = {
   },
   2: {
     id: 2,
+    slug: "eco2solar",
     layoutVariant: 2,
     client: "eco2solar",
     industry: "Renewable Energy",
@@ -150,6 +152,7 @@ export const caseStudies = {
   },
   3: {
     id: 3,
+    slug: "kynetec",
     layoutVariant: 3,
     client: "Kynetec",
     industry: "Agricultural Market Research",
@@ -226,6 +229,7 @@ export const caseStudies = {
   },
   4: {
     id: 4,
+    slug: "totalkare",
     layoutVariant: 4,
     client: "Totalkare",
     industry: "Workshop Equipment",
@@ -285,6 +289,7 @@ export const caseStudies = {
   },
   5: {
     id: 5,
+    slug: "coats4kids",
     layoutVariant: 5,
     client: "Coats4Kids",
     industry: "Charity / Non-Profit",
@@ -313,6 +318,12 @@ export const caseStudies = {
     ],
     seoKeywords:
       "NetSuite for charities, non-profit ERP, charity NetSuite implementation, volunteer-driven operations",
+    localVideoUrl: "/videos/coats4kids-cfc.mp4",
+    videoPoster: "/videos/coats4kids-cfc-poster.jpg",
+    videoLabel: "Watch the story",
+    videoHeading: "See the Coats4Kids mission in action",
+    videoDescription:
+      "A short video from Coats4Kids showing why operational clarity matters when every coat represents warmth, dignity, and hope for a child.",
     sections: [
       {
         title: "A System That Wasn't Working",
@@ -347,11 +358,16 @@ export const caseStudies = {
 // Ordered array for prev/next navigation
 export const caseStudyOrder = [1, 2, 3, 4, 5];
 
+export const caseStudySlugMap = Object.fromEntries(
+  caseStudyOrder.map((id) => [caseStudies[id].slug, id])
+);
+
 // Derived list for the listing page (avoids duplicating data)
 export const caseStudiesList = caseStudyOrder.map((id) => {
   const cs = caseStudies[id];
   return {
     id: cs.id,
+    slug: cs.slug,
     client: cs.client,
     industry: cs.industry,
     icon: cs.icon,

@@ -24,10 +24,16 @@ export default function SEO({
   type = "website",
   keywords,
   noIndex = false,
+  structuredData,
 }) {
   const fullTitle = buildTitle(title);
   const url = `${DEFAULTS.baseUrl}${path || ""}`;
   const fullImage = image.startsWith("http") ? image : `${DEFAULTS.baseUrl}${image}`;
+  const structuredDataItems = structuredData
+    ? Array.isArray(structuredData)
+      ? structuredData
+      : [structuredData]
+    : [];
 
   return (
     <Helmet>
@@ -65,6 +71,14 @@ export default function SEO({
       <meta name="geo.region" content="GB-STS" />
       <meta name="geo.placename" content="Stafford" />
       <meta httpEquiv="content-language" content="en-GB" />
+
+      {structuredDataItems.map((item, index) => (
+        <script
+          key={`structured-data-${index}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(item) }}
+        />
+      ))}
     </Helmet>
   );
 }

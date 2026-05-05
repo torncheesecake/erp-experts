@@ -40,7 +40,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden lg:flex items-center gap-xl xl:gap-2xl">
+        <div className="hidden xl:flex items-center gap-xl 2xl:gap-2xl">
           {/* Services Dropdown */}
           <div
             className="relative"
@@ -126,7 +126,7 @@ export default function Navbar() {
 
         {/* Mobile menu button */}
         <button
-          className="lg:hidden p-3"
+          className="xl:hidden p-3"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileMenuOpen}
@@ -138,7 +138,7 @@ export default function Navbar() {
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div
-          className="lg:hidden bg-(--color-bg) border-t border-(--color-text)/10"
+          className="xl:hidden bg-(--color-bg) border-t border-(--color-text)/10"
           style={{ padding: "var(--space-xl) 0" }}
         >
           <div className="container flex flex-col gap-md">

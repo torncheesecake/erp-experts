@@ -71,9 +71,32 @@ lftp -c "set ssl:verify-certificate no; open -u \$FTP_USER,'\$FTP_PASS' \$FTP_HO
 
 The marketing dashboard at `/reports` is powered by `src/data/reports.json`. To update:
 
-1. **Export data** from GA4 and LinkedIn into `src/exports/`
-2. **Update** `src/data/reports.json` — either manually or via `python scripts/parse_all.py`
-3. **Build and deploy** via the steps above
+1. **Export LinkedIn** into `~/Downloads` (weekly workbook named `Content_YYYY-MM-DD_YYYY-MM-DD_RicWilson.xlsx`)
+2. **Ensure GA service account JSON** exists (default path: `credentials/google-service-account.json`)
+3. **Optional Tim email stats file** in `~/Downloads` (`.csv`, `.xlsx`, or `.json`)
+4. Run `python3 scripts/refresh_reports.py`
+5. **Build and deploy** via the steps above
+
+`scripts/refresh_reports.py` now polls `~/Downloads` for Tim's email stats while it is processing GA4 and LinkedIn data.  
+If no parseable email file is found, it keeps the previous email values in `reports.json`.
+
+Supported email metric fields (case/format insensitive):
+
+- `campaignsSent`
+- `totalRecipients`
+- `openRate`
+- `clickRate`
+- `unsubscribes`
+
+Optional environment variables for the refresh script:
+
+- `GOOGLE_SERVICE_ACCOUNT_JSON` (override service account file path)
+- `GA4_PROPERTY_ID` (override GA4 property id)
+- `EMAIL_WAIT_MINUTES` (default `20`)
+- `EMAIL_POLL_SECONDS` (default `20`)
+- `LINKEDIN_SKIP_PROMPT=1` (skip the Enter prompt in `download_linkedin_export.sh`)
+
+The file at `credentials/google-service-account.json` is git-ignored and intended for the live key.
 
 ### LinkedIn Export Helper
 
@@ -105,7 +128,7 @@ That will:
 
 - open LinkedIn analytics in Chrome
 - export the latest LinkedIn workbook into `~/Downloads`
-- refresh `src/data/reports.json` from LinkedIn, GA4, and Search Console
+- refresh `src/data/reports.json` from LinkedIn, GA4, Search Console, and Tim email stats (if available)
 - remove LinkedIn export workbooks from `~/Downloads` after a successful refresh
 
 A GitHub Actions workflow sends an email when `src/data/reports.json` is updated on `main`. This requires `SMTP_USERNAME` and `SMTP_PASSWORD` repository secrets to be configured.

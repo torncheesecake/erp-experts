@@ -1,5 +1,18 @@
 {
-  "3a": "in_progress",
-  "3b": "in_progress",
-  "3c": "done"
+  "1a": "done",
+  "1b": "done",
+  "1c": "done",
+  "2a": "done",
+  "2b": "done",
+  "2c": "done",
+  "3a": "done",
+  "3b": "done",
+  "3c": "done",
+  "3d": "done",
+  "4a": "done",
+  "4b": "done",
+  "4c": "done",
+  "4d": "done",
+  "4e": "done",
+  "4f": "todo"
 }

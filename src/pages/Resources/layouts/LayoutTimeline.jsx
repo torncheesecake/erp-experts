@@ -205,7 +205,7 @@ export default function LayoutTimeline({ article, slug }) {
 
       <SharedBonusTips article={article} />
 
-      <SharedCTA />
+      <SharedCTA article={article} />
     </>
   );
 }

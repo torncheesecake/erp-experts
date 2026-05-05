@@ -169,7 +169,7 @@ export default function CaseStudies() {
             {filteredStudies.map((study) => (
               <Link
                 key={study.id}
-                to={`/case-studies/${study.id}`}
+                to={`/case-studies/${study.slug || study.id}`}
                 className="group block overflow-hidden rounded-2xl md:rounded-3xl border-2 border-(--color-text)/10 hover:border-(--color-quaternary) hover:shadow-xl hover:-translate-y-1 transition-all"
               >
                 {/* Image */}

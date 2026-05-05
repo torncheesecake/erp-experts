@@ -113,12 +113,22 @@ function App() {
             <Route path="/case-studies-kynetec" element={<Navigate to="/case-studies/kynetec" replace />} />
             <Route path="/post/netsuite-for-small-businesses" element={<Navigate to="/resources/netsuite-for-small-businesses" replace />} />
             <Route
+              path="/post/the-value-of-investing-in-a-netsuite-partner"
+              element={<Navigate to="/resources/value-of-investing-in-a-netsuite-partner" replace />}
+            />
+            <Route
               path="/post/why-netsuite-is-the-best-choice-of-accounting-software"
               element={
                 <Navigate
                   to="/resources/why-netsuite-is-the-best-accounting-software-choice"
                   replace
                 />
+              }
+            />
+            <Route
+              path="/post/why-choose-netsuite-support-from-erp-experts"
+              element={
+                <Navigate to="/resources/why-choose-netsuite-support-from-erp-experts" replace />
               }
             />
             <Route path="/post/*" element={<Navigate to="/resources" replace />} />
