@@ -793,14 +793,6 @@
       "demandSignals": {
         "erpNetsuiteQueries": [
           {
-            "query": "erp experts",
-            "impressions": 257,
-            "clicks": 2,
-            "ctr": 0.78,
-            "position": 11.38,
-            "landingPage": "/"
-          },
-          {
             "query": "erp consultancy",
             "impressions": 119,
             "clicks": 0,
@@ -887,6 +879,14 @@
             "ctr": 0.0,
             "position": 7.06,
             "landingPage": "/"
+          },
+          {
+            "query": "erp consulting",
+            "impressions": 54,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 11.44,
+            "landingPage": "/"
           }
         ],
         "erpInPatterns": [
@@ -905,14 +905,6 @@
         ],
         "contentGaps": [
           {
-            "query": "erp experts",
-            "impressions": 257,
-            "clicks": 2,
-            "ctr": 0.78,
-            "position": 11.38,
-            "landingPage": "/"
-          },
-          {
             "query": "erp development company",
             "impressions": 118,
             "clicks": 0,
@@ -926,6 +918,14 @@
             "clicks": 0,
             "ctr": 0.0,
             "position": 12.79,
+            "landingPage": "/"
+          },
+          {
+            "query": "erp consulting",
+            "impressions": 54,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 11.44,
             "landingPage": "/"
           }
         ]

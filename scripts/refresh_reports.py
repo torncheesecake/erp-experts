@@ -1208,6 +1208,12 @@ def build_roadmap_phases(all_pages: list[dict]) -> list[dict]:
 def build_search_demand_signals(query_rows: list[dict], *, max_items: int = 12) -> dict:
     """Extract ERP/NetSuite demand and likely content gaps from Search Console query rows."""
     watched_terms = ("erp", "netsuite")
+    brand_terms = (
+        "erp experts",
+        "erpexperts",
+        "erp experts uk",
+        "erp experts ltd",
+    )
     filtered: list[dict] = []
 
     for row in query_rows:
@@ -1215,6 +1221,8 @@ def build_search_demand_signals(query_rows: list[dict], *, max_items: int = 12) 
         if not query:
             continue
         if not any(term in query for term in watched_terms):
+            continue
+        if any(term in query for term in brand_terms):
             continue
         filtered.append(row)
 
