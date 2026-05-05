@@ -439,6 +439,9 @@ function AdminView({ logout, onPreview }) {
   const progressCount = countByStatus("in_progress");
   const todoCount = countByStatus("todo");
   const pct = Math.round((doneCount / allItems.length) * 100);
+  const demandQueries = demandSignals.erpNetsuiteQueries || [];
+  const erpPatterns = demandSignals.erpInPatterns || [];
+  const demandGaps = demandSignals.contentGaps || [];
 
   // Find current + next up
   const inProgress = openItems.find((i) => i.status === "in_progress");
@@ -496,6 +499,70 @@ function AdminView({ logout, onPreview }) {
           </div>
         </div>
       </div>
+
+      <section className="bg-white border-b border-slate-200">
+        <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
+          <h2 className="font-heading" style={{ fontSize: "1.2rem", marginBottom: "var(--space-sm)" }}>
+            Live Search Demand Snapshot (ERP and NetSuite)
+          </h2>
+          <p className="text-sm text-slate-600" style={{ marginBottom: "var(--space-lg)" }}>
+            What people are currently searching, used by automation to pick the next guide.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-lg">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-lg)" }}>
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-sm)" }}>
+                Top ERP and NetSuite queries
+              </p>
+              {demandQueries.length > 0 ? (
+                <ul className="space-y-2 text-sm text-slate-700">
+                  {demandQueries.slice(0, 5).map((q, idx) => (
+                    <li key={`${q.query}-${idx}`}>
+                      <strong>{q.query}</strong> ({fmt(q.impressions)} imp, {q.clicks} clicks, pos {Number(q.position || 0).toFixed(1)})
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-slate-500">No query-level demand data available in the current dataset.</p>
+              )}
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-lg)" }}>
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-sm)" }}>
+                ERP in/for X patterns
+              </p>
+              {erpPatterns.length > 0 ? (
+                <ul className="space-y-2 text-sm text-slate-700">
+                  {erpPatterns.slice(0, 5).map((p, idx) => (
+                    <li key={`${p.term}-${idx}`}>
+                      <strong>ERP for {p.term}</strong> ({fmt(p.impressions)} imp across {p.queryCount} queries)
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-slate-500">No strong ERP-in/for pattern demand detected yet.</p>
+              )}
+            </div>
+
+            <div className="rounded-2xl border border-amber-200 bg-amber-50" style={{ padding: "var(--space-lg)" }}>
+              <p className="text-xs font-bold uppercase tracking-wide text-amber-700" style={{ marginBottom: "var(--space-sm)" }}>
+                Gap candidates (high demand, low traction)
+              </p>
+              {demandGaps.length > 0 ? (
+                <ul className="space-y-2 text-sm text-amber-900">
+                  {demandGaps.slice(0, 5).map((g, idx) => (
+                    <li key={`${g.query}-${idx}`}>
+                      <strong>{g.query}</strong> ({fmt(g.impressions)} imp, {g.clicks} clicks, CTR {g.ctr}%)
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-amber-800">No obvious gap candidates in the current signal window.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ── Now / Next up ── */}
       <div className="container" style={{ paddingTop: "var(--space-2xl)", paddingBottom: "var(--space-xl)" }}>
