@@ -444,12 +444,8 @@ function AdminView({ logout, onPreview }) {
   const inProgress = openItems.find((i) => i.status === "in_progress");
   const firstTodo = openItems.find((i) => i.status === "todo");
 
-  // Figure out what's next after the current in-progress item
-  let nextUp = null;
-  if (inProgress) {
-    const idx = openItems.indexOf(inProgress);
-    nextUp = openItems.slice(idx + 1).find((i) => i.status !== "done") || firstTodo;
-  }
+  // "Next up" should always be the top actionable todo item.
+  const nextUp = firstTodo;
 
   return (
     <div className="min-h-screen bg-white">
