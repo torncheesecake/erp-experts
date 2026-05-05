@@ -249,15 +249,39 @@ const phasePresentation = {
   2: { icon: TrendingUp, colour: "from-primary to-violet-600", accent: "border-primary", bg: "rgba(232, 58, 122, 0.04)" },
   3: { icon: Target, colour: "from-amber-500 to-orange-600", accent: "border-amber-500", bg: "rgba(245, 158, 11, 0.04)" },
   4: { icon: Layers, colour: "from-slate-500 to-slate-600", accent: "border-slate-400", bg: "rgba(100, 116, 139, 0.04)" },
+  5: { icon: BarChart3, colour: "from-fuchsia-500 to-pink-600", accent: "border-fuchsia-400", bg: "rgba(217, 70, 239, 0.05)" },
 };
 
 function getRoadmapPhases() {
   const dynamicPhases = reportData?.ga4Period?.seoInsights?.roadmapPhases;
   const sourcePhases = Array.isArray(dynamicPhases) && dynamicPhases.length ? dynamicPhases : initialPhases;
-  return sourcePhases.map((phase, index) => ({
+  const phases = sourcePhases.map((phase, index) => ({
     ...phase,
     ...phasePresentation[phase.id || index + 1],
   }));
+  const topicBacklog = demandSignals.topicBacklogV2 || [];
+  const hasPhaseFive = phases.some((p) => p.id === 5);
+  if (topicBacklog.length > 0 && !hasPhaseFive) {
+    const dynamicPhaseFive = {
+      id: 5,
+      label: "Phase 5",
+      title: "Demand-Led Pipeline",
+      subtitle: "Live query opportunities generated from Search Console demand signals",
+      items: topicBacklog.slice(0, 8).map((topic, idx) => ({
+        priority: `5${String.fromCharCode(97 + idx)}`,
+        title: topic.suggestedTitle || topic.query,
+        impressions: topic.impressions || 0,
+        position: topic.position || 0,
+        clicks: topic.clicks || 0,
+        status: "todo",
+        why: topic.whyNow || "Live demand signal suggests this topic is worth covering next.",
+        keywords: [topic.query].filter(Boolean),
+      })),
+      ...phasePresentation[5],
+    };
+    phases.push(dynamicPhaseFive);
+  }
+  return phases;
 }
 
 /* ── helpers ── */
