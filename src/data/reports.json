@@ -928,6 +928,118 @@
             "position": 11.44,
             "landingPage": "/"
           }
+        ],
+        "topicBacklogV2": [
+          {
+            "query": "which erp consultants are best for small it and software development companies in great britain?",
+            "intent": "implementation",
+            "score": 68,
+            "suggestedTitle": "Which Erp Consultants Are Best For Small It And Software Development Companies In Great Britain: How to Choose and Deliver",
+            "impressions": 80,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 12.79,
+            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
+          },
+          {
+            "query": "erp development company",
+            "intent": "discovery",
+            "score": 65,
+            "suggestedTitle": "Erp Development Company: Practical Guide",
+            "impressions": 118,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 10.62,
+            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
+          },
+          {
+            "query": "erp consultants uk",
+            "intent": "implementation",
+            "score": 62,
+            "suggestedTitle": "Erp Consultants Uk: How to Choose and Deliver",
+            "impressions": 114,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 3.25,
+            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
+          },
+          {
+            "query": "independent erp consultants",
+            "intent": "implementation",
+            "score": 55,
+            "suggestedTitle": "Independent Erp Consultants: How to Choose and Deliver",
+            "impressions": 77,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 1.48,
+            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
+          },
+          {
+            "query": "erp consultancy",
+            "intent": "discovery",
+            "score": 53,
+            "suggestedTitle": "Erp Consultancy: Practical Guide",
+            "impressions": 119,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 3.73,
+            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
+          },
+          {
+            "query": "independent erp consultants uk",
+            "intent": "implementation",
+            "score": 52,
+            "suggestedTitle": "Independent Erp Consultants Uk: How to Choose and Deliver",
+            "impressions": 61,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 1.82,
+            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
+          },
+          {
+            "query": "erp consulting",
+            "intent": "discovery",
+            "score": 52,
+            "suggestedTitle": "Erp Consulting: Practical Guide",
+            "impressions": 54,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 11.44,
+            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
+          },
+          {
+            "query": "erp software development company",
+            "intent": "discovery",
+            "score": 48,
+            "suggestedTitle": "Erp Software Development Company: Practical Guide",
+            "impressions": 92,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 1.2,
+            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
+          },
+          {
+            "query": "erp consultancy services",
+            "intent": "discovery",
+            "score": 47,
+            "suggestedTitle": "Erp Consultancy Services: Practical Guide",
+            "impressions": 58,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 6.03,
+            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
+          },
+          {
+            "query": "erp advisory services united kingdom",
+            "intent": "discovery",
+            "score": 47,
+            "suggestedTitle": "Erp Advisory Services United Kingdom: Practical Guide",
+            "impressions": 57,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 6.44,
+            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
+          }
         ]
       },
       "source": "search_console_api"

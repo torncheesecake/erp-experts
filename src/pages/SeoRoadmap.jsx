@@ -442,6 +442,7 @@ function AdminView({ logout, onPreview }) {
   const demandQueries = demandSignals.erpNetsuiteQueries || [];
   const erpPatterns = demandSignals.erpInPatterns || [];
   const demandGaps = demandSignals.contentGaps || [];
+  const topicBacklog = demandSignals.topicBacklogV2 || [];
 
   // Find current + next up
   const inProgress = openItems.find((i) => i.status === "in_progress");
@@ -560,6 +561,23 @@ function AdminView({ logout, onPreview }) {
                 <p className="text-sm text-amber-800">No obvious gap candidates in the current signal window.</p>
               )}
             </div>
+          </div>
+
+          <div className="rounded-2xl border border-fuchsia-200 bg-fuchsia-50" style={{ padding: "var(--space-lg)", marginTop: "var(--space-lg)" }}>
+            <p className="text-xs font-bold uppercase tracking-wide text-fuchsia-700" style={{ marginBottom: "var(--space-sm)" }}>
+              Topic Backlog v2 (scored)
+            </p>
+            {topicBacklog.length > 0 ? (
+              <ul className="space-y-2 text-sm text-fuchsia-900">
+                {topicBacklog.slice(0, 6).map((t, idx) => (
+                  <li key={`${t.query}-${idx}`}>
+                    <strong>{t.suggestedTitle}</strong> (score {t.score}, intent {t.intent}, {fmt(t.impressions)} imp)
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-fuchsia-800">No scored topic candidates available yet.</p>
+            )}
           </div>
         </div>
       </section>
@@ -716,6 +734,7 @@ function ViewerView({ logout, showBackToAdmin = false, onBackToAdmin }) {
   const demandQueries = demandSignals.erpNetsuiteQueries || [];
   const erpPatterns = demandSignals.erpInPatterns || [];
   const demandGaps = demandSignals.contentGaps || [];
+  const topicBacklog = demandSignals.topicBacklogV2 || [];
 
   return (
     <div className="min-h-screen">
@@ -836,6 +855,23 @@ function ViewerView({ logout, showBackToAdmin = false, onBackToAdmin }) {
                 <p className="text-sm text-amber-800">No obvious gap candidates in the current signal window.</p>
               )}
             </div>
+          </div>
+
+          <div className="rounded-2xl border border-fuchsia-200 bg-fuchsia-50" style={{ padding: "var(--space-lg)", marginTop: "var(--space-lg)" }}>
+            <p className="text-xs font-bold uppercase tracking-wide text-fuchsia-700" style={{ marginBottom: "var(--space-sm)" }}>
+              Topic Backlog v2 (scored)
+            </p>
+            {topicBacklog.length > 0 ? (
+              <ul className="space-y-2 text-sm text-fuchsia-900">
+                {topicBacklog.slice(0, 6).map((t, idx) => (
+                  <li key={`${t.query}-${idx}`}>
+                    <strong>{t.suggestedTitle}</strong> (score {t.score}, intent {t.intent}, {fmt(t.impressions)} imp)
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-fuchsia-800">No scored topic candidates available yet.</p>
+            )}
           </div>
         </div>
       </section>

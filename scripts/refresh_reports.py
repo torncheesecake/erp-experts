@@ -1288,10 +1288,92 @@ def build_search_demand_signals(query_rows: list[dict], *, max_items: int = 12) 
         if q["impressions"] >= 20 and (q["clicks"] <= 1 or q["ctr"] < 1.0) and q["position"] >= 8
     ][:10]
 
+    def classify_intent(query: str) -> str:
+        q = query.lower()
+        if " vs " in q or "versus" in q or "compare" in q:
+            return "comparison"
+        if any(token in q for token in ("migrate", "migration", "switch", "replace")):
+            return "migration"
+        if any(token in q for token in ("consultant", "partner", "implementation", "agency")):
+            return "implementation"
+        if any(token in q for token in ("cost", "price", "pricing", "tco", "roi")):
+            return "commercial"
+        if re.search(r"\berp\s+(?:in|for)\b", q):
+            return "vertical"
+        return "discovery"
+
+    def topic_title(query: str, intent: str) -> str:
+        clean = query.strip().rstrip("?")
+        if intent == "comparison":
+            return f"NetSuite {clean.title()} Guide"
+        if intent == "migration":
+            return f"{clean.title()}: Migration Playbook"
+        if intent == "implementation":
+            return f"{clean.title()}: How to Choose and Deliver"
+        if intent == "commercial":
+            return f"{clean.title()}: Cost and Value Breakdown"
+        if intent == "vertical":
+            return f"{clean.title()}: Industry Guide"
+        return f"{clean.title()}: Practical Guide"
+
+    def score_topic(item: dict) -> int:
+        impressions = int(item.get("impressions", 0) or 0)
+        clicks = int(item.get("clicks", 0) or 0)
+        ctr = float(item.get("ctr", 0) or 0)
+        position = float(item.get("position", 0) or 0)
+        intent = classify_intent(item.get("query", ""))
+        score = 0
+        score += min(45, impressions // 5)
+        if clicks <= 1:
+            score += 18
+        if ctr < 1.0:
+            score += 12
+        elif ctr < 2.0:
+            score += 6
+        if position >= 8:
+            score += 12
+        elif position >= 5:
+            score += 6
+        if intent in {"comparison", "migration", "implementation"}:
+            score += 10
+        elif intent == "commercial":
+            score += 8
+        return max(1, min(100, score))
+
+    topic_backlog = []
+    seen_queries = set()
+    for item in top_queries:
+        query = (item.get("query") or "").strip()
+        if not query:
+            continue
+        query_key = query.lower()
+        if query_key in seen_queries:
+            continue
+        seen_queries.add(query_key)
+        intent = classify_intent(query)
+        score = score_topic(item)
+        topic_backlog.append(
+            {
+                "query": query,
+                "intent": intent,
+                "score": score,
+                "suggestedTitle": topic_title(query, intent),
+                "impressions": item.get("impressions", 0),
+                "clicks": item.get("clicks", 0),
+                "ctr": item.get("ctr", 0),
+                "position": item.get("position", 0),
+                "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page.",
+            }
+        )
+
+    topic_backlog.sort(key=lambda x: (x["score"], x["impressions"]), reverse=True)
+    topic_backlog = topic_backlog[:10]
+
     return {
         "erpNetsuiteQueries": top_queries,
         "erpInPatterns": erp_in_candidates,
         "contentGaps": content_gaps,
+        "topicBacklogV2": topic_backlog,
     }
 
 
@@ -1333,6 +1415,7 @@ def load_search_console_fallback(*, start_date: date, end_date: date) -> dict:
             "erpNetsuiteQueries": [],
             "erpInPatterns": [],
             "contentGaps": [],
+            "topicBacklogV2": [],
             "note": "Query-level demand signals unavailable in CSV fallback mode.",
         },
         "source": "fallback_csv",
