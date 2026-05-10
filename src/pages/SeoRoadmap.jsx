@@ -2,9 +2,8 @@
  * SEO Content Roadmap — Internal page (noindex)
  * Living document for tracking SEO content priorities
  *
- * Two access levels:
- *   Admin  → can update article statuses (todo / in_progress / done)
- *   Viewer → read-only view
+ * Security note:
+ * Client bundles must not include hardcoded secrets/passwords.
  */
 
 import { useEffect, useState } from "react";
@@ -18,8 +17,6 @@ import {
   Layers,
   ChevronDown,
   Lock,
-  LogOut,
-  Search,
   ArrowRight,
   Wrench,
   Eye,
@@ -31,9 +28,8 @@ const seoSnapshotDate =
   reportData?.ga4Period?.seoInsights?.period?.split(" to ").at(-1) || reportData?.lastUpdated;
 const demandSignals = reportData?.ga4Period?.seoInsights?.demandSignals || {};
 
-/* ── passwords ── */
-const ADMIN_PIN = "seo2026admin";
-const VIEWER_PIN = "seo2026";
+/* ── client edit mode (temporary control, not auth) ── */
+const EDITS_ENABLED = import.meta.env.VITE_SEO_ROADMAP_EDITS === "true";
 
 /* ── status helpers ── */
 const STATUS = {
@@ -287,74 +283,663 @@ function getRoadmapPhases() {
 /* ── helpers ── */
 const fmt = (n) => n.toLocaleString("en-GB");
 const britDate = (s) => (s ? s.replace(/(\d{4})-(\d{2})-(\d{2})/g, (_, y, m, d) => `${d}/${m}/${y}`) : s);
+const norm = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+const smallTitleWords = new Set(["a", "an", "and", "as", "at", "for", "from", "in", "of", "on", "or", "the", "to", "with"]);
+
+function titleToSlug(title) {
+  return String(title || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function smartTitleCase(input) {
+  return String(input || "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word, index) => {
+      const lower = word.toLowerCase();
+      if (lower === "erp") return "ERP";
+      if (lower === "netsuite") return "NetSuite";
+      if (lower === "uk") return "UK";
+      if (lower === "it") return "IT";
+      if (index > 0 && smallTitleWords.has(lower)) return lower;
+      return lower.charAt(0).toUpperCase() + lower.slice(1);
+    })
+    .join(" ");
+}
+
+function normaliseGeneratedTitle(rawTitle, rawQuery = rawTitle) {
+  let title = String(rawTitle || rawQuery || "").trim();
+  const lower = title.toLowerCase();
+
+  title = title
+    .replace(/:\s*how to choose and deliver$/i, "")
+    .replace(/\bhow to choose and deliver\b/gi, "")
+    .replace(/\bgreat britain\b/gi, "UK")
+    .replace(/\bunited kingdom\b/gi, "UK")
+    .replace(/\berp\b/gi, "ERP")
+    .replace(/\bnetsuite\b/gi, "NetSuite")
+    .replace(/\bit\b/gi, "IT")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const whichMatch = lower.match(/^which\s+(.+?)\s+are\s+best\s+for\s+(.+?)(?:\s+in\s+great\s+britain|\s+in\s+the\s+uk|\s+in\s+uk)?$/i);
+  if (whichMatch) {
+    const subject = whichMatch[1];
+    const audience = whichMatch[2];
+    if (/erp consultants?/.test(subject) && /software|development|it/.test(audience)) {
+      return "How UK Software Companies Should Choose an ERP Consultant";
+    }
+    return `How to Choose ${smartTitleCase(subject.replace(/s$/, ""))} for ${smartTitleCase(audience)}`;
+  }
+
+  if (/^erp consultants? uk$/i.test(title)) return "How to Choose an ERP Consultant in the UK";
+  if (/^independent erp consultants?$/i.test(title)) return "How to Choose an Independent ERP Consultant";
+  if (/^erp development company(?:: practical guide)?$/i.test(title)) return "How to Choose an ERP Development Company";
+  if (/^erp software development company(?:: practical guide)?$/i.test(title)) return "What to Look For in an ERP Software Development Company";
+
+  return smartTitleCase(title);
+}
+
+function titleQualityChecks(title, rawQuery = "") {
+  const checks = [];
+  const titleNorm = norm(title);
+  const words = titleNorm.split(" ").filter(Boolean);
+  const repeated = words.filter((word, index) => words.indexOf(word) !== index && word.length > 3);
+
+  if (title.length > 75) checks.push("overly_long_title");
+  if (new Set(repeated).size > 0) checks.push("possible_keyword_stuffing");
+  if (/\bwhich\b.+\bare best for\b/i.test(title) || /how to choose and deliver/i.test(title)) checks.push("awkward_phrase");
+  if (/\bErp\b|\bNetsuite\b/.test(title)) checks.push("title_case_mistake");
+  if (/great britain/i.test(title) && !/great britain/i.test(rawQuery)) checks.push("unnecessary_great_britain");
+
+  return checks;
+}
+
+function conversionIntentForText(input) {
+  const text = norm(input);
+  let score = 35;
+  let recommendedCTA = "audit/readiness check";
+
+  const add = (amount, cta = recommendedCTA) => {
+    score = Math.max(score, amount);
+    recommendedCTA = cta;
+  };
+
+  if (/failed implementation|rescue|recovery|implementation problem|poor implementation|implementation/i.test(text)) {
+    add(92, "implementation consultation");
+  }
+  if (/aftercare|support|helpdesk|maintenance|ongoing support/i.test(text)) {
+    add(88, "support review");
+  }
+  if (/erp consultant|erp partner|netsuite partner|consultant|partner/i.test(text)) {
+    add(84, "audit/readiness check");
+  }
+  if (/manufacturing|manufacturer|factory|production|inventory|warehouse/i.test(text)) {
+    add(82, "manufacturing ERP discussion");
+  }
+  if (/finance|accounting|accounts receivable|cash flow|cfo|financial/i.test(text)) {
+    add(78, "finance systems review");
+  }
+  if (/migration|migrate|replace|upgrade|implementation/i.test(text)) {
+    add(80, "implementation consultation");
+  }
+  if (/what is erp|what is an erp|benefits of erp|role of erp|understanding erp/i.test(text)) {
+    score = Math.min(score, /netsuite|consultant|implementation|support|finance|manufacturing/.test(text) ? 55 : 35);
+  }
+
+  return {
+    conversionIntentScore: Math.min(100, score),
+    conversionIntentLabel: score >= 75 ? "high" : score >= 50 ? "medium" : "low",
+    recommendedCTA,
+  };
+}
+
+function demandScoreForText(text, demandGaps, topicBacklog) {
+  const t = norm(text);
+  if (!t) return 0;
+  let score = 0;
+  for (const g of demandGaps || []) {
+    const q = norm(g.query);
+    if (q && (t.includes(q) || q.includes(t) || t.includes(q.split(" ").slice(0, 3).join(" ")))) {
+      score += Math.min(40, Math.round((g.impressions || 0) / 120));
+      score += g.clicks === 0 ? 10 : 0;
+    }
+  }
+  for (const b of topicBacklog || []) {
+    const q = norm(b.query || b.suggestedTitle);
+    if (q && (t.includes(q) || q.includes(t) || t.includes(q.split(" ").slice(0, 3).join(" ")))) {
+      score += Math.min(50, b.score || 0);
+      score += Math.min(20, Math.round((b.impressions || 0) / 150));
+    }
+  }
+  return Math.min(100, score);
+}
+
+function buildFixCreateRecommendations({ qaReport, allItems, demandGaps, topicBacklog }) {
+  if (!qaReport || !Array.isArray(qaReport.articles)) return [];
+
+  const roadmapByTitle = new Map((allItems || []).map((i) => [norm(i.title), i]));
+  const qaBySlug = new Map(qaReport.articles.map((a) => [a.slug, a]));
+  const recs = [];
+
+  for (const qa of qaReport.articles) {
+    const roadmapItem = roadmapByTitle.get(norm(qa.title));
+    const status = roadmapItem?.status || null;
+    const blocked = qa.gate === "blocked";
+    const demand = demandScoreForText(qa.title || qa.slug, demandGaps, topicBacklog);
+    const topIssue = qa?.issues?.structural?.[0] || qa?.issues?.warnings?.[0] || "No issues recorded";
+
+    if (blocked) {
+      const intent = conversionIntentForText(`${qa.title} ${qa.slug}`);
+      recs.push({
+        type: "blocked_review",
+        title: qa.title || qa.slug,
+        slug: qa.slug,
+        reason: `QA gate is blocked (${topIssue}).`,
+        conversionIntentScore: intent.conversionIntentScore,
+        conversionIntentLabel: intent.conversionIntentLabel,
+        recommendedCTA: intent.recommendedCTA,
+        priorityScore: Math.min(100, Math.round(45 + demand * 0.35 + intent.conversionIntentScore * 0.35)),
+        sourceSignals: ["blocked_structural_issue", demand > 0 ? "search_demand" : "poor_qa_score"].filter(Boolean),
+        suggestedNextAction: "Fix structural QA issues before any SEO update or promotion.",
+      });
+      continue;
+    }
+
+    if (qa.gate === "needs_review") {
+      const intent = conversionIntentForText(`${qa.title} ${qa.slug}`);
+      recs.push({
+        type: "improve_existing",
+        title: qa.title || qa.slug,
+        slug: qa.slug,
+        qa,
+        reason: `Low QA score (${qa.score}) and/or quality warnings (${topIssue}).`,
+        conversionIntentScore: intent.conversionIntentScore,
+        conversionIntentLabel: intent.conversionIntentLabel,
+        recommendedCTA: intent.recommendedCTA,
+        priorityScore: Math.min(100, Math.round((100 - qa.score) * 0.4 + demand * 0.35 + intent.conversionIntentScore * 0.45 + (status === "in_progress" ? 8 : 0))),
+        sourceSignals: ["poor_qa_score", demand > 0 ? "search_demand" : null].filter(Boolean),
+        suggestedNextAction: status === "in_progress"
+          ? "Complete current draft, then improve intro depth, CTA relevance, and flagged sections."
+          : "Revise this existing article first, then re-run resource QA before new content creation.",
+      });
+      continue;
+    }
+
+    if (qa.gate === "pass" && demand > 45) {
+      const intent = conversionIntentForText(`${qa.title} ${qa.slug}`);
+      recs.push({
+        type: "monitor",
+        title: qa.title || qa.slug,
+        slug: qa.slug,
+        reason: "QA is strong, but demand signals are high enough to monitor ranking and CTR closely.",
+        conversionIntentScore: intent.conversionIntentScore,
+        conversionIntentLabel: intent.conversionIntentLabel,
+        recommendedCTA: intent.recommendedCTA,
+        priorityScore: Math.min(100, Math.round(demand * 0.55 + intent.conversionIntentScore * 0.45)),
+        sourceSignals: ["search_demand"],
+        suggestedNextAction: "Track performance weekly and only refresh if impressions rise without CTR improvement.",
+      });
+    }
+  }
+
+  for (const topic of (topicBacklog || []).slice(0, 12)) {
+    const suggested = topic.suggestedTitle || topic.query;
+    const suggestedSlug = titleToSlug(suggested);
+    const exists = qaBySlug.has(suggestedSlug);
+    if (exists) continue;
+    const rawQuery = topic.query || suggested;
+    const preferredTitle = normaliseGeneratedTitle(suggested, rawQuery);
+    const intent = conversionIntentForText(`${preferredTitle} ${rawQuery}`);
+
+    recs.push({
+      type: "create_new",
+      title: preferredTitle,
+      preferredTitle,
+      rawQuery,
+      slug: null,
+      reason: "Demand-led topic backlog indicates uncovered search intent.",
+      conversionIntentScore: intent.conversionIntentScore,
+      conversionIntentLabel: intent.conversionIntentLabel,
+      recommendedCTA: intent.recommendedCTA,
+      priorityScore: Math.min(100, Math.round((topic.score || 0) * 0.45 + Math.min(20, (topic.impressions || 0) / 160) + intent.conversionIntentScore * 0.45)),
+      sourceSignals: ["search_demand", "content_gap"],
+      suggestedNextAction: "Draft a new resource targeting the exact query intent, then add internal links and CTA.",
+    });
+  }
+
+  const sorted = recs.sort((a, b) => b.priorityScore - a.priorityScore);
+  return sorted.map((rec, idx) => {
+    const rank = idx + 1;
+    const articleTypeBucket = topicCategoryForBrief({
+      preferredTitle: rec.preferredTitle || rec.title,
+      targetTitle: rec.title,
+      rawQuery: rec.rawQuery || "",
+      recommendedCTA: rec.recommendedCTA || "",
+    });
+    const sprintCandidate = rank > 5 && rank <= 15 && rec.type !== "monitor";
+    let sprintReason = "";
+    if (sprintCandidate && rec.type === "improve_existing") sprintReason = "Needs QA improvement and is outside dashboard top 5.";
+    else if (sprintCandidate && rec.type === "create_new") sprintReason = "Demand-led content gap suitable for sprint backlog planning.";
+    else if (sprintCandidate && rec.type === "blocked_review") sprintReason = "Blocked issue that should be cleared before promotion work.";
+
+    return {
+      ...rec,
+      displayRank: rank,
+      sprintCandidate,
+      sprintReason,
+      articleTypeBucket,
+    };
+  });
+}
+
+function suggestedLinksForRecommendation(rec) {
+  const text = norm(`${rec.title} ${rec.reason}`);
+  const links = ["/resources"];
+
+  if (text.includes("implementation") || text.includes("project")) links.push("/implementation");
+  if (text.includes("support") || text.includes("aftercare") || text.includes("poor")) links.push("/support");
+  if (text.includes("partner") || text.includes("consultant")) links.push("/partners");
+  if (text.includes("manufactur") || text.includes("case")) links.push("/case-studies");
+  if (text.includes("netsuite") || text.includes("erp")) links.push("/services/netsuite");
+  links.push("/contact");
+
+  return [...new Set(links)].slice(0, 4);
+}
+
+function ctaAngleForRecommendation(rec) {
+  if (rec.recommendedCTA) return rec.recommendedCTA;
+  if (rec.type === "create_new") return "Offer a practical consultation or readiness check tied to the search intent.";
+  if (rec.type === "blocked_review") return "Avoid lead-generation emphasis until structural QA issues are fixed.";
+  if (norm(rec.title).includes("support") || norm(rec.title).includes("aftercare")) return "Position ERP Experts as the support partner for resolving ongoing NetSuite friction.";
+  if (norm(rec.title).includes("implementation") || norm(rec.title).includes("poor")) return "Invite readers to discuss implementation recovery or risk reduction.";
+  return "Use a soft consultation CTA that connects the article topic to NetSuite advisory help.";
+}
+
+function metaDescriptionForTitle(title, cta) {
+  const base = `Practical guidance for ${title.toLowerCase()} from ERP Experts.`;
+  const suffix = cta === "support review"
+    ? " Understand the support issues to fix before they slow the business down."
+    : cta === "implementation consultation"
+    ? " Learn what to check before your next ERP decision or recovery project."
+    : cta === "manufacturing ERP discussion"
+    ? " See what manufacturers should review before choosing or improving ERP."
+    : cta === "finance systems review"
+    ? " Review the finance system signals that affect control, reporting, and scale."
+    : " Use it to plan a clearer next step before committing budget.";
+  return `${base}${suffix}`.slice(0, 155);
+}
+
+function channelTopicForTitle(title) {
+  const lower = title.toLowerCase();
+  if (/software companies.*erp consultant|erp consultant.*software companies/i.test(title)) {
+    return "choosing an ERP consultant for a UK software company";
+  }
+  if (/choose an erp consultant|independent erp consultant|erp consultants uk/i.test(lower)) {
+    return "choosing an ERP consultant";
+  }
+  if (/poor netsuite implementation|failed implementation/i.test(lower)) {
+    return "spotting and recovering a poor NetSuite implementation";
+  }
+  if (/erp development company/i.test(lower)) {
+    return "choosing an ERP development company";
+  }
+  return lower;
+}
+
+function buildChannelOutputs(brief) {
+  const title = brief.preferredTitle || brief.targetTitle;
+  const cta = brief.recommendedCTA;
+  const highIntent = brief.conversionIntentLabel === "high";
+  const topic = channelTopicForTitle(title);
+  const ctaArticle = /^[aeiou]/i.test(cta) ? "an" : "a";
+
+  return {
+    linkedInPostAngle: highIntent
+      ? `Frame ${title} around a board-level decision: where poor ERP choices create cost, delay, or operational drag.`
+      : `Use ${title} to clarify a common ERP question and point readers towards a practical next step.`,
+    emailNurtureAngle: cta === "support review"
+      ? "Send to existing NetSuite users showing symptoms of recurring support issues, with a prompt to review unresolved friction."
+      : cta === "implementation consultation"
+      ? "Send to prospects evaluating ERP change, focused on avoiding implementation risk before scope is locked."
+      : cta === "manufacturing ERP discussion"
+      ? "Send to manufacturing contacts with inventory, production, or reporting pain, positioned as a decision checklist."
+      : cta === "finance systems review"
+      ? "Send to finance leaders who are outgrowing accounting tools or struggling with reporting control."
+      : "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+    salesFollowUpAngle: `Use after discovery calls where the prospect mentions ${brief.primaryIssue.toLowerCase()}; offer ${ctaArticle} ${cta}.`,
+    suggestedFaqQuestions: [
+      `When should a business review ${topic}?`,
+      `What are the warning signs that ${topic} needs specialist advice?`,
+      `How can ERP Experts help with ${topic}?`,
+    ],
+    suggestedMetaTitle: `${title} | ERP Experts`,
+    suggestedMetaDescription: metaDescriptionForTitle(topic, cta),
+  };
+}
+
+function hasIssue(qa, pattern) {
+  return [...(qa?.issues?.structural || []), ...(qa?.issues?.warnings || [])].some((issue) => pattern.test(issue));
+}
+
+function buildImplementationPlan(rec, brief) {
+  if (rec.type !== "improve_existing") return null;
+
+  const qa = rec.qa || {};
+  const metrics = qa.metrics || {};
+  const scores = qa.categoryScores || {};
+  const cta = brief.recommendedCTA;
+  const ctaArticle = /^[aeiou]/i.test(cta) ? "an" : "a";
+  const sectionsToImprove = [];
+  const missingElements = [];
+  const suggestedNewSectionHeadings = [];
+  const riskNotes = [];
+
+  if (metrics.introWords < 60 || hasIssue(qa, /intro/i)) {
+    sectionsToImprove.push("Opening section: expand the problem statement and make the reader's risk clear within the first 60-90 words.");
+  }
+
+  if (metrics.thinTipsCount > 0 || metrics.bodyDepthWords < 450 || scores.contentDepth < 70) {
+    sectionsToImprove.push(`Main body: expand thin sections with concrete examples, decision criteria, or recovery steps. Current thin section count: ${metrics.thinTipsCount || 0}.`);
+  }
+
+  if (hasIssue(qa, /conclusion/i)) {
+    sectionsToImprove.push("Conclusion: add a practical summary that tells the reader what to check next.");
+    missingElements.push("Clear conclusion that reinforces the commercial next step.");
+  }
+
+  if (hasIssue(qa, /disclaimer/i)) {
+    missingElements.push("Short disclaimer where the topic could be read as financial, operational, or implementation advice.");
+  }
+
+  if (!metrics.hasServiceRelevantCTA || scores.ctaServiceRelevance < 70) {
+    sectionsToImprove.push(`CTA area: replace the weak or missing CTA with a specific ${cta}.`);
+    missingElements.push(`Service-relevant CTA linked to ${cta}.`);
+  }
+
+  if (!metrics.internalPathCTA || scores.internalLinkReadiness < 70) {
+    missingElements.push("Internal links from the article to relevant service or contact pages.");
+  }
+
+  if (!metrics.hasPublishedAt || scores.freshnessPublishedAtValidity < 70) {
+    missingElements.push("Valid publishedAt value so freshness checks and reporting stay reliable.");
+  }
+
+  if (cta === "implementation consultation") {
+    suggestedNewSectionHeadings.push("Implementation risks to check before the project continues");
+    suggestedNewSectionHeadings.push("What to do if the warning signs are already visible");
+  } else if (cta === "support review") {
+    suggestedNewSectionHeadings.push("Support issues that should not become business as usual");
+    suggestedNewSectionHeadings.push("When to bring in a NetSuite support partner");
+  } else if (cta === "manufacturing ERP discussion") {
+    suggestedNewSectionHeadings.push("Manufacturing signals that the ERP setup needs review");
+    suggestedNewSectionHeadings.push("Questions to ask before changing systems or processes");
+  } else if (cta === "finance systems review") {
+    suggestedNewSectionHeadings.push("Finance control issues to check first");
+    suggestedNewSectionHeadings.push("Reporting questions to resolve before the next close");
+  } else {
+    suggestedNewSectionHeadings.push("Decision criteria to use before choosing the next step");
+    suggestedNewSectionHeadings.push("When to ask an ERP specialist for a second view");
+  }
+
+  if (rec.sourceSignals.includes("search_demand")) {
+    riskNotes.push("Search demand is present, so avoid changing the URL or diluting the core topic while improving quality.");
+  }
+  if (metrics.nearDuplicateMatches > 0 || scores.duplicateCannibalisationRisk < 80) {
+    riskNotes.push("Check neighbouring resources before editing so the article does not overlap with similar ERP topics.");
+  }
+  if (brief.conversionIntentLabel === "high") {
+    riskNotes.push("High commercial intent: keep advice useful, but make the service next step visible and specific.");
+  }
+
+  return {
+    sectionsToImprove: sectionsToImprove.length ? sectionsToImprove : ["Review the main body for article-specific examples and decision criteria tied to the title."],
+    missingElements: missingElements.length ? missingElements : ["No major missing elements from QA, but the article still needs quality improvement before promotion."],
+    suggestedNewSectionHeadings,
+    strongerCTARecommendation: `Add a concise CTA offering ${ctaArticle} ${cta}, linked from the conclusion and any relevant decision section.`,
+    internalLinksToAdd: brief.suggestedInternalLinks.filter((link) => link !== "/resources"),
+    riskNotes: riskNotes.length ? riskNotes : ["Keep the current route, slug, and article intent stable; only improve depth, clarity, links, and CTA relevance."],
+    reviewQuestions: [
+      `Does the revised article answer the problem promised by "${brief.preferredTitle}" without drifting into a new topic?`,
+      "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+      "Do the added sections reduce the QA warnings that triggered this brief?",
+      "Do internal links point to genuinely relevant ERP Experts service pages?",
+    ],
+  };
+}
+
+function listForPrompt(items) {
+  return (items || []).map((item) => `- ${item}`).join("\n");
+}
+
+function buildCodexPatchPrompt(brief) {
+  if (brief.recommendationType !== "improve_existing" || !brief.implementationPlan) return null;
+
+  const plan = brief.implementationPlan;
+
+  return `Improve one existing ERP Experts resource article safely.
+
+Target article:
+- Slug: ${brief.targetSlug}
+- Title: ${brief.preferredTitle || brief.targetTitle}
+- File: src/data/articles.js
+
+Implementation plan:
+
+Sections to improve:
+${listForPrompt(plan.sectionsToImprove)}
+
+Missing elements to add or strengthen:
+${listForPrompt(plan.missingElements)}
+
+Suggested new section headings:
+${listForPrompt(plan.suggestedNewSectionHeadings)}
+
+CTA angle:
+- ${brief.recommendedCTA}
+- ${plan.strongerCTARecommendation}
+
+Internal links to add where relevant:
+${listForPrompt(plan.internalLinksToAdd)}
+
+Risk notes:
+${listForPrompt(plan.riskNotes)}
+
+Review questions:
+${listForPrompt(plan.reviewQuestions)}
+
+Constraints:
+- Only edit the target article object with slug "${brief.targetSlug}" in src/data/articles.js.
+- Preserve the existing article data shape.
+- Do not redesign components.
+- Do not change routes.
+- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.
+- Use UK English.
+- Keep the article commercially useful but factual and reviewable.
+- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.
+- Vary the conclusion structure rather than repeating a fixed template.
+- Avoid repeating stock phrases such as "clear ownership", "practical next step", or "commercially meaningful".
+- Do not auto-publish anything.
+- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs.`;
+}
+
+function topicCategoryForBrief(brief) {
+  const text = norm(`${brief.preferredTitle} ${brief.targetTitle} ${brief.rawQuery || ""} ${brief.recommendedCTA}`);
+  if (/failed implementation|poor netsuite implementation|implementation|migration|rescue|recovery/.test(text)) return "implementation";
+  if (/support|aftercare|helpdesk|maintenance/.test(text)) return "support";
+  if (/manufactur|factory|production|inventory|warehouse/.test(text)) return "manufacturing";
+  if (/finance|accounting|accounts receivable|cfo|reporting|financial/.test(text)) return "finance_accounting";
+  if (/erp consultant|consultant|partner/.test(text)) return "consulting_partner";
+  if (/what is erp|benefits of erp|role of erp|understanding erp|beginner/.test(text)) return "generic_informational";
+  return "general_erp";
+}
+
+function clampScore(score) {
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+
+function buildOutcomeScoring(brief) {
+  const category = topicCategoryForBrief(brief);
+  const text = norm(`${brief.preferredTitle} ${brief.targetTitle} ${brief.rawQuery || ""}`);
+  const serviceRelevant = /netsuite|implementation|support|consultant|partner|manufactur|finance|accounting|migration|rescue|aftercare|erp/.test(text);
+  const genericInfo = category === "generic_informational";
+
+  const categoryWeight = {
+    implementation: 24,
+    support: 22,
+    manufacturing: 20,
+    finance_accounting: 18,
+    consulting_partner: 21,
+    general_erp: 10,
+    generic_informational: -12,
+  }[category];
+
+  const ctaWeight = {
+    "implementation consultation": 18,
+    "support review": 17,
+    "manufacturing ERP discussion": 16,
+    "finance systems review": 15,
+    "audit/readiness check": 14,
+  }[brief.recommendedCTA] || 8;
+
+  const estimatedBusinessValue = clampScore(brief.conversionIntentScore * 0.45 + brief.priorityScore * 0.25 + categoryWeight + ctaWeight + (serviceRelevant ? 8 : 0) - (genericInfo ? 14 : 0));
+  const estimatedLeadIntent = clampScore(brief.conversionIntentScore * 0.7 + ctaWeight + (serviceRelevant ? 6 : 0) - (genericInfo ? 22 : 0));
+  const assistedConversionPotential = clampScore(brief.priorityScore * 0.35 + brief.conversionIntentScore * 0.35 + categoryWeight + (brief.suggestedInternalLinks.length * 3) - (genericInfo ? 10 : 0));
+  const strategicImportance = clampScore(brief.priorityScore * 0.3 + categoryWeight + (brief.sourceSignals?.includes("content_gap") ? 14 : 0) + (brief.sourceSignals?.includes("search_demand") ? 10 : 0) + (serviceRelevant ? 8 : 0));
+  const confidenceLevel = clampScore(55 + (brief.sourceSignals?.length || 0) * 8 + (brief.conversionIntentLabel === "high" ? 12 : 0) + (brief.recommendationType === "improve_existing" ? 6 : 0) - (genericInfo ? 12 : 0));
+
+  const average = (estimatedBusinessValue + estimatedLeadIntent + assistedConversionPotential + strategicImportance) / 4;
+  const outcomeLabel = genericInfo && average < 65
+    ? "awareness_only"
+    : average >= 72 && confidenceLevel >= 65
+    ? "high_value"
+    : average >= 48
+    ? "medium_value"
+    : "awareness_only";
+
+  const whyThisMattersCommercially = outcomeLabel === "high_value"
+    ? `${brief.preferredTitle} is likely to support commercially meaningful conversations because it combines ${brief.conversionIntentLabel} conversion intent with ${category.replace("_", "/")} service relevance.`
+    : outcomeLabel === "medium_value"
+    ? `${brief.preferredTitle} has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.`
+    : `${brief.preferredTitle} is mainly awareness content for now; keep the CTA light and use outcome data before giving it more commercial priority.`;
+
+  return {
+    estimatedBusinessValue,
+    estimatedLeadIntent,
+    assistedConversionPotential,
+    strategicImportance,
+    confidenceLevel,
+    outcomeLabel,
+    whyThisMattersCommercially,
+    leadsGenerated: null,
+    assistedConversions: null,
+    rankingMovement: null,
+    manualOutcomeNotes: "",
+  };
+}
+
+function buildActionBriefs(recommendations) {
+  return recommendations.map((rec) => {
+    const primaryIssue = rec.sourceSignals.includes("blocked_structural_issue")
+      ? "Blocked structural QA issue"
+      : rec.sourceSignals.includes("poor_qa_score")
+      ? "Weak QA score or content quality warning"
+      : rec.sourceSignals.includes("content_gap")
+      ? "Uncovered search intent"
+      : "Search demand needs monitoring";
+
+    const suggestedContentChanges = rec.type === "create_new"
+      ? [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making.",
+      ]
+      : [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit.",
+      ];
+
+    const brief = {
+      recommendationType: rec.type,
+      targetTitle: rec.title,
+      preferredTitle: rec.preferredTitle || rec.title,
+      rawQuery: rec.rawQuery || null,
+      targetSlug: rec.slug,
+      displayRank: rec.displayRank || null,
+      sprintCandidate: Boolean(rec.sprintCandidate),
+      sprintReason: rec.sprintReason || "",
+      articleTypeBucket: rec.articleTypeBucket || "commercial",
+      priorityScore: rec.priorityScore,
+      conversionIntentScore: rec.conversionIntentScore,
+      conversionIntentLabel: rec.conversionIntentLabel,
+      whyThisMatters: rec.reason,
+      primaryIssue,
+      suggestedContentChanges,
+      suggestedInternalLinks: suggestedLinksForRecommendation(rec),
+      suggestedCtaAngle: ctaAngleForRecommendation(rec),
+      recommendedCTA: rec.recommendedCTA || ctaAngleForRecommendation(rec),
+      reviewChecklist: [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes.",
+      ],
+      sourceSignals: rec.sourceSignals,
+      titleQualityChecks: titleQualityChecks(rec.preferredTitle || rec.title, rec.rawQuery || rec.title),
+    };
+    const briefWithPlans = {
+      ...brief,
+      ...buildOutcomeScoring(brief),
+      channelOutputs: buildChannelOutputs(brief),
+      implementationPlan: buildImplementationPlan(rec, brief),
+    };
+    return {
+      ...briefWithPlans,
+      codexPatchPrompt: buildCodexPatchPrompt(briefWithPlans),
+    };
+  });
+}
+// Canonical source of truth:
+// 1) /api/seo-statuses.php (read/write, server-backed)
+// 2) /api/seo-statuses.json (read-only fallback when PHP is unavailable)
 const API_URL = "/api/seo-statuses.php";
+const FALLBACK_URL = "/api/seo-statuses.json";
 
 async function loadStatuses() {
   try {
     const res = await fetch(API_URL);
-    if (!res.ok) return {};
-    return await res.json();
-  } catch { return {}; }
+    if (res.ok) return { statuses: await res.json(), source: "php" };
+  } catch {
+    // Fall through to JSON fallback.
+  }
+
+  try {
+    const fallback = await fetch(FALLBACK_URL);
+    if (fallback.ok) return { statuses: await fallback.json(), source: "json-fallback" };
+  } catch {
+    // Ignore and return empty below.
+  }
+
+  return { statuses: {}, source: "unavailable" };
 }
 
 async function saveStatuses(map) {
   try {
-    await fetch(API_URL, {
+    const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ statuses: map }),
     });
+    return res.ok;
   } catch { /* silent fail */ }
+  return false;
 }
 
 /* ── password gate ── */
-
-function RoadmapGate({ children }) {
-  const [role, setRole] = useState(() => sessionStorage.getItem("seo_roadmap_role"));
-  const [pin, setPin] = useState("");
-  const [error, setError] = useState(false);
-
-  if (role) return children({ role, logout: () => { sessionStorage.removeItem("seo_roadmap_role"); setRole(null); } });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (pin === ADMIN_PIN) {
-      sessionStorage.setItem("seo_roadmap_role", "admin");
-      setRole("admin");
-    } else if (pin === VIEWER_PIN) {
-      sessionStorage.setItem("seo_roadmap_role", "viewer");
-      setRole("viewer");
-    } else {
-      setError(true);
-      setPin("");
-    }
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center" style={{ paddingTop: "120px", background: "linear-gradient(135deg, #1a1a2e08 0%, #1a1a2e15 100%)" }}>
-      <form onSubmit={handleSubmit} className="rounded-3xl border-2 border-(--color-text)/10 bg-white shadow-xl text-center" style={{ padding: "var(--space-2xl)", maxWidth: "380px", width: "100%" }}>
-        <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-lg bg-primary/10">
-          <Search className="w-7 h-7 text-primary" />
-        </div>
-        <h1 className="text-2xl font-heading font-bold mb-sm">SEO Roadmap</h1>
-        <p className="text-sm text-(--color-text)/70 mb-xl">Enter the access code to continue.</p>
-        <input
-          type="password"
-          value={pin}
-          onChange={(e) => { setPin(e.target.value); setError(false); }}
-          placeholder="Access code"
-          autoFocus
-          className={`w-full rounded-xl border-2 text-center text-lg font-mono tracking-widest outline-none transition-colors ${error ? "border-red-400 bg-red-50" : "border-(--color-text)/15 focus:border-primary"}`}
-          style={{ padding: "12px 16px" }}
-        />
-        {error && <p className="text-sm text-red-500 mt-sm">Incorrect code. Try again.</p>}
-        <button type="submit" className="btn btn-primary w-full mt-lg">
-          View Roadmap
-        </button>
-      </form>
-    </div>
-  );
-}
 
 /* ── main component ── */
 export default function SeoRoadmap() {
@@ -370,11 +955,7 @@ export default function SeoRoadmap() {
     return () => (meta.content = "index, follow");
   }, []);
 
-  return (
-    <RoadmapGate>
-      {({ role, logout }) => <RoadmapContent role={role} logout={logout} />}
-    </RoadmapGate>
-  );
+  return <RoadmapContent canEdit={EDITS_ENABLED} />;
 }
 
 function useRoadmapState() {
@@ -389,16 +970,19 @@ function useRoadmapState() {
     return map;
   });
   const [loaded, setLoaded] = useState(false);
+  const [statusSource, setStatusSource] = useState("loading");
+  const [saveBlocked, setSaveBlocked] = useState(false);
 
   useEffect(() => {
-    loadStatuses().then((saved) => {
+    loadStatuses().then(({ statuses, source }) => {
       setStatusMap((prev) => {
         const next = { ...prev };
-        for (const key of Object.keys(saved)) {
-          next[key] = saved[key];
+        for (const key of Object.keys(statuses)) {
+          next[key] = statuses[key];
         }
         return next;
       });
+      setStatusSource(source);
       setLoaded(true);
     });
   }, []);
@@ -406,7 +990,9 @@ function useRoadmapState() {
   const updateStatus = (priority, newStatus) => {
     setStatusMap((prev) => {
       const next = { ...prev, [priority]: newStatus };
-      saveStatuses(next);
+      saveStatuses(next).then((ok) => {
+        if (!ok) setSaveBlocked(true);
+      });
       return next;
     });
   };
@@ -431,26 +1017,139 @@ function useRoadmapState() {
     }))
     .filter((phase) => phase.items.length > 0);
 
-  return { phases: openPhases, allItems, openItems, doneItems, updateStatus, loaded };
+  return { phases: openPhases, allItems, openItems, doneItems, updateStatus, loaded, statusSource, saveBlocked };
 }
 
-function RoadmapContent({ role, logout }) {
-  const isAdmin = role === "admin";
+function RoadmapContent({ canEdit }) {
+  const isAdmin = canEdit;
   const [previewing, setPreviewing] = useState(false);
 
   if (isAdmin && !previewing) {
-    return <AdminView logout={logout} onPreview={() => setPreviewing(true)} />;
+    return <AdminView onPreview={() => setPreviewing(true)} />;
   }
 
-  return <ViewerView logout={logout} showBackToAdmin={isAdmin && previewing} onBackToAdmin={() => setPreviewing(false)} />;
+  return <ViewerView showBackToAdmin={isAdmin && previewing} onBackToAdmin={() => setPreviewing(false)} />;
 }
 
 /* ════════════════════════════════════════════════════════════
    ADMIN VIEW — simple checklist, focused on action
    ════════════════════════════════════════════════════════════ */
 
-function AdminView({ logout, onPreview }) {
-  const { phases, allItems, openItems, doneItems, updateStatus, loaded } = useRoadmapState();
+function AdminView({ onPreview }) {
+  const { allItems, doneItems, loaded, statusSource, saveBlocked } = useRoadmapState();
+  const [qaReport, setQaReport] = useState(null);
+  const [qaLoading, setQaLoading] = useState(true);
+  const [weeklySummary, setWeeklySummary] = useState(null);
+  const [summaryLoading, setSummaryLoading] = useState(true);
+  const [pipelineSummary, setPipelineSummary] = useState(null);
+  const [pipelineLoading, setPipelineLoading] = useState(true);
+  const [articleFilter, setArticleFilter] = useState("needs_review");
+  const [sortBy, setSortBy] = useState("score");
+  const [selectedSlug, setSelectedSlug] = useState("");
+  const [plannerToggles, setPlannerToggles] = useState({
+    intro: true,
+    thinSections: true,
+    serviceCta: true,
+    conclusion: true,
+    internalLinks: true,
+    repetitionRisk: true,
+    publishedAt: true,
+  });
+  const [copyState, setCopyState] = useState("idle");
+  const [dashboardLoadedAt] = useState(() => new Date());
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadQaReport() {
+      const paths = ["/reports/resource-qa-report.json", "/resource-qa-report.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setQaReport(data);
+            setQaLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setQaReport(null);
+        setQaLoading(false);
+      }
+    }
+
+    loadQaReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadPipelineSummary() {
+      const paths = ["/reports/seo-pipeline-summary.json", "/seo-pipeline-summary.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setPipelineSummary(data);
+            setPipelineLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setPipelineSummary(null);
+        setPipelineLoading(false);
+      }
+    }
+
+    loadPipelineSummary();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadWeeklySummary() {
+      const paths = ["/reports/seo-weekly-summary.json", "/seo-weekly-summary.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setWeeklySummary(data);
+            setSummaryLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setWeeklySummary(null);
+        setSummaryLoading(false);
+      }
+    }
+
+    loadWeeklySummary();
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   if (!loaded) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -463,21 +1162,86 @@ function AdminView({ logout, onPreview }) {
   const progressCount = countByStatus("in_progress");
   const todoCount = countByStatus("todo");
   const pct = Math.round((doneCount / allItems.length) * 100);
-  const demandQueries = demandSignals.erpNetsuiteQueries || [];
-  const erpPatterns = demandSignals.erpInPatterns || [];
   const demandGaps = demandSignals.contentGaps || [];
   const topicBacklog = demandSignals.topicBacklogV2 || [];
+  const recommendations = buildFixCreateRecommendations({
+    qaReport,
+    allItems,
+    demandGaps,
+    topicBacklog,
+  });
+  const topRecommendations = recommendations.slice(0, 5);
+  const sprintCandidates = recommendations.filter((r) => r.sprintCandidate).slice(0, 10);
+  const allBriefs = buildActionBriefs(recommendations);
+  const briefBySlug = new Map(allBriefs.filter((b) => b.targetSlug).map((b) => [b.targetSlug, b]));
+  const recBySlug = new Map(recommendations.filter((r) => r.slug).map((r) => [r.slug, r]));
+  const qaArticles = Array.isArray(qaReport?.articles) ? qaReport.articles : [];
 
-  // Find current + next up
-  const inProgress = openItems.find((i) => i.status === "in_progress");
-  const firstTodo = openItems.find((i) => i.status === "todo");
+  const articleRows = qaArticles.map((article) => {
+    const brief = briefBySlug.get(article.slug);
+    const rec = recBySlug.get(article.slug);
+    const warnings = article?.issues?.warnings || [];
+    return {
+      ...article,
+      brief,
+      rec,
+      commercialPriority: brief?.estimatedBusinessValue ?? 0,
+      displayRank: rec?.displayRank ?? brief?.displayRank ?? 999,
+      hasCodexPrompt: Boolean(brief?.codexPatchPrompt),
+      isSprintCandidate: Boolean(rec?.sprintCandidate ?? brief?.sprintCandidate),
+      isHighCommercialIntent: brief?.conversionIntentLabel === "high",
+      hasMissingCTA: warnings.some((w) => /missing or weak service-relevant cta/i.test(w)),
+      hasThinContent: warnings.some((w) => /thin/i.test(w)),
+    };
+  });
 
-  // "Next up" should always be the top actionable todo item.
-  const nextUp = firstTodo;
+  const filteredRows = articleRows
+    .filter((row) => {
+      if (articleFilter === "needs_review") return row.gate === "needs_review";
+      if (articleFilter === "pass") return row.gate === "pass";
+      if (articleFilter === "sprint_candidates") return row.isSprintCandidate;
+      if (articleFilter === "high_commercial_intent") return row.isHighCommercialIntent;
+      if (articleFilter === "has_codex_prompt") return row.hasCodexPrompt;
+      if (articleFilter === "missing_cta") return row.hasMissingCTA;
+      if (articleFilter === "thin_content") return row.hasThinContent;
+      return true;
+    })
+    .sort((a, b) => {
+      if (sortBy === "score") return a.score - b.score;
+      if (sortBy === "commercial_priority") return (b.commercialPriority || 0) - (a.commercialPriority || 0);
+      if (sortBy === "display_rank") return (a.displayRank || 999) - (b.displayRank || 999);
+      if (sortBy === "gate") {
+        const order = { blocked: 0, needs_review: 1, pass: 2 };
+        return (order[a.gate] ?? 9) - (order[b.gate] ?? 9);
+      }
+      return 0;
+    });
+
+  const selectedRow = filteredRows.find((r) => r.slug === selectedSlug)
+    || articleRows.find((r) => r.slug === selectedSlug)
+    || filteredRows[0]
+    || articleRows[0]
+    || null;
+
+  const summaryGate = qaReport?.gateSummary || { pass: 0, needs_review: 0, blocked: 0 };
+  const humanReviewRecommended = Boolean(pipelineSummary?.review?.humanReviewRecommended);
+  const suggestedNextAction = weeklySummary?.topRecommendedActions?.[0]?.action
+    || topRecommendations[0]?.suggestedNextAction
+    || "Run seo:pipeline, select a needs_review article, and generate a Codex patch prompt.";
+  const activeRow = selectedSlug ? selectedRow : (filteredRows[0] || articleRows[0] || null);
+
+  if (!loaded) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <p className="text-lg text-(--color-text)/50">Loading roadmap…</p>
+    </div>
+  );
+  const displayRow = activeRow;
+  const promptText = displayRow
+    ? buildPlannerPrompt(displayRow, plannerToggles)
+    : "Select an article to generate a prompt preview.";
 
   return (
     <div className="min-h-screen bg-white">
-      {/* ── Header ── */}
       <header className="bg-slate-900 text-white" style={{ paddingTop: "160px", paddingBottom: "var(--space-2xl)" }}>
         <div className="container">
           <div className="flex items-center justify-between" style={{ marginBottom: "var(--space-xl)" }}>
@@ -486,18 +1250,27 @@ function AdminView({ logout, onPreview }) {
               Admin
             </span>
             <div className="flex items-center gap-lg">
+              <button
+                onClick={() => window.location.reload()}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30 transition-colors cursor-pointer"
+                title="Reload the dashboard to fetch the latest report files"
+              >
+                <CheckCircle2 size={15} />
+                Refresh latest reports
+              </button>
               <button onClick={onPreview} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer">
                 <Eye size={15} />
                 View as Tim
               </button>
-              <button onClick={logout} className="inline-flex items-center gap-1.5 text-sm text-white/60 hover:text-white transition-colors cursor-pointer">
-                <LogOut size={15} />
-                Log out
-              </button>
             </div>
           </div>
-          <h1 className="font-heading text-white" style={{ fontSize: "clamp(1.5rem, 4vw, 2.25rem)", marginBottom: "var(--space-sm)" }}>SEO Content Checklist</h1>
-          <p className="text-white/50 text-sm">{allItems.length} articles across {phases.length} phases</p>
+          <h1 className="font-heading text-white" style={{ fontSize: "clamp(1.5rem, 4vw, 2.25rem)", marginBottom: "var(--space-sm)" }}>
+            SEO Roadmap Dashboard v2
+          </h1>
+          <p className="text-white/60 text-sm">Operator control panel for selecting what to improve next.</p>
+          <p className="text-white/40 text-xs" style={{ marginTop: "var(--space-xs)" }}>
+            Dashboard loaded at {dashboardLoadedAt.toLocaleTimeString("en-GB")}
+          </p>
         </div>
       </header>
 
@@ -524,177 +1297,776 @@ function AdminView({ logout, onPreview }) {
           </div>
         </div>
       </div>
+      {(statusSource !== "php" || saveBlocked) && (
+        <div className="bg-amber-100 border-b border-amber-300">
+          <div className="container text-amber-900 text-sm" style={{ padding: "10px 0" }}>
+            Status persistence is not fully available ({statusSource}). Roadmap edits may not be saved server-side.
+          </div>
+        </div>
+      )}
 
       <section className="bg-white border-b border-slate-200">
         <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
-          <h2 className="font-heading" style={{ fontSize: "1.2rem", marginBottom: "var(--space-sm)" }}>
-            Live Search Demand Snapshot (ERP and NetSuite)
-          </h2>
-          <p className="text-sm text-slate-600" style={{ marginBottom: "var(--space-lg)" }}>
-            What people are currently searching, used by automation to pick the next guide.
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-lg">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-lg)" }}>
-              <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-sm)" }}>
-                Top ERP and NetSuite queries
-              </p>
-              {demandQueries.length > 0 ? (
-                <ul className="space-y-2 text-sm text-slate-700">
-                  {demandQueries.slice(0, 5).map((q, idx) => (
-                    <li key={`${q.query}-${idx}`}>
-                      <strong>{q.query}</strong> ({fmt(q.impressions)} imp, {q.clicks} clicks, pos {Number(q.position || 0).toFixed(1)})
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm text-slate-500">No query-level demand data available in the current dataset.</p>
-              )}
+          <h2 className="font-heading" style={{ fontSize: "1.3rem", marginBottom: "var(--space-sm)" }}>Weekly SEO Executive Summary</h2>
+          {summaryLoading ? (
+            <p className="text-sm text-slate-500">Loading summary…</p>
+          ) : !weeklySummary ? (
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
+              Weekly summary is missing. Run <code>npm run seo:summary</code> or <code>npm run seo:pipeline</code>.
             </div>
-
-            <div className="rounded-2xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-lg)" }}>
-              <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-sm)" }}>
-                ERP in/for X patterns
-              </p>
-              {erpPatterns.length > 0 ? (
-                <ul className="space-y-2 text-sm text-slate-700">
-                  {erpPatterns.slice(0, 5).map((p, idx) => (
-                    <li key={`${p.term}-${idx}`}>
-                      <strong>ERP for {p.term}</strong> ({fmt(p.impressions)} imp across {p.queryCount} queries)
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm text-slate-500">No strong ERP-in/for pattern demand detected yet.</p>
-              )}
+          ) : (
+            <div className="grid md:grid-cols-2 gap-lg">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-lg)" }}>
+                <p className="text-sm text-slate-800 leading-relaxed">{weeklySummary.headlineSummary}</p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white" style={{ padding: "var(--space-lg)" }}>
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-xs)" }}>Suggested next action</p>
+                <p className="text-sm text-slate-800">{suggestedNextAction}</p>
+              </div>
             </div>
+          )}
 
-            <div className="rounded-2xl border border-amber-200 bg-amber-50" style={{ padding: "var(--space-lg)" }}>
-              <p className="text-xs font-bold uppercase tracking-wide text-amber-700" style={{ marginBottom: "var(--space-sm)" }}>
-                Gap candidates (high demand, low traction)
-              </p>
-              {demandGaps.length > 0 ? (
-                <ul className="space-y-2 text-sm text-amber-900">
-                  {demandGaps.slice(0, 5).map((g, idx) => (
-                    <li key={`${g.query}-${idx}`}>
-                      <strong>{g.query}</strong> ({fmt(g.impressions)} imp, {g.clicks} clicks, CTR {g.ctr}%)
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm text-amber-800">No obvious gap candidates in the current signal window.</p>
-              )}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-fuchsia-200 bg-fuchsia-50" style={{ padding: "var(--space-lg)", marginTop: "var(--space-lg)" }}>
-            <p className="text-xs font-bold uppercase tracking-wide text-fuchsia-700" style={{ marginBottom: "var(--space-sm)" }}>
-              Topic Backlog v2 (scored)
-            </p>
-            {topicBacklog.length > 0 ? (
-              <ul className="space-y-2 text-sm text-fuchsia-900">
-                {topicBacklog.slice(0, 6).map((t, idx) => (
-                  <li key={`${t.query}-${idx}`}>
-                    <strong>{t.suggestedTitle}</strong> (score {t.score}, intent {t.intent}, {fmt(t.impressions)} imp)
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-fuchsia-800">No scored topic candidates available yet.</p>
-            )}
+          <div className="grid md:grid-cols-5 gap-md" style={{ marginTop: "var(--space-lg)" }}>
+            <StatMini label="Pass" value={summaryGate.pass} tone="green" />
+            <StatMini label="Needs Review" value={summaryGate.needs_review} tone="amber" />
+            <StatMini label="Blocked" value={summaryGate.blocked} tone={summaryGate.blocked > 0 ? "red" : "green"} />
+            <StatMini label="Human review flag" value={humanReviewRecommended ? "Yes" : "No"} tone={humanReviewRecommended ? "red" : "green"} />
+            <StatMini label="Snapshot" value={pipelineSummary?.pipeline?.snapshotDir?.split("/").at(-1) || "Unavailable"} />
           </div>
         </div>
       </section>
 
-      {/* ── Now / Next up ── */}
-      <div className="container" style={{ paddingTop: "var(--space-2xl)", paddingBottom: "var(--space-xl)" }}>
-        <div className="grid md:grid-cols-2" style={{ gap: "var(--space-lg)" }}>
-          {/* Current */}
-          <div className="rounded-2xl border-2 border-amber-300 bg-white shadow-sm" style={{ padding: "var(--space-xl) var(--space-2xl)" }}>
-            <div className="flex items-center gap-sm" style={{ marginBottom: "var(--space-md)" }}>
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
-              <p className="text-xs font-bold uppercase tracking-wider text-amber-600">Now working on</p>
-            </div>
-            {inProgress ? (
-              <>
-                <div className="flex items-center gap-md" style={{ marginBottom: "var(--space-sm)" }}>
-                  <span className="text-sm font-bold text-white bg-amber-500 rounded-lg px-2.5 py-0.5 font-mono">{(inProgress.queuePriority || inProgress.priority).toUpperCase()}</span>
-                  <p className="font-heading text-slate-800" style={{ fontSize: "1.15rem" }}>{inProgress.title}</p>
-                </div>
-                <p className="text-sm text-slate-600 leading-relaxed">{inProgress.why}</p>
-              </>
-            ) : (
-              <p className="text-slate-500 text-sm">Nothing in progress — pick one below</p>
-            )}
-          </div>
+      <section className="bg-slate-50 border-b border-slate-200">
+        <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
+          <h2 className="font-heading" style={{ fontSize: "1.3rem", marginBottom: "var(--space-sm)" }}>Article Workbench</h2>
+          <p className="text-sm text-slate-600" style={{ marginBottom: "var(--space-lg)" }}>
+            What needs attention now, why it matters, and the fastest safe fix plan.
+          </p>
 
-          {/* Next up */}
-          <div className="rounded-2xl border-2 border-slate-200 bg-white shadow-sm" style={{ padding: "var(--space-xl) var(--space-2xl)" }}>
-            <div className="flex items-center gap-sm" style={{ marginBottom: "var(--space-md)" }}>
-              <ArrowRight size={13} className="text-slate-500" />
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Next up</p>
+          {!qaReport ? (
+            <div className="rounded-2xl border border-slate-200 bg-white text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
+              Resource QA report missing. Run <code>npm run seo:pipeline</code> to populate the workbench.
             </div>
-            {nextUp || firstTodo ? (
-              <>
-                <div className="flex items-center gap-md" style={{ marginBottom: "var(--space-sm)" }}>
-                  <span className="text-sm font-bold text-primary bg-primary/10 rounded-lg px-2.5 py-0.5 font-mono">{((nextUp || firstTodo).queuePriority || (nextUp || firstTodo).priority).toUpperCase()}</span>
-                  <p className="font-heading text-slate-800" style={{ fontSize: "1.15rem" }}>{(nextUp || firstTodo).title}</p>
+          ) : (
+            <>
+              <div className="grid md:grid-cols-3 gap-md" style={{ marginBottom: "var(--space-md)" }}>
+                <label className="text-sm font-semibold text-slate-700">
+                  Filter articles
+                  <select
+                    value={articleFilter}
+                    onChange={(e) => setArticleFilter(e.target.value)}
+                    className="w-full mt-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+                  >
+                    <option value="needs_review">Needs review</option>
+                    <option value="pass">Pass</option>
+                    <option value="sprint_candidates">Sprint candidates</option>
+                    <option value="high_commercial_intent">High commercial intent</option>
+                    <option value="has_codex_prompt">Has Codex prompt</option>
+                    <option value="missing_cta">Missing CTA</option>
+                    <option value="thin_content">Thin content</option>
+                  </select>
+                </label>
+                <label className="text-sm font-semibold text-slate-700">
+                  Sort results
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="w-full mt-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+                  >
+                    <option value="score">Score (lowest first)</option>
+                    <option value="commercial_priority">Commercial priority (highest first)</option>
+                    <option value="display_rank">Display rank (lowest first)</option>
+                    <option value="gate">Gate</option>
+                  </select>
+                </label>
+                <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 flex items-center">
+                  Showing {filteredRows.length} of {articleRows.length} articles
                 </div>
-                <p className="text-sm text-slate-600 leading-relaxed">{(nextUp || firstTodo).why}</p>
-              </>
-            ) : (
-              <p className="text-green-600 text-sm font-semibold">All done!</p>
-            )}
-          </div>
+              </div>
+
+              <div className="grid lg:grid-cols-[1.1fr_1fr] gap-lg">
+                <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  {filteredRows.length === 0 ? (
+                    <div className="text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
+                      No articles match this filter yet. Try a different filter, or run <code>npm run seo:pipeline</code> to refresh reports.
+                    </div>
+                  ) : (
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="bg-slate-100">
+                        <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "10px 12px" }}>What needs attention</th>
+                        <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "10px 12px" }}>Score</th>
+                        <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "10px 12px" }}>Gate</th>
+                        <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "10px 12px" }}>Priority</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredRows.map((row) => {
+                        const active = selectedRow?.slug === row.slug;
+                        return (
+                          <tr
+                            key={row.slug}
+                            className={`border-t cursor-pointer ${active ? "bg-primary/5" : "bg-white hover:bg-slate-50"}`}
+                            onClick={() => setSelectedSlug(row.slug)}
+                          >
+                            <td style={{ padding: "10px 12px" }}>
+                              <p className="font-semibold text-slate-800">{row.title}</p>
+                              <p className="text-xs text-slate-500">{row.slug}</p>
+                              {active && <p className="text-[11px] font-semibold text-primary">Selected</p>}
+                            </td>
+                            <td className="font-mono text-sm text-slate-700" style={{ padding: "10px 12px" }}>{row.score}</td>
+                            <td style={{ padding: "10px 12px" }}>
+                              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
+                                row.gate === "pass" ? "bg-green-100 text-green-700" : row.gate === "blocked" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"
+                              }`}>
+                                {row.gate}
+                              </span>
+                            </td>
+                            <td className="text-xs text-slate-600" style={{ padding: "10px 12px" }}>
+                              {row.commercialPriority ? `Value ${row.commercialPriority}` : "—"}
+                              {Number.isFinite(row.displayRank) && row.displayRank < 999 ? ` · #${row.displayRank}` : ""}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  )}
+                </div>
+
+                <ArticleDetailPanel
+                  row={displayRow}
+                  plannerToggles={plannerToggles}
+                  onToggle={(key) => setPlannerToggles((prev) => ({ ...prev, [key]: !prev[key] }))}
+                  promptPreview={promptText}
+                  copyState={copyState}
+                  onCopy={async () => {
+                    try {
+                      await navigator.clipboard.writeText(promptText);
+                      setCopyState("copied");
+                      setTimeout(() => setCopyState("idle"), 1500);
+                    } catch {
+                      setCopyState("failed");
+                      setTimeout(() => setCopyState("idle"), 2000);
+                    }
+                  }}
+                />
+              </div>
+            </>
+          )}
         </div>
-      </div>
+      </section>
 
-      {/* ── Phase checklists ── */}
-      {phases.map((phase) => {
-        const Icon = phase.icon;
-        const phaseDone = phase.doneItems ?? 0;
-        const phaseAll = phase.totalItems ?? phase.items.length;
-        const phasePct = Math.round((phaseDone / phaseAll) * 100);
-        return (
-          <section key={phase.id}>
-            <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-2xl)" }}>
-              {/* Phase header */}
-              <div className="flex items-center gap-lg" style={{ marginBottom: "var(--space-md)" }}>
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${phase.colour} flex items-center justify-center flex-shrink-0`}>
-                  <Icon size={18} className="text-white" />
-                </div>
-                <div className="flex-1">
-                  <h2 className="font-heading text-slate-800" style={{ fontSize: "1.2rem" }}>{phase.label}: {phase.title}</h2>
-                  <p className="text-sm text-slate-600">{phase.subtitle}</p>
-                </div>
-                <span className="text-sm font-semibold text-slate-600 font-mono bg-slate-100 rounded-lg px-2.5 py-1">{phaseDone}/{phaseAll}</span>
-              </div>
-
-              {/* Phase progress mini-bar */}
-              <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden" style={{ marginBottom: "var(--space-lg)" }}>
-                <div className={`h-full bg-gradient-to-r ${phase.colour} rounded-full transition-all duration-500`} style={{ width: `${phasePct}%` }} />
-              </div>
-
-              {/* Items */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-md)" }}>
-                {phase.items.map((item) => (
-                  <AdminRow key={item.priority} item={item} accent={phase.accent} colour={phase.colour} onStatusChange={updateStatus} />
-                ))}
-              </div>
+      <section className="bg-white border-b border-slate-200">
+        <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
+          <details className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-md)" }}>
+            <summary className="cursor-pointer text-sm font-semibold text-slate-700">Advanced diagnostics</summary>
+            <div style={{ marginTop: "var(--space-md)" }}>
+              <WeeklySummarySection summary={weeklySummary} loading={summaryLoading} />
+              <PipelineSummarySection summary={pipelineSummary} loading={pipelineLoading} />
+              <ResourceQaSection qaReport={qaReport} qaLoading={qaLoading} />
+              <RecommendationSection recommendations={topRecommendations} sprintCandidates={sprintCandidates} qaLoading={qaLoading} />
+              <ActionBriefSection briefs={buildActionBriefs(topRecommendations)} qaLoading={qaLoading} />
             </div>
-          </section>
-        );
-      })}
+          </details>
+        </div>
+      </section>
 
       {/* ── Footer ── */}
       <div className="container text-center" style={{ padding: "var(--space-lg) 0 var(--space-2xl)" }}>
-        <p className="text-xs text-slate-500">Changes save automatically to this browser</p>
+        <p className="text-xs text-slate-500">Front-end planner only. Copy prompt for Codex, then run seo:after-edit to validate.</p>
       </div>
     </div>
   );
 }
 
-function AdminRow({ item, accent, colour, onStatusChange }) {
+function buildPlannerPrompt(row, toggles) {
+  const fixLines = [];
+  if (toggles.intro) fixLines.push("Improve intro clarity and depth for the target audience.");
+  if (toggles.thinSections) fixLines.push("Expand thin sections with practical, topic-specific detail.");
+  if (toggles.serviceCta) fixLines.push("Add or strengthen service-relevant CTA fields.");
+  if (toggles.conclusion) fixLines.push("Strengthen the conclusion so it leads naturally to the CTA.");
+  if (toggles.internalLinks) fixLines.push("Add or improve internal links relevant to the topic.");
+  if (toggles.repetitionRisk) fixLines.push("Reduce repetition risk by varying CTA and conclusion phrasing.");
+  if (toggles.publishedAt) fixLines.push("Add or validate publishedAt.");
+
+  return `Improve one existing ERP Experts resource article safely.
+
+Target:
+- Slug: ${row.slug}
+- File: src/data/articles.js
+
+Selected fixes:
+${fixLines.map((line) => `- ${line}`).join("\n")}
+
+Constraints:
+- Only edit the target article object in src/data/articles.js.
+- Preserve the existing article data shape.
+- Do not redesign components.
+- Do not change routes.
+- Do not invent fake statistics, fake customer stories, named clients, or unsupported claims.
+- Use UK English.
+- Avoid repeated CTA/conclusion phrasing used in recent article improvements.
+
+After editing:
+- Run npm run seo:after-edit -- ${row.slug}`;
+}
+
+function PlannerToggle({ checked, onChange, label }) {
+  return (
+    <label className="flex items-center gap-sm text-sm text-slate-700">
+      <input type="checkbox" checked={checked} onChange={onChange} />
+      {label}
+    </label>
+  );
+}
+
+function ArticleDetailPanel({ row, plannerToggles, onToggle, promptPreview, copyState, onCopy }) {
+  if (!row) {
+    return (
+      <div className="rounded-2xl border border-slate-200 bg-white" style={{ padding: "var(--space-lg)" }}>
+        <p className="text-sm text-slate-600">No article selected.</p>
+      </div>
+    );
+  }
+
+  const warnings = row?.issues?.warnings || [];
+  const structural = row?.issues?.structural || [];
+  const related = row.rec || row.brief;
+  const isPass = row.gate === "pass";
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-md)" }}>
+      <div
+        className={`rounded-2xl border bg-white transition-colors ${isPass ? "border-green-300 bg-green-50/40" : "border-slate-200"}`}
+        style={{ padding: "var(--space-lg)" }}
+      >
+        <p className="font-heading text-slate-800" style={{ fontSize: "1.05rem" }}>{row.title}</p>
+        <p className="text-xs text-slate-500" style={{ marginBottom: "var(--space-sm)" }}>{row.slug}</p>
+        {isPass && (
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-green-100 text-green-800 text-xs font-semibold px-2 py-1" style={{ marginBottom: "var(--space-sm)" }}>
+            <CheckCircle2 size={13} />
+            This article now passes QA
+          </div>
+        )}
+        <div className="grid grid-cols-2 gap-md text-sm">
+          <BriefBlock label="Score" value={String(row.score)} />
+          <BriefBlock label="Gate" value={row.gate} />
+        </div>
+        <div style={{ marginTop: "var(--space-md)" }}>
+          <IssueList label="Warnings" items={warnings.length ? warnings : ["No current warnings"]} tone="amber" />
+        </div>
+        <div style={{ marginTop: "var(--space-md)" }}>
+          <IssueList label="Structural issues" items={structural.length ? structural : ["None"]} tone="red" />
+        </div>
+        {related && (
+          <div className="rounded-lg border border-slate-200 bg-slate-50" style={{ marginTop: "var(--space-md)", padding: "var(--space-sm)" }}>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Suggested fix</p>
+            <p className="text-sm text-slate-700">{related.reason || related.whyThisMatters || "Related recommendation available."}</p>
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-white" style={{ padding: "var(--space-lg)" }}>
+        <p className="font-heading text-slate-800" style={{ fontSize: "1.05rem", marginBottom: "var(--space-sm)" }}>Fix planner</p>
+        <p className="text-sm text-slate-600" style={{ marginBottom: "var(--space-sm)" }}>Select fixes to tailor the prompt preview. This does not edit files.</p>
+        <div className="grid grid-cols-1 gap-1">
+          <PlannerToggle checked={plannerToggles.intro} onChange={() => onToggle("intro")} label="Improve intro" />
+          <PlannerToggle checked={plannerToggles.thinSections} onChange={() => onToggle("thinSections")} label="Expand thin sections" />
+          <PlannerToggle checked={plannerToggles.serviceCta} onChange={() => onToggle("serviceCta")} label="Add service CTA" />
+          <PlannerToggle checked={plannerToggles.conclusion} onChange={() => onToggle("conclusion")} label="Strengthen conclusion" />
+          <PlannerToggle checked={plannerToggles.internalLinks} onChange={() => onToggle("internalLinks")} label="Add internal links" />
+          <PlannerToggle checked={plannerToggles.repetitionRisk} onChange={() => onToggle("repetitionRisk")} label="Reduce repetition risk" />
+          <PlannerToggle checked={plannerToggles.publishedAt} onChange={() => onToggle("publishedAt")} label="Add or validate publishedAt" />
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-blue-200 bg-blue-50" style={{ padding: "var(--space-lg)" }}>
+        <p className="font-heading text-blue-900" style={{ fontSize: "1.05rem", marginBottom: "var(--space-sm)" }}>Copy prompt for Codex</p>
+        <button
+          type="button"
+          onClick={onCopy}
+          className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-700 text-white hover:bg-blue-800 cursor-pointer"
+          style={{ marginBottom: "var(--space-sm)" }}
+        >
+          {copyState === "copied" ? "Prompt copied" : copyState === "failed" ? "Copy failed" : "Copy prompt"}
+        </button>
+        <pre className="whitespace-pre-wrap rounded-lg bg-white text-xs text-slate-700 border border-blue-100 overflow-x-auto" style={{ padding: "var(--space-md)" }}>
+          {promptPreview}
+        </pre>
+        <p className="text-xs text-blue-900" style={{ marginTop: "var(--space-sm)" }}>
+          After editing in Codex, validate with: <code>npm run seo:after-edit -- {row.slug}</code>
+        </p>
+        <p className="text-xs text-blue-900/80" style={{ marginTop: "4px" }}>
+          After Codex finishes and seo:after-edit passes, refresh this dashboard to see the latest score.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function IssueList({ label, items, tone = "amber" }) {
+  const toneClass = tone === "red"
+    ? "bg-red-100 text-red-700"
+    : "bg-amber-100 text-amber-800";
+  return (
+    <div>
+      <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-xs)" }}>{label}</p>
+      <div className="flex flex-wrap gap-2">
+        {items.map((item) => (
+          <span key={item} className={`inline-flex items-center rounded-full px-2 py-1 text-xs ${toneClass}`}>
+            {item}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ResourceQaSection({ qaReport, qaLoading }) {
+  const gateSummary = qaReport?.gateSummary || { pass: 0, needs_review: 0, blocked: 0 };
+  const articleCount = qaReport?.articleCount || 0;
+  const lowest = Array.isArray(qaReport?.articles) ? qaReport.articles.slice(0, 5) : [];
+
+  const topReason = (article) => {
+    if (article?.issues?.structural?.length) return article.issues.structural[0];
+    if (article?.issues?.warnings?.length) return article.issues.warnings[0];
+    return "No issues recorded";
+  };
+
+  return (
+    <section className="bg-slate-50 border-b border-slate-200">
+      <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
+        <h2 className="font-heading" style={{ fontSize: "1.2rem", marginBottom: "var(--space-sm)" }}>
+          Resource QA
+        </h2>
+        <p className="text-sm text-slate-600" style={{ marginBottom: "var(--space-lg)" }}>
+          Quality snapshot from the latest resource QA run.
+        </p>
+
+        {qaLoading ? (
+          <p className="text-sm text-slate-500">Loading QA report…</p>
+        ) : !qaReport ? (
+          <div className="rounded-2xl border border-slate-200 bg-white text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
+            Resource QA report not found yet. Run <code>npm run qa:resources</code> to generate <code>reports/resource-qa-report.json</code>.
+          </div>
+        ) : (
+          <>
+            <div className="grid md:grid-cols-4 gap-md" style={{ marginBottom: "var(--space-lg)" }}>
+              <StatMini label="Articles" value={articleCount} tone="slate" />
+              <StatMini label="Pass" value={gateSummary.pass} tone="green" />
+              <StatMini label="Needs Review" value={gateSummary.needs_review} tone="amber" />
+              <StatMini label="Blocked" value={gateSummary.blocked} tone="red" />
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-slate-100">
+                    <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "12px 14px" }}>Article</th>
+                    <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "12px 14px" }}>Score</th>
+                    <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "12px 14px" }}>Gate</th>
+                    <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "12px 14px" }}>Top Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {lowest.map((row) => {
+                    const blocked = row.gate === "blocked";
+                    const gateClass = blocked
+                      ? "bg-red-100 text-red-700"
+                      : row.gate === "needs_review"
+                      ? "bg-amber-100 text-amber-700"
+                      : "bg-green-100 text-green-700";
+                    return (
+                      <tr key={row.slug} className={`border-t ${blocked ? "bg-red-50/50" : "bg-white"}`}>
+                        <td style={{ padding: "12px 14px" }}>
+                          <a href={`/resources/${row.slug}`} className="font-semibold text-slate-800 hover:text-primary transition-colors">
+                            {row.title || row.slug}
+                          </a>
+                          <p className="text-xs text-slate-500">{row.slug}</p>
+                        </td>
+                        <td style={{ padding: "12px 14px" }}>
+                          <span className="font-mono font-semibold text-slate-800">{row.score}</span>
+                        </td>
+                        <td style={{ padding: "12px 14px" }}>
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${gateClass}`}>
+                            {row.gate}
+                          </span>
+                        </td>
+                        <td className="text-sm text-slate-600" style={{ padding: "12px 14px" }}>
+                          {topReason(row)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function StatMini({ label, value, tone }) {
+  const toneClass =
+    tone === "green"
+      ? "border-green-200 bg-green-50 text-green-800"
+      : tone === "amber"
+      ? "border-amber-200 bg-amber-50 text-amber-800"
+      : tone === "red"
+      ? "border-red-300 bg-red-100 text-red-800"
+      : "border-slate-200 bg-white text-slate-800";
+  return (
+    <div className={`rounded-xl border ${toneClass}`} style={{ padding: "var(--space-md)" }}>
+      <p className="text-xs uppercase tracking-wide opacity-80">{label}</p>
+      <p className="font-heading" style={{ fontSize: "1.5rem" }}>{value}</p>
+    </div>
+  );
+}
+
+function WeeklySummarySection({ summary, loading }) {
+  return (
+    <section className="bg-white border-b border-slate-200">
+      <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
+        <h2 className="font-heading" style={{ fontSize: "1.2rem", marginBottom: "var(--space-sm)" }}>
+          Weekly SEO Executive Summary
+        </h2>
+        <p className="text-sm text-slate-600" style={{ marginBottom: "var(--space-lg)" }}>
+          Plain-English summary of what the automation recommends this week.
+        </p>
+
+        {loading ? (
+          <p className="text-sm text-slate-500">Loading weekly summary...</p>
+        ) : !summary ? (
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
+            Weekly summary not found yet. Run <code>npm run seo:summary</code> after Resource QA and action briefs.
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-lg)" }}>
+            <p className="text-base text-slate-800 leading-relaxed" style={{ marginBottom: "var(--space-lg)" }}>
+              {summary.headlineSummary}
+            </p>
+
+            <div className="grid md:grid-cols-4 gap-md" style={{ marginBottom: "var(--space-lg)" }}>
+              <StatMini label="Needs review" value={summary.pagesNeedingReviewCount ?? 0} tone="amber" />
+              <StatMini label="Blocked" value={summary.blockedCount ?? 0} tone={(summary.blockedCount ?? 0) > 0 ? "red" : "green"} />
+              <StatMini label="Create new" value={summary.createVsImproveSplit?.create_new ?? 0} />
+              <StatMini label="Improve existing" value={summary.createVsImproveSplit?.improve_existing ?? 0} />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-lg">
+              <BriefBlock
+                label="Highest commercial opportunity"
+                value={summary.highestCommercialOpportunity
+                  ? `${summary.highestCommercialOpportunity.title} (${summary.highestCommercialOpportunity.outcomeLabel})`
+                  : "No commercial opportunity identified yet."}
+              />
+              <BriefBlock
+                label="Biggest quality risk"
+                value={summary.biggestQualityRisk
+                  ? `${summary.biggestQualityRisk.title}: ${summary.biggestQualityRisk.reason}`
+                  : "No quality risk identified yet."}
+              />
+              <BriefBlock label="Suggested focus next week" value={summary.suggestedFocusForNextWeek} />
+              <BriefList
+                label="Top 3 recommended actions"
+                items={(summary.topRecommendedActions || []).map((action) => `${action.rank}. ${action.action}`)}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function PipelineSummarySection({ summary, loading }) {
+  return (
+    <section className="bg-slate-50 border-b border-slate-200">
+      <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
+        <h2 className="font-heading" style={{ fontSize: "1.2rem", marginBottom: "var(--space-sm)" }}>
+          SEO Pipeline Status
+        </h2>
+        <p className="text-sm text-slate-600" style={{ marginBottom: "var(--space-lg)" }}>
+          One-command pipeline snapshot with run-to-run change visibility.
+        </p>
+
+        {loading ? (
+          <p className="text-sm text-slate-500">Loading pipeline summary...</p>
+        ) : !summary ? (
+          <div className="rounded-2xl border border-slate-200 bg-white text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
+            Pipeline summary not found yet. Run <code>npm run seo:pipeline</code>.
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-slate-200 bg-white" style={{ padding: "var(--space-lg)" }}>
+            <div className="grid md:grid-cols-4 gap-md" style={{ marginBottom: "var(--space-lg)" }}>
+              <StatMini label="Pass delta" value={summary.diff?.passChange ?? 0} tone={(summary.diff?.passChange || 0) >= 0 ? "green" : "amber"} />
+              <StatMini label="Needs review delta" value={summary.diff?.needsReviewChange ?? 0} tone={(summary.diff?.needsReviewChange || 0) <= 0 ? "green" : "amber"} />
+              <StatMini label="Blocked delta" value={summary.diff?.blockedChange ?? 0} tone={(summary.diff?.blockedChange || 0) > 0 ? "red" : "green"} />
+              <StatMini label="Recommendation delta" value={summary.diff?.recommendationCountChange ?? 0} />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-lg">
+              <BriefBlock label="Snapshot folder" value={summary.pipeline?.snapshotDir || "Unavailable"} />
+              <BriefBlock label="Previous snapshot" value={summary.pipeline?.previousSnapshot || "None"} />
+              <BriefBlock
+                label="Human review recommended"
+                value={summary.review?.humanReviewRecommended ? "Yes" : "No"}
+              />
+              <BriefBlock label="Reason" value={summary.review?.reason || "No reason provided"} />
+              <BriefList label="Newly passing articles" items={summary.diff?.newlyPassing?.length ? summary.diff.newlyPassing : ["None"]} />
+              <BriefList label="Newly failing articles" items={summary.diff?.newlyFailing?.length ? summary.diff.newlyFailing : ["None"]} />
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function RecommendationSection({ recommendations, sprintCandidates, qaLoading }) {
+  const signalLabel = {
+    poor_qa_score: "Poor QA score",
+    search_demand: "Search demand",
+    content_gap: "Content gap",
+    blocked_structural_issue: "Blocked structural issue",
+  };
+
+  const typeClass = {
+    improve_existing: "bg-amber-100 text-amber-800",
+    create_new: "bg-fuchsia-100 text-fuchsia-800",
+    monitor: "bg-blue-100 text-blue-800",
+    blocked_review: "bg-red-100 text-red-800",
+  };
+
+  return (
+    <section className="bg-white border-b border-slate-200">
+      <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
+        <h2 className="font-heading" style={{ fontSize: "1.2rem", marginBottom: "var(--space-sm)" }}>
+          Fix vs Create Recommendations
+        </h2>
+        <p className="text-sm text-slate-600" style={{ marginBottom: "var(--space-lg)" }}>
+          Read-only recommendations from Resource QA + Search Console demand signals.
+        </p>
+
+        {qaLoading ? (
+          <p className="text-sm text-slate-500">Preparing recommendations…</p>
+        ) : recommendations.length === 0 ? (
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
+            No recommendations available. Ensure resource QA report exists and demand signals are present.
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-md)" }}>
+            {recommendations.map((rec, idx) => (
+              <div key={`${rec.title}-${idx}`} className={`rounded-xl border ${rec.type === "blocked_review" ? "border-red-300 bg-red-50/50" : "border-slate-200 bg-white"}`} style={{ padding: "var(--space-lg)" }}>
+                <div className="flex items-start justify-between gap-md">
+                  <div>
+                    <p className="font-heading text-slate-800" style={{ fontSize: "1.05rem" }}>{rec.preferredTitle || rec.title}</p>
+                    {rec.slug ? (
+                      <a href={`/resources/${rec.slug}`} className="text-xs text-primary hover:underline">
+                        /resources/{rec.slug}
+                      </a>
+                    ) : (
+                      <p className="text-xs text-slate-500">
+                        New content recommendation{rec.rawQuery ? ` from query: ${rec.rawQuery}` : " (no existing slug)"}
+                      </p>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-slate-500">Priority</p>
+                    <p className="font-mono font-semibold text-slate-800">{rec.priorityScore}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-sm flex-wrap" style={{ marginTop: "var(--space-sm)" }}>
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${typeClass[rec.type] || "bg-slate-100 text-slate-700"}`}>
+                    {rec.type}
+                  </span>
+                  {rec.sourceSignals.map((s) => (
+                    <span key={`${rec.title}-${s}`} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
+                      {signalLabel[s] || s}
+                    </span>
+                  ))}
+                </div>
+
+                <p className="text-sm text-slate-700" style={{ marginTop: "var(--space-sm)" }}>
+                  <strong>Reason:</strong> {rec.reason}
+                </p>
+                <p className="text-sm text-slate-600">
+                  <strong>Next action:</strong> {rec.suggestedNextAction}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!qaLoading && sprintCandidates?.length > 0 && (
+          <details className="rounded-xl border border-slate-200 bg-slate-50" style={{ marginTop: "var(--space-lg)", padding: "var(--space-md)" }}>
+            <summary className="cursor-pointer text-sm font-semibold text-slate-700">Sprint candidates (next backlog items)</summary>
+            <div style={{ marginTop: "var(--space-md)", display: "flex", flexDirection: "column", gap: "var(--space-sm)" }}>
+              {sprintCandidates.map((rec, idx) => (
+                <div key={`${rec.title}-sprint-${idx}`} className="rounded-lg border border-slate-200 bg-white" style={{ padding: "var(--space-md)" }}>
+                  <p className="text-sm font-semibold text-slate-800">
+                    #{rec.displayRank} {rec.preferredTitle || rec.title}
+                  </p>
+                  <p className="text-xs text-slate-600">
+                    {rec.type} · priority {rec.priorityScore} · bucket {rec.articleTypeBucket}
+                  </p>
+                  <p className="text-xs text-slate-600">{rec.sprintReason || "Backlog candidate for structured sprint planning."}</p>
+                </div>
+              ))}
+            </div>
+          </details>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function ActionBriefSection({ briefs, qaLoading }) {
+  const [openIndex, setOpenIndex] = useState(0);
+
+  return (
+    <section className="bg-slate-50 border-b border-slate-200">
+      <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
+        <h2 className="font-heading" style={{ fontSize: "1.2rem", marginBottom: "var(--space-sm)" }}>
+          Action Briefs
+        </h2>
+        <p className="text-sm text-slate-600" style={{ marginBottom: "var(--space-lg)" }}>
+          Compact briefs for the current fix vs create recommendations.
+        </p>
+
+        {qaLoading ? (
+          <p className="text-sm text-slate-500">Preparing briefs...</p>
+        ) : briefs.length === 0 ? (
+          <div className="rounded-2xl border border-slate-200 bg-white text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
+            No action briefs available yet. Generate Resource QA first, then refresh the roadmap.
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-sm)" }}>
+            {briefs.map((brief, idx) => {
+              const open = idx === openIndex;
+              return (
+                <div key={`${brief.targetTitle}-${idx}`} className="rounded-xl border border-slate-200 bg-white overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setOpenIndex(open ? -1 : idx)}
+                    className="w-full text-left flex items-center justify-between gap-md cursor-pointer"
+                    style={{ padding: "var(--space-md) var(--space-lg)" }}
+                  >
+                    <div>
+                      <p className="font-heading text-slate-800" style={{ fontSize: "1rem" }}>{brief.preferredTitle || brief.targetTitle}</p>
+                      <p className="text-xs text-slate-500">
+                        {brief.recommendationType} · priority {brief.priorityScore}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        Conversion intent: {brief.conversionIntentLabel} ({brief.conversionIntentScore})
+                      </p>
+                      {brief.rawQuery && <p className="text-xs text-slate-500">Raw query: {brief.rawQuery}</p>}
+                    </div>
+                    <ChevronDown size={16} className={`text-slate-400 transition-transform ${open ? "rotate-180" : ""}`} />
+                  </button>
+
+                  {open && (
+                    <div className="border-t border-slate-100" style={{ padding: "var(--space-lg)" }}>
+                      <div className="grid md:grid-cols-2 gap-lg">
+                        <BriefBlock label="Why this matters" value={brief.whyThisMatters} />
+                        <BriefBlock label="Primary issue" value={brief.primaryIssue} />
+                        <BriefBlock label="Why this matters commercially" value={brief.whyThisMattersCommercially} />
+                        <BriefBlock label="Recommended CTA" value={brief.recommendedCTA} />
+                        {brief.titleQualityChecks.length > 0 && (
+                          <BriefList label="Title quality flags" items={brief.titleQualityChecks} />
+                        )}
+                        <BriefList label="Suggested content changes" items={brief.suggestedContentChanges} />
+                        <BriefList label="Review checklist" items={brief.reviewChecklist} />
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-lg" style={{ marginTop: "var(--space-lg)" }}>
+                        <BriefList label="Suggested internal links" items={brief.suggestedInternalLinks} />
+                        <BriefBlock label="CTA angle" value={brief.suggestedCtaAngle} />
+                      </div>
+                      <details className="rounded-xl border border-emerald-200 bg-emerald-50" style={{ marginTop: "var(--space-lg)", padding: "var(--space-md)" }}>
+                        <summary className="cursor-pointer text-sm font-semibold text-emerald-900">Outcome feedback scoring</summary>
+                        <div className="grid md:grid-cols-2 gap-lg" style={{ marginTop: "var(--space-md)" }}>
+                          <BriefBlock label="Outcome label" value={brief.outcomeLabel} />
+                          <BriefBlock label="Estimated business value" value={`${brief.estimatedBusinessValue}/100`} />
+                          <BriefBlock label="Estimated lead intent" value={`${brief.estimatedLeadIntent}/100`} />
+                          <BriefBlock label="Assisted conversion potential" value={`${brief.assistedConversionPotential}/100`} />
+                          <BriefBlock label="Strategic importance" value={`${brief.strategicImportance}/100`} />
+                          <BriefBlock label="Confidence level" value={`${brief.confidenceLevel}/100`} />
+                          <BriefBlock label="Leads generated" value={brief.leadsGenerated ?? "Not connected yet"} />
+                          <BriefBlock label="Assisted conversions" value={brief.assistedConversions ?? "Not connected yet"} />
+                          <BriefBlock label="Ranking movement" value={brief.rankingMovement ?? "Not tracked yet"} />
+                          <BriefBlock label="Manual outcome notes" value={brief.manualOutcomeNotes || "None recorded yet"} />
+                        </div>
+                      </details>
+                      {brief.implementationPlan && (
+                        <details className="rounded-xl border border-amber-200 bg-amber-50" style={{ marginTop: "var(--space-lg)", padding: "var(--space-md)" }}>
+                          <summary className="cursor-pointer text-sm font-semibold text-amber-900">Article implementation plan</summary>
+                          <div className="grid md:grid-cols-2 gap-lg" style={{ marginTop: "var(--space-md)" }}>
+                            <BriefList label="Sections to improve" items={brief.implementationPlan.sectionsToImprove} />
+                            <BriefList label="Missing elements" items={brief.implementationPlan.missingElements} />
+                            <BriefList label="Suggested new headings" items={brief.implementationPlan.suggestedNewSectionHeadings} />
+                            <BriefBlock label="Stronger CTA" value={brief.implementationPlan.strongerCTARecommendation} />
+                            <BriefList label="Internal links to add" items={brief.implementationPlan.internalLinksToAdd} />
+                            <BriefList label="Risk notes" items={brief.implementationPlan.riskNotes} />
+                            <BriefList label="Review questions" items={brief.implementationPlan.reviewQuestions} />
+                          </div>
+                        </details>
+                      )}
+                      {brief.codexPatchPrompt && (
+                        <details className="rounded-xl border border-blue-200 bg-blue-50" style={{ marginTop: "var(--space-lg)", padding: "var(--space-md)" }}>
+                          <summary className="cursor-pointer text-sm font-semibold text-blue-900">Codex patch prompt</summary>
+                          <pre className="whitespace-pre-wrap rounded-lg bg-white text-xs text-slate-700 overflow-x-auto border border-blue-100" style={{ marginTop: "var(--space-md)", padding: "var(--space-md)" }}>
+                            {brief.codexPatchPrompt}
+                          </pre>
+                        </details>
+                      )}
+                      <details className="rounded-xl border border-slate-200 bg-slate-50" style={{ marginTop: "var(--space-lg)", padding: "var(--space-md)" }}>
+                        <summary className="cursor-pointer text-sm font-semibold text-slate-700">Marketing channel outputs</summary>
+                        <div className="grid md:grid-cols-2 gap-lg" style={{ marginTop: "var(--space-md)" }}>
+                          <BriefBlock label="LinkedIn angle" value={brief.channelOutputs.linkedInPostAngle} />
+                          <BriefBlock label="Email nurture angle" value={brief.channelOutputs.emailNurtureAngle} />
+                          <BriefBlock label="Sales follow-up angle" value={brief.channelOutputs.salesFollowUpAngle} />
+                          <BriefList label="FAQ questions" items={brief.channelOutputs.suggestedFaqQuestions} />
+                          <BriefBlock label="Meta title" value={brief.channelOutputs.suggestedMetaTitle} />
+                          <BriefBlock label="Meta description" value={brief.channelOutputs.suggestedMetaDescription} />
+                        </div>
+                      </details>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function BriefBlock({ label, value }) {
+  return (
+    <div>
+      <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-xs)" }}>{label}</p>
+      <p className="text-sm text-slate-700 leading-relaxed">{value}</p>
+    </div>
+  );
+}
+
+function BriefList({ label, items }) {
+  return (
+    <div>
+      <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-xs)" }}>{label}</p>
+      <ul className="space-y-1 text-sm text-slate-700">
+        {items.map((item) => <li key={item}>- {item}</li>)}
+      </ul>
+    </div>
+  );
+}
+
+function AdminRow({ item, onStatusChange }) {
   const isDone = item.status === "done";
   const isActive = item.status === "in_progress";
 
@@ -743,7 +2115,7 @@ function AdminRow({ item, accent, colour, onStatusChange }) {
    VIEWER VIEW — full detailed presentation for Tim
    ════════════════════════════════════════════════════════════ */
 
-function ViewerView({ logout, showBackToAdmin = false, onBackToAdmin }) {
+function ViewerView({ showBackToAdmin = false, onBackToAdmin }) {
   const { phases, allItems, doneItems, loaded } = useRoadmapState();
 
   if (!loaded) return (
@@ -784,10 +2156,6 @@ function ViewerView({ logout, showBackToAdmin = false, onBackToAdmin }) {
                   Back to admin
                 </button>
               )}
-              <button onClick={logout} className="inline-flex items-center gap-1.5 text-sm text-white/60 hover:text-white transition-colors cursor-pointer">
-                <LogOut size={15} />
-                Log out
-              </button>
             </div>
           </div>
 

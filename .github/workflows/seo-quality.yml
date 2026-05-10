@@ -1,0 +1,54 @@
+name: SEO Quality
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Run SEO pipeline
+        run: npm run seo:pipeline
+
+      - name: Show SEO stats
+        run: npm run seo:stats
+
+      - name: Report blocked count
+        run: |
+          node -e "const fs=require('fs');const p='reports/resource-qa-report.json';if(!fs.existsSync(p)){console.log('Resource QA report missing after pipeline.');process.exit(1);}const qa=JSON.parse(fs.readFileSync(p,'utf8'));const blocked=qa?.gateSummary?.blocked ?? 0;console.log('SEO QA blocked count:', blocked);"
+
+      - name: Upload SEO reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo-reports
+          if-no-files-found: warn
+          path: |
+            reports/resource-qa-report.json
+            reports/seo-action-briefs.json
+            reports/seo-weekly-summary.json
+            reports/seo-pipeline-summary.json
