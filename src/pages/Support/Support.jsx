@@ -84,54 +84,6 @@ const plans = [
   },
 ];
 
-const featureLabels = [
-  {
-    key: "helpdesk",
-    label: "NetSuite Helpdesk",
-    icon: Headphones,
-    desc: "Unused hours roll over",
-    bronze: "10 hrs/month",
-    silver: "20 hrs/month",
-    gold: "50 hrs/month",
-  },
-  {
-    key: "maintenance",
-    label: "NetSuite Maintenance",
-    icon: Settings,
-    desc: "Updates, patches & security",
-    bronze: "Included",
-    silver: "Included",
-    gold: "Priority",
-  },
-  {
-    key: "consulting",
-    label: "NetSuite Consulting",
-    icon: Users,
-    desc: "Strategic guidance & advice",
-    bronze: null,
-    silver: null,
-    gold: "8 hrs/month",
-  },
-  {
-    key: "training",
-    label: "NetSuite Training",
-    icon: GraduationCap,
-    desc: "Upskill your team",
-    bronze: null,
-    silver: "4 sessions/year",
-    gold: "8 sessions/year",
-  },
-  {
-    key: "apps",
-    label: "Apps & Enhancements",
-    icon: Puzzle,
-    desc: "Custom development & integrations",
-    bronze: null,
-    silver: null,
-    gold: "16 hrs/month",
-  },
-];
-
 const benefits = [
   {
     icon: Clock,

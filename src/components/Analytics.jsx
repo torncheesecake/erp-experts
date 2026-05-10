@@ -2,6 +2,7 @@
  * Google Analytics Component
  * Only loads if user has consented to cookies
  */
+/* eslint-disable react-refresh/only-export-components */
 
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";

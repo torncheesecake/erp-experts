@@ -6,10 +6,6 @@ import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, FileText } from "lucide-react";
 import TrackedLink from "../../components/ui/TrackedLink";
 
-// Import hero images
-import erpWorkForYouHero from "../../assets/521dfd_8d98556467bd405188ecbb172caa3b1f~mv2.png.jpeg";
-import erpImplementationHero from "../../assets/521dfd_d357dbfbc21d409792ca92d69250c49a~mv2.webp";
-
 const resources = [
   {
     slug: "is-netsuite-right-for-your-business",

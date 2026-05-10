@@ -69,7 +69,10 @@ function useCountUp(target, isVisible, duration = 800) {
   useEffect(() => {
     if (!isVisible || target == null) return;
     const num = typeof target === "number" ? target : parseFloat(target);
-    if (isNaN(num) || num === 0) { setValue(target); return; }
+    if (isNaN(num) || num === 0) {
+      requestAnimationFrame(() => setValue(target));
+      return;
+    }
     const start = performance.now();
     function tick(now) {
       const elapsed = now - start;
@@ -409,11 +412,11 @@ function CollapsibleSection({ id, title, icon: Icon, subtitle, children, classNa
 
 /* ───────────────────────── trend chart (SVG line) ───────── */
 
-function TrendChart({ values, labels, color = "var(--color-primary)", type = "number", tooltip }) {
+function TrendChart({ values, labels, color = "var(--color-primary)", type = "number" }) {
+  const [chartRef, chartVisible] = useInView(0.2);
   if (!values || values.length < 2) return null;
   const filtered = values.map((v, i) => (v != null ? { v, i } : null)).filter(Boolean);
   if (filtered.length < 2) return null;
-  const [chartRef, chartVisible] = useInView(0.2);
 
   const max = Math.max(...filtered.map((d) => d.v));
   const min = Math.min(...filtered.map((d) => d.v));
@@ -595,12 +598,12 @@ const sourceExplain = {
 };
 
 function TrafficDonut({ sources }) {
+  const [ref, isVisible] = useInView(0.3);
   if (!sources) return null;
   const entries = Object.entries(sources).filter(([, pct]) => pct > 0);
   const radius = 60;
   const stroke = 20;
   const circumference = 2 * Math.PI * radius;
-  const [ref, isVisible] = useInView(0.3);
 
   // Pre-calculate offsets
   const segments = [];
@@ -792,7 +795,7 @@ export default function Reports() {
     const onResize = () => {
       const h = header ? header.offsetHeight : 0;
       document.documentElement.style.setProperty("--nav-height", `${h}px`);
-      if (barRef.current && !barStuck) barTopRef.current = barRef.current.offsetTop;
+      if (barRef.current) barTopRef.current = barRef.current.offsetTop;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
@@ -829,7 +832,6 @@ export default function Reports() {
 
   // Weeks for the active period — used by all sections
   const activeWeeks = isGoLive ? goLiveWeeks : isMonthly ? thisMonth : [current];
-  const comparisonWeeks = isGoLive ? preGoLiveComp : isMonthly ? lastMonth : previous ? [previous] : [];
 
   // Aggregate helpers for active period
   function aggregateTopPages(wks) {
