@@ -8,7 +8,19 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "qa:resources": "node scripts/qa_resources.mjs",
+    "seo:briefs": "node scripts/seo_action_briefs.mjs",
+    "seo:summary": "node scripts/seo_weekly_summary.mjs",
+    "seo:pipeline": "node scripts/seo_pipeline.mjs",
+    "seo:needs-review": "node scripts/seo_helpers.mjs needs-review",
+    "seo:passes": "node scripts/seo_helpers.mjs passes",
+    "seo:blocked": "node scripts/seo_helpers.mjs blocked",
+    "seo:sprint": "node scripts/seo_helpers.mjs sprint",
+    "seo:top": "node scripts/seo_helpers.mjs top",
+    "seo:stats": "node scripts/seo_helpers.mjs stats",
+    "seo:verify": "node scripts/seo_helpers.mjs verify",
+    "seo:after-edit": "node scripts/seo_after_edit.mjs"
   },
   "homepage": "https://torncheesecake.github.io/erp-experts",
   "dependencies": {
