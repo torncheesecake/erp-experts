@@ -25,6 +25,10 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
+      - name: Remove generated cache/build artefacts before lint
+        run: |
+          rm -rf .vite dist
+
       - name: Lint
         run: npm run lint
 
