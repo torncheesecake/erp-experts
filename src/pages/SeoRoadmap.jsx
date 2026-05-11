@@ -23,10 +23,131 @@ import {
   BarChart3,
 } from "lucide-react";
 import reportData from "../data/reports.json";
+const historyQaModules = import.meta.glob("../../reports/history/*/resource-qa-report.json", { eager: true });
 
 const seoSnapshotDate =
   reportData?.ga4Period?.seoInsights?.period?.split(" to ").at(-1) || reportData?.lastUpdated;
 const demandSignals = reportData?.ga4Period?.seoInsights?.demandSignals || {};
+
+function parseSnapshotLabel(snapshotDir = "") {
+  const key = String(snapshotDir).split("/").at(-1) || "";
+  const m = key.match(/^(\d{4})-(\d{2})-(\d{2})-(\d{2})(\d{2})$/);
+  if (!m) return { key, label: key };
+  const [, y, mo, d, h, mi] = m;
+  return { key, label: `${d}/${mo} ${h}:${mi}`, iso: `${y}-${mo}-${d}T${h}:${mi}:00Z` };
+}
+
+function readHistorySnapshots() {
+  const points = Object.entries(historyQaModules).map(([path, mod]) => {
+    const data = mod?.default || mod;
+    const snapshot = path.match(/history\/([^/]+)\/resource-qa-report\.json$/)?.[1] || "";
+    const gate = data?.gateSummary || {};
+    const info = parseSnapshotLabel(snapshot);
+    return {
+      snapshot,
+      label: info.label,
+      orderKey: info.iso || snapshot,
+      pass: Number(gate.pass || 0),
+      needsReview: Number(gate.needs_review || 0),
+      blocked: Number(gate.blocked || 0),
+    };
+  });
+  points.sort((a, b) => String(a.orderKey).localeCompare(String(b.orderKey)));
+  return points;
+}
+
+function pickNextBestAction({ pipelineSummary, qaReport, weeklySummary, briefs }) {
+  const gate = qaReport?.gateSummary || {};
+  const blocked = Number(gate.blocked || 0);
+  const needsReview = Number(gate.needs_review || 0);
+  const humanReviewRecommended = Boolean(pipelineSummary?.review?.humanReviewRecommended);
+  const reviewReason = pipelineSummary?.review?.reason || "Pipeline flagged review risk.";
+  const actions = Array.isArray(weeklySummary?.topRecommendedActions) ? weeklySummary.topRecommendedActions : [];
+  const topWeekly = actions[0];
+  const list = Array.isArray(briefs) ? briefs : [];
+  const improveBriefs = list
+    .filter((b) => b.recommendationType === "improve_existing")
+    .sort((a, b) => (b.priorityScore || 0) - (a.priorityScore || 0));
+  const createBriefs = list
+    .filter((b) => b.recommendationType === "create_new")
+    .sort((a, b) => (b.priorityScore || 0) - (a.priorityScore || 0));
+  const blockedArticle = Array.isArray(qaReport?.articles)
+    ? qaReport.articles.find((a) => a.gate === "blocked")
+    : null;
+
+  if (humanReviewRecommended) {
+    return {
+      title: "Run a human review on the latest pipeline snapshot",
+      why: reviewReason,
+      targetTitle: topWeekly?.title || pipelineSummary?.pipeline?.snapshotDir?.split("/").at(-1) || "Current snapshot",
+      priority: "Risk control",
+      command: "npm run seo:pipeline",
+      actionPath: "/seo-roadmap",
+      buttonLabel: "Open diagnostics",
+      codexPrompt: null,
+    };
+  }
+  if (blocked > 0 && blockedArticle) {
+    return {
+      title: `Fix blocked article: ${blockedArticle.title}`,
+      why: "Blocked pages halt quality progression and should be cleared before new publishing work.",
+      targetTitle: blockedArticle.slug,
+      priority: "Critical",
+      command: `npm run seo:after-edit -- ${blockedArticle.slug}`,
+      actionPath: `/resources/${blockedArticle.slug}`,
+      buttonLabel: "Open article",
+      codexPrompt: null,
+    };
+  }
+  if (improveBriefs.length > 0) {
+    const brief = improveBriefs[0];
+    return {
+      title: `Improve "${brief.preferredTitle || brief.targetArticleTitle}"`,
+      why: brief.whyThisMattersCommercially || brief.whyThisMatters || "This article is still underperforming against QA expectations.",
+      targetTitle: brief.targetSlug || brief.targetArticleTitle,
+      priority: `${brief.conversionIntentLabel || "medium"} intent · priority ${brief.priorityScore ?? "n/a"}`,
+      command: brief.targetSlug ? `npm run seo:after-edit -- ${brief.targetSlug}` : "npm run seo:pipeline",
+      actionPath: brief.targetSlug ? `/resources/${brief.targetSlug}` : "/seo-roadmap",
+      buttonLabel: brief.targetSlug ? "Open article" : "Open dashboard",
+      codexPrompt: brief.codexPatchPrompt || null,
+    };
+  }
+  if (createBriefs.length > 0) {
+    const brief = createBriefs[0];
+    return {
+      title: `Create "${brief.preferredTitle || brief.targetArticleTitle}"`,
+      why: brief.whyThisMattersCommercially || brief.whyThisMatters || "This demand-led topic is currently uncovered.",
+      targetTitle: brief.rawQuery || brief.targetArticleTitle,
+      priority: `${brief.conversionIntentLabel || "medium"} intent · priority ${brief.priorityScore ?? "n/a"}`,
+      command: "npm run seo:pipeline",
+      actionPath: "/seo-roadmap",
+      buttonLabel: "Open planning view",
+      codexPrompt: brief.codexPatchPrompt || null,
+    };
+  }
+  if (needsReview > 0) {
+    return {
+      title: "Continue reducing needs_review articles",
+      why: `${needsReview} articles still need improvements before the quality baseline is stable.`,
+      targetTitle: "needs_review queue",
+      priority: "Operational",
+      command: "npm run seo:pipeline",
+      actionPath: "/seo-roadmap",
+      buttonLabel: "Open queue",
+      codexPrompt: null,
+    };
+  }
+  return {
+    title: "Monitor and rerun the weekly pipeline",
+    why: "QA is stable. Keep momentum by checking trend drift and demand changes weekly.",
+    targetTitle: pipelineSummary?.pipeline?.snapshotDir?.split("/").at(-1) || "latest snapshot",
+    priority: "Monitor",
+    command: "npm run seo:pipeline && npm run seo:stats",
+    actionPath: "/seo-roadmap",
+    buttonLabel: "Open dashboard",
+    codexPrompt: null,
+  };
+}
 
 /* ── client edit mode (temporary control, not auth) ── */
 const EDITS_ENABLED = import.meta.env.VITE_SEO_ROADMAP_EDITS === "true";
@@ -1043,6 +1164,8 @@ function AdminView({ onPreview }) {
   const [summaryLoading, setSummaryLoading] = useState(true);
   const [pipelineSummary, setPipelineSummary] = useState(null);
   const [pipelineLoading, setPipelineLoading] = useState(true);
+  const [briefsReport, setBriefsReport] = useState(null);
+  const [briefsLoading, setBriefsLoading] = useState(true);
   const [articleFilter, setArticleFilter] = useState("needs_review");
   const [sortBy, setSortBy] = useState("score");
   const [selectedSlug, setSelectedSlug] = useState("");
@@ -1084,6 +1207,37 @@ function AdminView({ onPreview }) {
     }
 
     loadQaReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadActionBriefs() {
+      const paths = ["/reports/seo-action-briefs.json", "/seo-action-briefs.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setBriefsReport(data);
+            setBriefsLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setBriefsReport(null);
+        setBriefsLoading(false);
+      }
+    }
+
+    loadActionBriefs();
     return () => {
       alive = false;
     };
@@ -1225,9 +1379,14 @@ function AdminView({ onPreview }) {
 
   const summaryGate = qaReport?.gateSummary || { pass: 0, needs_review: 0, blocked: 0 };
   const humanReviewRecommended = Boolean(pipelineSummary?.review?.humanReviewRecommended);
-  const suggestedNextAction = weeklySummary?.topRecommendedActions?.[0]?.action
-    || topRecommendations[0]?.suggestedNextAction
-    || "Run seo:pipeline, select a needs_review article, and generate a Codex patch prompt.";
+  const historyPoints = readHistorySnapshots();
+  const progressPoints = historyPoints.slice(-8);
+  const nextBestAction = pickNextBestAction({
+    pipelineSummary,
+    qaReport,
+    weeklySummary,
+    briefs: briefsReport?.briefs || [],
+  });
   const activeRow = selectedSlug ? selectedRow : (filteredRows[0] || articleRows[0] || null);
 
   if (!loaded) return (
@@ -1297,14 +1456,6 @@ function AdminView({ onPreview }) {
           </div>
         </div>
       </div>
-      {(statusSource !== "php" || saveBlocked) && (
-        <div className="bg-amber-100 border-b border-amber-300">
-          <div className="container text-amber-900 text-sm" style={{ padding: "10px 0" }}>
-            Status persistence is not fully available ({statusSource}). Roadmap edits may not be saved server-side.
-          </div>
-        </div>
-      )}
-
       <section className="bg-white border-b border-slate-200">
         <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
           <h2 className="font-heading" style={{ fontSize: "1.3rem", marginBottom: "var(--space-sm)" }}>Weekly SEO Executive Summary</h2>
@@ -1315,18 +1466,18 @@ function AdminView({ onPreview }) {
               Weekly summary is missing. Run <code>npm run seo:summary</code> or <code>npm run seo:pipeline</code>.
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 gap-lg">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-lg)" }}>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-lg)" }}>
                 <p className="text-sm text-slate-800 leading-relaxed">{weeklySummary.headlineSummary}</p>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white" style={{ padding: "var(--space-lg)" }}>
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-xs)" }}>Suggested next action</p>
-                <p className="text-sm text-slate-800">{suggestedNextAction}</p>
-              </div>
             </div>
           )}
 
-          <div className="grid md:grid-cols-5 gap-md" style={{ marginTop: "var(--space-lg)" }}>
+          <NextBestActionPanel action={nextBestAction} loading={summaryLoading || pipelineLoading || briefsLoading} />
+
+          <div style={{ marginTop: "var(--space-lg)" }}>
+            <ProgressHistoryCard points={progressPoints} />
+          </div>
+
+          <div className="grid md:grid-cols-5 gap-md" style={{ marginTop: "var(--space-md)" }}>
             <StatMini label="Pass" value={summaryGate.pass} tone="green" />
             <StatMini label="Needs Review" value={summaryGate.needs_review} tone="amber" />
             <StatMini label="Blocked" value={summaryGate.blocked} tone={summaryGate.blocked > 0 ? "red" : "green"} />
@@ -1464,6 +1615,11 @@ function AdminView({ onPreview }) {
             <div style={{ marginTop: "var(--space-md)" }}>
               <WeeklySummarySection summary={weeklySummary} loading={summaryLoading} />
               <PipelineSummarySection summary={pipelineSummary} loading={pipelineLoading} />
+              {(statusSource !== "php" || saveBlocked) ? (
+                <div className="rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-600" style={{ padding: "var(--space-sm)", marginTop: "var(--space-md)" }}>
+                  Admin persistence note: status writes are currently <strong>{statusSource}</strong>{saveBlocked ? " and save attempts are failing." : "."} Edits may not persist server-side.
+                </div>
+              ) : null}
               <ResourceQaSection qaReport={qaReport} qaLoading={qaLoading} />
               <RecommendationSection recommendations={topRecommendations} sprintCandidates={sprintCandidates} qaLoading={qaLoading} />
               <ActionBriefSection briefs={buildActionBriefs(topRecommendations)} qaLoading={qaLoading} />
@@ -1510,6 +1666,133 @@ Constraints:
 
 After editing:
 - Run npm run seo:after-edit -- ${row.slug}`;
+}
+
+function NextBestActionPanel({ action, loading }) {
+  const [copyState, setCopyState] = useState("idle");
+  const copyCommand = async () => {
+    try {
+      await navigator.clipboard.writeText(action.command || "");
+      setCopyState("copied");
+      setTimeout(() => setCopyState("idle"), 1200);
+    } catch {
+      setCopyState("failed");
+      setTimeout(() => setCopyState("idle"), 1600);
+    }
+  };
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white" style={{ padding: "var(--space-lg)", marginTop: "var(--space-lg)" }}>
+      <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-xs)" }}>Next best action</p>
+      {loading ? (
+        <p className="text-sm text-slate-500">Building recommendation...</p>
+      ) : (
+        <>
+          <p className="font-heading text-slate-900" style={{ fontSize: "1.05rem" }}>{action.title}</p>
+          <p className="text-sm text-slate-700" style={{ marginTop: "var(--space-xs)" }}>{action.why}</p>
+          <div className="grid md:grid-cols-3 gap-md" style={{ marginTop: "var(--space-md)" }}>
+            <BriefBlock label="Target" value={action.targetTitle || "Not specified"} />
+            <BriefBlock label="Priority" value={action.priority || "Operational"} />
+            <div>
+              <p className="text-xs uppercase tracking-wide text-slate-500 font-semibold">Run command</p>
+              <div className="mt-1.5 flex items-center gap-2 flex-wrap">
+                <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2.5 py-1.5 text-xs text-slate-100">
+                  {action.command}
+                </code>
+                <button
+                  type="button"
+                  onClick={copyCommand}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  {copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy failed" : "Copy"}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-sm" style={{ marginTop: "var(--space-md)" }}>
+            <a href={action.actionPath || "/seo-roadmap"} className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-700">
+              {action.buttonLabel || "Open target"}
+              <ArrowRight size={14} />
+            </a>
+          </div>
+          {action.codexPrompt ? (
+            <div className="rounded-xl border border-slate-200 bg-slate-50" style={{ marginTop: "var(--space-md)", padding: "var(--space-sm)" }}>
+              <p className="text-xs font-semibold text-slate-600" style={{ marginBottom: "6px" }}>Copy-ready Codex prompt</p>
+              <pre className="text-xs text-slate-700 whitespace-pre-wrap">{action.codexPrompt}</pre>
+            </div>
+          ) : null}
+        </>
+      )}
+    </div>
+  );
+}
+
+function ProgressHistoryCard({ points }) {
+  if (!points || points.length === 0) {
+    return (
+      <div className="rounded-2xl border border-slate-200 bg-white" style={{ padding: "var(--space-lg)" }}>
+        <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-xs)" }}>QA progress history</p>
+        <p className="text-sm text-slate-600">Run <code>npm run seo:pipeline</code> a few times to build progress history.</p>
+      </div>
+    );
+  }
+
+  const maxY = Math.max(1, ...points.map((p) => Math.max(p.pass, p.needsReview, p.blocked)));
+  const chartWidth = 520;
+  const chartHeight = 160;
+  const padX = 16;
+  const padY = 14;
+  const plotW = chartWidth - padX * 2;
+  const plotH = chartHeight - padY * 2;
+  const xFor = (i) => (points.length === 1 ? chartWidth / 2 : padX + (i * plotW) / (points.length - 1));
+  const yFor = (v) => padY + plotH - (v / maxY) * plotH;
+  const linePath = (key) => points.map((p, i) => `${i === 0 ? "M" : "L"}${xFor(i)} ${yFor(p[key])}`).join(" ");
+
+  const latest = points[points.length - 1];
+  const first = points[0];
+  const passDelta = latest.pass - first.pass;
+  const reviewDelta = latest.needsReview - first.needsReview;
+  const blockedDelta = latest.blocked - first.blocked;
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white" style={{ padding: "var(--space-lg)" }}>
+      <div className="flex items-center justify-between gap-md">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">QA progress history</p>
+          <p className="text-sm text-slate-700">Trend across recent pipeline snapshots.</p>
+        </div>
+        <div className="flex items-center gap-sm text-xs">
+          <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-emerald-500" />Pass</span>
+          <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-amber-500" />Needs review</span>
+          <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-rose-500" />Blocked</span>
+        </div>
+      </div>
+      <div className="overflow-x-auto" style={{ marginTop: "var(--space-sm)" }}>
+        <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full min-w-[520px]" role="img" aria-label="QA progress line chart">
+          <rect x="0" y="0" width={chartWidth} height={chartHeight} fill="white" />
+          {[0.25, 0.5, 0.75, 1].map((step) => (
+            <line key={step} x1={padX} y1={padY + plotH * (1 - step)} x2={padX + plotW} y2={padY + plotH * (1 - step)} stroke="#e2e8f0" strokeWidth="1" />
+          ))}
+          <path d={linePath("pass")} fill="none" stroke="#10b981" strokeWidth="2.5" />
+          <path d={linePath("needsReview")} fill="none" stroke="#f59e0b" strokeWidth="2.5" />
+          <path d={linePath("blocked")} fill="none" stroke="#f43f5e" strokeWidth="2.5" />
+          {points.map((p, i) => (
+            <g key={p.snapshot}>
+              <circle cx={xFor(i)} cy={yFor(p.pass)} r="2.5" fill="#10b981" />
+              <circle cx={xFor(i)} cy={yFor(p.needsReview)} r="2.5" fill="#f59e0b" />
+              <circle cx={xFor(i)} cy={yFor(p.blocked)} r="2.5" fill="#f43f5e" />
+              <text x={xFor(i)} y={chartHeight - 3} textAnchor="middle" fontSize="10" fill="#64748b">{p.label}</text>
+            </g>
+          ))}
+        </svg>
+      </div>
+      <div className="grid md:grid-cols-3 gap-md" style={{ marginTop: "var(--space-sm)" }}>
+        <BriefBlock label="Pass trend" value={`${first.pass} → ${latest.pass} (${passDelta >= 0 ? "+" : ""}${passDelta})`} />
+        <BriefBlock label="Needs review trend" value={`${first.needsReview} → ${latest.needsReview} (${reviewDelta >= 0 ? "+" : ""}${reviewDelta})`} />
+        <BriefBlock label="Blocked trend" value={`${first.blocked} → ${latest.blocked} (${blockedDelta >= 0 ? "+" : ""}${blockedDelta})`} />
+      </div>
+    </div>
+  );
 }
 
 function PlannerToggle({ checked, onChange, label }) {
