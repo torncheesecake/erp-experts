@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-05-11T08:52:37.501Z",
+  "generatedAt": "2026-05-11T09:25:34.982Z",
   "articleCount": 26,
   "gateSummary": {
-    "pass": 21,
-    "needs_review": 5,
+    "pass": 24,
+    "needs_review": 2,
     "blocked": 0
   },
   "scoringModel": {
@@ -30,102 +30,6 @@
     }
   },
   "articles": [
-    {
-      "slug": "is-netsuite-right-for-your-business",
-      "title": "Is NetSuite Right for Your Business?",
-      "gate": "needs_review",
-      "score": 77,
-      "categoryScores": {
-        "metadataCompleteness": 100,
-        "contentDepth": 100,
-        "duplicateCannibalisationRisk": 100,
-        "ctaServiceRelevance": 20,
-        "freshnessPublishedAtValidity": 65,
-        "internalLinkReadiness": 20
-      },
-      "metrics": {
-        "introWords": 91,
-        "bodyDepthWords": 703,
-        "tipsCount": 5,
-        "thinTipsCount": 0,
-        "nearDuplicateMatches": 0,
-        "hasCTAPath": false,
-        "hasServiceRelevantCTA": false,
-        "hasPublishedAt": false,
-        "internalPathCTA": false,
-        "routeMentionSignals": false
-      },
-      "issues": {
-        "structural": [],
-        "warnings": [
-          "missing or weak service-relevant CTA"
-        ]
-      }
-    },
-    {
-      "slug": "netsuite-for-small-businesses",
-      "title": "NetSuite for Small Businesses",
-      "gate": "needs_review",
-      "score": 77,
-      "categoryScores": {
-        "metadataCompleteness": 100,
-        "contentDepth": 100,
-        "duplicateCannibalisationRisk": 100,
-        "ctaServiceRelevance": 20,
-        "freshnessPublishedAtValidity": 65,
-        "internalLinkReadiness": 20
-      },
-      "metrics": {
-        "introWords": 62,
-        "bodyDepthWords": 623,
-        "tipsCount": 5,
-        "thinTipsCount": 0,
-        "nearDuplicateMatches": 0,
-        "hasCTAPath": false,
-        "hasServiceRelevantCTA": false,
-        "hasPublishedAt": false,
-        "internalPathCTA": false,
-        "routeMentionSignals": false
-      },
-      "issues": {
-        "structural": [],
-        "warnings": [
-          "missing or weak service-relevant CTA"
-        ]
-      }
-    },
-    {
-      "slug": "maximise-profits",
-      "title": "10 Tips to Maximise Profits",
-      "gate": "needs_review",
-      "score": 77,
-      "categoryScores": {
-        "metadataCompleteness": 100,
-        "contentDepth": 100,
-        "duplicateCannibalisationRisk": 100,
-        "ctaServiceRelevance": 20,
-        "freshnessPublishedAtValidity": 65,
-        "internalLinkReadiness": 20
-      },
-      "metrics": {
-        "introWords": 64,
-        "bodyDepthWords": 1004,
-        "tipsCount": 10,
-        "thinTipsCount": 0,
-        "nearDuplicateMatches": 0,
-        "hasCTAPath": false,
-        "hasServiceRelevantCTA": false,
-        "hasPublishedAt": false,
-        "internalPathCTA": false,
-        "routeMentionSignals": false
-      },
-      "issues": {
-        "structural": [],
-        "warnings": [
-          "missing or weak service-relevant CTA"
-        ]
-      }
-    },
     {
       "slug": "what-is-an-erp-system",
       "title": "What is an ERP System? A Beginner's Guide",
@@ -736,6 +640,66 @@
       }
     },
     {
+      "slug": "is-netsuite-right-for-your-business",
+      "title": "Is NetSuite Right for Your Business?",
+      "gate": "pass",
+      "score": 100,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 91,
+        "bodyDepthWords": 703,
+        "tipsCount": 5,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "netsuite-for-small-businesses",
+      "title": "NetSuite for Small Businesses",
+      "gate": "pass",
+      "score": 100,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 62,
+        "bodyDepthWords": 623,
+        "tipsCount": 5,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
       "slug": "csv-import-errors",
       "title": "CSV Imports: Why They Fail and How to Fix It",
       "gate": "pass",
@@ -752,6 +716,36 @@
         "introWords": 98,
         "bodyDepthWords": 942,
         "tipsCount": 6,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "maximise-profits",
+      "title": "10 Tips to Maximise Profits",
+      "gate": "pass",
+      "score": 100,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 64,
+        "bodyDepthWords": 1004,
+        "tipsCount": 10,
         "thinTipsCount": 0,
         "nearDuplicateMatches": 0,
         "hasCTAPath": true,
@@ -828,9 +822,6 @@
   ],
   "structuralErrors": [],
   "warnings": [
-    "is-netsuite-right-for-your-business: missing or weak service-relevant CTA",
-    "netsuite-for-small-businesses: missing or weak service-relevant CTA",
-    "maximise-profits: missing or weak service-relevant CTA",
     "what-is-an-erp-system: missing or weak service-relevant CTA",
     "why-choose-netsuite-support-from-erp-experts: 2 thin tip section(s) under 25 words",
     "why-choose-netsuite-support-from-erp-experts: intro looks thin (<60 words)",

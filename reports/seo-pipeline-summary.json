@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-05-11T08:52:37.580Z",
+  "generatedAt": "2026-05-11T09:25:35.066Z",
   "pipeline": {
     "steps": [
       "qa:resources",
       "seo:briefs",
       "seo:summary"
     ],
-    "snapshotDir": "reports/history/2026-05-11-0952",
-    "previousSnapshot": "reports/history/2026-05-11-0952"
+    "snapshotDir": "reports/history/2026-05-11-1025",
+    "previousSnapshot": "reports/history/2026-05-11-1022"
   },
   "outputs": {
     "qaReport": "reports/resource-qa-report.json",
@@ -16,14 +16,14 @@
   },
   "current": {
     "gateSummary": {
-      "pass": 21,
-      "needs_review": 5,
+      "pass": 24,
+      "needs_review": 2,
       "blocked": 0
     },
-    "recommendationCount": 15,
+    "recommendationCount": 12,
     "dashboardBriefCount": 5,
-    "sprintBacklogCount": 10,
-    "weeklyHeadline": "This week, SEO automation recommends creating new demand-led resources while keeping quality control visible. 5 pages need review and 0 are blocked."
+    "sprintBacklogCount": 7,
+    "weeklyHeadline": "This week, SEO automation recommends creating new demand-led resources while keeping quality control visible. 2 pages need review and 0 are blocked."
   },
   "diff": {
     "passChange": 0,

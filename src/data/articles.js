@@ -67,10 +67,16 @@ export const articles = {
     cardDescription:
       "An honest look at whether NetSuite fits your organisation. No sales pitch, just practical questions, real trade-offs, and the evaluation steps that actually matter.",
     date: "Feb 2026",
+    publishedAt: "2026-02-12",
     readTime: "5 min read",
     type: "Guide",
     layoutVariant: 7,
     heroImage: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=1400&q=80",
+    ctaText:
+      "If you are unsure whether NetSuite fits your current complexity and growth plan, book an ERP fit review to test your requirements before committing budget.",
+    ctaLabel: "Book an ERP fit review",
+    ctaTo: "/contact",
+    ctaTrackingName: "resource_article_netsuite_fit_review",
     featureImage: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80",
     challengeLabel: "The Real Question",
     challengeHeading: 'Cutting Through the <span class="text-primary">Sales Pitch</span>',
@@ -1081,10 +1087,16 @@ export const articles = {
     keywords:
       "NetSuite for small businesses, NetSuite small business, is NetSuite good for small businesses, NetSuite SME, NetSuite pricing small business, ERP for small business",
     date: "Feb 2026",
+    publishedAt: "2026-02-09",
     readTime: "4 min read",
     type: "Guide",
     layoutVariant: 2,
     heroImage: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1400&q=80",
+    ctaText:
+      "If you are weighing ERP options as a smaller business, book a NetSuite fit review to compare cost, scope, and rollout risk before you commit.",
+    ctaLabel: "Book a NetSuite fit review",
+    ctaTo: "/contact",
+    ctaTrackingName: "resource_article_small_business_fit_review",
     featureImage: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80",
     challengeLabel: "The Honest Truth",
     challengeHeading: 'Enterprise Software for a <span class="text-primary">Small Team</span>?',
@@ -1645,11 +1657,17 @@ export const articles = {
     keywords:
       "maximise profits, how to increase profits, maximising profits, improve profitability, increase profit margins, profit maximisation strategies",
     date: "Mar 2026",
+    publishedAt: "2026-03-08",
     readTime: "8 min read",
     type: "Guide",
     layoutVariant: 5,
     heroImage:
       "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1400&q=80",
+    ctaText:
+      "If margin pressure is rising across pricing, costs, and cash conversion, book a finance systems review to prioritise the changes with the strongest profit impact.",
+    ctaLabel: "Book a finance systems review",
+    ctaTo: "/contact",
+    ctaTrackingName: "resource_article_profit_finance_review",
     featureImage:
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
 

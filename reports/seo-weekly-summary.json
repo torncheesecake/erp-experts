@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-11T08:52:37.572Z",
+  "generatedAt": "2026-05-11T09:25:35.055Z",
   "sourceReports": {
     "qaReport": "reports/resource-qa-report.json",
     "seoActionBriefs": "reports/seo-action-briefs.json",
@@ -7,10 +7,10 @@
   },
   "reportContext": {
     "reportsLastUpdated": "2026-05-08",
-    "qaGeneratedAt": "2026-05-11T08:52:37.501Z",
-    "briefsGeneratedAt": "2026-05-11T08:52:37.539Z"
+    "qaGeneratedAt": "2026-05-11T09:25:34.982Z",
+    "briefsGeneratedAt": "2026-05-11T09:25:35.019Z"
   },
-  "headlineSummary": "This week, SEO automation recommends creating new demand-led resources while keeping quality control visible. 5 pages need review and 0 are blocked.",
+  "headlineSummary": "This week, SEO automation recommends creating new demand-led resources while keeping quality control visible. 2 pages need review and 0 are blocked.",
   "topRecommendedActions": [
     {
       "rank": 1,
@@ -50,8 +50,8 @@
     "reason": "How UK Software Companies Should Choose an ERP Consultant is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance."
   },
   "biggestQualityRisk": {
-    "title": "Is NetSuite Right for Your Business?",
-    "slug": "is-netsuite-right-for-your-business",
+    "title": "What is an ERP System? A Beginner's Guide",
+    "slug": "what-is-an-erp-system",
     "gate": "needs_review",
     "score": 77,
     "reason": "missing or weak service-relevant CTA"
@@ -62,7 +62,7 @@
     "monitor": 0,
     "blocked_review": 0
   },
-  "pagesNeedingReviewCount": 5,
+  "pagesNeedingReviewCount": 2,
   "blockedCount": 0,
   "suggestedFocusForNextWeek": "Prioritise the top commercial opportunity, monitor existing pages, and keep new content aligned to service-led intent."
 }
