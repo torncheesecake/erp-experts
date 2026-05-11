@@ -37,6 +37,7 @@ Primary automation commands:
 - `npm run seo:batch`
 - `npm run seo:batch:prompt`
 - `npm run seo:batch:complete`
+- `npm run seo:operator`
 
 CI workflow command coverage:
 
@@ -91,11 +92,12 @@ Batch completion helper:
 
 Recommended operator flow:
 
-1. `npm run seo:batch:prompt`
-2. Run the generated prompt in Codex sequentially.
-3. `npm run seo:batch:complete -- --dry-run`
-4. If dry run is safe, run `npm run seo:batch:complete`.
-5. Refresh `/seo-roadmap` and review the next queue.
+1. `npm run seo:operator`
+2. Follow the mode and next-command guidance printed by the operator status.
+3. If batch mode is recommended, run `npm run seo:batch:prompt` and execute the generated prompt in Codex sequentially.
+4. `npm run seo:batch:complete -- --dry-run`
+5. If dry run is safe, run `npm run seo:batch:complete`.
+6. Refresh `/seo-roadmap` and review the next queue.
 
 Current snapshot (latest generated state):
 
