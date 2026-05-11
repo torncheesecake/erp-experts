@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-05-11T06:27:41.791Z",
+  "generatedAt": "2026-05-11T07:03:32.436Z",
   "pipeline": {
     "steps": [
       "qa:resources",
       "seo:briefs",
       "seo:summary"
     ],
-    "snapshotDir": "reports/history/2026-05-11-0727",
-    "previousSnapshot": "reports/history/2026-05-10-1538"
+    "snapshotDir": "reports/history/2026-05-11-0803",
+    "previousSnapshot": "reports/history/2026-05-11-0802"
   },
   "outputs": {
     "qaReport": "reports/resource-qa-report.json",
