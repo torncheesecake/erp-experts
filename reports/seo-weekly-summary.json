@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-11T07:03:32.429Z",
+  "generatedAt": "2026-05-11T08:52:37.572Z",
   "sourceReports": {
     "qaReport": "reports/resource-qa-report.json",
     "seoActionBriefs": "reports/seo-action-briefs.json",
@@ -7,10 +7,10 @@
   },
   "reportContext": {
     "reportsLastUpdated": "2026-05-08",
-    "qaGeneratedAt": "2026-05-11T07:03:32.355Z",
-    "briefsGeneratedAt": "2026-05-11T07:03:32.394Z"
+    "qaGeneratedAt": "2026-05-11T08:52:37.501Z",
+    "briefsGeneratedAt": "2026-05-11T08:52:37.539Z"
   },
-  "headlineSummary": "This week, SEO automation recommends creating new demand-led resources while keeping quality control visible. 11 pages need review and 0 are blocked.",
+  "headlineSummary": "This week, SEO automation recommends creating new demand-led resources while keeping quality control visible. 5 pages need review and 0 are blocked.",
   "topRecommendedActions": [
     {
       "rank": 1,
@@ -50,19 +50,19 @@
     "reason": "How UK Software Companies Should Choose an ERP Consultant is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance."
   },
   "biggestQualityRisk": {
-    "title": "A CFO's Guide to AI-Enhanced Finance",
-    "slug": "cfo-guide-ai-enhanced-finance",
+    "title": "Is NetSuite Right for Your Business?",
+    "slug": "is-netsuite-right-for-your-business",
     "gate": "needs_review",
-    "score": 70,
-    "reason": "intro looks thin (<60 words)"
+    "score": 77,
+    "reason": "missing or weak service-relevant CTA"
   },
   "createVsImproveSplit": {
-    "create_new": 4,
-    "improve_existing": 1,
+    "create_new": 5,
+    "improve_existing": 0,
     "monitor": 0,
     "blocked_review": 0
   },
-  "pagesNeedingReviewCount": 11,
+  "pagesNeedingReviewCount": 5,
   "blockedCount": 0,
-  "suggestedFocusForNextWeek": "Improve one high-intent existing article and draft one high-value new resource, then rerun Resource QA to check progress."
+  "suggestedFocusForNextWeek": "Prioritise the top commercial opportunity, monitor existing pages, and keep new content aligned to service-led intent."
 }

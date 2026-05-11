@@ -1220,10 +1220,16 @@ export const articles = {
     cardDescription:
       "The most common reasons CSV imports fail in NetSuite and exactly how to fix each one. Save hours of trial and error with this field-tested troubleshooting guide.",
     date: "Mar 2026",
+    publishedAt: "2026-03-10",
     readTime: "6 min read",
     type: "Guide",
     layoutVariant: 7,
     heroMode: "import-workflow",
+    ctaText:
+      "If recurring CSV issues are causing delays or data quality risk, book a NetSuite data import review to define safer templates, validation steps, and automation options.",
+    ctaLabel: "Book a NetSuite data import review",
+    ctaTo: "/services/netsuite",
+    ctaTrackingName: "resource_article_csv_import_review",
 
     intro:
       "CSV imports are one of the most common ways to get data into NetSuite — whether you are migrating from another system, loading a bulk update, or bringing in data from a third-party source. They are also one of the most common sources of frustration. A single formatting error, a mismatched field name, or an encoding issue can reject an entire file with an error message that tells you very little about what actually went wrong. This guide covers the most frequent causes of CSV import failures in NetSuite and gives you clear, tested fixes for each one.",
@@ -1344,7 +1350,7 @@ export const articles = {
     ],
 
     conclusion:
-      "CSV imports do not have to be painful. The vast majority of failures come down to encoding, formatting, and reference mismatches — all of which are straightforward to fix once you know what to look for. Build good habits around file preparation, use internal IDs wherever possible, and always test with a small batch first. You will go from dreading import day to running them confidently in minutes.",
+      "CSV imports do not have to be painful. The vast majority of failures come down to encoding, formatting, and reference mismatches, all of which are straightforward to fix once you know what to look for. Build good habits around file preparation, use internal IDs wherever possible, and always test with a small batch first. If import reliability is still inconsistent, a focused NetSuite data import review can help you standardise templates and reduce repeat failure points before they affect month-end reporting.",
 
     disclaimer:
       "NetSuite's CSV Import Assistant handles most standard import scenarios. For complex migrations or recurring data loads, contact ERP Experts to discuss automation options.",
@@ -1997,14 +2003,20 @@ export const articles = {
     keywords:
       "best ERP for manufacturers, best ERP for manufacturing, ERP for manufacturers, manufacturing ERP, NetSuite for manufacturing, ERP for production, manufacturing software",
     date: "Mar 2026",
+    publishedAt: "2026-03-12",
     readTime: "7 min read",
     type: "Guide",
     layoutVariant: 8,
     heroAlignment: "center",
     heroImage: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1400&q=80",
+    ctaText:
+      "If production planning is still relying on spreadsheets, disconnected modules, or delayed costing data, book a manufacturing ERP review to prioritise the controls and workflows that need fixing first.",
+    ctaLabel: "Book a manufacturing ERP review",
+    ctaTo: "/services/netsuite",
+    ctaTrackingName: "resource_article_manufacturing_erp_review",
 
     intro:
-      "Choosing the best ERP for manufacturers is one of the most impactful decisions a production business will make. The right manufacturing ERP connects your shop floor to your back office, gives you real time visibility across every operation, and scales as your business grows. The wrong one forces your team into workarounds, creates data silos between departments, and leaves you flying blind on costs and capacity. This guide walks through the capabilities that matter most when evaluating ERP for manufacturers, and explains why purpose built platforms like NetSuite consistently outperform generic alternatives in manufacturing environments.",
+      "Choosing the best ERP for manufacturers is a risk decision as much as a technology decision. If the platform cannot control scheduling, stock, and costing reliably, delays, margin leakage, and planning errors accumulate quickly. The right manufacturing ERP connects your shop floor to your back office, gives you real time visibility across every operation, and scales as your business grows. The wrong one forces your team into workarounds, creates data silos between departments, and leaves you flying blind on costs and capacity. This guide walks through the capabilities that matter most when evaluating ERP for manufacturers, and explains why purpose built platforms like NetSuite consistently outperform generic alternatives in manufacturing environments.",
 
     overviewHeading: 'Choosing the Right <span class="text-primary">Manufacturing ERP</span>',
     overviewSubtext:
@@ -2236,7 +2248,7 @@ export const articles = {
     ],
 
     conclusion:
-      "The best ERP for manufacturers is one that was designed for manufacturing from the ground up, not a generic platform with production bolted on as an afterthought. From production planning and inventory management to quality control and costing, the capabilities covered in this guide are what separate a system that genuinely supports manufacturing operations from one that creates more problems than it solves. If you are evaluating ERP for your manufacturing business, start with the capabilities that matter most to your operation and work from there.",
+      "The best ERP for manufacturers is one that was designed for manufacturing from the ground up, not a generic platform with production bolted on as an afterthought. From production planning and inventory management to quality control and costing, the capabilities covered in this guide are what separate a system that genuinely supports manufacturing operations from one that creates more problems than it solves. If you are evaluating ERP for your manufacturing business, start with the capabilities that matter most to your operation and test each one against your real constraints. If those checks expose control gaps, a manufacturing ERP review gives you a practical next step before scope decisions are locked in.",
 
     disclaimer:
       "Every manufacturing business is different. Contact ERP Experts for a candid conversation about whether NetSuite is the right fit for your production environment.",
@@ -2252,11 +2264,17 @@ export const articles = {
     keywords:
       "benefits of ERP systems, top benefits of ERP, advantages of ERP, ERP system benefits, ERP benefits for business, why implement ERP",
     date: "Mar 2026",
+    publishedAt: "2026-03-16",
     readTime: "7 min read",
     type: "Guide",
     layoutVariant: 7,
     heroAlignment: "center",
     heroImage: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1400&q=80",
+    ctaText:
+      "If your teams still rely on fragmented tools and manual reporting, book a finance systems review to prioritise the ERP capabilities that will deliver measurable operational gains first.",
+    ctaLabel: "Book a finance systems review",
+    ctaTo: "/contact",
+    ctaTrackingName: "resource_article_erp_benefits_finance_review",
 
     intro:
       "Businesses invest in ERP systems for one reason: to run better. But the phrase 'benefits of ERP systems' gets thrown around so loosely that it can be hard to separate genuine advantages from marketing fluff. This guide takes a different approach. We walk through eight core benefits of ERP, each backed by a concrete business outcome you can measure. Whether you are building a business case for your board or simply trying to understand what an ERP system can realistically deliver, this is the practical overview you need.",
@@ -2401,7 +2419,7 @@ export const articles = {
     ],
 
     conclusion:
-      "The benefits of ERP systems are real and measurable, but they do not happen automatically. The organisations that get the most value are the ones that go in with clear objectives, involve their people from the start, and treat implementation as a business transformation rather than a technology project. If you are evaluating whether an ERP is right for your business, focus on the specific outcomes that matter to you and build your business case around those.",
+      "The benefits of ERP systems are real and measurable, but they do not happen automatically. The organisations that get the most value are the ones that go in with clear objectives, involve their people from the start, and treat implementation as a business transformation rather than a technology project. If you are evaluating whether an ERP is right for your business, focus on the specific outcomes that matter to you and build your business case around those. Where priorities are still unclear, a finance systems review can help you sequence improvements and avoid funding change that does not address your core bottlenecks.",
 
     disclaimer:
       "Every organisation is different. Contact ERP Experts for an honest conversation about which ERP system benefits are most relevant to your business and how to realise them.",

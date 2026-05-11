@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-05-11T07:03:32.355Z",
+  "generatedAt": "2026-05-11T08:52:37.501Z",
   "articleCount": 26,
   "gateSummary": {
-    "pass": 15,
-    "needs_review": 11,
+    "pass": 21,
+    "needs_review": 5,
     "blocked": 0
   },
   "scoringModel": {
@@ -30,103 +30,6 @@
     }
   },
   "articles": [
-    {
-      "slug": "cfo-guide-ai-enhanced-finance",
-      "title": "A CFO's Guide to AI-Enhanced Finance",
-      "gate": "needs_review",
-      "score": 70,
-      "categoryScores": {
-        "metadataCompleteness": 100,
-        "contentDepth": 76,
-        "duplicateCannibalisationRisk": 100,
-        "ctaServiceRelevance": 20,
-        "freshnessPublishedAtValidity": 65,
-        "internalLinkReadiness": 20
-      },
-      "metrics": {
-        "introWords": 51,
-        "bodyDepthWords": 341,
-        "tipsCount": 5,
-        "thinTipsCount": 0,
-        "nearDuplicateMatches": 0,
-        "hasCTAPath": false,
-        "hasServiceRelevantCTA": false,
-        "hasPublishedAt": false,
-        "internalPathCTA": false,
-        "routeMentionSignals": false
-      },
-      "issues": {
-        "structural": [],
-        "warnings": [
-          "intro looks thin (<60 words)",
-          "missing or weak service-relevant CTA"
-        ]
-      }
-    },
-    {
-      "slug": "why-netsuite-is-the-best-accounting-software-choice",
-      "title": "Why NetSuite Is the Best Choice of Accounting Software",
-      "gate": "needs_review",
-      "score": 73,
-      "categoryScores": {
-        "metadataCompleteness": 100,
-        "contentDepth": 89,
-        "duplicateCannibalisationRisk": 100,
-        "ctaServiceRelevance": 20,
-        "freshnessPublishedAtValidity": 65,
-        "internalLinkReadiness": 20
-      },
-      "metrics": {
-        "introWords": 69,
-        "bodyDepthWords": 449,
-        "tipsCount": 8,
-        "thinTipsCount": 0,
-        "nearDuplicateMatches": 0,
-        "hasCTAPath": false,
-        "hasServiceRelevantCTA": false,
-        "hasPublishedAt": false,
-        "internalPathCTA": false,
-        "routeMentionSignals": false
-      },
-      "issues": {
-        "structural": [],
-        "warnings": [
-          "missing or weak service-relevant CTA"
-        ]
-      }
-    },
-    {
-      "slug": "accounts-receivable-reports",
-      "title": "6 Essential Accounts Receivable Reports",
-      "gate": "needs_review",
-      "score": 75,
-      "categoryScores": {
-        "metadataCompleteness": 100,
-        "contentDepth": 95,
-        "duplicateCannibalisationRisk": 100,
-        "ctaServiceRelevance": 20,
-        "freshnessPublishedAtValidity": 65,
-        "internalLinkReadiness": 20
-      },
-      "metrics": {
-        "introWords": 111,
-        "bodyDepthWords": 531,
-        "tipsCount": 6,
-        "thinTipsCount": 0,
-        "nearDuplicateMatches": 0,
-        "hasCTAPath": false,
-        "hasServiceRelevantCTA": false,
-        "hasPublishedAt": false,
-        "internalPathCTA": false,
-        "routeMentionSignals": false
-      },
-      "issues": {
-        "structural": [],
-        "warnings": [
-          "missing or weak service-relevant CTA"
-        ]
-      }
-    },
     {
       "slug": "is-netsuite-right-for-your-business",
       "title": "Is NetSuite Right for Your Business?",
@@ -192,38 +95,6 @@
       }
     },
     {
-      "slug": "csv-import-errors",
-      "title": "CSV Imports: Why They Fail and How to Fix It",
-      "gate": "needs_review",
-      "score": 77,
-      "categoryScores": {
-        "metadataCompleteness": 100,
-        "contentDepth": 100,
-        "duplicateCannibalisationRisk": 100,
-        "ctaServiceRelevance": 20,
-        "freshnessPublishedAtValidity": 65,
-        "internalLinkReadiness": 20
-      },
-      "metrics": {
-        "introWords": 98,
-        "bodyDepthWords": 929,
-        "tipsCount": 6,
-        "thinTipsCount": 0,
-        "nearDuplicateMatches": 0,
-        "hasCTAPath": false,
-        "hasServiceRelevantCTA": false,
-        "hasPublishedAt": false,
-        "internalPathCTA": false,
-        "routeMentionSignals": false
-      },
-      "issues": {
-        "structural": [],
-        "warnings": [
-          "missing or weak service-relevant CTA"
-        ]
-      }
-    },
-    {
       "slug": "maximise-profits",
       "title": "10 Tips to Maximise Profits",
       "gate": "needs_review",
@@ -271,70 +142,6 @@
       "metrics": {
         "introWords": 80,
         "bodyDepthWords": 1048,
-        "tipsCount": 8,
-        "thinTipsCount": 0,
-        "nearDuplicateMatches": 0,
-        "hasCTAPath": false,
-        "hasServiceRelevantCTA": false,
-        "hasPublishedAt": false,
-        "internalPathCTA": false,
-        "routeMentionSignals": false
-      },
-      "issues": {
-        "structural": [],
-        "warnings": [
-          "missing or weak service-relevant CTA"
-        ]
-      }
-    },
-    {
-      "slug": "best-erp-for-manufacturers",
-      "title": "Best ERP for Manufacturers",
-      "gate": "needs_review",
-      "score": 77,
-      "categoryScores": {
-        "metadataCompleteness": 100,
-        "contentDepth": 100,
-        "duplicateCannibalisationRisk": 100,
-        "ctaServiceRelevance": 20,
-        "freshnessPublishedAtValidity": 65,
-        "internalLinkReadiness": 20
-      },
-      "metrics": {
-        "introWords": 95,
-        "bodyDepthWords": 845,
-        "tipsCount": 6,
-        "thinTipsCount": 0,
-        "nearDuplicateMatches": 0,
-        "hasCTAPath": false,
-        "hasServiceRelevantCTA": false,
-        "hasPublishedAt": false,
-        "internalPathCTA": false,
-        "routeMentionSignals": false
-      },
-      "issues": {
-        "structural": [],
-        "warnings": [
-          "missing or weak service-relevant CTA"
-        ]
-      }
-    },
-    {
-      "slug": "benefits-of-erp-systems",
-      "title": "Top Benefits of ERP Systems",
-      "gate": "needs_review",
-      "score": 77,
-      "categoryScores": {
-        "metadataCompleteness": 100,
-        "contentDepth": 100,
-        "duplicateCannibalisationRisk": 100,
-        "ctaServiceRelevance": 20,
-        "freshnessPublishedAtValidity": 65,
-        "internalLinkReadiness": 20
-      },
-      "metrics": {
-        "introWords": 88,
-        "bodyDepthWords": 954,
         "tipsCount": 8,
         "thinTipsCount": 0,
         "nearDuplicateMatches": 0,
@@ -719,6 +526,36 @@
       }
     },
     {
+      "slug": "cfo-guide-ai-enhanced-finance",
+      "title": "A CFO's Guide to AI-Enhanced Finance",
+      "gate": "pass",
+      "score": 95,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 83,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 60,
+        "bodyDepthWords": 378,
+        "tipsCount": 5,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
       "slug": "stress-free-erp-implementation",
       "title": "The Ultimate Guide to a Stress-Free ERP Implementation",
       "gate": "pass",
@@ -837,21 +674,164 @@
         "structural": [],
         "warnings": []
       }
+    },
+    {
+      "slug": "why-netsuite-is-the-best-accounting-software-choice",
+      "title": "Why NetSuite Is the Best Choice of Accounting Software",
+      "gate": "pass",
+      "score": 97,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 90,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 69,
+        "bodyDepthWords": 467,
+        "tipsCount": 8,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "accounts-receivable-reports",
+      "title": "6 Essential Accounts Receivable Reports",
+      "gate": "pass",
+      "score": 99,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 96,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 111,
+        "bodyDepthWords": 545,
+        "tipsCount": 6,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "csv-import-errors",
+      "title": "CSV Imports: Why They Fail and How to Fix It",
+      "gate": "pass",
+      "score": 100,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 98,
+        "bodyDepthWords": 942,
+        "tipsCount": 6,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "best-erp-for-manufacturers",
+      "title": "Best ERP for Manufacturers",
+      "gate": "pass",
+      "score": 100,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 111,
+        "bodyDepthWords": 887,
+        "tipsCount": 6,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "benefits-of-erp-systems",
+      "title": "Top Benefits of ERP Systems",
+      "gate": "pass",
+      "score": 100,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 88,
+        "bodyDepthWords": 979,
+        "tipsCount": 8,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
     }
   ],
   "structuralErrors": [],
   "warnings": [
     "is-netsuite-right-for-your-business: missing or weak service-relevant CTA",
-    "cfo-guide-ai-enhanced-finance: intro looks thin (<60 words)",
-    "cfo-guide-ai-enhanced-finance: missing or weak service-relevant CTA",
     "netsuite-for-small-businesses: missing or weak service-relevant CTA",
-    "csv-import-errors: missing or weak service-relevant CTA",
-    "accounts-receivable-reports: missing or weak service-relevant CTA",
     "maximise-profits: missing or weak service-relevant CTA",
     "what-is-an-erp-system: missing or weak service-relevant CTA",
-    "best-erp-for-manufacturers: missing or weak service-relevant CTA",
-    "benefits-of-erp-systems: missing or weak service-relevant CTA",
-    "why-netsuite-is-the-best-accounting-software-choice: missing or weak service-relevant CTA",
     "why-choose-netsuite-support-from-erp-experts: 2 thin tip section(s) under 25 words",
     "why-choose-netsuite-support-from-erp-experts: intro looks thin (<60 words)",
     "how-to-set-up-mcp-in-netsuite: intro looks thin (<60 words)",
