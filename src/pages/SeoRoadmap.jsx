@@ -354,6 +354,72 @@ Delivery summary format:
 - Final pass/needs_review/blocked totals`;
 }
 
+function computeDashboardMode({ summaryGate, humanReviewRecommended, queueLength }) {
+  const pass = Number(summaryGate?.pass || 0);
+  const needsReview = Number(summaryGate?.needs_review || 0);
+  const blocked = Number(summaryGate?.blocked || 0);
+  const healthy = !humanReviewRecommended && blocked === 0 && needsReview === 0;
+  if (healthy) {
+    return {
+      key: "monitor",
+      stateLabel: "HEALTHY",
+      flowLabel: "MONITORING",
+      outcomeLabel: "NO ACTION REQUIRED",
+      actionLabel: "Growth Opportunity",
+      modeLabel: "Monitoring only",
+      tone: "emerald",
+      pass,
+      needsReview,
+      blocked,
+    };
+  }
+  if (humanReviewRecommended || blocked > 0) {
+    return {
+      key: "blocked",
+      stateLabel: "BLOCKED",
+      flowLabel: humanReviewRecommended ? "HUMAN REVIEW REQUIRED" : "BLOCKED ARTICLES PRESENT",
+      outcomeLabel: "IMMEDIATE ATTENTION REQUIRED",
+      actionLabel: "Immediate Attention Required",
+      modeLabel: humanReviewRecommended ? "Human review required" : "Blocked pages need fixing",
+      tone: "rose",
+      pass,
+      needsReview,
+      blocked,
+    };
+  }
+  return {
+    key: "operator",
+    stateLabel: "WARNING",
+    flowLabel: `${needsReview} ARTICLES NEED REVIEW`,
+    outcomeLabel: "RUN BATCH",
+    actionLabel: "Next Required Action",
+    modeLabel: queueLength <= 2 ? `Final mini-batch: ${needsReview} article${needsReview === 1 ? "" : "s"} remaining` : "Ready for next batch",
+    tone: "amber",
+    pass,
+    needsReview,
+    blocked,
+  };
+}
+
+function SystemStateRail({ mode }) {
+  const toneClass = mode.tone === "emerald"
+    ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+    : mode.tone === "rose"
+    ? "bg-rose-50 text-rose-800 border-rose-200"
+    : "bg-amber-50 text-amber-800 border-amber-200";
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white/70 backdrop-blur-sm" style={{ padding: "var(--space-sm) var(--space-md)" }}>
+      <div className="flex items-center gap-2 flex-wrap text-xs font-bold tracking-wide">
+        <span className={`inline-flex rounded-full border px-2.5 py-1 ${toneClass}`}>{mode.stateLabel}</span>
+        <span className="text-slate-400">→</span>
+        <span className={`inline-flex rounded-full border px-2.5 py-1 ${toneClass}`}>{mode.flowLabel}</span>
+        <span className="text-slate-400">→</span>
+        <span className={`inline-flex rounded-full border px-2.5 py-1 ${toneClass}`}>{mode.outcomeLabel}</span>
+      </div>
+    </div>
+  );
+}
+
 /* ── client edit mode (temporary control, not auth) ── */
 const EDITS_ENABLED = import.meta.env.VITE_SEO_ROADMAP_EDITS === "true";
 
@@ -1596,6 +1662,12 @@ function AdminView({ onPreview }) {
     qaReport,
     briefs: briefsReport?.briefs || [],
   });
+  const dashboardMode = computeDashboardMode({
+    summaryGate,
+    humanReviewRecommended,
+    queueLength: batchQueue.length,
+  });
+  const isMonitorMode = dashboardMode.key === "monitor";
   const activeRow = selectedSlug ? selectedRow : (filteredRows[0] || articleRows[0] || null);
 
   if (!loaded) return (
@@ -1680,25 +1752,45 @@ function AdminView({ onPreview }) {
             </div>
           )}
 
-          <OperatorModePanel
-            summaryGate={summaryGate}
-            humanReviewRecommended={humanReviewRecommended}
-            queue={batchQueue}
-            pipelineSummary={pipelineSummary}
-            loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
-          />
+          <div style={{ marginTop: "var(--space-md)", display: "grid", gap: "var(--space-md)" }}>
+            <SystemStateRail mode={dashboardMode} />
 
-          <NextBestActionPanel action={nextBestAction} loading={summaryLoading || pipelineLoading || briefsLoading} />
+            <OperatorModePanel
+              summaryGate={summaryGate}
+              humanReviewRecommended={humanReviewRecommended}
+              queue={batchQueue}
+              pipelineSummary={pipelineSummary}
+              loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
+              mode={dashboardMode}
+            />
 
-          <div style={{ marginTop: "var(--space-lg)" }}>
+            <NextBestActionPanel
+              action={nextBestAction}
+              loading={summaryLoading || pipelineLoading || briefsLoading}
+              headingLabel={dashboardMode.actionLabel}
+            />
+
             <ProgressHistoryCard points={progressPoints} />
-          </div>
 
-          <BatchImprovementQueue
-            loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
-            queue={batchQueue}
-            reportsReady={Boolean(qaReport && pipelineSummary && weeklySummary && briefsReport)}
-          />
+            {!isMonitorMode ? (
+              <BatchImprovementQueue
+                loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
+                queue={batchQueue}
+                reportsReady={Boolean(qaReport && pipelineSummary && weeklySummary && briefsReport)}
+              />
+            ) : (
+              <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
+                <summary className="cursor-pointer text-sm font-semibold text-slate-700">Growth opportunities and batch queue</summary>
+                <div style={{ marginTop: "var(--space-sm)" }}>
+                  <BatchImprovementQueue
+                    loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
+                    queue={batchQueue}
+                    reportsReady={Boolean(qaReport && pipelineSummary && weeklySummary && briefsReport)}
+                  />
+                </div>
+              </details>
+            )}
+          </div>
 
           <div className="grid md:grid-cols-5 gap-md" style={{ marginTop: "var(--space-md)" }}>
             <StatMini label="Pass" value={summaryGate.pass} tone="green" />
@@ -1712,121 +1804,56 @@ function AdminView({ onPreview }) {
 
       <section className="bg-slate-50 border-b border-slate-200">
         <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
-          <h2 className="font-heading" style={{ fontSize: "1.3rem", marginBottom: "var(--space-sm)" }}>Article Workbench</h2>
-          <p className="text-sm text-slate-600" style={{ marginBottom: "var(--space-lg)" }}>
-            What needs attention now, why it matters, and the fastest safe fix plan.
-          </p>
-
-          {!qaReport ? (
+          {isMonitorMode ? (
+            <details className="rounded-xl border border-slate-200 bg-white/85" style={{ padding: "var(--space-md)" }}>
+              <summary className="cursor-pointer text-sm font-semibold text-slate-700">Article workbench and operator tools</summary>
+              <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)", marginBottom: "var(--space-lg)" }}>
+                Expand when you need manual article-level control.
+              </p>
+              {!qaReport ? (
+                <div className="rounded-2xl border border-slate-200 bg-white text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
+                  Resource QA report missing. Run <code>npm run seo:pipeline</code> to populate the workbench.
+                </div>
+              ) : (
+                <WorkbenchContent
+                  articleFilter={articleFilter}
+                  setArticleFilter={setArticleFilter}
+                  sortBy={sortBy}
+                  setSortBy={setSortBy}
+                  filteredRows={filteredRows}
+                  articleRows={articleRows}
+                  selectedRow={selectedRow}
+                  setSelectedSlug={setSelectedSlug}
+                  displayRow={displayRow}
+                  plannerToggles={plannerToggles}
+                  setPlannerToggles={setPlannerToggles}
+                  promptText={promptText}
+                  copyState={copyState}
+                  setCopyState={setCopyState}
+                />
+              )}
+            </details>
+          ) : !qaReport ? (
             <div className="rounded-2xl border border-slate-200 bg-white text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
               Resource QA report missing. Run <code>npm run seo:pipeline</code> to populate the workbench.
             </div>
           ) : (
-            <>
-              <div className="grid md:grid-cols-3 gap-md" style={{ marginBottom: "var(--space-md)" }}>
-                <label className="text-sm font-semibold text-slate-700">
-                  Filter articles
-                  <select
-                    value={articleFilter}
-                    onChange={(e) => setArticleFilter(e.target.value)}
-                    className="w-full mt-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-                  >
-                    <option value="needs_review">Needs review</option>
-                    <option value="pass">Pass</option>
-                    <option value="sprint_candidates">Sprint candidates</option>
-                    <option value="high_commercial_intent">High commercial intent</option>
-                    <option value="has_codex_prompt">Has Codex prompt</option>
-                    <option value="missing_cta">Missing CTA</option>
-                    <option value="thin_content">Thin content</option>
-                  </select>
-                </label>
-                <label className="text-sm font-semibold text-slate-700">
-                  Sort results
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full mt-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-                  >
-                    <option value="score">Score (lowest first)</option>
-                    <option value="commercial_priority">Commercial priority (highest first)</option>
-                    <option value="display_rank">Display rank (lowest first)</option>
-                    <option value="gate">Gate</option>
-                  </select>
-                </label>
-                <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 flex items-center">
-                  Showing {filteredRows.length} of {articleRows.length} articles
-                </div>
-              </div>
-
-              <div className="grid lg:grid-cols-[1.1fr_1fr] gap-lg">
-                <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden">
-                  {filteredRows.length === 0 ? (
-                    <div className="text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
-                      No articles match this filter yet. Try a different filter, or run <code>npm run seo:pipeline</code> to refresh reports.
-                    </div>
-                  ) : (
-                  <table className="w-full text-left">
-                    <thead>
-                      <tr className="bg-slate-100">
-                        <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "10px 12px" }}>What needs attention</th>
-                        <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "10px 12px" }}>Score</th>
-                        <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "10px 12px" }}>Gate</th>
-                        <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "10px 12px" }}>Priority</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredRows.map((row) => {
-                        const active = selectedRow?.slug === row.slug;
-                        return (
-                          <tr
-                            key={row.slug}
-                            className={`border-t cursor-pointer ${active ? "bg-primary/5" : "bg-white hover:bg-slate-50"}`}
-                            onClick={() => setSelectedSlug(row.slug)}
-                          >
-                            <td style={{ padding: "10px 12px" }}>
-                              <p className="font-semibold text-slate-800">{row.title}</p>
-                              <p className="text-xs text-slate-500">{row.slug}</p>
-                              {active && <p className="text-[11px] font-semibold text-primary">Selected</p>}
-                            </td>
-                            <td className="font-mono text-sm text-slate-700" style={{ padding: "10px 12px" }}>{row.score}</td>
-                            <td style={{ padding: "10px 12px" }}>
-                              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
-                                row.gate === "pass" ? "bg-green-100 text-green-700" : row.gate === "blocked" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"
-                              }`}>
-                                {row.gate}
-                              </span>
-                            </td>
-                            <td className="text-xs text-slate-600" style={{ padding: "10px 12px" }}>
-                              {row.commercialPriority ? `Value ${row.commercialPriority}` : "—"}
-                              {Number.isFinite(row.displayRank) && row.displayRank < 999 ? ` · #${row.displayRank}` : ""}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                  )}
-                </div>
-
-                <ArticleDetailPanel
-                  row={displayRow}
-                  plannerToggles={plannerToggles}
-                  onToggle={(key) => setPlannerToggles((prev) => ({ ...prev, [key]: !prev[key] }))}
-                  promptPreview={promptText}
-                  copyState={copyState}
-                  onCopy={async () => {
-                    const ok = await copyText(promptText, "article planner prompt");
-                    if (ok) {
-                      setCopyState("copied");
-                      setTimeout(() => setCopyState("idle"), 1500);
-                    } else {
-                      setCopyState("failed");
-                      setTimeout(() => setCopyState("idle"), 2000);
-                    } 
-                  }}
-                />
-              </div>
-            </>
+            <WorkbenchContent
+              articleFilter={articleFilter}
+              setArticleFilter={setArticleFilter}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              filteredRows={filteredRows}
+              articleRows={articleRows}
+              selectedRow={selectedRow}
+              setSelectedSlug={setSelectedSlug}
+              displayRow={displayRow}
+              plannerToggles={plannerToggles}
+              setPlannerToggles={setPlannerToggles}
+              promptText={promptText}
+              copyState={copyState}
+              setCopyState={setCopyState}
+            />
           )}
         </div>
       </section>
@@ -1891,7 +1918,7 @@ After editing:
 - Run npm run seo:after-edit -- ${row.slug}`;
 }
 
-function NextBestActionPanel({ action, loading }) {
+function NextBestActionPanel({ action, loading, headingLabel = "Next best action" }) {
   const [copyState, setCopyState] = useState("idle");
   const [promptCopyState, setPromptCopyState] = useState("idle");
   const copyCommand = async () => {
@@ -1917,8 +1944,8 @@ function NextBestActionPanel({ action, loading }) {
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white" style={{ padding: "var(--space-lg)", marginTop: "var(--space-lg)" }}>
-      <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-xs)" }}>Next best action</p>
+    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
+      <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "var(--space-xs)" }}>{headingLabel}</p>
       {loading ? (
         <p className="text-sm text-slate-500">Building recommendation...</p>
       ) : (
@@ -1999,7 +2026,7 @@ function ProgressHistoryCard({ points }) {
   const blockedDelta = latest.blocked - first.blocked;
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white" style={{ padding: "var(--space-lg)" }}>
+    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
       <div className="flex items-center justify-between gap-md">
         <div>
           <p className="text-xs font-bold uppercase tracking-wide text-slate-500">QA progress history</p>
@@ -2035,6 +2062,9 @@ function ProgressHistoryCard({ points }) {
         <BriefBlock label="Needs review trend" value={`${first.needsReview} → ${latest.needsReview} (${reviewDelta >= 0 ? "+" : ""}${reviewDelta})`} />
         <BriefBlock label="Blocked trend" value={`${first.blocked} → ${latest.blocked} (${blockedDelta >= 0 ? "+" : ""}${blockedDelta})`} />
       </div>
+      <p className="text-xs text-slate-500" style={{ marginTop: "var(--space-xs)" }}>
+        Milestones: all-pass achieved when needs review and blocked both reach zero. Regressions are flagged in Operator and Monitor modes.
+      </p>
     </div>
   );
 }
@@ -2064,7 +2094,7 @@ function BatchImprovementQueue({ loading, queue, reportsReady }) {
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white" style={{ marginTop: "var(--space-lg)", padding: "var(--space-lg)" }}>
+    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
       <div className="flex items-center justify-between gap-sm flex-wrap">
         <div>
           <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Batch improvement queue</p>
@@ -2135,7 +2165,7 @@ function BatchImprovementQueue({ loading, queue, reportsReady }) {
   );
 }
 
-function OperatorModePanel({ summaryGate, humanReviewRecommended, queue, pipelineSummary, loading }) {
+function OperatorModePanel({ summaryGate, humanReviewRecommended, queue, pipelineSummary, loading, mode }) {
   const [copyState, setCopyState] = useState("idle");
   const [copyTarget, setCopyTarget] = useState("");
   const pass = Number(summaryGate?.pass || 0);
@@ -2150,16 +2180,7 @@ function OperatorModePanel({ summaryGate, humanReviewRecommended, queue, pipelin
     || (Array.isArray(diff.newlyFailing) && diff.newlyFailing.length > 0);
   const isHealthy = !humanReviewRecommended && blocked === 0 && needsReview === 0;
 
-  const modeLabel = (() => {
-    if (humanReviewRecommended) return "Human review required";
-    if (blocked > 0) return "Blocked pages need fixing";
-    if (needsReview === 0) return "All articles pass QA";
-    if (needsReview > 0 && queue.length <= 2) {
-      return `Final mini-batch: ${needsReview} article${needsReview === 1 ? "" : "s"} remaining`;
-    }
-    if (needsReview > 0 && queue.length > 0) return "Ready for next batch";
-    return "Ready for next batch";
-  })();
+  const modeLabel = mode?.modeLabel || "Ready for next batch";
 
   const generateCommand = "npm run seo:batch:prompt";
   const codexInstruction = "Run the SEO batch from reports/seo-next-batch-prompt.md exactly as written. Work sequentially. Stop if any validation stop condition is triggered.";
@@ -2184,7 +2205,7 @@ function OperatorModePanel({ summaryGate, humanReviewRecommended, queue, pipelin
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white" style={{ marginTop: "var(--space-lg)", padding: "var(--space-lg)" }}>
+    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
       <div className="flex items-start justify-between gap-md flex-wrap">
         <div>
           <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{isHealthy ? "Monitor state" : "Operator mode"}</p>
@@ -2400,6 +2421,131 @@ function IssueList({ label, items, tone = "amber" }) {
         ))}
       </div>
     </div>
+  );
+}
+
+function WorkbenchContent({
+  articleFilter,
+  setArticleFilter,
+  sortBy,
+  setSortBy,
+  filteredRows,
+  articleRows,
+  selectedRow,
+  setSelectedSlug,
+  displayRow,
+  plannerToggles,
+  setPlannerToggles,
+  promptText,
+  copyState,
+  setCopyState,
+}) {
+  return (
+    <>
+      <div className="grid md:grid-cols-3 gap-md" style={{ marginBottom: "var(--space-md)" }}>
+        <label className="text-sm font-semibold text-slate-700">
+          Filter articles
+          <select
+            value={articleFilter}
+            onChange={(e) => setArticleFilter(e.target.value)}
+            className="w-full mt-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+          >
+            <option value="needs_review">Needs review</option>
+            <option value="pass">Pass</option>
+            <option value="sprint_candidates">Sprint candidates</option>
+            <option value="high_commercial_intent">High commercial intent</option>
+            <option value="has_codex_prompt">Has Codex prompt</option>
+            <option value="missing_cta">Missing CTA</option>
+            <option value="thin_content">Thin content</option>
+          </select>
+        </label>
+        <label className="text-sm font-semibold text-slate-700">
+          Sort results
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="w-full mt-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+          >
+            <option value="score">Score (lowest first)</option>
+            <option value="commercial_priority">Commercial priority (highest first)</option>
+            <option value="display_rank">Display rank (lowest first)</option>
+            <option value="gate">Gate</option>
+          </select>
+        </label>
+        <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 flex items-center">
+          Showing {filteredRows.length} of {articleRows.length} articles
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-[1.1fr_1fr] gap-lg">
+        <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden">
+          {filteredRows.length === 0 ? (
+            <div className="text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
+              No articles match this filter yet. Try a different filter, or run <code>npm run seo:pipeline</code> to refresh reports.
+            </div>
+          ) : (
+            <table className="w-full text-left">
+              <thead>
+                <tr className="bg-slate-100">
+                  <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "10px 12px" }}>What needs attention</th>
+                  <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "10px 12px" }}>Score</th>
+                  <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "10px 12px" }}>Gate</th>
+                  <th className="text-xs uppercase tracking-wide text-slate-600" style={{ padding: "10px 12px" }}>Priority</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredRows.map((row) => {
+                  const active = selectedRow?.slug === row.slug;
+                  return (
+                    <tr
+                      key={row.slug}
+                      className={`border-t cursor-pointer ${active ? "bg-primary/5" : "bg-white hover:bg-slate-50"}`}
+                      onClick={() => setSelectedSlug(row.slug)}
+                    >
+                      <td style={{ padding: "10px 12px" }}>
+                        <p className="font-semibold text-slate-800">{row.title}</p>
+                        <p className="text-xs text-slate-500">{row.slug}</p>
+                        {active && <p className="text-[11px] font-semibold text-primary">Selected</p>}
+                      </td>
+                      <td className="font-mono text-sm text-slate-700" style={{ padding: "10px 12px" }}>{row.score}</td>
+                      <td style={{ padding: "10px 12px" }}>
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
+                          row.gate === "pass" ? "bg-green-100 text-green-700" : row.gate === "blocked" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"
+                        }`}>
+                          {row.gate}
+                        </span>
+                      </td>
+                      <td className="text-xs text-slate-600" style={{ padding: "10px 12px" }}>
+                        {row.commercialPriority ? `Value ${row.commercialPriority}` : "—"}
+                        {Number.isFinite(row.displayRank) && row.displayRank < 999 ? ` · #${row.displayRank}` : ""}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        <ArticleDetailPanel
+          row={displayRow}
+          plannerToggles={plannerToggles}
+          onToggle={(key) => setPlannerToggles((prev) => ({ ...prev, [key]: !prev[key] }))}
+          promptPreview={promptText}
+          copyState={copyState}
+          onCopy={async () => {
+            const ok = await copyText(promptText, "article planner prompt");
+            if (ok) {
+              setCopyState("copied");
+              setTimeout(() => setCopyState("idle"), 1500);
+            } else {
+              setCopyState("failed");
+              setTimeout(() => setCopyState("idle"), 2000);
+            }
+          }}
+        />
+      </div>
+    </>
   );
 }
 
