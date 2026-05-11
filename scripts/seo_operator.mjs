@@ -1,4 +1,5 @@
 import { buildBatchQueue, readJson } from "./seo_batch_helpers.mjs";
+import { buildMonitorState } from "./seo_monitor_helpers.mjs";
 
 function toYesNo(value) {
   return value ? "yes" : "no";
@@ -50,15 +51,13 @@ function printNextCommands({ blocked, humanReviewRecommended, needsReview }) {
     return;
   }
 
-  console.log("npm run seo:pipeline");
-  console.log("npm run seo:stats");
-  console.log("npm run seo:batch");
+  console.log("npm run seo:monitor");
 }
 
 function modeFor({ blocked, humanReviewRecommended, needsReview }) {
   if (humanReviewRecommended) return "Human review required";
   if (blocked > 0) return "Blocked pages need fixing";
-  if (needsReview === 0) return "All articles pass QA";
+  if (needsReview === 0) return "Monitoring only";
   if (needsReview <= 3) return `Final mini-batch: ${needsReview} article${needsReview === 1 ? "" : "s"} remaining`;
   return "Ready for next batch";
 }
@@ -74,6 +73,7 @@ function main() {
   const needsReview = Number(gate.needs_review || 0);
   const blocked = Number(gate.blocked || 0);
   const humanReviewRecommended = Boolean(pipelineSummary?.review?.humanReviewRecommended);
+  const monitor = buildMonitorState({ qaReport, pipelineSummary });
 
   const queue = buildBatchQueue({
     qaReport,
@@ -86,6 +86,9 @@ function main() {
   console.log("QA:");
   console.log(`pass=${pass}, needs_review=${needsReview}, blocked=${blocked}`);
   console.log(`humanReviewRecommended=${toYesNo(humanReviewRecommended)}`);
+  if (needsReview === 0 && blocked === 0 && !humanReviewRecommended) {
+    console.log(`status=${monitor.status}`);
+  }
   console.log("");
   console.log("Mode:");
   console.log(modeFor({ blocked, humanReviewRecommended, needsReview }));

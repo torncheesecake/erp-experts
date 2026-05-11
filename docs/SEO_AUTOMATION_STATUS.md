@@ -38,6 +38,7 @@ Primary automation commands:
 - `npm run seo:batch:prompt`
 - `npm run seo:batch:complete`
 - `npm run seo:operator`
+- `npm run seo:monitor`
 
 CI workflow command coverage:
 
@@ -98,6 +99,29 @@ Recommended operator flow:
 4. `npm run seo:batch:complete -- --dry-run`
 5. If dry run is safe, run `npm run seo:batch:complete`.
 6. Refresh `/seo-roadmap` and review the next queue.
+
+Monitoring lifecycle:
+
+1. Build and fix article quality until QA passes.
+2. Reach all-pass state (`needs_review=0`, `blocked=0`, `humanReviewRecommended=no`).
+3. Enter monitoring mode:
+  - `npm run seo:operator` reports `Mode: Monitoring only`.
+  - `npm run seo:monitor` reports HEALTHY/WARNING/ACTION REQUIRED and trend signals.
+4. Re-enter operator/batch mode only when regressions, blocked pages, or human-review flags appear.
+
+Monitor mode behaviour:
+
+- `npm run seo:monitor` is read-only.
+- Reads current QA/pipeline/brief/weekly reports and recent `reports/history/*` snapshots.
+- Detects regressions:
+  - pass dropped
+  - needs_review increased
+  - blocked increased
+  - newly failing or newly blocked slugs
+- Outputs status:
+  - `HEALTHY`: no action required, continue weekly monitoring
+  - `WARNING`: regression or needs_review present
+  - `ACTION REQUIRED`: blocked pages or human review required
 
 Current snapshot (latest generated state):
 

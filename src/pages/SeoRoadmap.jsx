@@ -1684,6 +1684,7 @@ function AdminView({ onPreview }) {
             summaryGate={summaryGate}
             humanReviewRecommended={humanReviewRecommended}
             queue={batchQueue}
+            pipelineSummary={pipelineSummary}
             loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
           />
 
@@ -2134,12 +2135,20 @@ function BatchImprovementQueue({ loading, queue, reportsReady }) {
   );
 }
 
-function OperatorModePanel({ summaryGate, humanReviewRecommended, queue, loading }) {
+function OperatorModePanel({ summaryGate, humanReviewRecommended, queue, pipelineSummary, loading }) {
   const [copyState, setCopyState] = useState("idle");
   const [copyTarget, setCopyTarget] = useState("");
   const pass = Number(summaryGate?.pass || 0);
   const needsReview = Number(summaryGate?.needs_review || 0);
   const blocked = Number(summaryGate?.blocked || 0);
+  const snapshot = pipelineSummary?.pipeline?.snapshotDir?.split("/").at(-1) || "Unavailable";
+  const diff = pipelineSummary?.diff || {};
+  const regressionsDetected =
+    Number(diff.passChange || 0) < 0
+    || Number(diff.needsReviewChange || 0) > 0
+    || Number(diff.blockedChange || 0) > 0
+    || (Array.isArray(diff.newlyFailing) && diff.newlyFailing.length > 0);
+  const isHealthy = !humanReviewRecommended && blocked === 0 && needsReview === 0;
 
   const modeLabel = (() => {
     if (humanReviewRecommended) return "Human review required";
@@ -2178,25 +2187,47 @@ function OperatorModePanel({ summaryGate, humanReviewRecommended, queue, loading
     <div className="rounded-2xl border border-slate-200 bg-white" style={{ marginTop: "var(--space-lg)", padding: "var(--space-lg)" }}>
       <div className="flex items-start justify-between gap-md flex-wrap">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Operator mode</p>
-          <p className="text-sm font-semibold text-slate-900" style={{ marginTop: "4px" }}>{modeLabel}</p>
-          <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
-            QA: pass={pass}, needs_review={needsReview}, blocked={blocked} · humanReviewRecommended={humanReviewRecommended ? "yes" : "no"}
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{isHealthy ? "Monitor state" : "Operator mode"}</p>
+          <p className="text-sm font-semibold text-slate-900" style={{ marginTop: "4px" }}>
+            {isHealthy ? "System healthy" : modeLabel}
           </p>
+          <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>QA: pass={pass}, needs_review={needsReview}, blocked={blocked} · humanReviewRecommended={humanReviewRecommended ? "yes" : "no"}</p>
         </div>
-        <button
-          type="button"
-          onClick={() => copyItem(fullSequence, "full")}
-          className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
-        >
-          {buttonLabel("full", "Copy full operator sequence")}
-        </button>
+        {!isHealthy ? (
+          <button
+            type="button"
+            onClick={() => copyItem(fullSequence, "full")}
+            className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+          >
+            {buttonLabel("full", "Copy full operator sequence")}
+          </button>
+        ) : null}
       </div>
 
       {loading ? (
         <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Preparing operator guidance…</p>
       ) : (
         <>
+          {isHealthy ? (
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50" style={{ marginTop: "var(--space-sm)", padding: "var(--space-sm)" }}>
+              <p className="text-sm font-semibold text-emerald-900">All articles currently pass QA. No action required.</p>
+              <p className="text-xs text-emerald-800" style={{ marginTop: "4px" }}>
+                Snapshot: {snapshot} · Trend: {regressionsDetected ? "Regression detected in latest diff" : "No regressions detected"} · Recommended mode: Weekly monitoring only
+              </p>
+              <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "8px" }}>
+                <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2.5 py-1.5 text-xs text-slate-100">npm run seo:monitor</code>
+                <button
+                  type="button"
+                  onClick={() => copyItem("npm run seo:monitor", "monitor")}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  {buttonLabel("monitor", "Copy monitor command")}
+                </button>
+              </div>
+            </div>
+          ) : null}
+
+          {!isHealthy ? (
           <div style={{ marginTop: "var(--space-sm)" }}>
             <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "6px" }}>Current queue</p>
             {queue.length === 0 ? (
@@ -2209,7 +2240,9 @@ function OperatorModePanel({ summaryGate, humanReviewRecommended, queue, loading
               </ul>
             )}
           </div>
+          ) : null}
 
+          {!isHealthy ? (
           <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "var(--space-sm)" }}>
             <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2.5 py-1.5 text-xs text-slate-100">
               {generateCommand}
@@ -2222,7 +2255,9 @@ function OperatorModePanel({ summaryGate, humanReviewRecommended, queue, loading
               {buttonLabel("generate", "Copy generate command")}
             </button>
           </div>
+          ) : null}
 
+          {!isHealthy ? (
           <details className="rounded-lg border border-slate-200 bg-slate-50" style={{ marginTop: "var(--space-sm)", padding: "var(--space-xs) var(--space-sm)" }}>
             <summary className="cursor-pointer text-xs font-semibold text-slate-600">Codex instruction</summary>
             <p className="text-xs text-slate-700" style={{ marginTop: "8px" }}>{codexInstruction}</p>
@@ -2235,7 +2270,9 @@ function OperatorModePanel({ summaryGate, humanReviewRecommended, queue, loading
               {buttonLabel("instruction", "Copy Codex instruction")}
             </button>
           </details>
+          ) : null}
 
+          {!isHealthy ? (
           <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "var(--space-sm)" }}>
             <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2.5 py-1.5 text-xs text-slate-100">
               {completeCommand}
@@ -2248,6 +2285,7 @@ function OperatorModePanel({ summaryGate, humanReviewRecommended, queue, loading
               {buttonLabel("complete", "Copy complete command")}
             </button>
           </div>
+          ) : null}
         </>
       )}
     </div>
