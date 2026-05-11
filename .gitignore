@@ -44,3 +44,12 @@ src/exports/*.csv
 !scripts/
 !scripts/*.sh
 !scripts/*.py
+
+# Local/generated SEO artefacts
+reports/history/
+scripts/__pycache__/
+src/exports/
+
+# Local/private files
+credentials/
+email marketing templates/
