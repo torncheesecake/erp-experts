@@ -34,6 +34,9 @@ Primary automation commands:
 - `npm run seo:briefs`
 - `npm run seo:summary`
 - `npm run seo:pipeline`
+- `npm run seo:batch`
+- `npm run seo:batch:prompt`
+- `npm run seo:batch:complete`
 
 CI workflow command coverage:
 
@@ -64,7 +67,35 @@ Generated outputs currently used by the roadmap/admin workflow:
 - `reports/seo-action-briefs.json`
 - `reports/seo-weekly-summary.json`
 - `reports/seo-pipeline-summary.json`
+- `reports/seo-next-batch-prompt.md`
 - `reports/history/YYYY-MM-DD-HHmm/*`
+
+Batch prompt generation:
+
+- `npm run seo:batch:prompt` builds a read-only, copy-ready Markdown prompt for the current top batch queue.
+- Output path: `reports/seo-next-batch-prompt.md`
+- Queue source: same selection logic as `npm run seo:batch` (improve_existing briefs first, then needs_review QA fallback).
+
+Batch completion helper:
+
+- `npm run seo:batch:complete`
+- `npm run seo:batch:complete -- --dry-run`
+- Validates lint, build, pipeline, stats, and batch queue before any commit.
+- Only auto-stages this allowlist:
+  - `src/data/articles.js`
+  - `reports/resource-qa-report.json`
+  - `reports/seo-action-briefs.json`
+  - `reports/seo-pipeline-summary.json`
+  - `reports/seo-weekly-summary.json`
+- Refuses to continue if unexpected files exist in git status, if blocked pages are present, if human review is recommended, if stats are not current, or if there is nothing to commit.
+
+Recommended operator flow:
+
+1. `npm run seo:batch:prompt`
+2. Run the generated prompt in Codex sequentially.
+3. `npm run seo:batch:complete -- --dry-run`
+4. If dry run is safe, run `npm run seo:batch:complete`.
+5. Refresh `/seo-roadmap` and review the next queue.
 
 Current snapshot (latest generated state):
 

@@ -2061,6 +2061,9 @@ function BatchImprovementQueue({ loading, queue, reportsReady }) {
         <div>
           <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Batch improvement queue</p>
           <p className="text-sm text-slate-700">Top 3 needs_review articles for sequential improvement.</p>
+          <p className="text-xs text-slate-500" style={{ marginTop: "4px" }}>
+            Generate prompt file: <code>npm run seo:batch:prompt</code>
+          </p>
         </div>
         <button
           type="button"
