@@ -14,6 +14,7 @@ export default defineConfig([
     'output/**',
     'scripts/__pycache__/**',
     'src/exports/**',
+    'src/quizlift/**',
     'src/quizlift/node_modules/**',
   ]),
   {
