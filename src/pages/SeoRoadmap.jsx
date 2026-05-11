@@ -149,6 +149,173 @@ function pickNextBestAction({ pipelineSummary, qaReport, weeklySummary, briefs }
   };
 }
 
+function buildBatchQueueItems({ qaReport, briefs }) {
+  if (!qaReport || !Array.isArray(qaReport.articles)) return [];
+  const qaBySlug = new Map(qaReport.articles.map((a) => [a.slug, a]));
+  const selected = new Set();
+
+  const buildFallbackPrompt = (qa) => {
+    const warnings = qa?.issues?.warnings || [];
+    const warningList = warnings.length ? warnings.map((w) => `- ${w}`).join("\n") : "- No explicit warnings listed; improve clarity and service relevance.";
+    return `Improve one existing ERP Experts resource article safely.
+
+Target article:
+- Slug: ${qa.slug}
+- Title: ${qa.title || qa.slug}
+- File: src/data/articles.js
+
+Fix these QA warnings:
+${warningList}
+
+Required improvements:
+- Improve only this article object in src/data/articles.js.
+- Strengthen intro if thin.
+- Add or improve topic-relevant service CTA if missing.
+- Expand thin sections if present.
+- Strengthen conclusion.
+- Add or validate publishedAt if missing.
+
+Constraints:
+- Preserve article data shape.
+- Do not edit components or routes.
+- Do not invent fake stats, customers, or case studies.
+- Use UK English.
+- Avoid repetitive CTA or conclusion phrasing.
+
+After editing:
+- npm run seo:after-edit -- ${qa.slug}`;
+  };
+
+  const warningPriority = (qa) => {
+    const warnings = qa?.issues?.warnings || [];
+    const joined = warnings.join(" ").toLowerCase();
+    const missingCta = /missing or weak service-relevant cta/.test(joined);
+    const thin = /intro looks thin|thin/.test(joined);
+    if (missingCta) return 0;
+    if (thin) return 1;
+    return 2;
+  };
+
+  const fromBriefs = (Array.isArray(briefs) ? briefs : [])
+    .filter((brief) => brief.recommendationType === "improve_existing" && brief.targetSlug)
+    .map((brief) => {
+      const qa = qaBySlug.get(brief.targetSlug);
+      if (!qa || qa.gate !== "needs_review") return null;
+      if ((qa?.issues?.structural || []).length > 0) return null;
+      selected.add(brief.targetSlug);
+      return {
+        source: "brief",
+        slug: brief.targetSlug,
+        title: brief.preferredTitle || brief.targetArticleTitle || brief.targetSlug,
+        qaScore: qa.score,
+        priorityScore: brief.priorityScore ?? 0,
+        commercialScore: brief.estimatedBusinessValue ?? 0,
+        conversionIntentLabel: brief.conversionIntentLabel || "medium",
+        why: brief.whyThisMattersCommercially || brief.whyThisMatters || "Needs quality improvement.",
+        fixSummary: (brief.suggestedContentChanges || []).slice(0, 2),
+        command: `npm run seo:after-edit -- ${brief.targetSlug}`,
+        route: `/resources/${brief.targetSlug}`,
+        prompt: brief.codexPatchPrompt || null,
+        topIssue: qa?.issues?.warnings?.[0] || "Needs quality improvement.",
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => {
+      if (b.commercialScore !== a.commercialScore) return b.commercialScore - a.commercialScore;
+      if (b.priorityScore !== a.priorityScore) return b.priorityScore - a.priorityScore;
+      return a.qaScore - b.qaScore;
+    });
+
+  const fromQaFallback = qaReport.articles
+    .filter((qa) => qa.gate === "needs_review")
+    .filter((qa) => (qa?.issues?.structural || []).length === 0)
+    .filter((qa) => !selected.has(qa.slug))
+    .map((qa) => ({
+      source: "qa_fallback",
+      slug: qa.slug,
+      title: qa.title || qa.slug,
+      qaScore: qa.score,
+      priorityScore: 0,
+      commercialScore: 0,
+      conversionIntentLabel: "needs_review",
+      why: "No improve_existing brief was available, so this item is queued directly from QA needs_review.",
+      fixSummary: (qa?.issues?.warnings || []).slice(0, 2).length
+        ? (qa?.issues?.warnings || []).slice(0, 2)
+        : ["Improve overall article quality and rerun QA."],
+      command: `npm run seo:after-edit -- ${qa.slug}`,
+      route: `/resources/${qa.slug}`,
+      prompt: buildFallbackPrompt(qa),
+      topIssue: qa?.issues?.warnings?.[0] || "Needs quality improvement.",
+      warningPriority: warningPriority(qa),
+    }))
+    .sort((a, b) => {
+      if (a.qaScore !== b.qaScore) return a.qaScore - b.qaScore;
+      if (a.warningPriority !== b.warningPriority) return a.warningPriority - b.warningPriority;
+      return a.slug.localeCompare(b.slug);
+    });
+
+  const merged = [...fromBriefs];
+  for (const fallback of fromQaFallback) {
+    if (merged.length >= 3) break;
+    merged.push(fallback);
+  }
+
+  return merged.slice(0, 3).map((item, idx) => ({ ...item, rank: idx + 1 }));
+}
+
+function buildBatchCombinedPrompt(items) {
+  if (!items.length) return "";
+  const articleBlocks = items.map((item) => {
+    return `Article ${item.rank}
+- Title: ${item.title}
+- Slug: ${item.slug}
+- QA score: ${item.qaScore}
+- Priority: ${item.priorityScore}
+- Command after edit: ${item.command}
+${item.prompt ? `\nPrompt to apply:\n${item.prompt}` : ""}`;
+  }).join("\n\n");
+
+  const perArticleValidation = items.map((item) => `- ${item.command}`).join("\n");
+
+  return `You are improving a batch of 3 SEO resource articles.
+
+Work sequentially, not all at once.
+Do not move to the next article until the current one passes checks.
+
+${articleBlocks}
+
+Safety constraints:
+- Only edit the specified article objects in src/data/articles.js.
+- Preserve article data shape.
+- Do not edit routes or components.
+- Do not invent fake statistics, customers, or case studies.
+- Use UK English.
+- Avoid repetitive CTA and conclusion phrasing.
+
+Validation after each article:
+${perArticleValidation}
+
+Stop immediately if any of these occur:
+- lint fails
+- build fails
+- an article remains needs_review after editing
+- humanReviewRecommended becomes true
+- blocked count becomes greater than 0
+
+After all three articles:
+- npm run lint
+- npm run build
+- npm run seo:pipeline
+- npm run seo:stats
+
+Delivery summary format:
+- Article slug
+- What changed
+- QA result after edit
+- Any warnings still present
+- Final pass/needs_review/blocked totals`;
+}
+
 /* ── client edit mode (temporary control, not auth) ── */
 const EDITS_ENABLED = import.meta.env.VITE_SEO_ROADMAP_EDITS === "true";
 
@@ -1387,6 +1554,10 @@ function AdminView({ onPreview }) {
     weeklySummary,
     briefs: briefsReport?.briefs || [],
   });
+  const batchQueue = buildBatchQueueItems({
+    qaReport,
+    briefs: briefsReport?.briefs || [],
+  });
   const activeRow = selectedSlug ? selectedRow : (filteredRows[0] || articleRows[0] || null);
 
   if (!loaded) return (
@@ -1476,6 +1647,12 @@ function AdminView({ onPreview }) {
           <div style={{ marginTop: "var(--space-lg)" }}>
             <ProgressHistoryCard points={progressPoints} />
           </div>
+
+          <BatchImprovementQueue
+            loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
+            queue={batchQueue}
+            reportsReady={Boolean(qaReport && pipelineSummary && weeklySummary && briefsReport)}
+          />
 
           <div className="grid md:grid-cols-5 gap-md" style={{ marginTop: "var(--space-md)" }}>
             <StatMini label="Pass" value={summaryGate.pass} tone="green" />
@@ -1670,6 +1847,7 @@ After editing:
 
 function NextBestActionPanel({ action, loading }) {
   const [copyState, setCopyState] = useState("idle");
+  const [promptCopyState, setPromptCopyState] = useState("idle");
   const copyCommand = async () => {
     try {
       await navigator.clipboard.writeText(action.command || "");
@@ -1678,6 +1856,17 @@ function NextBestActionPanel({ action, loading }) {
     } catch {
       setCopyState("failed");
       setTimeout(() => setCopyState("idle"), 1600);
+    }
+  };
+  const copyPrompt = async () => {
+    if (!action.codexPrompt) return;
+    try {
+      await navigator.clipboard.writeText(action.codexPrompt);
+      setPromptCopyState("copied");
+      setTimeout(() => setPromptCopyState("idle"), 1200);
+    } catch {
+      setPromptCopyState("failed");
+      setTimeout(() => setPromptCopyState("idle"), 1400);
     }
   };
 
@@ -1714,12 +1903,21 @@ function NextBestActionPanel({ action, loading }) {
               {action.buttonLabel || "Open target"}
               <ArrowRight size={14} />
             </a>
+            {action.codexPrompt ? (
+              <button
+                type="button"
+                onClick={copyPrompt}
+                className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+              >
+                {promptCopyState === "copied" ? "Copied prompt" : promptCopyState === "failed" ? "Copy failed" : "Copy prompt"}
+              </button>
+            ) : null}
           </div>
           {action.codexPrompt ? (
-            <div className="rounded-xl border border-slate-200 bg-slate-50" style={{ marginTop: "var(--space-md)", padding: "var(--space-sm)" }}>
-              <p className="text-xs font-semibold text-slate-600" style={{ marginBottom: "6px" }}>Copy-ready Codex prompt</p>
-              <pre className="text-xs text-slate-700 whitespace-pre-wrap">{action.codexPrompt}</pre>
-            </div>
+            <details className="rounded-xl border border-slate-200 bg-slate-50" style={{ marginTop: "var(--space-md)", padding: "var(--space-sm)" }}>
+              <summary className="cursor-pointer text-xs font-semibold text-slate-600">Preview Codex prompt</summary>
+              <pre className="text-xs text-slate-700 whitespace-pre-wrap" style={{ marginTop: "8px" }}>{action.codexPrompt}</pre>
+            </details>
           ) : null}
         </>
       )}
@@ -1791,6 +1989,103 @@ function ProgressHistoryCard({ points }) {
         <BriefBlock label="Needs review trend" value={`${first.needsReview} → ${latest.needsReview} (${reviewDelta >= 0 ? "+" : ""}${reviewDelta})`} />
         <BriefBlock label="Blocked trend" value={`${first.blocked} → ${latest.blocked} (${blockedDelta >= 0 ? "+" : ""}${blockedDelta})`} />
       </div>
+    </div>
+  );
+}
+
+function BatchImprovementQueue({ loading, queue, reportsReady }) {
+  const [copiedSlug, setCopiedSlug] = useState("");
+  const [copiedAll, setCopiedAll] = useState(false);
+
+  const copyOne = async (item) => {
+    if (!item.prompt) return;
+    try {
+      await navigator.clipboard.writeText(item.prompt);
+      setCopiedSlug(item.slug);
+      setTimeout(() => setCopiedSlug(""), 1200);
+    } catch {
+      setCopiedSlug(`${item.slug}-failed`);
+      setTimeout(() => setCopiedSlug(""), 1400);
+    }
+  };
+
+  const copyAll = async () => {
+    const combined = buildBatchCombinedPrompt(queue);
+    if (!combined) return;
+    try {
+      await navigator.clipboard.writeText(combined);
+      setCopiedAll(true);
+      setTimeout(() => setCopiedAll(false), 1200);
+    } catch {
+      setCopiedAll(false);
+    }
+  };
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white" style={{ marginTop: "var(--space-lg)", padding: "var(--space-lg)" }}>
+      <div className="flex items-center justify-between gap-sm flex-wrap">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Batch improvement queue</p>
+          <p className="text-sm text-slate-700">Top 3 needs_review articles for sequential improvement.</p>
+        </div>
+        <button
+          type="button"
+          onClick={copyAll}
+          disabled={queue.length === 0}
+          className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+        >
+          {copiedAll ? "Copied all prompts" : "Copy all prompts"}
+        </button>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Preparing batch queue...</p>
+      ) : !reportsReady ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>Run <code>npm run seo:pipeline</code> to generate batch recommendations.</p>
+      ) : queue.length === 0 ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>No batch-ready article improvements found.</p>
+      ) : (
+        <div className="grid gap-md" style={{ marginTop: "var(--space-sm)" }}>
+          {queue.map((item) => (
+            <div key={item.slug} className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-md)" }}>
+              <div className="flex items-start justify-between gap-md flex-wrap">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">{item.rank}. {item.title}</p>
+                  <p className="text-xs text-slate-600">{item.slug}</p>
+                </div>
+                <div className="text-xs text-slate-600 flex items-center gap-2 flex-wrap">
+                  <span className="rounded-full bg-white px-2 py-1 border border-slate-200">QA {item.qaScore}</span>
+                  <span className="rounded-full bg-white px-2 py-1 border border-slate-200">Priority {item.priorityScore}</span>
+                  <span className="rounded-full bg-white px-2 py-1 border border-slate-200">{item.conversionIntentLabel} intent</span>
+                </div>
+              </div>
+              <p className="text-sm text-slate-700" style={{ marginTop: "var(--space-xs)" }}>{item.why}</p>
+              <ul className="text-sm text-slate-700 list-disc ml-5" style={{ marginTop: "var(--space-xs)" }}>
+                {item.fixSummary.map((line) => <li key={line}>{line}</li>)}
+              </ul>
+              <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "var(--space-sm)" }}>
+                <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2.5 py-1.5 text-xs text-slate-100">
+                  {item.command}
+                </code>
+                <a href={item.route} className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                  Open article
+                </a>
+                <button
+                  type="button"
+                  onClick={() => copyOne(item)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  {copiedSlug === item.slug ? "Copied prompt" : copiedSlug === `${item.slug}-failed` ? "Copy failed" : "Copy prompt"}
+                </button>
+              </div>
+              <details className="rounded-lg border border-slate-200 bg-white" style={{ marginTop: "var(--space-sm)", padding: "var(--space-xs) var(--space-sm)" }}>
+                <summary className="cursor-pointer text-xs font-semibold text-slate-600">Preview prompt</summary>
+                <pre className="text-xs text-slate-700 whitespace-pre-wrap" style={{ marginTop: "8px" }}>{item.prompt}</pre>
+              </details>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

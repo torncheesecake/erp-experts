@@ -20,7 +20,8 @@
     "seo:top": "node scripts/seo_helpers.mjs top",
     "seo:stats": "node scripts/seo_helpers.mjs stats",
     "seo:verify": "node scripts/seo_helpers.mjs verify",
-    "seo:after-edit": "node scripts/seo_after_edit.mjs"
+    "seo:after-edit": "node scripts/seo_after_edit.mjs",
+    "seo:batch": "node scripts/seo_batch.mjs"
   },
   "homepage": "https://torncheesecake.github.io/erp-experts",
   "dependencies": {
