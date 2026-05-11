@@ -215,17 +215,23 @@ export const articles = {
     cardDescription:
       "Discover how NetSuite's AI capabilities can empower your financial leadership, improve operational efficiency, and drive competitive advantage.",
     date: "Feb 2026",
+    publishedAt: "2026-02-18",
     readTime: "4 min read",
     type: "Guide",
     layoutVariant: 5,
     heroImage: "https://images.unsplash.com/photo-1639322537228-f710d846310a?w=1400&q=80",
+    ctaText:
+      "If AI reporting ambition is outpacing control and forecast confidence, book a finance systems review to prioritise the workflows and data controls that matter most.",
+    ctaLabel: "Book a finance systems review",
+    ctaTo: "/contact",
+    ctaTrackingName: "resource_article_cfo_ai_finance_review",
     featureImage: "https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=800&q=80",
     challengeLabel: "The Challenge",
     challengeHeading: 'When Decision-Making <span class="text-primary">Can\'t Keep Pace</span>',
     challengeText:
       "Uncertainty demands rapid adjustments, be they tactical tweaks or large strategic shifts. But more than half (57%) of 678 US financial executives polled by PwC as part of its May 2025 Pulse Survey say they can't make decisions fast enough to keep pace with the current level of volatility. As a result, those respondents told PwC they believe they're missing opportunities due to inaction.",
     intro:
-      "The technology is here, and finance leaders know AI can help them make faster and more-informed decisions. Will you use it to enhance your financial leadership, improve operational efficiency, and drive a competitive advantage? This guide shows how NetSuite's AI capabilities can empower your financial leadership and drive your organisation's success.",
+      "Finance leaders are under pressure to improve forecast accuracy, speed up reporting, and maintain stronger control while volatility keeps rising. AI can help, but only when it is applied to real finance bottlenecks rather than treated as a generic innovation layer. This guide shows where NetSuite AI capabilities can improve decision speed, planning confidence, and cross-functional visibility without weakening governance.",
 
     takeaways: [
       "AI enables faster decision-making",
@@ -341,7 +347,7 @@ export const articles = {
     ],
 
     conclusion:
-      "Discover how NetSuite's AI capabilities can empower your financial leadership and drive your organisation's success. The finance leaders who thrive in uncertain times are those who embrace technology that enables faster, smarter decisions.",
+      "AI in finance creates value when it improves control and decision quality, not just dashboard volume. Use the priorities in this guide to focus on forecasting, reporting, and workflow bottlenecks where your team can measure clear outcomes. If you want a practical roadmap rather than another AI pilot, a finance systems review will help you sequence changes and reduce delivery risk.",
 
     disclaimer:
       "Contact ERP Experts to learn how AI-enhanced finance can transform your organisation's decision-making capabilities.",
@@ -1354,11 +1360,17 @@ export const articles = {
     keywords:
       "accounts receivable reports, accounts receivable reporting, AR reports, accounts receivable report example, AR aging report, cash flow reports",
     date: "Mar 2026",
+    publishedAt: "2026-03-14",
     readTime: "6 min read",
     type: "Guide",
     layoutVariant: 6,
     heroImage:
       "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1400&q=80",
+    ctaText:
+      "If late payments are reducing forecast confidence, book a finance systems review to tighten receivables control, reporting cadence, and escalation discipline.",
+    ctaLabel: "Book a finance systems review",
+    ctaTo: "/contact",
+    ctaTrackingName: "resource_article_ar_finance_review",
     featureImage:
       "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80",
 
@@ -1483,7 +1495,7 @@ export const articles = {
     ],
 
     conclusion:
-      "Visibility into your receivables is not optional \u2014 it\u2019s the difference between chasing cash and controlling it. The businesses that stay on top of these six reports spot problems early, collect faster, and build stronger customer relationships. If you\u2019re still relying on spreadsheets or month-end snapshots, you\u2019re already behind.",
+      "Visibility into receivables is the difference between reacting to cash gaps and managing them before they escalate. Teams that run these six reports consistently spot risk earlier, collect faster, and protect customer relationships with better escalation timing. If reporting still depends on manual spreadsheets or month-end snapshots, a finance systems review can help you prioritise the controls and automation that improve cash predictability.",
 
     disclaimer:
       "NetSuite automates accounts receivable reporting in real time. Contact ERP Experts to see how it can transform your cash flow visibility.",
@@ -3018,10 +3030,16 @@ export const articles = {
     keywords:
       "why NetSuite is the best choice of accounting software, NetSuite accounting software, is NetSuite accounting software, NetSuite vs accounting software, NetSuite pricing UK",
     date: "Apr 2026",
+    publishedAt: "2026-04-19",
     readTime: "8 min read",
     type: "Guide",
     layoutVariant: 7,
     heroImage: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1400&q=80",
+    ctaText:
+      "If your accounting platform is struggling to support controls, reporting speed, or multi-entity growth, book a finance systems review to test NetSuite fit against your real operating model.",
+    ctaLabel: "Book a finance systems review",
+    ctaTo: "/contact",
+    ctaTrackingName: "resource_article_netsuite_accounting_review",
 
     intro:
       "Choosing accounting software is now a strategic decision, not an admin purchase. As complexity grows, finance needs more than ledgers and invoicing. It needs controls, operational visibility, and faster decision support. This guide consolidates our legacy accounting-software advice, including the old Sage, Xero, and QuickBooks comparison content, into one framework so you can decide whether NetSuite is the right platform for your current model and next stage of growth.",
@@ -3195,7 +3213,7 @@ export const articles = {
     ],
 
     conclusion:
-      "NetSuite is often the best choice of accounting software when finance must operate as a strategic control layer, not just a transaction processor. If complexity, reporting demands, and growth requirements are rising, a platform approach usually outperforms a basic accounting tool over time.",
+      "NetSuite is often the strongest accounting platform choice when finance needs to run as a control and decision engine, not only a transaction function. Use this framework to test fit against complexity, governance, and reporting pressure rather than shortlist marketing claims. If your team needs an independent view before committing, a finance systems review can validate readiness, scope, and delivery risk.",
 
     disclaimer:
       "Software fit depends on business model, risk profile, and delivery capability. Speak to ERP Experts for a practical assessment of whether NetSuite is the right accounting platform for your organisation.",
