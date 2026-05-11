@@ -1856,12 +1856,18 @@ export const articles = {
     keywords:
       "what is an ERP system, ERP systems UK, understanding ERP systems, what is an ERP system and how does it work, ERP system, enterprise resource planning, ERP guide",
     date: "Mar 2026",
+    publishedAt: "2026-03-06",
     readTime: "8 min read",
     type: "Guide",
     layoutVariant: 6,
     heroAlignment: "center",
     heroAccent: "brand-marker",
     heroImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1400&q=80",
+    ctaText:
+      "If your team is still unsure whether ERP is the right next step, book an ERP fit review to map your current process pain points against practical platform options.",
+    ctaLabel: "Book an ERP fit review",
+    ctaTo: "/contact",
+    ctaTrackingName: "resource_article_erp_system_fit_review",
 
     intro:
       "Enterprise resource planning might sound like something only large corporations need to worry about, but ERP systems are increasingly the backbone of businesses of every size. If you have ever wondered what an ERP system actually is, how it works, and whether your organisation needs one, this guide covers the fundamentals in plain English. No jargon, no sales pitch, just a clear explanation of what ERP means, what it does, and how to decide whether it belongs in your business.",
@@ -3742,6 +3748,7 @@ export const articles = {
     keywords:
       "NetSuite support, NetSuite Aftercare, NetSuite support UK, ERP Experts support plans, NetSuite managed support",
     date: "Apr 2026",
+    publishedAt: "2026-04-08",
     readTime: "7 min read",
     type: "Guide",
     layoutVariant: 8,
@@ -3751,7 +3758,7 @@ export const articles = {
     ctaTrackingName: "resource_article_support",
 
     intro:
-      "If NetSuite is central to finance and operations, poor support quickly becomes a commercial problem. Delayed fixes, unclear ownership, and recurring issues create risk for reporting, service, and growth. Directors choose ERP Experts Aftercare because it combines fast response with clear accountability and continuous improvement.",
+      "If NetSuite is central to finance and operations, poor support quickly becomes a commercial problem rather than a technical inconvenience. Delayed fixes, unclear ownership, and recurring issues create risk for reporting, customer service, and growth planning. Directors choose ERP Experts Aftercare because it combines fast response with clear accountability, commercial transparency, and a practical approach to continuous improvement across both day-to-day support and longer-term optimisation.",
 
     overviewHeading: 'Why Businesses Choose ERP Experts for <span class="text-primary">NetSuite Aftercare</span>',
     overviewSubtext:
@@ -3950,7 +3957,7 @@ export const articles = {
         icon: Shield,
         title: "Protect Commercial Control",
         content:
-          "Support should be commercially straightforward. ERP Experts provides clear plan inclusions, a transparent rate model, and rollover terms that protect value when demand fluctuates.",
+          "Support should be commercially straightforward. ERP Experts provides clear plan inclusions, a transparent rate model, and rollover terms that protect value when demand fluctuates month to month.",
         actions: [
           "Confirm how unused hours are treated month to month",
           "Check whether rates are consistent across specialist roles",
@@ -3962,7 +3969,7 @@ export const articles = {
         icon: Settings,
         title: "Keep NetSuite Stable Through Change",
         content:
-          "Aftercare should cover preventive maintenance and release discipline as well as issue resolution. That keeps the platform reliable as your processes and users evolve.",
+          "Aftercare should cover preventive maintenance and release discipline as well as issue resolution. That keeps the platform reliable as your processes, data, and user base evolve.",
         actions: [
           "Ask how updates, patches, and security tasks are planned",
           "Confirm testing and communication approach around release windows",
@@ -4012,25 +4019,25 @@ export const articles = {
         icon: Search,
         title: "Use Case Studies as Proof",
         content:
-          "Read real delivery examples to verify that support quality is not just a sales claim.",
+          "Use case studies to test whether delivery quality is repeatable in businesses with similar complexity, timelines, and operational risk to your own environment.",
       },
       {
         icon: MessageSquare,
         title: "Prioritise Clear Communication",
         content:
-          "Strong support should give clear options, expected effort, and commercial impact before work starts.",
+          "Strong support should explain options, expected effort, and commercial impact before work starts, so internal stakeholders can approve changes with confidence.",
       },
       {
         icon: Clock,
         title: "Protect Value in Quiet Months",
         content:
-          "Hour rollover can materially improve value if demand fluctuates through the year.",
+          "Hour rollover can materially improve value when demand fluctuates, because unused capacity remains available for later incidents and improvement tasks.",
       },
       {
         icon: Award,
         title: "Choose Proven Teams Over Generic Providers",
         content:
-          "NetSuite-specific depth and consistent ownership reduce both risk and rework.",
+          "NetSuite-specific depth and consistent ownership reduce both risk and rework, especially where support decisions affect finance controls and operational continuity.",
       },
     ],
 

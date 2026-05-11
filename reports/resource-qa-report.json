@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-05-11T09:25:34.982Z",
+  "generatedAt": "2026-05-11T10:11:51.759Z",
   "articleCount": 26,
   "gateSummary": {
-    "pass": 24,
-    "needs_review": 2,
+    "pass": 26,
+    "needs_review": 0,
     "blocked": 0
   },
   "scoringModel": {
@@ -30,38 +30,6 @@
     }
   },
   "articles": [
-    {
-      "slug": "what-is-an-erp-system",
-      "title": "What is an ERP System? A Beginner's Guide",
-      "gate": "needs_review",
-      "score": 77,
-      "categoryScores": {
-        "metadataCompleteness": 100,
-        "contentDepth": 100,
-        "duplicateCannibalisationRisk": 100,
-        "ctaServiceRelevance": 20,
-        "freshnessPublishedAtValidity": 65,
-        "internalLinkReadiness": 20
-      },
-      "metrics": {
-        "introWords": 80,
-        "bodyDepthWords": 1048,
-        "tipsCount": 8,
-        "thinTipsCount": 0,
-        "nearDuplicateMatches": 0,
-        "hasCTAPath": false,
-        "hasServiceRelevantCTA": false,
-        "hasPublishedAt": false,
-        "internalPathCTA": false,
-        "routeMentionSignals": false
-      },
-      "issues": {
-        "structural": [],
-        "warnings": [
-          "missing or weak service-relevant CTA"
-        ]
-      }
-    },
     {
       "slug": "netsuite-apps-extensions",
       "title": "NetSuite Apps & Extensions",
@@ -122,39 +90,6 @@
       "issues": {
         "structural": [],
         "warnings": []
-      }
-    },
-    {
-      "slug": "why-choose-netsuite-support-from-erp-experts",
-      "title": "Why Choose NetSuite Support From ERP Experts",
-      "gate": "needs_review",
-      "score": 90,
-      "categoryScores": {
-        "metadataCompleteness": 100,
-        "contentDepth": 75,
-        "duplicateCannibalisationRisk": 100,
-        "ctaServiceRelevance": 100,
-        "freshnessPublishedAtValidity": 65,
-        "internalLinkReadiness": 100
-      },
-      "metrics": {
-        "introWords": 45,
-        "bodyDepthWords": 392,
-        "tipsCount": 8,
-        "thinTipsCount": 2,
-        "nearDuplicateMatches": 0,
-        "hasCTAPath": true,
-        "hasServiceRelevantCTA": true,
-        "hasPublishedAt": false,
-        "internalPathCTA": true,
-        "routeMentionSignals": true
-      },
-      "issues": {
-        "structural": [],
-        "warnings": [
-          "2 thin tip section(s) under 25 words",
-          "intro looks thin (<60 words)"
-        ]
       }
     },
     {
@@ -550,6 +485,36 @@
       }
     },
     {
+      "slug": "why-choose-netsuite-support-from-erp-experts",
+      "title": "Why Choose NetSuite Support From ERP Experts",
+      "gate": "pass",
+      "score": 96,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 86,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 65,
+        "bodyDepthWords": 417,
+        "tipsCount": 8,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
       "slug": "10-signs-of-a-poor-netsuite-implementation",
       "title": "10 Signs of a Poor NetSuite Implementation",
       "gate": "pass",
@@ -760,6 +725,36 @@
       }
     },
     {
+      "slug": "what-is-an-erp-system",
+      "title": "What is an ERP System? A Beginner's Guide",
+      "gate": "pass",
+      "score": 100,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 80,
+        "bodyDepthWords": 1048,
+        "tipsCount": 8,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
       "slug": "best-erp-for-manufacturers",
       "title": "Best ERP for Manufacturers",
       "gate": "pass",
@@ -822,9 +817,6 @@
   ],
   "structuralErrors": [],
   "warnings": [
-    "what-is-an-erp-system: missing or weak service-relevant CTA",
-    "why-choose-netsuite-support-from-erp-experts: 2 thin tip section(s) under 25 words",
-    "why-choose-netsuite-support-from-erp-experts: intro looks thin (<60 words)",
     "how-to-set-up-mcp-in-netsuite: intro looks thin (<60 words)",
     "netsuite-apps-extensions: intro looks thin (<60 words)"
   ]

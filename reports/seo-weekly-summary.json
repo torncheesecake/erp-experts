@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-11T09:25:35.055Z",
+  "generatedAt": "2026-05-11T10:11:51.827Z",
   "sourceReports": {
     "qaReport": "reports/resource-qa-report.json",
     "seoActionBriefs": "reports/seo-action-briefs.json",
@@ -7,10 +7,10 @@
   },
   "reportContext": {
     "reportsLastUpdated": "2026-05-08",
-    "qaGeneratedAt": "2026-05-11T09:25:34.982Z",
-    "briefsGeneratedAt": "2026-05-11T09:25:35.019Z"
+    "qaGeneratedAt": "2026-05-11T10:11:51.759Z",
+    "briefsGeneratedAt": "2026-05-11T10:11:51.794Z"
   },
-  "headlineSummary": "This week, SEO automation recommends creating new demand-led resources while keeping quality control visible. 2 pages need review and 0 are blocked.",
+  "headlineSummary": "This week, SEO automation recommends creating new demand-led resources while keeping quality control visible. 0 pages need review and 0 are blocked.",
   "topRecommendedActions": [
     {
       "rank": 1,
@@ -49,20 +49,14 @@
     "assistedConversionPotential": 86,
     "reason": "How UK Software Companies Should Choose an ERP Consultant is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance."
   },
-  "biggestQualityRisk": {
-    "title": "What is an ERP System? A Beginner's Guide",
-    "slug": "what-is-an-erp-system",
-    "gate": "needs_review",
-    "score": 77,
-    "reason": "missing or weak service-relevant CTA"
-  },
+  "biggestQualityRisk": null,
   "createVsImproveSplit": {
     "create_new": 5,
     "improve_existing": 0,
     "monitor": 0,
     "blocked_review": 0
   },
-  "pagesNeedingReviewCount": 2,
+  "pagesNeedingReviewCount": 0,
   "blockedCount": 0,
   "suggestedFocusForNextWeek": "Prioritise the top commercial opportunity, monitor existing pages, and keep new content aligned to service-led intent."
 }
