@@ -37,6 +37,44 @@ function parseSnapshotLabel(snapshotDir = "") {
   return { key, label: `${d}/${mo} ${h}:${mi}`, iso: `${y}-${mo}-${d}T${h}:${mi}:00Z` };
 }
 
+async function copyText(text, label = "copy payload") {
+  const value = String(text || "");
+  if (!value) return false;
+
+  try {
+    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+      return true;
+    }
+  } catch (err) {
+    if (import.meta.env.DEV) {
+      console.warn(`Clipboard API failed for ${label}:`, err);
+    }
+  }
+
+  try {
+    if (typeof document === "undefined") return false;
+    const textarea = document.createElement("textarea");
+    textarea.value = value;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.top = "-9999px";
+    textarea.style.left = "-9999px";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    const success = document.execCommand("copy");
+    document.body.removeChild(textarea);
+    return Boolean(success);
+  } catch (err) {
+    if (import.meta.env.DEV) {
+      console.warn(`execCommand copy failed for ${label}:`, err);
+    }
+    return false;
+  }
+}
+
 function readHistorySnapshots() {
   const points = Object.entries(historyQaModules).map(([path, mod]) => {
     const data = mod?.default || mod;
@@ -1769,14 +1807,14 @@ function AdminView({ onPreview }) {
                   promptPreview={promptText}
                   copyState={copyState}
                   onCopy={async () => {
-                    try {
-                      await navigator.clipboard.writeText(promptText);
+                    const ok = await copyText(promptText, "article planner prompt");
+                    if (ok) {
                       setCopyState("copied");
                       setTimeout(() => setCopyState("idle"), 1500);
-                    } catch {
+                    } else {
                       setCopyState("failed");
                       setTimeout(() => setCopyState("idle"), 2000);
-                    }
+                    } 
                   }}
                 />
               </div>
@@ -1849,25 +1887,25 @@ function NextBestActionPanel({ action, loading }) {
   const [copyState, setCopyState] = useState("idle");
   const [promptCopyState, setPromptCopyState] = useState("idle");
   const copyCommand = async () => {
-    try {
-      await navigator.clipboard.writeText(action.command || "");
+    const ok = await copyText(action.command || "", "next-best-action command");
+    if (ok) {
       setCopyState("copied");
       setTimeout(() => setCopyState("idle"), 1200);
-    } catch {
+    } else {
       setCopyState("failed");
       setTimeout(() => setCopyState("idle"), 1600);
-    }
+    } 
   };
   const copyPrompt = async () => {
     if (!action.codexPrompt) return;
-    try {
-      await navigator.clipboard.writeText(action.codexPrompt);
+    const ok = await copyText(action.codexPrompt, "next-best-action prompt");
+    if (ok) {
       setPromptCopyState("copied");
       setTimeout(() => setPromptCopyState("idle"), 1200);
-    } catch {
+    } else {
       setPromptCopyState("failed");
       setTimeout(() => setPromptCopyState("idle"), 1400);
-    }
+    } 
   };
 
   return (
@@ -1995,30 +2033,26 @@ function ProgressHistoryCard({ points }) {
 
 function BatchImprovementQueue({ loading, queue, reportsReady }) {
   const [copiedSlug, setCopiedSlug] = useState("");
-  const [copiedAll, setCopiedAll] = useState(false);
+  const [copiedAllState, setCopiedAllState] = useState("idle");
 
   const copyOne = async (item) => {
     if (!item.prompt) return;
-    try {
-      await navigator.clipboard.writeText(item.prompt);
+    const ok = await copyText(item.prompt, `batch prompt ${item.slug}`);
+    if (ok) {
       setCopiedSlug(item.slug);
       setTimeout(() => setCopiedSlug(""), 1200);
-    } catch {
+    } else {
       setCopiedSlug(`${item.slug}-failed`);
       setTimeout(() => setCopiedSlug(""), 1400);
-    }
+    } 
   };
 
   const copyAll = async () => {
     const combined = buildBatchCombinedPrompt(queue);
     if (!combined) return;
-    try {
-      await navigator.clipboard.writeText(combined);
-      setCopiedAll(true);
-      setTimeout(() => setCopiedAll(false), 1200);
-    } catch {
-      setCopiedAll(false);
-    }
+    const ok = await copyText(combined, "combined batch prompt");
+    setCopiedAllState(ok ? "copied" : "failed");
+    setTimeout(() => setCopiedAllState("idle"), 1400);
   };
 
   return (
@@ -2034,7 +2068,7 @@ function BatchImprovementQueue({ loading, queue, reportsReady }) {
           disabled={queue.length === 0}
           className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
         >
-          {copiedAll ? "Copied all prompts" : "Copy all prompts"}
+          {copiedAllState === "copied" ? "Copied all prompts" : copiedAllState === "failed" ? "Copy failed" : "Copy all prompts"}
         </button>
       </div>
 
