@@ -1680,6 +1680,13 @@ function AdminView({ onPreview }) {
             </div>
           )}
 
+          <OperatorModePanel
+            summaryGate={summaryGate}
+            humanReviewRecommended={humanReviewRecommended}
+            queue={batchQueue}
+            loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
+          />
+
           <NextBestActionPanel action={nextBestAction} loading={summaryLoading || pipelineLoading || briefsLoading} />
 
           <div style={{ marginTop: "var(--space-lg)" }}>
@@ -2122,6 +2129,126 @@ function BatchImprovementQueue({ loading, queue, reportsReady }) {
             </div>
           ))}
         </div>
+      )}
+    </div>
+  );
+}
+
+function OperatorModePanel({ summaryGate, humanReviewRecommended, queue, loading }) {
+  const [copyState, setCopyState] = useState("idle");
+  const [copyTarget, setCopyTarget] = useState("");
+  const pass = Number(summaryGate?.pass || 0);
+  const needsReview = Number(summaryGate?.needs_review || 0);
+  const blocked = Number(summaryGate?.blocked || 0);
+
+  const modeLabel = (() => {
+    if (humanReviewRecommended) return "Human review required";
+    if (blocked > 0) return "Blocked pages need fixing";
+    if (needsReview === 0) return "All articles pass QA";
+    if (needsReview > 0 && queue.length <= 2) {
+      return `Final mini-batch: ${needsReview} article${needsReview === 1 ? "" : "s"} remaining`;
+    }
+    if (needsReview > 0 && queue.length > 0) return "Ready for next batch";
+    return "Ready for next batch";
+  })();
+
+  const generateCommand = "npm run seo:batch:prompt";
+  const codexInstruction = "Run the SEO batch from reports/seo-next-batch-prompt.md exactly as written. Work sequentially. Stop if any validation stop condition is triggered.";
+  const completeCommand = "npm run seo:batch:complete";
+  const fullSequence = `${generateCommand}\n\nThen give Codex:\n${codexInstruction}\n\nAfter Codex finishes:\n${completeCommand}`;
+
+  const copyItem = async (text, target) => {
+    const ok = await copyText(text, `operator ${target}`);
+    setCopyTarget(target);
+    setCopyState(ok ? "copied" : "failed");
+    setTimeout(() => {
+      setCopyState("idle");
+      setCopyTarget("");
+    }, 1400);
+  };
+
+  const buttonLabel = (target, fallback) => {
+    if (copyTarget !== target) return fallback;
+    if (copyState === "copied") return "Copied";
+    if (copyState === "failed") return "Copy failed";
+    return fallback;
+  };
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white" style={{ marginTop: "var(--space-lg)", padding: "var(--space-lg)" }}>
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Operator mode</p>
+          <p className="text-sm font-semibold text-slate-900" style={{ marginTop: "4px" }}>{modeLabel}</p>
+          <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
+            QA: pass={pass}, needs_review={needsReview}, blocked={blocked} · humanReviewRecommended={humanReviewRecommended ? "yes" : "no"}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => copyItem(fullSequence, "full")}
+          className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+        >
+          {buttonLabel("full", "Copy full operator sequence")}
+        </button>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Preparing operator guidance…</p>
+      ) : (
+        <>
+          <div style={{ marginTop: "var(--space-sm)" }}>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500" style={{ marginBottom: "6px" }}>Current queue</p>
+            {queue.length === 0 ? (
+              <p className="text-sm text-slate-600">No queue items available.</p>
+            ) : (
+              <ul className="text-sm text-slate-700 list-disc ml-5">
+                {queue.map((item) => (
+                  <li key={item.slug}>{item.slug}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "var(--space-sm)" }}>
+            <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2.5 py-1.5 text-xs text-slate-100">
+              {generateCommand}
+            </code>
+            <button
+              type="button"
+              onClick={() => copyItem(generateCommand, "generate")}
+              className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              {buttonLabel("generate", "Copy generate command")}
+            </button>
+          </div>
+
+          <details className="rounded-lg border border-slate-200 bg-slate-50" style={{ marginTop: "var(--space-sm)", padding: "var(--space-xs) var(--space-sm)" }}>
+            <summary className="cursor-pointer text-xs font-semibold text-slate-600">Codex instruction</summary>
+            <p className="text-xs text-slate-700" style={{ marginTop: "8px" }}>{codexInstruction}</p>
+            <button
+              type="button"
+              onClick={() => copyItem(codexInstruction, "instruction")}
+              className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+              style={{ marginTop: "8px" }}
+            >
+              {buttonLabel("instruction", "Copy Codex instruction")}
+            </button>
+          </details>
+
+          <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "var(--space-sm)" }}>
+            <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2.5 py-1.5 text-xs text-slate-100">
+              {completeCommand}
+            </code>
+            <button
+              type="button"
+              onClick={() => copyItem(completeCommand, "complete")}
+              className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              {buttonLabel("complete", "Copy complete command")}
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
