@@ -1,0 +1,885 @@
+{
+  "generatedAt": "2026-05-10T10:30:00.982Z",
+  "articleCount": 26,
+  "gateSummary": {
+    "pass": 10,
+    "needs_review": 16,
+    "blocked": 0
+  },
+  "scoringModel": {
+    "categories": [
+      "metadataCompleteness",
+      "contentDepth",
+      "duplicateCannibalisationRisk",
+      "ctaServiceRelevance",
+      "freshnessPublishedAtValidity",
+      "internalLinkReadiness"
+    ],
+    "weights": {
+      "metadataCompleteness": 0.22,
+      "contentDepth": 0.28,
+      "duplicateCannibalisationRisk": 0.15,
+      "ctaServiceRelevance": 0.15,
+      "freshnessPublishedAtValidity": 0.1,
+      "internalLinkReadiness": 0.1
+    },
+    "gateRules": {
+      "pass": "score >= 75 and no structural issues",
+      "needs_review": "score < 75 or multiple warnings or elevated duplicate/CTA risk",
+      "blocked": "any structural issue or critical metadata/freshness failure"
+    }
+  },
+  "articles": [
+    {
+      "slug": "your-erp-system-should-work-for-you",
+      "title": "Your ERP System Should Work For You",
+      "gate": "needs_review",
+      "score": 64,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 57,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 33,
+        "bodyDepthWords": 240,
+        "tipsCount": 5,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "intro looks thin (<60 words)",
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "4-skills-cfos-need-now",
+      "title": "4 Skills CFOs Need Now",
+      "gate": "needs_review",
+      "score": 66,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 61,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 36,
+        "bodyDepthWords": 272,
+        "tipsCount": 4,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "intro looks thin (<60 words)",
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "spreadsheet-hidden-costs",
+      "title": "The Hidden Costs of Spreadsheets",
+      "gate": "needs_review",
+      "score": 67,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 67,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 43,
+        "bodyDepthWords": 298,
+        "tipsCount": 4,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "intro looks thin (<60 words)",
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "understanding-the-role-of-erp-systems",
+      "title": "Understanding the Role of ERP Systems",
+      "gate": "needs_review",
+      "score": 68,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 71,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 54,
+        "bodyDepthWords": 254,
+        "tipsCount": 5,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "intro looks thin (<60 words)",
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "future-of-work-generative-ai",
+      "title": "The Future of Work: Leveraging the Potential of Generative AI",
+      "gate": "needs_review",
+      "score": 69,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 74,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 48,
+        "bodyDepthWords": 347,
+        "tipsCount": 5,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "intro looks thin (<60 words)",
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "cfo-guide-ai-enhanced-finance",
+      "title": "A CFO's Guide to AI-Enhanced Finance",
+      "gate": "needs_review",
+      "score": 70,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 76,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 51,
+        "bodyDepthWords": 341,
+        "tipsCount": 5,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "intro looks thin (<60 words)",
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "why-netsuite-is-the-best-accounting-software-choice",
+      "title": "Why NetSuite Is the Best Choice of Accounting Software",
+      "gate": "needs_review",
+      "score": 73,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 89,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 69,
+        "bodyDepthWords": 449,
+        "tipsCount": 8,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "accounts-receivable-reports",
+      "title": "6 Essential Accounts Receivable Reports",
+      "gate": "needs_review",
+      "score": 75,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 95,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 111,
+        "bodyDepthWords": 531,
+        "tipsCount": 6,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "is-netsuite-right-for-your-business",
+      "title": "Is NetSuite Right for Your Business?",
+      "gate": "needs_review",
+      "score": 77,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 91,
+        "bodyDepthWords": 703,
+        "tipsCount": 5,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "netsuite-for-small-businesses",
+      "title": "NetSuite for Small Businesses",
+      "gate": "needs_review",
+      "score": 77,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 62,
+        "bodyDepthWords": 623,
+        "tipsCount": 5,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "csv-import-errors",
+      "title": "CSV Imports: Why They Fail and How to Fix It",
+      "gate": "needs_review",
+      "score": 77,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 98,
+        "bodyDepthWords": 929,
+        "tipsCount": 6,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "maximise-profits",
+      "title": "10 Tips to Maximise Profits",
+      "gate": "needs_review",
+      "score": 77,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 64,
+        "bodyDepthWords": 1004,
+        "tipsCount": 10,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "what-is-an-erp-system",
+      "title": "What is an ERP System? A Beginner's Guide",
+      "gate": "needs_review",
+      "score": 77,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 80,
+        "bodyDepthWords": 1048,
+        "tipsCount": 8,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "best-erp-for-manufacturers",
+      "title": "Best ERP for Manufacturers",
+      "gate": "needs_review",
+      "score": 77,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 95,
+        "bodyDepthWords": 845,
+        "tipsCount": 6,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "benefits-of-erp-systems",
+      "title": "Top Benefits of ERP Systems",
+      "gate": "needs_review",
+      "score": 77,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 100,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 20,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 20
+      },
+      "metrics": {
+        "introWords": 88,
+        "bodyDepthWords": 954,
+        "tipsCount": 8,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": false,
+        "hasServiceRelevantCTA": false,
+        "hasPublishedAt": false,
+        "internalPathCTA": false,
+        "routeMentionSignals": false
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "missing or weak service-relevant CTA"
+        ]
+      }
+    },
+    {
+      "slug": "netsuite-apps-extensions",
+      "title": "NetSuite Apps & Extensions",
+      "gate": "pass",
+      "score": 80,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 40,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 51,
+        "bodyDepthWords": 129,
+        "tipsCount": 0,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": false,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "intro looks thin (<60 words)"
+        ]
+      }
+    },
+    {
+      "slug": "why-choose-netsuite-support-from-erp-experts",
+      "title": "Why Choose NetSuite Support From ERP Experts",
+      "gate": "needs_review",
+      "score": 90,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 75,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 45,
+        "bodyDepthWords": 392,
+        "tipsCount": 8,
+        "thinTipsCount": 2,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": false,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "2 thin tip section(s) under 25 words",
+          "intro looks thin (<60 words)"
+        ]
+      }
+    },
+    {
+      "slug": "how-to-set-up-mcp-in-netsuite",
+      "title": "How to Set Up MCP in NetSuite",
+      "gate": "pass",
+      "score": 90,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 78,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 55,
+        "bodyDepthWords": 345,
+        "tipsCount": 7,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": false,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": [
+          "intro looks thin (<60 words)"
+        ]
+      }
+    },
+    {
+      "slug": "value-of-investing-in-a-netsuite-partner",
+      "title": "The Value of Investing in a NetSuite Partner",
+      "gate": "pass",
+      "score": 92,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 83,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 70,
+        "bodyDepthWords": 373,
+        "tipsCount": 7,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": false,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "why-netsuite-aftercare-is-essential",
+      "title": "Why NetSuite Aftercare Is Essential",
+      "gate": "pass",
+      "score": 93,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 76,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 70,
+        "bodyDepthWords": 286,
+        "tipsCount": 6,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "netsuite-next-ai-ui-overhaul",
+      "title": "NetSuite Next: The AI UI Overhaul",
+      "gate": "pass",
+      "score": 93,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 88,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 65,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 70,
+        "bodyDepthWords": 435,
+        "tipsCount": 8,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": false,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "streamlining-your-netsuite-experience",
+      "title": "Streamlining Your NetSuite Experience",
+      "gate": "pass",
+      "score": 94,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 77,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 61,
+        "bodyDepthWords": 292,
+        "tipsCount": 5,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "how-to-choose-the-right-erp-consultant",
+      "title": "How to Choose the Right ERP Consultant",
+      "gate": "pass",
+      "score": 94,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 79,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 60,
+        "bodyDepthWords": 321,
+        "tipsCount": 6,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "netsuite-project-management-financials",
+      "title": "NetSuite Project Management & Financials",
+      "gate": "pass",
+      "score": 94,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 79,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 67,
+        "bodyDepthWords": 323,
+        "tipsCount": 6,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "stress-free-erp-implementation",
+      "title": "The Ultimate Guide to a Stress-Free ERP Implementation",
+      "gate": "pass",
+      "score": 95,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 83,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 68,
+        "bodyDepthWords": 374,
+        "tipsCount": 5,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "10-signs-of-a-poor-netsuite-implementation",
+      "title": "10 Signs of a Poor NetSuite Implementation",
+      "gate": "pass",
+      "score": 97,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 89,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 69,
+        "bodyDepthWords": 448,
+        "tipsCount": 10,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    }
+  ],
+  "structuralErrors": [],
+  "warnings": [
+    "is-netsuite-right-for-your-business: missing or weak service-relevant CTA",
+    "cfo-guide-ai-enhanced-finance: intro looks thin (<60 words)",
+    "cfo-guide-ai-enhanced-finance: missing or weak service-relevant CTA",
+    "4-skills-cfos-need-now: intro looks thin (<60 words)",
+    "4-skills-cfos-need-now: missing or weak service-relevant CTA",
+    "your-erp-system-should-work-for-you: intro looks thin (<60 words)",
+    "your-erp-system-should-work-for-you: missing or weak service-relevant CTA",
+    "future-of-work-generative-ai: intro looks thin (<60 words)",
+    "future-of-work-generative-ai: missing or weak service-relevant CTA",
+    "netsuite-for-small-businesses: missing or weak service-relevant CTA",
+    "csv-import-errors: missing or weak service-relevant CTA",
+    "accounts-receivable-reports: missing or weak service-relevant CTA",
+    "spreadsheet-hidden-costs: intro looks thin (<60 words)",
+    "spreadsheet-hidden-costs: missing or weak service-relevant CTA",
+    "maximise-profits: missing or weak service-relevant CTA",
+    "what-is-an-erp-system: missing or weak service-relevant CTA",
+    "best-erp-for-manufacturers: missing or weak service-relevant CTA",
+    "benefits-of-erp-systems: missing or weak service-relevant CTA",
+    "why-netsuite-is-the-best-accounting-software-choice: missing or weak service-relevant CTA",
+    "understanding-the-role-of-erp-systems: intro looks thin (<60 words)",
+    "understanding-the-role-of-erp-systems: missing or weak service-relevant CTA",
+    "why-choose-netsuite-support-from-erp-experts: 2 thin tip section(s) under 25 words",
+    "why-choose-netsuite-support-from-erp-experts: intro looks thin (<60 words)",
+    "how-to-set-up-mcp-in-netsuite: intro looks thin (<60 words)",
+    "netsuite-apps-extensions: intro looks thin (<60 words)"
+  ]
+}

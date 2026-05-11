@@ -1,0 +1,43 @@
+{
+  "generatedAt": "2026-05-11T06:27:41.791Z",
+  "pipeline": {
+    "steps": [
+      "qa:resources",
+      "seo:briefs",
+      "seo:summary"
+    ],
+    "snapshotDir": "reports/history/2026-05-11-0727",
+    "previousSnapshot": "reports/history/2026-05-10-1538"
+  },
+  "outputs": {
+    "qaReport": "reports/resource-qa-report.json",
+    "briefsReport": "reports/seo-action-briefs.json",
+    "weeklySummary": "reports/seo-weekly-summary.json"
+  },
+  "current": {
+    "gateSummary": {
+      "pass": 15,
+      "needs_review": 11,
+      "blocked": 0
+    },
+    "recommendationCount": 21,
+    "dashboardBriefCount": 5,
+    "sprintBacklogCount": 10,
+    "weeklyHeadline": "This week, SEO automation recommends creating new demand-led resources while keeping quality control visible. 11 pages need review and 0 are blocked."
+  },
+  "diff": {
+    "passChange": 0,
+    "needsReviewChange": 0,
+    "blockedChange": 0,
+    "newlyPassing": [],
+    "newlyFailing": [],
+    "recommendationCountChange": 0,
+    "largeScoreSwings": [],
+    "structuralRegressionCount": 0
+  },
+  "review": {
+    "humanReviewRecommended": false,
+    "reason": "No critical review triggers detected.",
+    "highCommercialLowConfidence": []
+  }
+}

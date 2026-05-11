@@ -59,10 +59,10 @@ EMAIL_FILENAME_HINTS = (
     "tim",
 )
 LINKEDIN_EXPORT_RE = re.compile(
-    r"^Content_(\d{4}-\d{2}-\d{2})_(\d{4}-\d{2}-\d{2})_RicWilson(?: \(\d+\))?\.xlsx$"
+    r"^Content_(\d{4}-\d{2}-\d{2})_(\d{4}-\d{2}-\d{2})_RicWilson(?: \(\d+\)|-\d+)?\.xlsx$"
 )
 LINKEDIN_AUDIENCE_EXPORT_RE = re.compile(
-    r"^Audience_(\d{4}-\d{2}-\d{2})_(\d{4}-\d{2}-\d{2})_RicWilson(?: \(\d+\))?\.xlsx$"
+    r"^Audience_(\d{4}-\d{2}-\d{2})_(\d{4}-\d{2}-\d{2})_RicWilson(?: \(\d+\)|-\d+)?\.xlsx$"
 )
 EMAIL_FIELD_ALIASES = {
     "campaignsSent": [
@@ -783,13 +783,20 @@ def latest_linkedin_weekly_export() -> Path:
 
 
 def latest_linkedin_audience_export() -> Path | None:
+    required = {"FOLLOWERS", "DEMOGRAPHICS"}
     candidates = []
     for directory in (DOWNLOADS_DIR, PLAYWRIGHT_DOWNLOADS_DIR, EXPORTS_DIR):
         if not directory.exists():
             continue
         for path in directory.iterdir():
-            match = LINKEDIN_AUDIENCE_EXPORT_RE.match(path.name)
-            if not match:
+            match = LINKEDIN_AUDIENCE_EXPORT_RE.match(path.name) or LINKEDIN_EXPORT_RE.match(path.name)
+            if not match or not path.is_file():
+                continue
+            try:
+                workbook = openpyxl.load_workbook(path, read_only=True, data_only=True)
+                if not required.issubset(set(workbook.sheetnames)):
+                    continue
+            except Exception:
                 continue
             end_date = parse_date(match.group(2), "%Y-%m-%d")
             candidates.append((end_date, path.stat().st_mtime, path))
@@ -1006,7 +1013,7 @@ def parse_linkedin_top_posts(workbook_path: Path) -> list[dict]:
 
 
 def validate_audience_export(workbook_path: Path, min_end_date: date) -> tuple[bool, str]:
-    match = LINKEDIN_AUDIENCE_EXPORT_RE.match(workbook_path.name)
+    match = LINKEDIN_AUDIENCE_EXPORT_RE.match(workbook_path.name) or LINKEDIN_EXPORT_RE.match(workbook_path.name)
     if not match:
         return False, f"Invalid audience export filename: {workbook_path.name}"
     end_date = parse_date(match.group(2), "%Y-%m-%d")

@@ -36,15 +36,46 @@ osascript <<'APPLESCRIPT'
 on run
   tell application "Safari"
     if (count of windows) = 0 then return
-    set targetWindow to front window
+    set targetWindow to missing value
     set targetTab to missing value
-    repeat with t in tabs of targetWindow
-        set u to URL of t
-        if u contains "linkedin.com/analytics/creator" then
-          set targetTab to t
-          exit repeat
-        end if
+
+    -- Prefer a Safari Work profile window first
+    repeat with w in windows
+      try
+        set windowName to (name of w) as text
+      on error
+        set windowName to ""
+      end try
+      if windowName contains "Work" or windowName contains "work" then
+        repeat with t in tabs of w
+          set u to URL of t
+          if u contains "linkedin.com/analytics/creator" then
+            set targetWindow to w
+            set targetTab to t
+            exit repeat
+          end if
+        end repeat
+      end if
+      if targetWindow is not missing value then exit repeat
     end repeat
+
+    -- Fallback: any Safari window/tab already on LinkedIn analytics
+    if targetWindow is missing value then
+      repeat with w in windows
+        repeat with t in tabs of w
+          set u to URL of t
+          if u contains "linkedin.com/analytics/creator" then
+            set targetWindow to w
+            set targetTab to t
+            exit repeat
+          end if
+        end repeat
+        if targetWindow is not missing value then exit repeat
+      end repeat
+    end if
+
+    -- Last fallback: current front window/tab
+    if targetWindow is missing value then set targetWindow to front window
     if targetTab is missing value then
       set targetTab to current tab of targetWindow
     end if
@@ -138,7 +169,7 @@ for i in 1 2 3; do
   sleep 6
   content_after=$(latest_epoch "Content_*_RicWilson*.xlsx")
   audience_after=$(latest_epoch "Audience_*_RicWilson*.xlsx")
-  if [ "$content_after" -gt "$content_before" ] && [ "$audience_after" -gt "$audience_before" ]; then
+  if [ "$content_after" -gt "$content_before" ]; then
     break
   fi
 done
@@ -149,11 +180,11 @@ sleep 8
 content_after=$(latest_epoch "Content_*_RicWilson*.xlsx")
 audience_after=$(latest_epoch "Audience_*_RicWilson*.xlsx")
 
-if [ "$content_after" -le "$content_before" ] || [ "$audience_after" -le "$audience_before" ]; then
-  echo "❌ Safari export attempt did not produce fresh Content and Audience workbooks"
+if [ "$content_after" -le "$content_before" ]; then
+  echo "❌ Safari export attempt did not produce a fresh Content workbook"
   echo "Manual action needed in signed-in Safari:"
   echo "1) Content analytics -> Past 28 days -> Export"
-  echo "2) Audience analytics -> Past 28 days -> Export (must include FOLLOWERS and DEMOGRAPHICS)"
+  echo "2) Audience analytics -> Past 28 days -> Export (may still save as Content_*.xlsx)"
   exit 1
 fi
 

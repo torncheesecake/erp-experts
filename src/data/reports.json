@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-05",
+  "lastUpdated": "2026-05-08",
   "actions": [
     {
       "id": "404-redirects",
@@ -31,26 +31,26 @@
     }
   ],
   "ga4Period": {
-    "start": "2026-04-03",
-    "end": "2026-04-30",
-    "totalSessions": 104,
-    "totalPageViews": 315,
-    "totalUsers": 49,
-    "totalNewUsers": 47,
+    "start": "2026-04-10",
+    "end": "2026-05-07",
+    "totalSessions": 119,
+    "totalPageViews": 322,
+    "totalUsers": 57,
+    "totalNewUsers": 53,
     "totalCTAClicks": 6,
     "totalLeads": 17,
     "countries": [
       {
         "country": "United Kingdom",
-        "users": 35
+        "users": 37
       },
       {
         "country": "United States",
-        "users": 4
+        "users": 7
       },
       {
         "country": "India",
-        "users": 3
+        "users": 5
       },
       {
         "country": "Belgium",
@@ -65,29 +65,29 @@
         "users": 1
       },
       {
-        "country": "Philippines",
+        "country": "Malta",
         "users": 1
       },
       {
-        "country": "Poland",
+        "country": "Pakistan",
         "users": 1
       }
     ],
     "trafficSources": {
-      "organic": 40,
-      "direct": 44,
+      "organic": 45,
+      "direct": 53,
       "referral": 4,
-      "unassigned": 16
+      "unassigned": 17
     },
     "funnel": [
       {
         "step": "Landed on site",
-        "users": 49,
+        "users": 57,
         "description": "Active users who visited the site"
       },
       {
         "step": "Viewed homepage",
-        "users": 39,
+        "users": 43,
         "description": "Viewed the homepage"
       },
       {
@@ -109,7 +109,7 @@
     "pageBounceRates": [
       {
         "page": "Homepage",
-        "bounceRate": 46.8
+        "bounceRate": 51.1
       },
       {
         "page": "About Us",
@@ -125,19 +125,19 @@
       },
       {
         "page": "Support",
-        "bounceRate": 14.3
-      },
-      {
-        "page": "Contact",
-        "bounceRate": 10.0
+        "bounceRate": 12.5
       },
       {
         "page": "Implementation",
-        "bounceRate": 11.1
+        "bounceRate": 28.6
       },
       {
         "page": "Coats4Kids - Case Study",
         "bounceRate": 0.0
+      },
+      {
+        "page": "Contact",
+        "bounceRate": 10.0
       },
       {
         "page": "Partners",
@@ -145,6 +145,10 @@
       }
     ],
     "ctaBreakdown": [
+      {
+        "button": "Navbar - Let's Talk",
+        "clicks": 2
+      },
       {
         "button": "Contact - Form Submit",
         "clicks": 1
@@ -155,14 +159,6 @@
       },
       {
         "button": "Journey - Get Started",
-        "clicks": 1
-      },
-      {
-        "button": "Navbar - Let's Talk",
-        "clicks": 1
-      },
-      {
-        "button": "Partner Shiptheory Footer CTA",
         "clicks": 1
       },
       {
@@ -255,91 +251,91 @@
     "pageEngagement": [
       {
         "page": "Homepage",
-        "avgTimeOnPage": 177,
-        "views": 100,
-        "sessions": 79,
-        "activeUsers": 39,
-        "bounceRate": 46.8
+        "avgTimeOnPage": 123,
+        "views": 108,
+        "sessions": 88,
+        "activeUsers": 43,
+        "bounceRate": 51.1
       },
       {
         "page": "About Us",
-        "avgTimeOnPage": 239,
-        "views": 44,
-        "sessions": 18,
-        "activeUsers": 17,
+        "avgTimeOnPage": 253,
+        "views": 42,
+        "sessions": 17,
+        "activeUsers": 16,
         "bounceRate": 0.0
       },
       {
         "page": "Case Studies",
-        "avgTimeOnPage": 142,
-        "views": 32,
-        "sessions": 11,
-        "activeUsers": 7,
+        "avgTimeOnPage": 131,
+        "views": 34,
+        "sessions": 12,
+        "activeUsers": 8,
         "bounceRate": 0.0
       },
       {
         "page": "Resources",
-        "avgTimeOnPage": 35,
-        "views": 29,
-        "sessions": 15,
-        "activeUsers": 12,
+        "avgTimeOnPage": 41,
+        "views": 28,
+        "sessions": 13,
+        "activeUsers": 11,
         "bounceRate": 0.0
       },
       {
         "page": "Support",
-        "avgTimeOnPage": 247,
-        "views": 15,
-        "sessions": 7,
+        "avgTimeOnPage": 428,
+        "views": 17,
+        "sessions": 8,
         "activeUsers": 5,
-        "bounceRate": 14.3
+        "bounceRate": 12.5
+      },
+      {
+        "page": "Implementation",
+        "avgTimeOnPage": 81,
+        "views": 16,
+        "sessions": 14,
+        "activeUsers": 11,
+        "bounceRate": 28.6
+      },
+      {
+        "page": "Coats4Kids - Case Study",
+        "avgTimeOnPage": 145,
+        "views": 14,
+        "sessions": 8,
+        "activeUsers": 3,
+        "bounceRate": 0.0
       },
       {
         "page": "Contact",
-        "avgTimeOnPage": 194,
-        "views": 14,
+        "avgTimeOnPage": 203,
+        "views": 13,
         "sessions": 10,
         "activeUsers": 8,
         "bounceRate": 10.0
       },
       {
-        "page": "Implementation",
-        "avgTimeOnPage": 126,
-        "views": 14,
-        "sessions": 9,
-        "activeUsers": 8,
-        "bounceRate": 11.1
-      },
-      {
-        "page": "Coats4Kids - Case Study",
-        "avgTimeOnPage": 163,
-        "views": 12,
-        "sessions": 7,
-        "activeUsers": 2,
-        "bounceRate": 0.0
-      },
-      {
         "page": "Partners",
-        "avgTimeOnPage": 9,
-        "views": 11,
-        "sessions": 6,
-        "activeUsers": 4,
+        "avgTimeOnPage": 13,
+        "views": 9,
+        "sessions": 5,
+        "activeUsers": 5,
         "bounceRate": 0.0
       }
     ],
     "exitPages": [
       {
         "page": "Homepage",
-        "exitRate": 46.8,
-        "exits": 37
-      },
-      {
-        "page": "Support",
-        "exitRate": 14.3,
-        "exits": 1
+        "exitRate": 51.1,
+        "exits": 45
       },
       {
         "page": "Implementation",
-        "exitRate": 11.1,
+        "exitRate": 28.6,
+        "exits": 4
+      },
+      {
+        "page": "Support",
+        "exitRate": 12.5,
         "exits": 1
       },
       {
@@ -374,103 +370,103 @@
       }
     ],
     "seoInsights": {
-      "period": "2026-04-03 to 2026-04-30",
-      "totalImpressions": 3181,
+      "period": "2026-04-10 to 2026-05-07",
+      "totalImpressions": 3044,
       "totalClicks": 8,
-      "avgCTR": 0.25,
+      "avgCTR": 0.26,
       "topLandingPages": [
         {
           "path": "/",
-          "impressions": 2706,
-          "clicks": 7,
-          "ctr": 0.26,
-          "avgPosition": 7.22
-        },
-        {
-          "path": "/post/a-range-of-applications-that-extend-and-enhance-netsuite",
-          "impressions": 115,
-          "clicks": 1,
-          "ctr": 0.87,
-          "avgPosition": 16.66
+          "impressions": 2733,
+          "clicks": 8,
+          "ctr": 0.29,
+          "avgPosition": 7.26
         },
         {
           "path": "/about-erp-experts",
-          "impressions": 6,
+          "impressions": 4,
           "clicks": 0,
           "ctr": 0,
-          "avgPosition": 1.33
+          "avgPosition": 1.25
         },
         {
           "path": "/blog/categories/aftercare",
-          "impressions": 3,
+          "impressions": 2,
           "clicks": 0,
           "ctr": 0,
-          "avgPosition": 3.67
+          "avgPosition": 3
         },
         {
           "path": "/blog/categories/erp",
-          "impressions": 9,
+          "impressions": 6,
           "clicks": 0,
           "ctr": 0,
-          "avgPosition": 4.22
+          "avgPosition": 4.17
+        },
+        {
+          "path": "/cookies",
+          "impressions": 6,
+          "clicks": 0,
+          "ctr": 0,
+          "avgPosition": 8
         }
       ],
       "allLandingPages": [
         {
           "path": "/",
-          "impressions": 2706,
-          "clicks": 7,
-          "ctr": 0.26,
-          "avgPosition": 7.22
-        },
-        {
-          "path": "/post/a-range-of-applications-that-extend-and-enhance-netsuite",
-          "impressions": 115,
-          "clicks": 1,
-          "ctr": 0.87,
-          "avgPosition": 16.66
+          "impressions": 2733,
+          "clicks": 8,
+          "ctr": 0.29,
+          "avgPosition": 7.26
         },
         {
           "path": "/about-erp-experts",
-          "impressions": 6,
+          "impressions": 4,
           "clicks": 0,
           "ctr": 0,
-          "avgPosition": 1.33
+          "avgPosition": 1.25
         },
         {
           "path": "/blog/categories/aftercare",
-          "impressions": 3,
-          "clicks": 0,
-          "ctr": 0,
-          "avgPosition": 3.67
-        },
-        {
-          "path": "/blog/categories/erp",
-          "impressions": 9,
-          "clicks": 0,
-          "ctr": 0,
-          "avgPosition": 4.22
-        },
-        {
-          "path": "/cookies",
-          "impressions": 8,
-          "clicks": 0,
-          "ctr": 0,
-          "avgPosition": 7.12
-        },
-        {
-          "path": "/post/7-warning-signs-your-erp-system-is-holding-you-back",
           "impressions": 2,
           "clicks": 0,
           "ctr": 0,
-          "avgPosition": 5.5
+          "avgPosition": 3
+        },
+        {
+          "path": "/blog/categories/erp",
+          "impressions": 6,
+          "clicks": 0,
+          "ctr": 0,
+          "avgPosition": 4.17
+        },
+        {
+          "path": "/cookies",
+          "impressions": 6,
+          "clicks": 0,
+          "ctr": 0,
+          "avgPosition": 8
+        },
+        {
+          "path": "/post/a-range-of-applications-that-extend-and-enhance-netsuite",
+          "impressions": 113,
+          "clicks": 0,
+          "ctr": 0,
+          "avgPosition": 19.2
+        },
+        {
+          "path": "/post/benefits-of-netsuite-modules",
+          "impressions": 9,
+          "clicks": 0,
+          "ctr": 0,
+          "avgPosition": 59.67
         },
         {
           "path": "/post/erp-experts-a-six-month-round-up",
-          "impressions": 11,
+          "impressions": 6,
           "clicks": 0,
           "ctr": 0,
-          "avgPosition": 9.91
+          "avgPosition": 6
         },
         {
           "path": "/post/how-totalkare-transformed-their-business-with-erp-experts-ceo-david-hall-s-story",
@@ -495,52 +491,38 @@
         },
         {
           "path": "/post/optimise-end-of-year-accounting-with-netsuite",
-          "impressions": 17,
+          "impressions": 14,
           "clicks": 0,
           "ctr": 0,
-          "avgPosition": 19.71
+          "avgPosition": 15.57
         },
         {
           "path": "/post/the-advantages-of-custom-software-solutions",
-          "impressions": 64,
+          "impressions": 35,
           "clicks": 0,
           "ctr": 0,
-          "avgPosition": 18.75
-        },
-        {
-          "path": "/post/the-value-of-investing-in-a-netsuite-partner",
-          "impressions": 1,
-          "clicks": 0,
-          "ctr": 0,
-          "avgPosition": 66
+          "avgPosition": 24.14
         },
         {
           "path": "/post/why-choose-netsuite-support-from-erp-experts",
-          "impressions": 190,
+          "impressions": 112,
           "clicks": 0,
           "ctr": 0,
-          "avgPosition": 27.81
+          "avgPosition": 22.38
         },
         {
           "path": "/post/why-netsuite-is-the-best-choice-of-accounting-software",
-          "impressions": 99,
+          "impressions": 30,
           "clicks": 0,
           "ctr": 0,
-          "avgPosition": 23.61
-        },
-        {
-          "path": "/post/why-settle-for-basic-support-discover-the-benefits-of-erp-experts-gold-aftercare",
-          "impressions": 4,
-          "clicks": 0,
-          "ctr": 0,
-          "avgPosition": 10.75
+          "avgPosition": 30.83
         },
         {
           "path": "/post/why-your-system-is-holding-you-back-and-how-to-fix-it",
-          "impressions": 4,
+          "impressions": 1,
           "clicks": 0,
           "ctr": 0,
-          "avgPosition": 8.75
+          "avgPosition": 1
         },
         {
           "path": "/what-is-erp",
@@ -666,8 +648,8 @@
             {
               "priority": "3a",
               "title": "The Value of Investing in a NetSuite Partner",
-              "impressions": 1,
-              "position": 66.0,
+              "impressions": 0,
+              "position": 0.0,
               "clicks": 0,
               "status": "done",
               "why": "Directly sells E3's service. Explain what a good partner looks like and why E3 fits.",
@@ -708,8 +690,8 @@
             {
               "priority": "3d",
               "title": "Why NetSuite Is the Best Choice of Accounting Software",
-              "impressions": 99,
-              "position": 23.61,
+              "impressions": 30,
+              "position": 30.83,
               "clicks": 0,
               "status": "done",
               "why": "Targets finance decision-makers specifically.",
@@ -750,9 +732,9 @@
             {
               "priority": "4c",
               "title": "NetSuite Apps & Extensions",
-              "impressions": 115,
-              "position": 16.66,
-              "clicks": 1,
+              "impressions": 113,
+              "position": 19.2,
+              "clicks": 0,
               "status": "done",
               "why": "Useful for showing the wider NetSuite ecosystem.",
               "keywords": []
@@ -760,8 +742,8 @@
             {
               "priority": "4d",
               "title": "7 Warning Signs Your ERP is Holding You Back",
-              "impressions": 2,
-              "position": 5.5,
+              "impressions": 0,
+              "position": 0.0,
               "clicks": 0,
               "status": "todo",
               "why": "Overlaps with the existing article, so this is more about strengthening and redirecting well.",
@@ -780,8 +762,8 @@
             {
               "priority": "4f",
               "title": "Optimise End-of-Year Accounting with NetSuite",
-              "impressions": 17,
-              "position": 19.71,
+              "impressions": 14,
+              "position": 15.57,
               "clicks": 0,
               "status": "todo",
               "why": "Seasonal topic worth publishing before year-end demand spikes.",
@@ -793,83 +775,83 @@
       "demandSignals": {
         "erpNetsuiteQueries": [
           {
-            "query": "erp consultancy",
-            "impressions": 119,
-            "clicks": 0,
-            "ctr": 0.0,
-            "position": 3.73,
-            "landingPage": "/"
-          },
-          {
-            "query": "erp development company",
-            "impressions": 118,
-            "clicks": 0,
-            "ctr": 0.0,
-            "position": 10.62,
-            "landingPage": "/"
-          },
-          {
             "query": "erp consultants uk",
-            "impressions": 114,
+            "impressions": 127,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 3.25,
+            "position": 3.35,
             "landingPage": "/"
           },
           {
             "query": "erp software development company",
-            "impressions": 92,
+            "impressions": 122,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 1.2,
+            "position": 1.15,
             "landingPage": "/"
           },
           {
-            "query": "which erp consultants are best for small it and software development companies in great britain?",
-            "impressions": 80,
+            "query": "erp consultancy",
+            "impressions": 105,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 12.79,
+            "position": 3.97,
+            "landingPage": "/"
+          },
+          {
+            "query": "erp development company",
+            "impressions": 105,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 10.66,
             "landingPage": "/"
           },
           {
             "query": "independent erp consultants",
-            "impressions": 77,
+            "impressions": 83,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 1.48,
+            "position": 1.46,
+            "landingPage": "/"
+          },
+          {
+            "query": "which erp consultants are best for small it and software development companies in great britain?",
+            "impressions": 79,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 12.78,
             "landingPage": "/"
           },
           {
             "query": "independent erp consultants uk",
-            "impressions": 61,
+            "impressions": 60,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 1.82,
+            "position": 1.85,
             "landingPage": "/"
           },
           {
-            "query": "erp provider uk",
-            "impressions": 58,
+            "query": "erp consulting",
+            "impressions": 60,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 3.09,
+            "position": 11.63,
             "landingPage": "/"
           },
           {
             "query": "erp consultancy services",
-            "impressions": 58,
+            "impressions": 59,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 6.03,
+            "position": 6.08,
             "landingPage": "/"
           },
           {
             "query": "erp advisory services united kingdom",
-            "impressions": 57,
+            "impressions": 56,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 6.44,
+            "position": 6.29,
             "landingPage": "/"
           },
           {
@@ -877,22 +859,22 @@
             "impressions": 54,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 7.06,
+            "position": 7.28,
             "landingPage": "/"
           },
           {
-            "query": "erp consulting",
-            "impressions": 54,
+            "query": "erp systems manchester",
+            "impressions": 51,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 11.44,
+            "position": 5.65,
             "landingPage": "/"
           }
         ],
         "erpInPatterns": [
           {
             "term": "fresh food suppliers",
-            "impressions": 8,
+            "impressions": 7,
             "clicks": 0,
             "queryCount": 1
           },
@@ -906,26 +888,26 @@
         "contentGaps": [
           {
             "query": "erp development company",
-            "impressions": 118,
+            "impressions": 105,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 10.62,
+            "position": 10.66,
             "landingPage": "/"
           },
           {
             "query": "which erp consultants are best for small it and software development companies in great britain?",
-            "impressions": 80,
+            "impressions": 79,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 12.79,
+            "position": 12.78,
             "landingPage": "/"
           },
           {
             "query": "erp consulting",
-            "impressions": 54,
+            "impressions": 60,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 11.44,
+            "position": 11.63,
             "landingPage": "/"
           }
         ],
@@ -933,56 +915,67 @@
           {
             "query": "which erp consultants are best for small it and software development companies in great britain?",
             "intent": "implementation",
-            "score": 68,
+            "score": 67,
             "suggestedTitle": "Which Erp Consultants Are Best For Small It And Software Development Companies In Great Britain: How to Choose and Deliver",
-            "impressions": 80,
+            "impressions": 79,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 12.79,
-            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
-          },
-          {
-            "query": "erp development company",
-            "intent": "discovery",
-            "score": 65,
-            "suggestedTitle": "Erp Development Company: Practical Guide",
-            "impressions": 118,
-            "clicks": 0,
-            "ctr": 0.0,
-            "position": 10.62,
+            "position": 12.78,
             "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
           },
           {
             "query": "erp consultants uk",
             "intent": "implementation",
-            "score": 62,
+            "score": 65,
             "suggestedTitle": "Erp Consultants Uk: How to Choose and Deliver",
-            "impressions": 114,
+            "impressions": 127,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 3.25,
+            "position": 3.35,
+            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
+          },
+          {
+            "query": "erp development company",
+            "intent": "discovery",
+            "score": 63,
+            "suggestedTitle": "Erp Development Company: Practical Guide",
+            "impressions": 105,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 10.66,
             "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
           },
           {
             "query": "independent erp consultants",
             "intent": "implementation",
-            "score": 55,
+            "score": 56,
             "suggestedTitle": "Independent Erp Consultants: How to Choose and Deliver",
-            "impressions": 77,
+            "impressions": 83,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 1.48,
+            "position": 1.46,
             "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
           },
           {
-            "query": "erp consultancy",
+            "query": "erp software development company",
             "intent": "discovery",
-            "score": 53,
-            "suggestedTitle": "Erp Consultancy: Practical Guide",
-            "impressions": 119,
+            "score": 54,
+            "suggestedTitle": "Erp Software Development Company: Practical Guide",
+            "impressions": 122,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 3.73,
+            "position": 1.15,
+            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
+          },
+          {
+            "query": "erp consulting",
+            "intent": "discovery",
+            "score": 54,
+            "suggestedTitle": "Erp Consulting: Practical Guide",
+            "impressions": 60,
+            "clicks": 0,
+            "ctr": 0.0,
+            "position": 11.63,
             "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
           },
           {
@@ -990,32 +983,21 @@
             "intent": "implementation",
             "score": 52,
             "suggestedTitle": "Independent Erp Consultants Uk: How to Choose and Deliver",
-            "impressions": 61,
+            "impressions": 60,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 1.82,
+            "position": 1.85,
             "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
           },
           {
-            "query": "erp consulting",
+            "query": "erp consultancy",
             "intent": "discovery",
-            "score": 52,
-            "suggestedTitle": "Erp Consulting: Practical Guide",
-            "impressions": 54,
+            "score": 51,
+            "suggestedTitle": "Erp Consultancy: Practical Guide",
+            "impressions": 105,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 11.44,
-            "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
-          },
-          {
-            "query": "erp software development company",
-            "intent": "discovery",
-            "score": 48,
-            "suggestedTitle": "Erp Software Development Company: Practical Guide",
-            "impressions": 92,
-            "clicks": 0,
-            "ctr": 0.0,
-            "position": 1.2,
+            "position": 3.97,
             "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
           },
           {
@@ -1023,10 +1005,10 @@
             "intent": "discovery",
             "score": 47,
             "suggestedTitle": "Erp Consultancy Services: Practical Guide",
-            "impressions": 58,
+            "impressions": 59,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 6.03,
+            "position": 6.08,
             "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
           },
           {
@@ -1034,10 +1016,10 @@
             "intent": "discovery",
             "score": 47,
             "suggestedTitle": "Erp Advisory Services United Kingdom: Practical Guide",
-            "impressions": 57,
+            "impressions": 56,
             "clicks": 0,
             "ctr": 0.0,
-            "position": 6.44,
+            "position": 6.29,
             "whyNow": "High impressions with weak traction suggests reachable growth from a better-matched page."
           }
         ]
@@ -1276,6 +1258,73 @@
     }
   ],
   "weeks": [
+    {
+      "weekEnding": "2026-05-08",
+      "ga": {
+        "sessions": 22,
+        "pageViews": 35,
+        "users": 12,
+        "newUsers": 10,
+        "avgSessionDuration": 99,
+        "topPages": [
+          {
+            "path": "/",
+            "views": 12
+          },
+          {
+            "path": "/implementation",
+            "views": 4
+          },
+          {
+            "path": "/case-studies/coats4kids",
+            "views": 3
+          },
+          {
+            "path": "/about",
+            "views": 2
+          },
+          {
+            "path": "/case-studies",
+            "views": 2
+          },
+          {
+            "path": "/contact",
+            "views": 2
+          },
+          {
+            "path": "/erpexperts",
+            "views": 2
+          },
+          {
+            "path": "/partners",
+            "views": 2
+          }
+        ],
+        "trafficSources": {
+          "organic": 41,
+          "direct": 55,
+          "referral": 0,
+          "social": 0,
+          "unassigned": 5
+        },
+        "ctaClicks": 1,
+        "leads": 2
+      },
+      "linkedin": {
+        "followers": 1604,
+        "impressions": 590,
+        "engagementRate": 3.9,
+        "engagements": 23,
+        "newFollowers": 5
+      },
+      "email": {
+        "campaignsSent": 2,
+        "totalRecipients": 1681,
+        "openRate": 21.48,
+        "clickRate": 107.2,
+        "unsubscribes": 4
+      }
+    },
     {
       "weekEnding": "2026-05-01",
       "ga": {
@@ -2441,5 +2490,5 @@
       }
     }
   ],
-  "dataThrough": "2026-05-01"
+  "dataThrough": "2026-05-08"
 }

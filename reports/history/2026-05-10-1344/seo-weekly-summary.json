@@ -1,0 +1,68 @@
+{
+  "generatedAt": "2026-05-10T12:44:04.017Z",
+  "sourceReports": {
+    "qaReport": "reports/resource-qa-report.json",
+    "seoActionBriefs": "reports/seo-action-briefs.json",
+    "reportsData": "src/data/reports.json"
+  },
+  "reportContext": {
+    "reportsLastUpdated": "2026-05-08",
+    "qaGeneratedAt": "2026-05-10T12:44:03.949Z",
+    "briefsGeneratedAt": "2026-05-10T12:44:03.985Z"
+  },
+  "headlineSummary": "This week, SEO automation recommends creating new demand-led resources while keeping quality control visible. 12 pages need review and 0 are blocked.",
+  "topRecommendedActions": [
+    {
+      "rank": 1,
+      "title": "How UK Software Companies Should Choose an ERP Consultant",
+      "recommendationType": "create_new",
+      "priorityScore": 68,
+      "outcomeLabel": "high_value",
+      "action": "Create a new resource: \"How UK Software Companies Should Choose an ERP Consultant\".",
+      "reason": "How UK Software Companies Should Choose an ERP Consultant is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance. Suggested next step: audit/readiness check."
+    },
+    {
+      "rank": 2,
+      "title": "How to Choose an ERP Consultant in the UK",
+      "recommendationType": "create_new",
+      "priorityScore": 68,
+      "outcomeLabel": "high_value",
+      "action": "Create a new resource: \"How to Choose an ERP Consultant in the UK\".",
+      "reason": "How to Choose an ERP Consultant in the UK is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance. Suggested next step: audit/readiness check."
+    },
+    {
+      "rank": 3,
+      "title": "How to Choose an Independent ERP Consultant",
+      "recommendationType": "create_new",
+      "priorityScore": 64,
+      "outcomeLabel": "high_value",
+      "action": "Create a new resource: \"How to Choose an Independent ERP Consultant\".",
+      "reason": "How to Choose an Independent ERP Consultant is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance. Suggested next step: audit/readiness check."
+    }
+  ],
+  "highestCommercialOpportunity": {
+    "title": "How UK Software Companies Should Choose an ERP Consultant",
+    "recommendationType": "create_new",
+    "outcomeLabel": "high_value",
+    "estimatedBusinessValue": 98,
+    "estimatedLeadIntent": 79,
+    "assistedConversionPotential": 86,
+    "reason": "How UK Software Companies Should Choose an ERP Consultant is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance."
+  },
+  "biggestQualityRisk": {
+    "title": "A CFO's Guide to AI-Enhanced Finance",
+    "slug": "cfo-guide-ai-enhanced-finance",
+    "gate": "needs_review",
+    "score": 70,
+    "reason": "intro looks thin (<60 words)"
+  },
+  "createVsImproveSplit": {
+    "create_new": 4,
+    "improve_existing": 1,
+    "monitor": 0,
+    "blocked_review": 0
+  },
+  "pagesNeedingReviewCount": 12,
+  "blockedCount": 0,
+  "suggestedFocusForNextWeek": "Improve one high-intent existing article and draft one high-value new resource, then rerun Resource QA to check progress."
+}

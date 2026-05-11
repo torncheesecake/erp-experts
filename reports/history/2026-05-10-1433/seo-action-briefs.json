@@ -1,0 +1,2781 @@
+{
+  "generatedAt": "2026-05-10T13:33:04.569Z",
+  "sourceReports": {
+    "qaReport": "reports/resource-qa-report.json",
+    "reportsData": "src/data/reports.json",
+    "statuses": "public/api/seo-statuses.json"
+  },
+  "recommendationCount": 21,
+  "dashboardBriefCount": 5,
+  "sprintBacklogCount": 10,
+  "briefs": [
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "How UK Software Companies Should Choose an ERP Consultant",
+      "preferredTitle": "How UK Software Companies Should Choose an ERP Consultant",
+      "rawQuery": "which erp consultants are best for small it and software development companies in great britain?",
+      "targetSlug": null,
+      "displayRank": 1,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "partner",
+      "priorityScore": 68,
+      "conversionIntentScore": 84,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/partners",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 98,
+      "estimatedLeadIntent": 79,
+      "assistedConversionPotential": 86,
+      "strategicImportance": 73,
+      "confidenceLevel": 83,
+      "outcomeLabel": "high_value",
+      "whyThisMattersCommercially": "How UK Software Companies Should Choose an ERP Consultant is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame How UK Software Companies Should Choose an ERP Consultant around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review choosing an ERP consultant for a UK software company?",
+          "What are the warning signs that choosing an ERP consultant for a UK software company needs specialist advice?",
+          "How can ERP Experts help with choosing an ERP consultant for a UK software company?"
+        ],
+        "suggestedMetaTitle": "How UK Software Companies Should Choose an ERP Consultant | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for choosing an erp consultant for a uk software company from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "How to Choose an ERP Consultant in the UK",
+      "preferredTitle": "How to Choose an ERP Consultant in the UK",
+      "rawQuery": "erp consultants uk",
+      "targetSlug": null,
+      "displayRank": 2,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "partner",
+      "priorityScore": 68,
+      "conversionIntentScore": 84,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/partners",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 98,
+      "estimatedLeadIntent": 79,
+      "assistedConversionPotential": 86,
+      "strategicImportance": 73,
+      "confidenceLevel": 83,
+      "outcomeLabel": "high_value",
+      "whyThisMattersCommercially": "How to Choose an ERP Consultant in the UK is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame How to Choose an ERP Consultant in the UK around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review choosing an ERP consultant?",
+          "What are the warning signs that choosing an ERP consultant needs specialist advice?",
+          "How can ERP Experts help with choosing an ERP consultant?"
+        ],
+        "suggestedMetaTitle": "How to Choose an ERP Consultant in the UK | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for choosing an erp consultant from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "How to Choose an Independent ERP Consultant",
+      "preferredTitle": "How to Choose an Independent ERP Consultant",
+      "rawQuery": "independent erp consultants",
+      "targetSlug": null,
+      "displayRank": 3,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "partner",
+      "priorityScore": 64,
+      "conversionIntentScore": 84,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/partners",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 97,
+      "estimatedLeadIntent": 79,
+      "assistedConversionPotential": 85,
+      "strategicImportance": 72,
+      "confidenceLevel": 83,
+      "outcomeLabel": "high_value",
+      "whyThisMattersCommercially": "How to Choose an Independent ERP Consultant is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame How to Choose an Independent ERP Consultant around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review choosing an ERP consultant?",
+          "What are the warning signs that choosing an ERP consultant needs specialist advice?",
+          "How can ERP Experts help with choosing an ERP consultant?"
+        ],
+        "suggestedMetaTitle": "How to Choose an Independent ERP Consultant | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for choosing an erp consultant from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "Independent ERP Consultants UK",
+      "preferredTitle": "Independent ERP Consultants UK",
+      "rawQuery": "independent erp consultants uk",
+      "targetSlug": null,
+      "displayRank": 4,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "partner",
+      "priorityScore": 62,
+      "conversionIntentScore": 84,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/partners",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 96,
+      "estimatedLeadIntent": 79,
+      "assistedConversionPotential": 84,
+      "strategicImportance": 72,
+      "confidenceLevel": 83,
+      "outcomeLabel": "high_value",
+      "whyThisMattersCommercially": "Independent ERP Consultants UK is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame Independent ERP Consultants UK around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review choosing an ERP consultant?",
+          "What are the warning signs that choosing an ERP consultant needs specialist advice?",
+          "How can ERP Experts help with choosing an ERP consultant?"
+        ],
+        "suggestedMetaTitle": "Independent ERP Consultants UK | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for choosing an erp consultant from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "A CFO's Guide to AI-Enhanced Finance",
+      "preferredTitle": "A CFO's Guide to AI-Enhanced Finance",
+      "rawQuery": null,
+      "targetSlug": "cfo-guide-ai-enhanced-finance",
+      "displayRank": 5,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "finance",
+      "priorityScore": 47,
+      "conversionIntentScore": 78,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Low QA score (70) and/or quality warnings (intro looks thin (<60 words)).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "finance systems review",
+      "recommendedCTA": "finance systems review",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 88,
+      "estimatedLeadIntent": 76,
+      "assistedConversionPotential": 68,
+      "strategicImportance": 40,
+      "confidenceLevel": 81,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "A CFO's Guide to AI-Enhanced Finance has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame A CFO's Guide to AI-Enhanced Finance around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send to finance leaders who are outgrowing accounting tools or struggling with reporting control.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer a finance systems review.",
+        "suggestedFaqQuestions": [
+          "When should a business review a cfo's guide to ai-enhanced finance?",
+          "What are the warning signs that a cfo's guide to ai-enhanced finance needs specialist advice?",
+          "How can ERP Experts help with a cfo's guide to ai-enhanced finance?"
+        ],
+        "suggestedMetaTitle": "A CFO's Guide to AI-Enhanced Finance | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for a cfo's guide to ai-enhanced finance from ERP Experts. Review the finance system signals that affect control, reporting, and scale."
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "Opening section: expand the problem statement and make the reader's risk clear within the first 60-90 words.",
+          "Main body: expand thin sections with concrete examples, decision criteria, or recovery steps. Current thin section count: 0.",
+          "CTA area: replace the weak or missing CTA with a specific finance systems review."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to finance systems review.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Finance control issues to check first",
+          "Reporting questions to resolve before the next close"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering a finance systems review, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/contact"
+        ],
+        "riskNotes": [
+          "High commercial intent: keep advice useful, but make the service next step visible and specific."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"A CFO's Guide to AI-Enhanced Finance\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: cfo-guide-ai-enhanced-finance\n- Title: A CFO's Guide to AI-Enhanced Finance\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- Opening section: expand the problem statement and make the reader's risk clear within the first 60-90 words.\n- Main body: expand thin sections with concrete examples, decision criteria, or recovery steps. Current thin section count: 0.\n- CTA area: replace the weak or missing CTA with a specific finance systems review.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to finance systems review.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Finance control issues to check first\n- Reporting questions to resolve before the next close\n\nCTA angle:\n- finance systems review\n- Add a concise CTA offering a finance systems review, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /contact\n\nRisk notes:\n- High commercial intent: keep advice useful, but make the service next step visible and specific.\n\nReview questions:\n- Does the revised article answer the problem promised by \"A CFO's Guide to AI-Enhanced Finance\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"cfo-guide-ai-enhanced-finance\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    }
+  ],
+  "sprintBacklogBriefs": [
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "Why NetSuite Is the Best Choice of Accounting Software",
+      "preferredTitle": "Why NetSuite Is the Best Choice of Accounting Software",
+      "rawQuery": null,
+      "targetSlug": "why-netsuite-is-the-best-accounting-software-choice",
+      "displayRank": 6,
+      "sprintCandidate": true,
+      "sprintReason": "Needs QA improvement and is outside dashboard top 5.",
+      "articleTypeBucket": "finance",
+      "priorityScore": 46,
+      "conversionIntentScore": 78,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Low QA score (73) and/or quality warnings (missing or weak service-relevant CTA).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "finance systems review",
+      "recommendedCTA": "finance systems review",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 88,
+      "estimatedLeadIntent": 76,
+      "assistedConversionPotential": 70,
+      "strategicImportance": 40,
+      "confidenceLevel": 81,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "Why NetSuite Is the Best Choice of Accounting Software has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame Why NetSuite Is the Best Choice of Accounting Software around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send to finance leaders who are outgrowing accounting tools or struggling with reporting control.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer a finance systems review.",
+        "suggestedFaqQuestions": [
+          "When should a business review why netsuite is the best choice of accounting software?",
+          "What are the warning signs that why netsuite is the best choice of accounting software needs specialist advice?",
+          "How can ERP Experts help with why netsuite is the best choice of accounting software?"
+        ],
+        "suggestedMetaTitle": "Why NetSuite Is the Best Choice of Accounting Software | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for why netsuite is the best choice of accounting software from ERP Experts. Review the finance system signals that affect control, repo"
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "Main body: expand thin sections with concrete examples, decision criteria, or recovery steps. Current thin section count: 0.",
+          "CTA area: replace the weak or missing CTA with a specific finance systems review."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to finance systems review.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Finance control issues to check first",
+          "Reporting questions to resolve before the next close"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering a finance systems review, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/services/netsuite",
+          "/contact"
+        ],
+        "riskNotes": [
+          "High commercial intent: keep advice useful, but make the service next step visible and specific."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"Why NetSuite Is the Best Choice of Accounting Software\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: why-netsuite-is-the-best-accounting-software-choice\n- Title: Why NetSuite Is the Best Choice of Accounting Software\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- Main body: expand thin sections with concrete examples, decision criteria, or recovery steps. Current thin section count: 0.\n- CTA area: replace the weak or missing CTA with a specific finance systems review.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to finance systems review.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Finance control issues to check first\n- Reporting questions to resolve before the next close\n\nCTA angle:\n- finance systems review\n- Add a concise CTA offering a finance systems review, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /services/netsuite\n- /contact\n\nRisk notes:\n- High commercial intent: keep advice useful, but make the service next step visible and specific.\n\nReview questions:\n- Does the revised article answer the problem promised by \"Why NetSuite Is the Best Choice of Accounting Software\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"why-netsuite-is-the-best-accounting-software-choice\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "Best ERP for Manufacturers",
+      "preferredTitle": "Best ERP for Manufacturers",
+      "rawQuery": null,
+      "targetSlug": "best-erp-for-manufacturers",
+      "displayRank": 7,
+      "sprintCandidate": true,
+      "sprintReason": "Needs QA improvement and is outside dashboard top 5.",
+      "articleTypeBucket": "manufacturing",
+      "priorityScore": 46,
+      "conversionIntentScore": 82,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Low QA score (77) and/or quality warnings (missing or weak service-relevant CTA).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/case-studies",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "manufacturing ERP discussion",
+      "recommendedCTA": "manufacturing ERP discussion",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 92,
+      "estimatedLeadIntent": 79,
+      "assistedConversionPotential": 77,
+      "strategicImportance": 42,
+      "confidenceLevel": 81,
+      "outcomeLabel": "high_value",
+      "whyThisMattersCommercially": "Best ERP for Manufacturers is likely to support commercially meaningful conversations because it combines high conversion intent with manufacturing service relevance.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame Best ERP for Manufacturers around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send to manufacturing contacts with inventory, production, or reporting pain, positioned as a decision checklist.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer a manufacturing ERP discussion.",
+        "suggestedFaqQuestions": [
+          "When should a business review best erp for manufacturers?",
+          "What are the warning signs that best erp for manufacturers needs specialist advice?",
+          "How can ERP Experts help with best erp for manufacturers?"
+        ],
+        "suggestedMetaTitle": "Best ERP for Manufacturers | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for best erp for manufacturers from ERP Experts. See what manufacturers should review before choosing or improving ERP."
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "CTA area: replace the weak or missing CTA with a specific manufacturing ERP discussion."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to manufacturing ERP discussion.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Manufacturing signals that the ERP setup needs review",
+          "Questions to ask before changing systems or processes"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering a manufacturing ERP discussion, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/case-studies",
+          "/services/netsuite",
+          "/contact"
+        ],
+        "riskNotes": [
+          "High commercial intent: keep advice useful, but make the service next step visible and specific."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"Best ERP for Manufacturers\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: best-erp-for-manufacturers\n- Title: Best ERP for Manufacturers\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- CTA area: replace the weak or missing CTA with a specific manufacturing ERP discussion.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to manufacturing ERP discussion.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Manufacturing signals that the ERP setup needs review\n- Questions to ask before changing systems or processes\n\nCTA angle:\n- manufacturing ERP discussion\n- Add a concise CTA offering a manufacturing ERP discussion, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /case-studies\n- /services/netsuite\n- /contact\n\nRisk notes:\n- High commercial intent: keep advice useful, but make the service next step visible and specific.\n\nReview questions:\n- Does the revised article answer the problem promised by \"Best ERP for Manufacturers\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"best-erp-for-manufacturers\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "6 Essential Accounts Receivable Reports",
+      "preferredTitle": "6 Essential Accounts Receivable Reports",
+      "rawQuery": null,
+      "targetSlug": "accounts-receivable-reports",
+      "displayRank": 8,
+      "sprintCandidate": true,
+      "sprintReason": "Needs QA improvement and is outside dashboard top 5.",
+      "articleTypeBucket": "finance",
+      "priorityScore": 45,
+      "conversionIntentScore": 78,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Low QA score (75) and/or quality warnings (missing or weak service-relevant CTA).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "finance systems review",
+      "recommendedCTA": "finance systems review",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 79,
+      "estimatedLeadIntent": 70,
+      "assistedConversionPotential": 67,
+      "strategicImportance": 32,
+      "confidenceLevel": 81,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "6 Essential Accounts Receivable Reports has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame 6 Essential Accounts Receivable Reports around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send to finance leaders who are outgrowing accounting tools or struggling with reporting control.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer a finance systems review.",
+        "suggestedFaqQuestions": [
+          "When should a business review 6 essential accounts receivable reports?",
+          "What are the warning signs that 6 essential accounts receivable reports needs specialist advice?",
+          "How can ERP Experts help with 6 essential accounts receivable reports?"
+        ],
+        "suggestedMetaTitle": "6 Essential Accounts Receivable Reports | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for 6 essential accounts receivable reports from ERP Experts. Review the finance system signals that affect control, reporting, and scal"
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "CTA area: replace the weak or missing CTA with a specific finance systems review."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to finance systems review.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Finance control issues to check first",
+          "Reporting questions to resolve before the next close"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering a finance systems review, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/contact"
+        ],
+        "riskNotes": [
+          "High commercial intent: keep advice useful, but make the service next step visible and specific."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"6 Essential Accounts Receivable Reports\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: accounts-receivable-reports\n- Title: 6 Essential Accounts Receivable Reports\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- CTA area: replace the weak or missing CTA with a specific finance systems review.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to finance systems review.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Finance control issues to check first\n- Reporting questions to resolve before the next close\n\nCTA angle:\n- finance systems review\n- Add a concise CTA offering a finance systems review, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /contact\n\nRisk notes:\n- High commercial intent: keep advice useful, but make the service next step visible and specific.\n\nReview questions:\n- Does the revised article answer the problem promised by \"6 Essential Accounts Receivable Reports\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"accounts-receivable-reports\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "How to Choose an ERP Development Company",
+      "preferredTitle": "How to Choose an ERP Development Company",
+      "rawQuery": "erp development company",
+      "targetSlug": null,
+      "displayRank": 9,
+      "sprintCandidate": true,
+      "sprintReason": "Demand-led content gap suitable for sprint backlog planning.",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 45,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 59,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 47,
+      "strategicImportance": 56,
+      "confidenceLevel": 71,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "How to Choose an ERP Development Company has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use How to Choose an ERP Development Company to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review choosing an ERP development company?",
+          "What are the warning signs that choosing an ERP development company needs specialist advice?",
+          "How can ERP Experts help with choosing an ERP development company?"
+        ],
+        "suggestedMetaTitle": "How to Choose an ERP Development Company | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for choosing an erp development company from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "Why Choose NetSuite Support From ERP Experts",
+      "preferredTitle": "Why Choose NetSuite Support From ERP Experts",
+      "rawQuery": null,
+      "targetSlug": "why-choose-netsuite-support-from-erp-experts",
+      "displayRank": 10,
+      "sprintCandidate": true,
+      "sprintReason": "Needs QA improvement and is outside dashboard top 5.",
+      "articleTypeBucket": "support",
+      "priorityScore": 44,
+      "conversionIntentScore": 88,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Low QA score (90) and/or quality warnings (2 thin tip section(s) under 25 words).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/support",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "support review",
+      "recommendedCTA": "support review",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 98,
+      "estimatedLeadIntent": 85,
+      "assistedConversionPotential": 80,
+      "strategicImportance": 43,
+      "confidenceLevel": 81,
+      "outcomeLabel": "high_value",
+      "whyThisMattersCommercially": "Why Choose NetSuite Support From ERP Experts is likely to support commercially meaningful conversations because it combines high conversion intent with support service relevance.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame Why Choose NetSuite Support From ERP Experts around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send to existing NetSuite users showing symptoms of recurring support issues, with a prompt to review unresolved friction.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer a support review.",
+        "suggestedFaqQuestions": [
+          "When should a business review why choose netsuite support from erp experts?",
+          "What are the warning signs that why choose netsuite support from erp experts needs specialist advice?",
+          "How can ERP Experts help with why choose netsuite support from erp experts?"
+        ],
+        "suggestedMetaTitle": "Why Choose NetSuite Support From ERP Experts | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for why choose netsuite support from erp experts from ERP Experts. Understand the support issues to fix before they slow the business do"
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "Opening section: expand the problem statement and make the reader's risk clear within the first 60-90 words.",
+          "Main body: expand thin sections with concrete examples, decision criteria, or recovery steps. Current thin section count: 2."
+        ],
+        "missingElements": [
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Support issues that should not become business as usual",
+          "When to bring in a NetSuite support partner"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering a support review, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/support",
+          "/services/netsuite",
+          "/contact"
+        ],
+        "riskNotes": [
+          "High commercial intent: keep advice useful, but make the service next step visible and specific."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"Why Choose NetSuite Support From ERP Experts\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: why-choose-netsuite-support-from-erp-experts\n- Title: Why Choose NetSuite Support From ERP Experts\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- Opening section: expand the problem statement and make the reader's risk clear within the first 60-90 words.\n- Main body: expand thin sections with concrete examples, decision criteria, or recovery steps. Current thin section count: 2.\n\nMissing elements to add or strengthen:\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Support issues that should not become business as usual\n- When to bring in a NetSuite support partner\n\nCTA angle:\n- support review\n- Add a concise CTA offering a support review, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /support\n- /services/netsuite\n- /contact\n\nRisk notes:\n- High commercial intent: keep advice useful, but make the service next step visible and specific.\n\nReview questions:\n- Does the revised article answer the problem promised by \"Why Choose NetSuite Support From ERP Experts\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"why-choose-netsuite-support-from-erp-experts\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "What to Look For in an ERP Software Development Company",
+      "preferredTitle": "What to Look For in an ERP Software Development Company",
+      "rawQuery": "erp software development company",
+      "targetSlug": null,
+      "displayRank": 11,
+      "sprintCandidate": true,
+      "sprintReason": "Demand-led content gap suitable for sprint backlog planning.",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 41,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 58,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 46,
+      "strategicImportance": 54,
+      "confidenceLevel": 71,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "What to Look For in an ERP Software Development Company has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use What to Look For in an ERP Software Development Company to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review what to look for in an erp software development company?",
+          "What are the warning signs that what to look for in an erp software development company needs specialist advice?",
+          "How can ERP Experts help with what to look for in an erp software development company?"
+        ],
+        "suggestedMetaTitle": "What to Look For in an ERP Software Development Company | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for what to look for in an erp software development company from ERP Experts. Use it to plan a clearer next step before committing budge"
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "ERP Consulting: Practical Guide",
+      "preferredTitle": "ERP Consulting: Practical Guide",
+      "rawQuery": "erp consulting",
+      "targetSlug": null,
+      "displayRank": 12,
+      "sprintCandidate": true,
+      "sprintReason": "Demand-led content gap suitable for sprint backlog planning.",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 40,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 58,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 45,
+      "strategicImportance": 54,
+      "confidenceLevel": 71,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "ERP Consulting: Practical Guide has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use ERP Consulting: Practical Guide to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review erp consulting: practical guide?",
+          "What are the warning signs that erp consulting: practical guide needs specialist advice?",
+          "How can ERP Experts help with erp consulting: practical guide?"
+        ],
+        "suggestedMetaTitle": "ERP Consulting: Practical Guide | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for erp consulting: practical guide from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "ERP Consultancy: Practical Guide",
+      "preferredTitle": "ERP Consultancy: Practical Guide",
+      "rawQuery": "erp consultancy",
+      "targetSlug": null,
+      "displayRank": 13,
+      "sprintCandidate": true,
+      "sprintReason": "Demand-led content gap suitable for sprint backlog planning.",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 39,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 58,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 45,
+      "strategicImportance": 54,
+      "confidenceLevel": 71,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "ERP Consultancy: Practical Guide has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use ERP Consultancy: Practical Guide to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review erp consultancy: practical guide?",
+          "What are the warning signs that erp consultancy: practical guide needs specialist advice?",
+          "How can ERP Experts help with erp consultancy: practical guide?"
+        ],
+        "suggestedMetaTitle": "ERP Consultancy: Practical Guide | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for erp consultancy: practical guide from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "ERP Consultancy Services: Practical Guide",
+      "preferredTitle": "ERP Consultancy Services: Practical Guide",
+      "rawQuery": "erp consultancy services",
+      "targetSlug": null,
+      "displayRank": 14,
+      "sprintCandidate": true,
+      "sprintReason": "Demand-led content gap suitable for sprint backlog planning.",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 37,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 57,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 44,
+      "strategicImportance": 53,
+      "confidenceLevel": 71,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "ERP Consultancy Services: Practical Guide has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use ERP Consultancy Services: Practical Guide to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review erp consultancy services: practical guide?",
+          "What are the warning signs that erp consultancy services: practical guide needs specialist advice?",
+          "How can ERP Experts help with erp consultancy services: practical guide?"
+        ],
+        "suggestedMetaTitle": "ERP Consultancy Services: Practical Guide | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for erp consultancy services: practical guide from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "ERP Advisory Services Uk: Practical Guide",
+      "preferredTitle": "ERP Advisory Services Uk: Practical Guide",
+      "rawQuery": "erp advisory services united kingdom",
+      "targetSlug": null,
+      "displayRank": 15,
+      "sprintCandidate": true,
+      "sprintReason": "Demand-led content gap suitable for sprint backlog planning.",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 37,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 57,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 44,
+      "strategicImportance": 53,
+      "confidenceLevel": 71,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "ERP Advisory Services Uk: Practical Guide has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use ERP Advisory Services Uk: Practical Guide to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review erp advisory services uk: practical guide?",
+          "What are the warning signs that erp advisory services uk: practical guide needs specialist advice?",
+          "How can ERP Experts help with erp advisory services uk: practical guide?"
+        ],
+        "suggestedMetaTitle": "ERP Advisory Services Uk: Practical Guide | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for erp advisory services uk: practical guide from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    }
+  ],
+  "allBriefs": [
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "How UK Software Companies Should Choose an ERP Consultant",
+      "preferredTitle": "How UK Software Companies Should Choose an ERP Consultant",
+      "rawQuery": "which erp consultants are best for small it and software development companies in great britain?",
+      "targetSlug": null,
+      "displayRank": 1,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "partner",
+      "priorityScore": 68,
+      "conversionIntentScore": 84,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/partners",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 98,
+      "estimatedLeadIntent": 79,
+      "assistedConversionPotential": 86,
+      "strategicImportance": 73,
+      "confidenceLevel": 83,
+      "outcomeLabel": "high_value",
+      "whyThisMattersCommercially": "How UK Software Companies Should Choose an ERP Consultant is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame How UK Software Companies Should Choose an ERP Consultant around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review choosing an ERP consultant for a UK software company?",
+          "What are the warning signs that choosing an ERP consultant for a UK software company needs specialist advice?",
+          "How can ERP Experts help with choosing an ERP consultant for a UK software company?"
+        ],
+        "suggestedMetaTitle": "How UK Software Companies Should Choose an ERP Consultant | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for choosing an erp consultant for a uk software company from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "How to Choose an ERP Consultant in the UK",
+      "preferredTitle": "How to Choose an ERP Consultant in the UK",
+      "rawQuery": "erp consultants uk",
+      "targetSlug": null,
+      "displayRank": 2,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "partner",
+      "priorityScore": 68,
+      "conversionIntentScore": 84,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/partners",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 98,
+      "estimatedLeadIntent": 79,
+      "assistedConversionPotential": 86,
+      "strategicImportance": 73,
+      "confidenceLevel": 83,
+      "outcomeLabel": "high_value",
+      "whyThisMattersCommercially": "How to Choose an ERP Consultant in the UK is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame How to Choose an ERP Consultant in the UK around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review choosing an ERP consultant?",
+          "What are the warning signs that choosing an ERP consultant needs specialist advice?",
+          "How can ERP Experts help with choosing an ERP consultant?"
+        ],
+        "suggestedMetaTitle": "How to Choose an ERP Consultant in the UK | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for choosing an erp consultant from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "How to Choose an Independent ERP Consultant",
+      "preferredTitle": "How to Choose an Independent ERP Consultant",
+      "rawQuery": "independent erp consultants",
+      "targetSlug": null,
+      "displayRank": 3,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "partner",
+      "priorityScore": 64,
+      "conversionIntentScore": 84,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/partners",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 97,
+      "estimatedLeadIntent": 79,
+      "assistedConversionPotential": 85,
+      "strategicImportance": 72,
+      "confidenceLevel": 83,
+      "outcomeLabel": "high_value",
+      "whyThisMattersCommercially": "How to Choose an Independent ERP Consultant is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame How to Choose an Independent ERP Consultant around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review choosing an ERP consultant?",
+          "What are the warning signs that choosing an ERP consultant needs specialist advice?",
+          "How can ERP Experts help with choosing an ERP consultant?"
+        ],
+        "suggestedMetaTitle": "How to Choose an Independent ERP Consultant | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for choosing an erp consultant from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "Independent ERP Consultants UK",
+      "preferredTitle": "Independent ERP Consultants UK",
+      "rawQuery": "independent erp consultants uk",
+      "targetSlug": null,
+      "displayRank": 4,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "partner",
+      "priorityScore": 62,
+      "conversionIntentScore": 84,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/partners",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 96,
+      "estimatedLeadIntent": 79,
+      "assistedConversionPotential": 84,
+      "strategicImportance": 72,
+      "confidenceLevel": 83,
+      "outcomeLabel": "high_value",
+      "whyThisMattersCommercially": "Independent ERP Consultants UK is likely to support commercially meaningful conversations because it combines high conversion intent with consulting/partner service relevance.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame Independent ERP Consultants UK around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review choosing an ERP consultant?",
+          "What are the warning signs that choosing an ERP consultant needs specialist advice?",
+          "How can ERP Experts help with choosing an ERP consultant?"
+        ],
+        "suggestedMetaTitle": "Independent ERP Consultants UK | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for choosing an erp consultant from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "A CFO's Guide to AI-Enhanced Finance",
+      "preferredTitle": "A CFO's Guide to AI-Enhanced Finance",
+      "rawQuery": null,
+      "targetSlug": "cfo-guide-ai-enhanced-finance",
+      "displayRank": 5,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "finance",
+      "priorityScore": 47,
+      "conversionIntentScore": 78,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Low QA score (70) and/or quality warnings (intro looks thin (<60 words)).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "finance systems review",
+      "recommendedCTA": "finance systems review",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 88,
+      "estimatedLeadIntent": 76,
+      "assistedConversionPotential": 68,
+      "strategicImportance": 40,
+      "confidenceLevel": 81,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "A CFO's Guide to AI-Enhanced Finance has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame A CFO's Guide to AI-Enhanced Finance around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send to finance leaders who are outgrowing accounting tools or struggling with reporting control.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer a finance systems review.",
+        "suggestedFaqQuestions": [
+          "When should a business review a cfo's guide to ai-enhanced finance?",
+          "What are the warning signs that a cfo's guide to ai-enhanced finance needs specialist advice?",
+          "How can ERP Experts help with a cfo's guide to ai-enhanced finance?"
+        ],
+        "suggestedMetaTitle": "A CFO's Guide to AI-Enhanced Finance | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for a cfo's guide to ai-enhanced finance from ERP Experts. Review the finance system signals that affect control, reporting, and scale."
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "Opening section: expand the problem statement and make the reader's risk clear within the first 60-90 words.",
+          "Main body: expand thin sections with concrete examples, decision criteria, or recovery steps. Current thin section count: 0.",
+          "CTA area: replace the weak or missing CTA with a specific finance systems review."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to finance systems review.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Finance control issues to check first",
+          "Reporting questions to resolve before the next close"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering a finance systems review, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/contact"
+        ],
+        "riskNotes": [
+          "High commercial intent: keep advice useful, but make the service next step visible and specific."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"A CFO's Guide to AI-Enhanced Finance\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: cfo-guide-ai-enhanced-finance\n- Title: A CFO's Guide to AI-Enhanced Finance\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- Opening section: expand the problem statement and make the reader's risk clear within the first 60-90 words.\n- Main body: expand thin sections with concrete examples, decision criteria, or recovery steps. Current thin section count: 0.\n- CTA area: replace the weak or missing CTA with a specific finance systems review.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to finance systems review.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Finance control issues to check first\n- Reporting questions to resolve before the next close\n\nCTA angle:\n- finance systems review\n- Add a concise CTA offering a finance systems review, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /contact\n\nRisk notes:\n- High commercial intent: keep advice useful, but make the service next step visible and specific.\n\nReview questions:\n- Does the revised article answer the problem promised by \"A CFO's Guide to AI-Enhanced Finance\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"cfo-guide-ai-enhanced-finance\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "Why NetSuite Is the Best Choice of Accounting Software",
+      "preferredTitle": "Why NetSuite Is the Best Choice of Accounting Software",
+      "rawQuery": null,
+      "targetSlug": "why-netsuite-is-the-best-accounting-software-choice",
+      "displayRank": 6,
+      "sprintCandidate": true,
+      "sprintReason": "Needs QA improvement and is outside dashboard top 5.",
+      "articleTypeBucket": "finance",
+      "priorityScore": 46,
+      "conversionIntentScore": 78,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Low QA score (73) and/or quality warnings (missing or weak service-relevant CTA).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "finance systems review",
+      "recommendedCTA": "finance systems review",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 88,
+      "estimatedLeadIntent": 76,
+      "assistedConversionPotential": 70,
+      "strategicImportance": 40,
+      "confidenceLevel": 81,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "Why NetSuite Is the Best Choice of Accounting Software has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame Why NetSuite Is the Best Choice of Accounting Software around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send to finance leaders who are outgrowing accounting tools or struggling with reporting control.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer a finance systems review.",
+        "suggestedFaqQuestions": [
+          "When should a business review why netsuite is the best choice of accounting software?",
+          "What are the warning signs that why netsuite is the best choice of accounting software needs specialist advice?",
+          "How can ERP Experts help with why netsuite is the best choice of accounting software?"
+        ],
+        "suggestedMetaTitle": "Why NetSuite Is the Best Choice of Accounting Software | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for why netsuite is the best choice of accounting software from ERP Experts. Review the finance system signals that affect control, repo"
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "Main body: expand thin sections with concrete examples, decision criteria, or recovery steps. Current thin section count: 0.",
+          "CTA area: replace the weak or missing CTA with a specific finance systems review."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to finance systems review.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Finance control issues to check first",
+          "Reporting questions to resolve before the next close"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering a finance systems review, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/services/netsuite",
+          "/contact"
+        ],
+        "riskNotes": [
+          "High commercial intent: keep advice useful, but make the service next step visible and specific."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"Why NetSuite Is the Best Choice of Accounting Software\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: why-netsuite-is-the-best-accounting-software-choice\n- Title: Why NetSuite Is the Best Choice of Accounting Software\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- Main body: expand thin sections with concrete examples, decision criteria, or recovery steps. Current thin section count: 0.\n- CTA area: replace the weak or missing CTA with a specific finance systems review.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to finance systems review.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Finance control issues to check first\n- Reporting questions to resolve before the next close\n\nCTA angle:\n- finance systems review\n- Add a concise CTA offering a finance systems review, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /services/netsuite\n- /contact\n\nRisk notes:\n- High commercial intent: keep advice useful, but make the service next step visible and specific.\n\nReview questions:\n- Does the revised article answer the problem promised by \"Why NetSuite Is the Best Choice of Accounting Software\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"why-netsuite-is-the-best-accounting-software-choice\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "Best ERP for Manufacturers",
+      "preferredTitle": "Best ERP for Manufacturers",
+      "rawQuery": null,
+      "targetSlug": "best-erp-for-manufacturers",
+      "displayRank": 7,
+      "sprintCandidate": true,
+      "sprintReason": "Needs QA improvement and is outside dashboard top 5.",
+      "articleTypeBucket": "manufacturing",
+      "priorityScore": 46,
+      "conversionIntentScore": 82,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Low QA score (77) and/or quality warnings (missing or weak service-relevant CTA).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/case-studies",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "manufacturing ERP discussion",
+      "recommendedCTA": "manufacturing ERP discussion",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 92,
+      "estimatedLeadIntent": 79,
+      "assistedConversionPotential": 77,
+      "strategicImportance": 42,
+      "confidenceLevel": 81,
+      "outcomeLabel": "high_value",
+      "whyThisMattersCommercially": "Best ERP for Manufacturers is likely to support commercially meaningful conversations because it combines high conversion intent with manufacturing service relevance.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame Best ERP for Manufacturers around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send to manufacturing contacts with inventory, production, or reporting pain, positioned as a decision checklist.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer a manufacturing ERP discussion.",
+        "suggestedFaqQuestions": [
+          "When should a business review best erp for manufacturers?",
+          "What are the warning signs that best erp for manufacturers needs specialist advice?",
+          "How can ERP Experts help with best erp for manufacturers?"
+        ],
+        "suggestedMetaTitle": "Best ERP for Manufacturers | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for best erp for manufacturers from ERP Experts. See what manufacturers should review before choosing or improving ERP."
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "CTA area: replace the weak or missing CTA with a specific manufacturing ERP discussion."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to manufacturing ERP discussion.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Manufacturing signals that the ERP setup needs review",
+          "Questions to ask before changing systems or processes"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering a manufacturing ERP discussion, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/case-studies",
+          "/services/netsuite",
+          "/contact"
+        ],
+        "riskNotes": [
+          "High commercial intent: keep advice useful, but make the service next step visible and specific."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"Best ERP for Manufacturers\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: best-erp-for-manufacturers\n- Title: Best ERP for Manufacturers\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- CTA area: replace the weak or missing CTA with a specific manufacturing ERP discussion.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to manufacturing ERP discussion.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Manufacturing signals that the ERP setup needs review\n- Questions to ask before changing systems or processes\n\nCTA angle:\n- manufacturing ERP discussion\n- Add a concise CTA offering a manufacturing ERP discussion, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /case-studies\n- /services/netsuite\n- /contact\n\nRisk notes:\n- High commercial intent: keep advice useful, but make the service next step visible and specific.\n\nReview questions:\n- Does the revised article answer the problem promised by \"Best ERP for Manufacturers\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"best-erp-for-manufacturers\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "6 Essential Accounts Receivable Reports",
+      "preferredTitle": "6 Essential Accounts Receivable Reports",
+      "rawQuery": null,
+      "targetSlug": "accounts-receivable-reports",
+      "displayRank": 8,
+      "sprintCandidate": true,
+      "sprintReason": "Needs QA improvement and is outside dashboard top 5.",
+      "articleTypeBucket": "finance",
+      "priorityScore": 45,
+      "conversionIntentScore": 78,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Low QA score (75) and/or quality warnings (missing or weak service-relevant CTA).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "finance systems review",
+      "recommendedCTA": "finance systems review",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 79,
+      "estimatedLeadIntent": 70,
+      "assistedConversionPotential": 67,
+      "strategicImportance": 32,
+      "confidenceLevel": 81,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "6 Essential Accounts Receivable Reports has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame 6 Essential Accounts Receivable Reports around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send to finance leaders who are outgrowing accounting tools or struggling with reporting control.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer a finance systems review.",
+        "suggestedFaqQuestions": [
+          "When should a business review 6 essential accounts receivable reports?",
+          "What are the warning signs that 6 essential accounts receivable reports needs specialist advice?",
+          "How can ERP Experts help with 6 essential accounts receivable reports?"
+        ],
+        "suggestedMetaTitle": "6 Essential Accounts Receivable Reports | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for 6 essential accounts receivable reports from ERP Experts. Review the finance system signals that affect control, reporting, and scal"
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "CTA area: replace the weak or missing CTA with a specific finance systems review."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to finance systems review.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Finance control issues to check first",
+          "Reporting questions to resolve before the next close"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering a finance systems review, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/contact"
+        ],
+        "riskNotes": [
+          "High commercial intent: keep advice useful, but make the service next step visible and specific."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"6 Essential Accounts Receivable Reports\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: accounts-receivable-reports\n- Title: 6 Essential Accounts Receivable Reports\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- CTA area: replace the weak or missing CTA with a specific finance systems review.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to finance systems review.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Finance control issues to check first\n- Reporting questions to resolve before the next close\n\nCTA angle:\n- finance systems review\n- Add a concise CTA offering a finance systems review, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /contact\n\nRisk notes:\n- High commercial intent: keep advice useful, but make the service next step visible and specific.\n\nReview questions:\n- Does the revised article answer the problem promised by \"6 Essential Accounts Receivable Reports\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"accounts-receivable-reports\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "How to Choose an ERP Development Company",
+      "preferredTitle": "How to Choose an ERP Development Company",
+      "rawQuery": "erp development company",
+      "targetSlug": null,
+      "displayRank": 9,
+      "sprintCandidate": true,
+      "sprintReason": "Demand-led content gap suitable for sprint backlog planning.",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 45,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 59,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 47,
+      "strategicImportance": 56,
+      "confidenceLevel": 71,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "How to Choose an ERP Development Company has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use How to Choose an ERP Development Company to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review choosing an ERP development company?",
+          "What are the warning signs that choosing an ERP development company needs specialist advice?",
+          "How can ERP Experts help with choosing an ERP development company?"
+        ],
+        "suggestedMetaTitle": "How to Choose an ERP Development Company | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for choosing an erp development company from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "Why Choose NetSuite Support From ERP Experts",
+      "preferredTitle": "Why Choose NetSuite Support From ERP Experts",
+      "rawQuery": null,
+      "targetSlug": "why-choose-netsuite-support-from-erp-experts",
+      "displayRank": 10,
+      "sprintCandidate": true,
+      "sprintReason": "Needs QA improvement and is outside dashboard top 5.",
+      "articleTypeBucket": "support",
+      "priorityScore": 44,
+      "conversionIntentScore": 88,
+      "conversionIntentLabel": "high",
+      "whyThisMatters": "Low QA score (90) and/or quality warnings (2 thin tip section(s) under 25 words).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/support",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "support review",
+      "recommendedCTA": "support review",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 98,
+      "estimatedLeadIntent": 85,
+      "assistedConversionPotential": 80,
+      "strategicImportance": 43,
+      "confidenceLevel": 81,
+      "outcomeLabel": "high_value",
+      "whyThisMattersCommercially": "Why Choose NetSuite Support From ERP Experts is likely to support commercially meaningful conversations because it combines high conversion intent with support service relevance.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Frame Why Choose NetSuite Support From ERP Experts around a board-level decision: where poor ERP choices create cost, delay, or operational drag.",
+        "emailNurtureAngle": "Send to existing NetSuite users showing symptoms of recurring support issues, with a prompt to review unresolved friction.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer a support review.",
+        "suggestedFaqQuestions": [
+          "When should a business review why choose netsuite support from erp experts?",
+          "What are the warning signs that why choose netsuite support from erp experts needs specialist advice?",
+          "How can ERP Experts help with why choose netsuite support from erp experts?"
+        ],
+        "suggestedMetaTitle": "Why Choose NetSuite Support From ERP Experts | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for why choose netsuite support from erp experts from ERP Experts. Understand the support issues to fix before they slow the business do"
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "Opening section: expand the problem statement and make the reader's risk clear within the first 60-90 words.",
+          "Main body: expand thin sections with concrete examples, decision criteria, or recovery steps. Current thin section count: 2."
+        ],
+        "missingElements": [
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Support issues that should not become business as usual",
+          "When to bring in a NetSuite support partner"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering a support review, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/support",
+          "/services/netsuite",
+          "/contact"
+        ],
+        "riskNotes": [
+          "High commercial intent: keep advice useful, but make the service next step visible and specific."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"Why Choose NetSuite Support From ERP Experts\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: why-choose-netsuite-support-from-erp-experts\n- Title: Why Choose NetSuite Support From ERP Experts\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- Opening section: expand the problem statement and make the reader's risk clear within the first 60-90 words.\n- Main body: expand thin sections with concrete examples, decision criteria, or recovery steps. Current thin section count: 2.\n\nMissing elements to add or strengthen:\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Support issues that should not become business as usual\n- When to bring in a NetSuite support partner\n\nCTA angle:\n- support review\n- Add a concise CTA offering a support review, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /support\n- /services/netsuite\n- /contact\n\nRisk notes:\n- High commercial intent: keep advice useful, but make the service next step visible and specific.\n\nReview questions:\n- Does the revised article answer the problem promised by \"Why Choose NetSuite Support From ERP Experts\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"why-choose-netsuite-support-from-erp-experts\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "What to Look For in an ERP Software Development Company",
+      "preferredTitle": "What to Look For in an ERP Software Development Company",
+      "rawQuery": "erp software development company",
+      "targetSlug": null,
+      "displayRank": 11,
+      "sprintCandidate": true,
+      "sprintReason": "Demand-led content gap suitable for sprint backlog planning.",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 41,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 58,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 46,
+      "strategicImportance": 54,
+      "confidenceLevel": 71,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "What to Look For in an ERP Software Development Company has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use What to Look For in an ERP Software Development Company to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review what to look for in an erp software development company?",
+          "What are the warning signs that what to look for in an erp software development company needs specialist advice?",
+          "How can ERP Experts help with what to look for in an erp software development company?"
+        ],
+        "suggestedMetaTitle": "What to Look For in an ERP Software Development Company | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for what to look for in an erp software development company from ERP Experts. Use it to plan a clearer next step before committing budge"
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "ERP Consulting: Practical Guide",
+      "preferredTitle": "ERP Consulting: Practical Guide",
+      "rawQuery": "erp consulting",
+      "targetSlug": null,
+      "displayRank": 12,
+      "sprintCandidate": true,
+      "sprintReason": "Demand-led content gap suitable for sprint backlog planning.",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 40,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 58,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 45,
+      "strategicImportance": 54,
+      "confidenceLevel": 71,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "ERP Consulting: Practical Guide has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use ERP Consulting: Practical Guide to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review erp consulting: practical guide?",
+          "What are the warning signs that erp consulting: practical guide needs specialist advice?",
+          "How can ERP Experts help with erp consulting: practical guide?"
+        ],
+        "suggestedMetaTitle": "ERP Consulting: Practical Guide | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for erp consulting: practical guide from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "ERP Consultancy: Practical Guide",
+      "preferredTitle": "ERP Consultancy: Practical Guide",
+      "rawQuery": "erp consultancy",
+      "targetSlug": null,
+      "displayRank": 13,
+      "sprintCandidate": true,
+      "sprintReason": "Demand-led content gap suitable for sprint backlog planning.",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 39,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 58,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 45,
+      "strategicImportance": 54,
+      "confidenceLevel": 71,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "ERP Consultancy: Practical Guide has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use ERP Consultancy: Practical Guide to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review erp consultancy: practical guide?",
+          "What are the warning signs that erp consultancy: practical guide needs specialist advice?",
+          "How can ERP Experts help with erp consultancy: practical guide?"
+        ],
+        "suggestedMetaTitle": "ERP Consultancy: Practical Guide | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for erp consultancy: practical guide from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "ERP Consultancy Services: Practical Guide",
+      "preferredTitle": "ERP Consultancy Services: Practical Guide",
+      "rawQuery": "erp consultancy services",
+      "targetSlug": null,
+      "displayRank": 14,
+      "sprintCandidate": true,
+      "sprintReason": "Demand-led content gap suitable for sprint backlog planning.",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 37,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 57,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 44,
+      "strategicImportance": 53,
+      "confidenceLevel": 71,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "ERP Consultancy Services: Practical Guide has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use ERP Consultancy Services: Practical Guide to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review erp consultancy services: practical guide?",
+          "What are the warning signs that erp consultancy services: practical guide needs specialist advice?",
+          "How can ERP Experts help with erp consultancy services: practical guide?"
+        ],
+        "suggestedMetaTitle": "ERP Consultancy Services: Practical Guide | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for erp consultancy services: practical guide from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "create_new",
+      "targetArticleTitle": "ERP Advisory Services Uk: Practical Guide",
+      "preferredTitle": "ERP Advisory Services Uk: Practical Guide",
+      "rawQuery": "erp advisory services united kingdom",
+      "targetSlug": null,
+      "displayRank": 15,
+      "sprintCandidate": true,
+      "sprintReason": "Demand-led content gap suitable for sprint backlog planning.",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 37,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Demand-led topic backlog indicates uncovered search intent.",
+      "primaryIssue": "Uncovered search intent",
+      "suggestedContentChanges": [
+        "Draft a focused resource around the exact search intent.",
+        "Add a clear intro, practical sections, conclusion, disclaimer, and metadata.",
+        "Include examples that connect the topic back to NetSuite decision-making."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "search_demand",
+        "content_gap"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 57,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 44,
+      "strategicImportance": 53,
+      "confidenceLevel": 71,
+      "outcomeLabel": "medium_value",
+      "whyThisMattersCommercially": "ERP Advisory Services Uk: Practical Guide has useful commercial potential, but should be treated as nurture or assisted-conversion content until real lead outcomes are recorded.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use ERP Advisory Services Uk: Practical Guide to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions uncovered search intent; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review erp advisory services uk: practical guide?",
+          "What are the warning signs that erp advisory services uk: practical guide needs specialist advice?",
+          "How can ERP Experts help with erp advisory services uk: practical guide?"
+        ],
+        "suggestedMetaTitle": "ERP Advisory Services Uk: Practical Guide | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for erp advisory services uk: practical guide from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": null,
+      "codexPatchPrompt": null
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "Is NetSuite Right for Your Business?",
+      "preferredTitle": "Is NetSuite Right for Your Business?",
+      "rawQuery": null,
+      "targetSlug": "is-netsuite-right-for-your-business",
+      "displayRank": 16,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 25,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Low QA score (77) and/or quality warnings (missing or weak service-relevant CTA).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 54,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 40,
+      "strategicImportance": 26,
+      "confidenceLevel": 69,
+      "outcomeLabel": "awareness_only",
+      "whyThisMattersCommercially": "Is NetSuite Right for Your Business? is mainly awareness content for now; keep the CTA light and use outcome data before giving it more commercial priority.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use Is NetSuite Right for Your Business? to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review is netsuite right for your business??",
+          "What are the warning signs that is netsuite right for your business? needs specialist advice?",
+          "How can ERP Experts help with is netsuite right for your business??"
+        ],
+        "suggestedMetaTitle": "Is NetSuite Right for Your Business? | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for is netsuite right for your business? from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "CTA area: replace the weak or missing CTA with a specific audit/readiness check."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to audit/readiness check.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Decision criteria to use before choosing the next step",
+          "When to ask an ERP specialist for a second view"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering an audit/readiness check, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/services/netsuite",
+          "/contact"
+        ],
+        "riskNotes": [
+          "Keep the current route, slug, and article intent stable; only improve depth, clarity, links, and CTA relevance."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"Is NetSuite Right for Your Business?\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: is-netsuite-right-for-your-business\n- Title: Is NetSuite Right for Your Business?\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- CTA area: replace the weak or missing CTA with a specific audit/readiness check.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to audit/readiness check.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Decision criteria to use before choosing the next step\n- When to ask an ERP specialist for a second view\n\nCTA angle:\n- audit/readiness check\n- Add a concise CTA offering an audit/readiness check, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /services/netsuite\n- /contact\n\nRisk notes:\n- Keep the current route, slug, and article intent stable; only improve depth, clarity, links, and CTA relevance.\n\nReview questions:\n- Does the revised article answer the problem promised by \"Is NetSuite Right for Your Business?\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"is-netsuite-right-for-your-business\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "NetSuite for Small Businesses",
+      "preferredTitle": "NetSuite for Small Businesses",
+      "rawQuery": null,
+      "targetSlug": "netsuite-for-small-businesses",
+      "displayRank": 17,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 25,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Low QA score (77) and/or quality warnings (missing or weak service-relevant CTA).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 54,
+      "estimatedLeadIntent": 45,
+      "assistedConversionPotential": 40,
+      "strategicImportance": 26,
+      "confidenceLevel": 69,
+      "outcomeLabel": "awareness_only",
+      "whyThisMattersCommercially": "NetSuite for Small Businesses is mainly awareness content for now; keep the CTA light and use outcome data before giving it more commercial priority.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use NetSuite for Small Businesses to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review netsuite for small businesses?",
+          "What are the warning signs that netsuite for small businesses needs specialist advice?",
+          "How can ERP Experts help with netsuite for small businesses?"
+        ],
+        "suggestedMetaTitle": "NetSuite for Small Businesses | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for netsuite for small businesses from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "CTA area: replace the weak or missing CTA with a specific audit/readiness check."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to audit/readiness check.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Decision criteria to use before choosing the next step",
+          "When to ask an ERP specialist for a second view"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering an audit/readiness check, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/services/netsuite",
+          "/contact"
+        ],
+        "riskNotes": [
+          "Keep the current route, slug, and article intent stable; only improve depth, clarity, links, and CTA relevance."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"NetSuite for Small Businesses\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: netsuite-for-small-businesses\n- Title: NetSuite for Small Businesses\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- CTA area: replace the weak or missing CTA with a specific audit/readiness check.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to audit/readiness check.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Decision criteria to use before choosing the next step\n- When to ask an ERP specialist for a second view\n\nCTA angle:\n- audit/readiness check\n- Add a concise CTA offering an audit/readiness check, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /services/netsuite\n- /contact\n\nRisk notes:\n- Keep the current route, slug, and article intent stable; only improve depth, clarity, links, and CTA relevance.\n\nReview questions:\n- Does the revised article answer the problem promised by \"NetSuite for Small Businesses\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"netsuite-for-small-businesses\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "CSV Imports: Why They Fail and How to Fix It",
+      "preferredTitle": "CSV Imports: Why They Fail and How to Fix It",
+      "rawQuery": null,
+      "targetSlug": "csv-import-errors",
+      "displayRank": 18,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 25,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Low QA score (77) and/or quality warnings (missing or weak service-relevant CTA).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 46,
+      "estimatedLeadIntent": 39,
+      "assistedConversionPotential": 37,
+      "strategicImportance": 18,
+      "confidenceLevel": 69,
+      "outcomeLabel": "awareness_only",
+      "whyThisMattersCommercially": "CSV Imports: Why They Fail and How to Fix It is mainly awareness content for now; keep the CTA light and use outcome data before giving it more commercial priority.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use CSV Imports: Why They Fail and How to Fix It to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review csv imports: why they fail and how to fix it?",
+          "What are the warning signs that csv imports: why they fail and how to fix it needs specialist advice?",
+          "How can ERP Experts help with csv imports: why they fail and how to fix it?"
+        ],
+        "suggestedMetaTitle": "CSV Imports: Why They Fail and How to Fix It | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for csv imports: why they fail and how to fix it from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "CTA area: replace the weak or missing CTA with a specific audit/readiness check."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to audit/readiness check.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Decision criteria to use before choosing the next step",
+          "When to ask an ERP specialist for a second view"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering an audit/readiness check, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/contact"
+        ],
+        "riskNotes": [
+          "Keep the current route, slug, and article intent stable; only improve depth, clarity, links, and CTA relevance."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"CSV Imports: Why They Fail and How to Fix It\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: csv-import-errors\n- Title: CSV Imports: Why They Fail and How to Fix It\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- CTA area: replace the weak or missing CTA with a specific audit/readiness check.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to audit/readiness check.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Decision criteria to use before choosing the next step\n- When to ask an ERP specialist for a second view\n\nCTA angle:\n- audit/readiness check\n- Add a concise CTA offering an audit/readiness check, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /contact\n\nRisk notes:\n- Keep the current route, slug, and article intent stable; only improve depth, clarity, links, and CTA relevance.\n\nReview questions:\n- Does the revised article answer the problem promised by \"CSV Imports: Why They Fail and How to Fix It\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"csv-import-errors\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "10 Tips to Maximise Profits",
+      "preferredTitle": "10 Tips to Maximise Profits",
+      "rawQuery": null,
+      "targetSlug": "maximise-profits",
+      "displayRank": 19,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "commercial",
+      "priorityScore": 25,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Low QA score (77) and/or quality warnings (missing or weak service-relevant CTA).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 46,
+      "estimatedLeadIntent": 39,
+      "assistedConversionPotential": 37,
+      "strategicImportance": 18,
+      "confidenceLevel": 69,
+      "outcomeLabel": "awareness_only",
+      "whyThisMattersCommercially": "10 Tips to Maximise Profits is mainly awareness content for now; keep the CTA light and use outcome data before giving it more commercial priority.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use 10 Tips to Maximise Profits to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review 10 tips to maximise profits?",
+          "What are the warning signs that 10 tips to maximise profits needs specialist advice?",
+          "How can ERP Experts help with 10 tips to maximise profits?"
+        ],
+        "suggestedMetaTitle": "10 Tips to Maximise Profits | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for 10 tips to maximise profits from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "CTA area: replace the weak or missing CTA with a specific audit/readiness check."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to audit/readiness check.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Decision criteria to use before choosing the next step",
+          "When to ask an ERP specialist for a second view"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering an audit/readiness check, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/contact"
+        ],
+        "riskNotes": [
+          "Keep the current route, slug, and article intent stable; only improve depth, clarity, links, and CTA relevance."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"10 Tips to Maximise Profits\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: maximise-profits\n- Title: 10 Tips to Maximise Profits\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- CTA area: replace the weak or missing CTA with a specific audit/readiness check.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to audit/readiness check.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Decision criteria to use before choosing the next step\n- When to ask an ERP specialist for a second view\n\nCTA angle:\n- audit/readiness check\n- Add a concise CTA offering an audit/readiness check, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /contact\n\nRisk notes:\n- Keep the current route, slug, and article intent stable; only improve depth, clarity, links, and CTA relevance.\n\nReview questions:\n- Does the revised article answer the problem promised by \"10 Tips to Maximise Profits\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"maximise-profits\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "What is an ERP System? A Beginner's Guide",
+      "preferredTitle": "What is an ERP System? A Beginner's Guide",
+      "rawQuery": null,
+      "targetSlug": "what-is-an-erp-system",
+      "displayRank": 20,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "informational",
+      "priorityScore": 25,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Low QA score (77) and/or quality warnings (missing or weak service-relevant CTA).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 18,
+      "estimatedLeadIntent": 23,
+      "assistedConversionPotential": 8,
+      "strategicImportance": 4,
+      "confidenceLevel": 57,
+      "outcomeLabel": "awareness_only",
+      "whyThisMattersCommercially": "What is an ERP System? A Beginner's Guide is mainly awareness content for now; keep the CTA light and use outcome data before giving it more commercial priority.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use What is an ERP System? A Beginner's Guide to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review what is an erp system? a beginner's guide?",
+          "What are the warning signs that what is an erp system? a beginner's guide needs specialist advice?",
+          "How can ERP Experts help with what is an erp system? a beginner's guide?"
+        ],
+        "suggestedMetaTitle": "What is an ERP System? A Beginner's Guide | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for what is an erp system? a beginner's guide from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "CTA area: replace the weak or missing CTA with a specific audit/readiness check."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to audit/readiness check.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Decision criteria to use before choosing the next step",
+          "When to ask an ERP specialist for a second view"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering an audit/readiness check, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/services/netsuite",
+          "/contact"
+        ],
+        "riskNotes": [
+          "Keep the current route, slug, and article intent stable; only improve depth, clarity, links, and CTA relevance."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"What is an ERP System? A Beginner's Guide\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: what-is-an-erp-system\n- Title: What is an ERP System? A Beginner's Guide\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- CTA area: replace the weak or missing CTA with a specific audit/readiness check.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to audit/readiness check.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Decision criteria to use before choosing the next step\n- When to ask an ERP specialist for a second view\n\nCTA angle:\n- audit/readiness check\n- Add a concise CTA offering an audit/readiness check, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /services/netsuite\n- /contact\n\nRisk notes:\n- Keep the current route, slug, and article intent stable; only improve depth, clarity, links, and CTA relevance.\n\nReview questions:\n- Does the revised article answer the problem promised by \"What is an ERP System? A Beginner's Guide\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"what-is-an-erp-system\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    },
+    {
+      "recommendationType": "improve_existing",
+      "targetArticleTitle": "Top Benefits of ERP Systems",
+      "preferredTitle": "Top Benefits of ERP Systems",
+      "rawQuery": null,
+      "targetSlug": "benefits-of-erp-systems",
+      "displayRank": 21,
+      "sprintCandidate": false,
+      "sprintReason": "",
+      "articleTypeBucket": "informational",
+      "priorityScore": 25,
+      "conversionIntentScore": 35,
+      "conversionIntentLabel": "low",
+      "whyThisMatters": "Low QA score (77) and/or quality warnings (missing or weak service-relevant CTA).",
+      "primaryIssue": "Weak QA score or content quality warning",
+      "suggestedContentChanges": [
+        "Strengthen the intro so the target problem is clear within the first 60 words.",
+        "Expand thin sections with practical detail, examples, or decision criteria.",
+        "Tighten the conclusion and make the next step explicit."
+      ],
+      "suggestedInternalLinks": [
+        "/resources",
+        "/services/netsuite",
+        "/contact"
+      ],
+      "suggestedCtaAngle": "audit/readiness check",
+      "recommendedCTA": "audit/readiness check",
+      "reviewChecklist": [
+        "Metadata is complete and matches the search intent.",
+        "Intro, section depth, conclusion, and disclaimer pass Resource QA.",
+        "Internal links support the commercial next step.",
+        "CTA is relevant to the reader's likely problem.",
+        "Run npm run qa:resources after changes."
+      ],
+      "sourceSignals": [
+        "poor_qa_score"
+      ],
+      "titleQualityChecks": [],
+      "estimatedBusinessValue": 18,
+      "estimatedLeadIntent": 23,
+      "assistedConversionPotential": 8,
+      "strategicImportance": 4,
+      "confidenceLevel": 57,
+      "outcomeLabel": "awareness_only",
+      "whyThisMattersCommercially": "Top Benefits of ERP Systems is mainly awareness content for now; keep the CTA light and use outcome data before giving it more commercial priority.",
+      "leadsGenerated": null,
+      "assistedConversions": null,
+      "rankingMovement": null,
+      "manualOutcomeNotes": "",
+      "channelOutputs": {
+        "linkedInPostAngle": "Use Top Benefits of ERP Systems to clarify a common ERP question and point readers towards a practical next step.",
+        "emailNurtureAngle": "Send as an educational follow-up for early-stage ERP conversations that need a clearer evaluation path.",
+        "salesFollowUpAngle": "Use after discovery calls where the prospect mentions weak qa score or content quality warning; offer an audit/readiness check.",
+        "suggestedFaqQuestions": [
+          "When should a business review top benefits of erp systems?",
+          "What are the warning signs that top benefits of erp systems needs specialist advice?",
+          "How can ERP Experts help with top benefits of erp systems?"
+        ],
+        "suggestedMetaTitle": "Top Benefits of ERP Systems | ERP Experts",
+        "suggestedMetaDescription": "Practical guidance for top benefits of erp systems from ERP Experts. Use it to plan a clearer next step before committing budget."
+      },
+      "implementationPlan": {
+        "sectionsToImprove": [
+          "CTA area: replace the weak or missing CTA with a specific audit/readiness check."
+        ],
+        "missingElements": [
+          "Service-relevant CTA linked to audit/readiness check.",
+          "Internal links from the article to relevant service or contact pages.",
+          "Valid publishedAt value so freshness checks and reporting stay reliable."
+        ],
+        "suggestedNewSectionHeadings": [
+          "Decision criteria to use before choosing the next step",
+          "When to ask an ERP specialist for a second view"
+        ],
+        "strongerCTARecommendation": "Add a concise CTA offering an audit/readiness check, linked from the conclusion and any relevant decision section.",
+        "internalLinksToAdd": [
+          "/services/netsuite",
+          "/contact"
+        ],
+        "riskNotes": [
+          "Keep the current route, slug, and article intent stable; only improve depth, clarity, links, and CTA relevance."
+        ],
+        "reviewQuestions": [
+          "Does the revised article answer the problem promised by \"Top Benefits of ERP Systems\" without drifting into a new topic?",
+          "Can a reader see the next commercial step without feeling pushed into a generic sales message?",
+          "Do the added sections reduce the QA warnings that triggered this brief?",
+          "Do internal links point to genuinely relevant ERP Experts service pages?"
+        ]
+      },
+      "codexPatchPrompt": "Improve one existing ERP Experts resource article safely.\n\nTarget article:\n- Slug: benefits-of-erp-systems\n- Title: Top Benefits of ERP Systems\n- File: src/data/articles.js\n\nImplementation plan:\n\nSections to improve:\n- CTA area: replace the weak or missing CTA with a specific audit/readiness check.\n\nMissing elements to add or strengthen:\n- Service-relevant CTA linked to audit/readiness check.\n- Internal links from the article to relevant service or contact pages.\n- Valid publishedAt value so freshness checks and reporting stay reliable.\n\nSuggested new section headings:\n- Decision criteria to use before choosing the next step\n- When to ask an ERP specialist for a second view\n\nCTA angle:\n- audit/readiness check\n- Add a concise CTA offering an audit/readiness check, linked from the conclusion and any relevant decision section.\n\nInternal links to add where relevant:\n- /services/netsuite\n- /contact\n\nRisk notes:\n- Keep the current route, slug, and article intent stable; only improve depth, clarity, links, and CTA relevance.\n\nReview questions:\n- Does the revised article answer the problem promised by \"Top Benefits of ERP Systems\" without drifting into a new topic?\n- Can a reader see the next commercial step without feeling pushed into a generic sales message?\n- Do the added sections reduce the QA warnings that triggered this brief?\n- Do internal links point to genuinely relevant ERP Experts service pages?\n\nConstraints:\n- Only edit the target article object with slug \"benefits-of-erp-systems\" in src/data/articles.js.\n- Preserve the existing article data shape.\n- Do not redesign components.\n- Do not change routes.\n- Do not invent fake customer stories, named customers, statistics, certifications, or unsupported claims.\n- Use UK English.\n- Keep the article commercially useful but factual and reviewable.\n- Avoid reusing the same CTA wording used in other recent article updates; keep the CTA specific to this article's topic.\n- Vary the conclusion structure rather than repeating a fixed template.\n- Avoid repeating stock phrases such as \"clear ownership\", \"practical next step\", or \"commercially meaningful\".\n- Do not auto-publish anything.\n- After editing, run npm run lint, npm run build, npm run qa:resources, and npm run seo:briefs."
+    }
+  ]
+}

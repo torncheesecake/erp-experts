@@ -1,7 +1,8 @@
 <?php
 /**
  * Simple JSON API for SEO Roadmap article statuses.
- * Stores statuses in a sibling JSON file (seo-statuses.json).
+ * Canonical source of truth is this endpoint + seo-statuses.json on disk.
+ * The JSON file is storage, this PHP endpoint is the write gate.
  *
  * GET  → returns the current statuses object
  * POST → expects JSON body { "statuses": { "1a": "in_progress", ... } }
@@ -9,7 +10,6 @@
  */
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
@@ -17,6 +17,20 @@ header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit;
+}
+
+// Lightweight CSRF/origin guard for POST updates.
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    if ($origin !== '') {
+        $originHost = parse_url($origin, PHP_URL_HOST) ?: '';
+        if ($originHost !== $host) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Cross-origin POST blocked']);
+            exit;
+        }
+    }
 }
 
 $file = __DIR__ . '/seo-statuses.json';

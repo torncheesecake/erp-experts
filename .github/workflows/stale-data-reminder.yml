@@ -56,16 +56,7 @@ jobs:
         id: articles
         shell: bash
         run: |
-          ARTICLE_SUMMARY=$(node --input-type=module <<'EOF'
-          import { articles } from "./src/data/articles.js";
-          const list = [...articles]
-            .filter(a => a?.publishedAt)
-            .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
-            .slice(0, 3)
-            .map(a => `${a.slug} | ${a.title} | ${a.publishedAt}`);
-          console.log(list.join("\n"));
-          EOF
-          )
+          ARTICLE_SUMMARY="$(node scripts/latest_articles_summary.mjs)"
           {
             echo 'latest<<EOF'
             echo "$ARTICLE_SUMMARY"

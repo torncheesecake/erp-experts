@@ -353,17 +353,23 @@ export const articles = {
     cardDescription:
       "The CFO's job is no longer just about the numbers. Soft skills are more in demand than ever. Discover the top skills for modern finance leaders.",
     date: "2025",
+    publishedAt: "2025-09-08",
     readTime: "3 min read",
     type: "Guide",
     layoutVariant: 5,
     heroImage: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1400&q=80",
+    ctaText:
+      "If finance reporting still depends on manual reconciliations or disconnected tools, book a finance systems review to assess control gaps and prioritise the most useful ERP improvements.",
+    ctaLabel: "Book a finance systems review",
+    ctaTo: "/services/netsuite",
+    ctaTrackingName: "resource_article_cfo_skills_finance_review",
     featureImage: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80",
     challengeLabel: "The Shift",
     challengeHeading: 'Beyond the <span class="text-primary">Numbers</span>',
     challengeText:
       "The CFO's job is no longer just about the numbers. As finance leaders take on broader strategic roles, soft skills are more in demand than ever. Today's CFOs need to be communicators, collaborators, and strategic thinkers, not just number crunchers.",
     intro:
-      "Modern CFOs are expected to do far more than manage the books. They're strategic partners, data storytellers, and cross-functional leaders. This guide explores the top skills every finance leader needs to thrive in today's business environment.",
+      "Modern CFOs are expected to do far more than manage the books. They are now responsible for helping leadership make faster, better decisions while maintaining control over risk, reporting quality, and cash performance. That shift requires stronger communication, clearer commercial judgement, and better use of operational data across departments. This guide focuses on four practical skills that help finance leaders support growth without losing financial discipline.",
 
     takeaways: [
       "Active listening builds trust",
@@ -466,7 +472,7 @@ export const articles = {
     ],
 
     conclusion:
-      "The most effective CFOs combine deep financial expertise with strong communication, analytical, and strategic skills. As the role continues to evolve, investing in these capabilities isn't optional. It's essential for driving organisational success.",
+      "The most effective CFOs combine financial rigour with communication, analytical discipline, and forward planning. When these skills are supported by dependable systems and clear data flow, finance can guide strategy with more confidence and less friction. If your team is still relying on manual workarounds, this is a good point to review whether your current ERP setup is fit for the level of decision-making now expected from finance leadership.",
 
     disclaimer:
       "Based on insights from Oracle NetSuite. Contact ERP Experts to discuss how the right tools can support your finance leadership.",
@@ -478,12 +484,16 @@ export const articles = {
     cardDescription:
       "Getting the most out of NetSuite requires regular attention and smart optimisation. These essential tips will help keep your system running smoothly.",
     date: "Jul 4, 2025",
+    publishedAt: "2025-07-04",
     readTime: "3 min read",
     type: "Guide",
     layoutVariant: 5,
     heroImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1400&q=80",
+    ctaTo: "/services/netsuite",
+    ctaLabel: "Book a NetSuite optimisation review",
+    ctaTrackingName: "resource_article_netsuite_optimisation_review",
     intro:
-      "Getting the most out of NetSuite requires regular attention and smart optimisation. Whether you're new to the platform or a seasoned user, these essential tips will help keep your system running smoothly and efficiently.",
+      "Getting the most out of NetSuite requires regular attention and practical optimisation habits. Even a strong implementation can slow down over time when data quality drops, workflows become cluttered, or integrations run without oversight. Whether you are new to the platform or already operating at scale, these focused tips help you protect performance, improve user confidence, and reduce avoidable operational friction.",
 
     // Key takeaways for the sidebar
     takeaways: [
@@ -549,7 +559,7 @@ export const articles = {
         icon: Sliders,
         title: "Adjust Built-in Performance Settings",
         content:
-          "NetSuite includes settings that can help improve page load times. You can find these options under Home > Set Preferences in NetSuite.",
+          "NetSuite includes built-in settings that can materially improve page load times and day-to-day navigation. Review these options under Home > Set Preferences and tune them to match how each team actually works.",
         actions: [
           "Set your landing page to your most-used page",
           "Delay the loading of sublists",
@@ -602,7 +612,7 @@ export const articles = {
     usePanelIcon: false,
 
     conclusion:
-      "A well-maintained system not only improves performance but also contributes to sustainable growth. Start with one tip and work your way through.",
+      "System performance rarely improves by accident. If delays, duplicate data, or workflow friction are affecting team output, schedule a focused NetSuite optimisation review so you can prioritise the highest-impact fixes first and keep the platform aligned with how your business now operates.",
 
     disclaimer:
       "Always test changes in a safe environment before applying them to your live system, and ensure you have proper backups.",
@@ -618,13 +628,18 @@ export const articles = {
     type: "Article",
     layoutVariant: 7,
     heroImage: erpWorkForYouHero,
+    ctaText:
+      "If your team is still relying on workarounds, duplicated data, and manual checks, book a focused ERP setup review to identify what is helping, what is blocking performance, and what to fix first.",
+    ctaLabel: "Book an ERP setup review",
+    ctaTo: "/contact",
+    ctaTrackingName: "resource_article_erp_setup_review",
     featureImage: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80",
     challengeLabel: "The Problem",
     challengeHeading: 'When Systems Become a <span class="text-primary">Burden</span>',
     challengeText:
       "Many businesses reach a point where spreadsheets, disconnected tools, and manual workarounds stop being helpful. Teams waste time searching for information, making decisions based on outdated data, and firefighting avoidable problems.",
     intro:
-      "Growing a business is exciting, but outdated systems can quietly drain your energy and slow down your progress. You deserve technology that keeps up with your ambitions, not something that holds you back.",
+      "Growing a business is exciting, but the wrong ERP setup can quietly absorb time, money, and leadership attention. Teams end up chasing information across spreadsheets, patching processes with manual workarounds, and delaying decisions because no one fully trusts the data. Over time, this creates avoidable friction in finance, operations, and planning. Your system should support growth, not force your team to work around it every day.",
 
     takeaways: [
       "Outdated systems drain energy",
@@ -751,7 +766,7 @@ export const articles = {
     ],
 
     conclusion:
-      "Your systems should free up capacity in your business, not consume it. When you get this right, growth stops being a struggle and becomes inevitable.",
+      "Your ERP setup should create confidence, speed, and control, not recurring operational drag. If progress still depends on manual fixes, now is the right time to review whether your current setup is helping the business move forward or quietly holding it back.",
 
     disclaimer:
       "Results vary based on implementation quality and business context. Speak to an expert to understand what's possible for your organisation.",
@@ -763,17 +778,21 @@ export const articles = {
     cardDescription:
       "ERP implementation often gets a bad reputation. With the right partner and approach, it can be smooth, efficient, and even enjoyable.",
     date: "Jan 24, 2025",
+    publishedAt: "2025-01-24",
     readTime: "4 min read",
     type: "Guide",
     layoutVariant: 7,
     heroImage: erpImplementationHero,
     featureImage: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
+    ctaText: "Book an ERP implementation readiness check",
+    ctaLabel: "Request implementation consultation",
+    ctaTo: "/implementation",
     challengeLabel: "The Challenge",
     challengeHeading: 'Why Implementations <span class="text-primary">Fail</span>',
     challengeText:
       "Horror stories of blown budgets, endless delays, and frustrated teams can make ERP implementation feel more like a nightmare than an opportunity. But with the right partner and approach, it doesn't have to be that way.",
     intro:
-      "ERP implementation often gets a bad reputation. Horror stories of blown budgets, endless delays, and frustrated teams can make the process feel more like a nightmare than an opportunity. But it doesn't have to be that way. With the right partner and approach, ERP implementation can be smooth, efficient, and - dare we say - even enjoyable.",
+      "ERP implementation often gets a bad reputation. Horror stories of blown budgets, endless delays, and frustrated teams can make the process feel more like a nightmare than an opportunity. But it does not have to be that way. With the right partner and approach, ERP implementation can be smooth, efficient, and commercially practical. The key is disciplined planning, clear ownership, and strong support once the system is live.",
 
     takeaways: [
       "Start with a solid plan",
@@ -897,10 +916,10 @@ export const articles = {
     ],
 
     conclusion:
-      "ERP implementation doesn't have to be stressful. We understand that ERP implementation is more than just a technical project - it's a business transformation. That's why we prioritise your goals, your team, and your long-term success.",
+      "ERP implementation does not have to be stressful. We understand that ERP implementation is more than a technical project and should protect business continuity while enabling growth. If your team wants a safer path to go-live, start with a structured implementation readiness check and clear support plan.",
 
     disclaimer:
-      "Every implementation is unique. Speak to our team to understand how we can tailor our approach to your specific needs.",
+      "Every implementation is unique. Speak to ERP Experts through /contact, or review /implementation and /support, to tailor a practical approach to your business context.",
   },
 
   "future-of-work-generative-ai": {
@@ -909,17 +928,23 @@ export const articles = {
     cardDescription:
       "Discover how generative AI is shifting the focus from automation to augmentation, supporting and enhancing human cognitive capabilities rather than replacing them.",
     date: "2025",
+    publishedAt: "2025-06-21",
     readTime: "3 min read",
     type: "Guide",
     layoutVariant: 5,
     heroImage: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1400&q=80",
+    ctaText:
+      "If your team is testing GenAI but still struggling with reporting consistency or process clarity, book a finance systems review to identify where ERP workflows and governance should be tightened first.",
+    ctaLabel: "Book a finance systems review",
+    ctaTo: "/services/netsuite",
+    ctaTrackingName: "resource_article_genai_finance_review",
     featureImage: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80",
     challengeLabel: "The Challenge",
     challengeHeading: 'Task and Information <span class="text-primary">Overload</span>',
     challengeText:
       "In today's hyper-connected digital environment, workers are experiencing chronic task and information overload. A recent Microsoft survey found that 68 percent of employees feel they lack sufficient uninterrupted time to focus on their core tasks. Human brains are not designed to process and rapidly switch between high volumes of complex information without a decline in performance and accuracy.",
     intro:
-      "The rapid advancements in generative AI are ushering in a transformative era of work, where the boundaries between human and machine capabilities are being continually redefined. The focus is shifting from mere automation to the augmentation of work, supporting and enhancing human cognitive capabilities rather than replacing them.",
+      "Generative AI is changing how teams handle information, decision support, and routine analysis, but the practical question for most leaders is not whether AI is impressive. It is whether it improves day-to-day execution without adding control risk. In growing businesses, unmanaged AI experiments can create inconsistent outputs and unclear ownership. Used well, GenAI augments human judgement, shortens cycle times, and helps people focus on higher-value work.",
 
     takeaways: [
       "AI augments, not replaces, human work",
@@ -1034,7 +1059,7 @@ export const articles = {
     ],
 
     conclusion:
-      "The future of work is not something to resist or fear. It is an opportunity to reimagine what work can be. By centering innovation around people and augmenting human potential with intelligent technologies, organisations can create a more adaptive and human-centred workplace for all.",
+      "The most useful GenAI strategy is operational, not theoretical. Organisations that define clear use cases, governance boundaries, and process ownership are more likely to gain measurable value while protecting quality and accountability. If AI adoption is moving faster than your reporting and control model, this is the right time to assess whether your current ERP setup is still fit for purpose.",
 
     disclaimer:
       "Based on research by Maryam Alavi, PhD, Georgia Institute of Technology, and published by Oracle NetSuite.",
@@ -1470,13 +1495,19 @@ export const articles = {
     cardDescription:
       "As ERP data requirements expand and business environments grow more complex, spreadsheets reveal their limitations and hidden costs.",
     date: "2024",
+    publishedAt: "2024-06-14",
     readTime: "3 min read",
     type: "Guide",
     layoutVariant: 5,
     heroImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1400&q=80",
+    ctaText:
+      "If spreadsheets are creating delays, version conflicts, or reporting blind spots, book an ERP reporting risk review to identify where control is slipping and what to fix first.",
+    ctaLabel: "Book an ERP reporting risk review",
+    ctaTo: "/services/netsuite",
+    ctaTrackingName: "resource_article_spreadsheet_risk_review",
     featureImage: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&q=80",
     intro:
-      "Spreadsheets have long served as the backbone for financial and operational reporting, scenario modeling, and data tracking. Yet, as ERP data requirements expand and business environments grow more complex, spreadsheets reveal their limitations, introducing hidden costs that can impact productivity, accuracy, and decision-making.",
+      "Spreadsheets are familiar, flexible, and quick to set up, which is why they often become the default reporting layer for finance and operations. The risk appears later. As transaction volume grows, teams spend more time reconciling versions, checking formulas, and chasing inconsistent numbers before they can make decisions. That hidden effort slows reporting cycles, weakens controls, and increases the chance of avoidable errors at exactly the point when leadership needs clearer, faster insight.",
 
     takeaways: [
       "Spreadsheets create data silos",
@@ -1580,7 +1611,7 @@ export const articles = {
     ],
 
     conclusion:
-      "A comprehensive ERP system provides a single source of truth for business data, accessible anytime, anywhere. Moving data to an ERP system ensures that reporting is streamlined, data quality is improved, and insights are instantly available to support faster, smarter decisions.",
+      "Spreadsheets can still support tactical analysis, but they should not be the core control layer for a growing business. When reporting confidence depends on manual checks and workarounds, decision quality and operational pace both suffer. A structured ERP approach gives you a trusted data foundation, stronger governance, and reporting that supports decisions in real time rather than after the fact.",
 
     disclaimer:
       "ERP Experts can help your organisation move beyond the limitations of spreadsheets to a scalable, intelligent ERP solution that supports sustainable growth.",
@@ -2644,13 +2675,17 @@ export const articles = {
     keywords:
       "poor NetSuite implementation, failed NetSuite implementation, NetSuite implementation problems, NetSuite project recovery",
     date: "Mar 2026",
+    publishedAt: "2026-03-18",
     readTime: "8 min read",
     type: "Guide",
     layoutVariant: 7,
     heroImage: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1400&q=80",
+    ctaText: "Book a NetSuite implementation recovery review",
+    ctaLabel: "Request implementation consultation",
+    ctaTo: "/implementation",
 
     intro:
-      "Most implementation problems are visible long before go-live. The challenge is that teams normalise warning signs until timelines slip, trust drops, and rework becomes unavoidable. This guide highlights ten common indicators of a weak NetSuite implementation and the actions that help you recover quickly.",
+      "Most implementation problems are visible long before go-live, but teams often normalise those warning signs because they are under delivery pressure. That is when small delivery issues become expensive programme risk, especially when decision ownership, testing discipline, and user readiness are weak. This guide highlights ten common indicators of a poor NetSuite implementation and the practical actions that help you recover control before confidence, budget, and timelines deteriorate further.",
 
     overviewHeading: 'Spot the Warning Signs <span class="text-primary">Before Go-Live</span>',
     overviewSubtext:
@@ -2671,7 +2706,7 @@ export const articles = {
         icon: AlertTriangle,
         title: "Scope Changes Every Week",
         content:
-          "If priorities keep shifting without formal impact analysis, the project is drifting. Constant change leads to rework, conflicting expectations, and unstable timelines.",
+          "If priorities keep shifting without formal impact analysis, the project is drifting. Constant change leads to rework, conflicting expectations, unstable timelines, and reduced stakeholder confidence in delivery governance.",
         actions: [
           "Freeze scope for current sprint cycles",
           "Route all changes through formal impact review",
@@ -2683,7 +2718,7 @@ export const articles = {
         icon: Clock,
         title: "No Clear Decision Owners",
         content:
-          "When decisions are delayed or revisited repeatedly, delivery slows and teams lose confidence. Ambiguity around ownership creates bottlenecks at every stage.",
+          "When decisions are delayed or revisited repeatedly, delivery slows and teams lose confidence. Ambiguity around ownership creates bottlenecks at every stage and usually pushes critical risks into later phases.",
         actions: [
           "Assign an owner for each workstream",
           "Set decision SLAs for open issues",
@@ -2695,7 +2730,7 @@ export const articles = {
         icon: Database,
         title: "Data Migration Is Still Unclear Late in the Project",
         content:
-          "If mapping rules and cleansing standards are still being debated near go-live, risk is high. Data problems are rarely fixed quickly at the end.",
+          "If mapping rules and cleansing standards are still being debated near go-live, risk is high. Data problems are rarely fixed quickly at the end and often disrupt finance, operations, and reporting continuity.",
         actions: [
           "Lock migration mappings and data ownership now",
           "Run full-volume test loads before cutover",
@@ -2707,7 +2742,7 @@ export const articles = {
         icon: Link2,
         title: "Integration Testing Keeps Slipping",
         content:
-          "Delays in integration testing often hide dependency issues. If interfaces are not tested in realistic end-to-end flows, go-live stability is at risk.",
+          "Delays in integration testing often hide dependency issues. If interfaces are not tested in realistic end-to-end flows, go-live stability is at risk and teams lose confidence in operational readiness.",
         actions: [
           "Prioritise critical integration paths first",
           "Use production-like test data where possible",
@@ -2719,7 +2754,7 @@ export const articles = {
         icon: Users,
         title: "End Users Are Not Involved in UAT",
         content:
-          "If only project team members test the system, adoption will suffer. Real users surface practical workflow issues that technical teams can miss.",
+          "If only project team members test the system, adoption will suffer. Real users surface practical workflow issues that technical teams can miss, especially around daily exceptions and handoffs.",
         actions: [
           "Include role-based user groups in UAT sessions",
           "Capture usability feedback separately from defect logs",
@@ -2731,7 +2766,7 @@ export const articles = {
         icon: BarChart3,
         title: "Reporting Requirements Are an Afterthought",
         content:
-          "Teams quickly lose trust if core reports are missing or unreliable at go-live. Reporting should be designed as part of process design, not bolted on later.",
+          "Teams quickly lose trust if core reports are missing or unreliable at go-live. Reporting should be designed as part of process design, not bolted on later, because decision quality depends on consistent outputs.",
         actions: [
           "Define must-have reports before final build",
           "Validate report outputs with finance and operations",
@@ -2743,7 +2778,7 @@ export const articles = {
         icon: Wrench,
         title: "Too Many Workarounds Are Being Added",
         content:
-          "Workarounds can be useful short term, but too many indicate a design mismatch. Over time they create complexity and reduce confidence in the platform.",
+          "Workarounds can be useful short term, but too many indicate a design mismatch. Over time they create complexity, reduce confidence in the platform, and increase support burden after go-live.",
         actions: [
           "Review all current workarounds and classify by risk",
           "Replace high-risk workarounds with native process design",
@@ -2755,7 +2790,7 @@ export const articles = {
         icon: Shield,
         title: "Testing Is Compressed Into the Final Weeks",
         content:
-          "Compressed testing nearly always means avoidable production issues. A stable go-live depends on repeated cycles across process, data, and integrations.",
+          "Compressed testing nearly always means avoidable production issues. A stable go-live depends on repeated cycles across process, data, and integrations, with enough time to resolve defects properly.",
         actions: [
           "Run phased testing gates with clear exit criteria",
           "Protect testing time from scope expansion",
@@ -2767,7 +2802,7 @@ export const articles = {
         icon: GraduationCap,
         title: "Training Is Generic or Too Late",
         content:
-          "Users need practical, role-specific training close to go-live. Generic sessions create uncertainty and increase support load in the first weeks.",
+          "Users need practical, role-specific training close to go-live. Generic sessions create uncertainty and increase support load in the first weeks, especially for teams handling exceptions and approvals.",
         actions: [
           "Deliver role-based training with real scenarios",
           "Publish quick-reference guides per process",
@@ -2779,7 +2814,7 @@ export const articles = {
         icon: Target,
         title: "No Post Go-Live Optimisation Plan",
         content:
-          "Without a structured improvement plan, unresolved issues linger and adoption stalls. Go-live should be the start of optimisation, not the end of delivery.",
+          "Without a structured improvement plan, unresolved issues linger and adoption stalls. Go-live should be the start of optimisation, not the end of delivery, with clear accountability for measurable improvements.",
         actions: [
           "Schedule 30, 60, and 90-day optimisation reviews",
           "Prioritise fixes by operational impact and ROI",
@@ -2816,10 +2851,10 @@ export const articles = {
     ],
 
     conclusion:
-      "A poor NetSuite implementation is not a dead end, but recovery requires discipline. Clear ownership, controlled scope, stronger testing, and practical training are usually enough to restore momentum and protect long-term ROI.",
+      "A poor NetSuite implementation is not a dead end, but recovery requires discipline. Clear ownership, controlled scope, stronger testing, and practical training are usually enough to restore momentum and protect long-term ROI. If your team is already seeing these signs, set up an implementation recovery review and prioritise the highest-risk delivery gaps first.",
 
     disclaimer:
-      "Every project context is different. Contact ERP Experts if you want a practical implementation health check and recovery plan.",
+      "Every project context is different. Contact ERP Experts via /contact or review /implementation and /support if you want a practical implementation health check and recovery plan.",
   },
 
   "how-to-choose-the-right-erp-consultant": {
@@ -2832,13 +2867,17 @@ export const articles = {
     keywords:
       "how to choose an ERP consultant, ERP consultant, ERP consulting, NetSuite consultant, choosing ERP implementation partner",
     date: "Mar 2026",
+    publishedAt: "2026-03-20",
     readTime: "9 min read",
     type: "Guide",
     layoutVariant: 6,
     heroImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1400&q=80",
+    ctaText: "Book an ERP consultant audit and readiness check",
+    ctaLabel: "Request ERP readiness check",
+    ctaTo: "/partners",
 
     intro:
-      "Choosing an ERP consultant is one of the highest-impact decisions in your programme. Software matters, but delivery quality, governance discipline, and change leadership are what decide whether implementation creates value or avoidable rework.",
+      "Choosing an ERP consultant is one of the highest-impact decisions in your programme. Software matters, but delivery quality, governance discipline, and change leadership are what decide whether implementation creates value or avoidable rework. A weak partner can lock your team into months of avoidable delay, while a strong one protects scope, accelerates adoption, and improves the commercial return from NetSuite.",
 
     challengeHeading:
       'Avoiding the Wrong <span class="text-primary">Partner Fit</span>',
@@ -2902,7 +2941,7 @@ export const articles = {
         icon: Handshake,
         title: "Test How They Communicate Trade-Offs",
         content:
-          "High-quality consultants are candid about constraints. They should explain what to phase, what to simplify, and what will add risk if included too early.",
+          "High-quality consultants are candid about constraints. They should explain what to phase, what to simplify, and what will add risk if included too early, with clear justification linked to business outcomes rather than preference.",
         actions: [
           "Present a hard scenario and ask how they would scope it",
           "Check whether they challenge low-value complexity",
@@ -2914,7 +2953,7 @@ export const articles = {
         icon: BarChart3,
         title: "Require Governance and Reporting Discipline",
         content:
-          "Implementation success depends on transparency. Weekly reporting on risks, decisions, blockers, and next actions should be standard from week one.",
+          "Implementation success depends on transparency. Weekly reporting on risks, decisions, blockers, and next actions should be standard from week one so leaders can intervene early before timeline or quality risk compounds.",
         actions: [
           "Agree reporting cadence and format before signature",
           "Define named decision owners across both teams",
@@ -2926,7 +2965,7 @@ export const articles = {
         icon: Shield,
         title: "Confirm Post Go-Live Support and Optimisation",
         content:
-          "The best consultants stay engaged after launch to stabilise adoption and improve performance. If post go-live support is vague, long-term value is at risk.",
+          "The best consultants stay engaged after launch to stabilise adoption and improve performance. If post go-live support is vague, long-term value is at risk because unresolved issues usually erode confidence and delay optimisation.",
         actions: [
           "Ask for a 30/60/90 day support and optimisation plan",
           "Confirm SLA expectations for early post go-live issues",
@@ -2963,10 +3002,10 @@ export const articles = {
     ],
 
     conclusion:
-      "The right ERP consultant protects outcomes, not just dates. Use a structured evaluation process, ask difficult questions early, and choose the team that demonstrates delivery discipline as clearly as technical capability.",
+      "The right ERP consultant protects outcomes, not just dates. Use a structured evaluation process, ask difficult questions early, and choose the team that demonstrates delivery discipline as clearly as technical capability. If you want an independent second view before committing, start with an ERP readiness check to test scope, governance, and delivery risk.",
 
     disclaimer:
-      "Consultant suitability depends on your goals, constraints, and internal capacity. Speak to ERP Experts for a practical evaluation of delivery options for your business.",
+      "Consultant suitability depends on your goals, constraints, and internal capacity. Speak to ERP Experts through /partners or /contact for a practical evaluation of delivery options for your business.",
   },
 
   "why-netsuite-is-the-best-accounting-software-choice": {
@@ -3172,13 +3211,19 @@ export const articles = {
     keywords:
       "role of ERP systems, ERP systems UK, what ERP does, ERP for growing business",
     date: "Mar 2026",
+    publishedAt: "2026-03-18",
     readTime: "7 min read",
     type: "Guide",
     layoutVariant: 5,
     heroImage: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1400&q=80",
+    ctaText:
+      "If your teams are still relying on disconnected tools and manual reconciliations, book an ERP fit-for-purpose review to assess reporting risk, control gaps, and where process integration should improve first.",
+    ctaLabel: "Book an ERP fit-for-purpose review",
+    ctaTo: "/contact",
+    ctaTrackingName: "resource_article_erp_fit_review",
 
     intro:
-      "Many teams describe ERP as just another software category, but that misses the point. The role of an ERP system is to connect how the business operates, reports, and decides. As organisations grow, disconnected tools create friction between departments, duplicated effort, and inconsistent data. ERP exists to remove that friction and create operational coherence.",
+      "Many teams describe ERP as just another software category, but that misses the point. The role of an ERP system is to connect how the business operates, reports, and decides as complexity increases. In growing organisations, disconnected tools often create repeated handoffs, duplicated effort, and numbers that do not fully reconcile across departments. ERP plays the role of an operating backbone, reducing that friction so teams can maintain control, improve reporting confidence, and make decisions from a consistent picture of the business.",
 
     overviewHeading:
       'The Role of ERP Systems in <span class="text-primary">Real Operations</span>',
@@ -3295,7 +3340,7 @@ export const articles = {
     ],
 
     conclusion:
-      "Understanding the role of ERP systems means looking beyond features to operating impact. A well-designed ERP approach creates consistency, control, and visibility that help organisations grow with less friction and better decisions.",
+      "Understanding the role of ERP systems means looking beyond feature lists and focusing on operational fit. If your current systems still depend on manual consolidation, delayed reporting, or cross-team workarounds, it is worth assessing whether your setup remains fit for purpose. A stronger ERP approach improves control, visibility, and decision quality without adding avoidable process burden.",
 
     disclaimer:
       "ERP outcomes depend on process design, adoption, and delivery quality. ERP Experts can help you assess where ERP should play the biggest role in your business.",
@@ -3311,13 +3356,17 @@ export const articles = {
     keywords:
       "NetSuite project management, NetSuite financials, project financial management, project margin tracking in NetSuite",
     date: "Mar 2026",
+    publishedAt: "2026-03-22",
     readTime: "8 min read",
     type: "Guide",
     layoutVariant: 7,
     heroImage: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1400&q=80",
+    ctaText: "Book a NetSuite project finance control diagnostic",
+    ctaLabel: "Request project finance review",
+    ctaTo: "/services/netsuite",
 
     intro:
-      "Project-based organisations often struggle because delivery plans and financial reporting live in separate systems. That creates lag, margin surprises, and weak forecasting confidence. NetSuite can reduce that gap by connecting project execution, billing, and financial control in one platform, but only when implementation is designed around real delivery behaviour.",
+      "Project-based organisations often struggle because delivery plans and financial reporting live in separate systems. That creates lag, margin surprises, and weak forecasting confidence. NetSuite can reduce that gap by connecting project execution, billing, and financial control in one platform, but only when implementation is designed around real delivery behaviour. If this connection is weak, month-end close pressure rises and commercial decisions are made from incomplete project signals.",
 
     challengeLabel: "The Gap",
     challengeHeading:
@@ -3378,7 +3427,7 @@ export const articles = {
         icon: Clock,
         title: "Enforce Time and Expense Capture Discipline",
         content:
-          "Project financial accuracy depends on timely capture of effort and costs. Late or inconsistent entry weakens margin visibility and forecast quality.",
+          "Project financial accuracy depends on timely capture of effort and costs. Late or inconsistent entry weakens margin visibility, forecast quality, and confidence in client billing conversations.",
         actions: [
           "Set submission deadlines and approval SLAs",
           "Track compliance by project and role",
@@ -3402,7 +3451,7 @@ export const articles = {
         icon: AlertTriangle,
         title: "Control Scope Changes and Change Orders",
         content:
-          "Uncontrolled scope changes are one of the fastest ways to erode project margin. Change requests need operational and financial assessment before approval.",
+          "Uncontrolled scope changes are one of the fastest ways to erode project margin. Change requests need operational and financial assessment before approval so delivery pressure does not override commercial discipline.",
         actions: [
           "Route all change requests through a single approval path",
           "Track budget and timeline impact before sign-off",
@@ -3414,7 +3463,7 @@ export const articles = {
         icon: BarChart3,
         title: "Track Margin and Forecast at Project Level",
         content:
-          "Leaders need project-level margin insight that updates with current delivery data. Forecasting should be updated from actual progress, resource utilisation, and committed scope.",
+          "Leaders need project-level margin insight that updates with current delivery data. Forecasting should be updated from actual progress, resource utilisation, committed scope, and known commercial risk drivers.",
         actions: [
           "Monitor margin variance by project and portfolio",
           "Review forecast confidence alongside delivery risk indicators",
@@ -3426,7 +3475,7 @@ export const articles = {
         icon: Handshake,
         title: "Run a Strong Post Go-Live Governance Rhythm",
         content:
-          "Go-live is where weak discipline appears quickly. Establish a regular cadence for reviewing billing quality, revenue accuracy, and project reporting performance, then improve iteratively.",
+          "Go-live is where weak discipline appears quickly. Establish a regular cadence for reviewing billing quality, revenue accuracy, and project reporting performance, then improve iteratively with named actions and owner accountability.",
         actions: [
           "Schedule weekly operational-financial review meetings",
           "Prioritise defects and improvements by business impact",
@@ -3463,10 +3512,10 @@ export const articles = {
     ],
 
     conclusion:
-      "NetSuite project management and financials deliver the most value when delivery and finance operate from one shared model. With clear structure, disciplined capture, and consistent governance, project organisations gain stronger control over margin, cash, and forecasting.",
+      "The strongest results come when project delivery, billing, and finance controls are treated as one operating system rather than separate workflows. When that alignment is in place, leadership gets earlier visibility on margin pressure and can act before commercial performance slips. If this remains a pain point, start with a focused project finance systems review and map where control is leaking today.",
 
     disclaimer:
-      "Project models vary by sector and commercial structure. ERP Experts can help you design a practical NetSuite approach that aligns project execution with financial control.",
+      "Project models vary by sector and commercial structure. ERP Experts can help you design a NetSuite delivery model that aligns project execution with financial control and reporting confidence.",
   },
   "why-netsuite-aftercare-is-essential": {
     title: "Why NetSuite Aftercare Is Essential",
@@ -3483,6 +3532,9 @@ export const articles = {
     layoutVariant: 7,
     heroImage: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1400&q=80",
     featureImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
+    ctaText: "Book a NetSuite aftercare support review",
+    ctaLabel: "Request support review",
+    ctaTo: "/support",
     challengeLabel: "The Risk",
     challengeHeading: 'Go-Live Is Not the Finish <span class="text-primary">Line</span>',
     challengeText:
@@ -3550,7 +3602,7 @@ export const articles = {
         icon: BarChart3,
         title: "Monitor Adoption and Process Compliance",
         content:
-          "If teams bypass the system, value leaks immediately. Monitor adoption by role, identify low-use workflows, and target practical retraining where behaviour is drifting.",
+          "If teams bypass the system, value leaks immediately. Monitor adoption by role, identify low-use workflows, and target practical retraining where behaviour is drifting so teams return to consistent process use quickly.",
         actions: [
           "Review role-level usage trends every two weeks",
           "Prioritise retraining for low-compliance processes",
@@ -3967,10 +4019,10 @@ export const articles = {
     ],
 
     conclusion:
-      "Businesses choose ERP Experts for NetSuite Aftercare because the offer is clear, proven, and commercially practical. You get accountable UK ownership, rapid response, predictable support structure, and the capacity to improve the platform as your business evolves. For directors, that means less operational risk and more confidence in NetSuite as a long-term system.",
+      "Businesses choose ERP Experts for NetSuite Aftercare because the offer is clear, proven, and commercially practical. You get accountable UK ownership, rapid response, predictable support structure, and the capacity to improve the platform as your business evolves. For directors, that means less operational risk and more confidence in NetSuite as a long-term system. If your team is seeing recurring friction after go-live, start with a focused support review and prioritise the highest-impact fixes first.",
 
     disclaimer:
-      "Support and Aftercare needs vary by organisation size, internal capability, and operating complexity. Speak to ERP Experts for a tailored recommendation.",
+      "Support and Aftercare needs vary by organisation size, internal capability, and operating complexity. Speak to ERP Experts through /support or /contact for a tailored recommendation.",
   },
 
   "how-to-set-up-mcp-in-netsuite": {
