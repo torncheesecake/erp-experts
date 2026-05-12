@@ -1543,6 +1543,8 @@ function AdminView({ onPreview }) {
   const [freshnessLoading, setFreshnessLoading] = useState(true);
   const [conversionReport, setConversionReport] = useState(null);
   const [conversionLoading, setConversionLoading] = useState(true);
+  const [opportunityReport, setOpportunityReport] = useState(null);
+  const [opportunityLoading, setOpportunityLoading] = useState(true);
   const [articleFilter, setArticleFilter] = useState("needs_review");
   const [sortBy, setSortBy] = useState("score");
   const [selectedSlug, setSelectedSlug] = useState("");
@@ -1584,6 +1586,37 @@ function AdminView({ onPreview }) {
     }
 
     loadQaReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadOpportunityReport() {
+      const paths = ["/reports/seo-opportunity-centre.json", "/seo-opportunity-centre.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setOpportunityReport(data);
+            setOpportunityLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setOpportunityReport(null);
+        setOpportunityLoading(false);
+      }
+    }
+
+    loadOpportunityReport();
     return () => {
       alive = false;
     };
@@ -2008,31 +2041,22 @@ function AdminView({ onPreview }) {
             />
 
             {isMonitorMode ? (
-              <GrowthOpportunitiesPanel
-                growthReport={growthReport}
-                loading={growthLoading}
+              <OpportunityCommandCentrePanel
+                opportunityReport={opportunityReport}
+                loading={opportunityLoading}
               />
             ) : null}
 
             {isMonitorMode ? (
-              <InternalLinkOpportunitiesPanel
-                linksReport={linksReport}
-                loading={linksLoading}
-              />
-            ) : null}
-
-            {isMonitorMode ? (
-              <FreshnessDecayPanel
-                freshnessReport={freshnessReport}
-                loading={freshnessLoading}
-              />
-            ) : null}
-
-            {isMonitorMode ? (
-              <ConversionPathPanel
-                conversionReport={conversionReport}
-                loading={conversionLoading}
-              />
+              <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
+                <summary className="cursor-pointer text-sm font-semibold text-slate-700">Growth intelligence details</summary>
+                <div style={{ marginTop: "var(--space-sm)", display: "grid", gap: "var(--space-sm)" }}>
+                  <GrowthOpportunitiesPanel growthReport={growthReport} loading={growthLoading} />
+                  <InternalLinkOpportunitiesPanel linksReport={linksReport} loading={linksLoading} />
+                  <FreshnessDecayPanel freshnessReport={freshnessReport} loading={freshnessLoading} />
+                  <ConversionPathPanel conversionReport={conversionReport} loading={conversionLoading} />
+                </div>
+              </details>
             ) : null}
 
             <ProgressHistoryCard points={progressPoints} />
@@ -2258,6 +2282,92 @@ function NextBestActionPanel({ action, loading, headingLabel = "Next best action
             </details>
           ) : null}
         </>
+      )}
+    </div>
+  );
+}
+
+function OpportunityCommandCentrePanel({ opportunityReport, loading }) {
+  const [copyState, setCopyState] = useState("idle");
+  const [copyTarget, setCopyTarget] = useState("");
+  const top = Array.isArray(opportunityReport?.topOpportunities)
+    ? opportunityReport.topOpportunities.slice(0, 5)
+    : Array.isArray(opportunityReport?.opportunities)
+      ? opportunityReport.opportunities.slice(0, 5)
+      : [];
+
+  const copyItem = async (text, target) => {
+    const ok = await copyText(text, `opportunity-centre ${target}`);
+    setCopyTarget(target);
+    setCopyState(ok ? "copied" : "failed");
+    setTimeout(() => {
+      setCopyState("idle");
+      setCopyTarget("");
+    }, 1400);
+  };
+
+  const buttonLabel = (target, fallback) => {
+    if (copyTarget !== target) return fallback;
+    if (copyState === "copied") return "Copied";
+    if (copyState === "failed") return "Copy failed";
+    return fallback;
+  };
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Opportunity command centre</p>
+          <p className="text-sm text-slate-700">No maintenance action required. Strategic opportunities available.</p>
+        </div>
+        <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">npm run seo:opportunities</code>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Loading unified opportunities…</p>
+      ) : !opportunityReport ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>
+          Opportunity report missing. Run <code>npm run seo:opportunities</code> after growth/link/freshness/conversion reports are generated.
+        </p>
+      ) : top.length === 0 ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>No prioritised opportunities found.</p>
+      ) : (
+        <div className="grid gap-sm" style={{ marginTop: "var(--space-sm)" }}>
+          {top.map((item, index) => (
+            <div key={item.id || index} className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-sm)" }}>
+              <div className="flex items-start justify-between gap-sm flex-wrap">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">{index + 1}. {item.title}</p>
+                  <p className="text-xs text-slate-600">
+                    Score {item.score} · {item.priorityLabel} · {item.primaryType} · effort {item.effortLabel} · confidence {item.confidenceLabel}
+                  </p>
+                </div>
+                <span className="inline-flex rounded-full border border-slate-300 bg-white px-2 py-0.5 text-xs text-slate-700">
+                  {(item.combinedSignals || []).join(" + ")}
+                </span>
+              </div>
+              <p className="text-sm text-slate-700" style={{ marginTop: "6px" }}>{item.recommendedAction}</p>
+              <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>{item.whyThisRanks}</p>
+              <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "8px" }}>
+                <button
+                  type="button"
+                  onClick={() => copyItem(`${item.title}\nSignals: ${(item.combinedSignals || []).join(", ")}\nAction: ${item.recommendedAction}\nNext: ${item.nextCommandOrPrompt || "n/a"}`, `${item.id}-action`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  {buttonLabel(`${item.id}-action`, "Copy strategic action")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => copyItem(item.codexPrompt || "", `${item.id}-prompt`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                  disabled={!item.codexPrompt}
+                >
+                  {buttonLabel(`${item.id}-prompt`, "Copy Codex prompt")}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

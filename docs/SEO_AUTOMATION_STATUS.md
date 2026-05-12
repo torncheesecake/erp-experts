@@ -44,6 +44,7 @@ Primary automation commands:
 - `npm run seo:links`
 - `npm run seo:freshness`
 - `npm run seo:conversion`
+- `npm run seo:opportunities`
 
 CI workflow command coverage:
 
@@ -256,6 +257,25 @@ Safe workflow:
 3. Copy one conversion suggestion/prompt.
 4. Ask Codex for a proposed change plan first.
 5. Apply content changes only after manual approval.
+
+Unified opportunity command centre:
+
+- `npm run seo:opportunities` generates `reports/seo-opportunity-centre.json`.
+- Purpose: merge growth, internal links, freshness, and conversion signals into one prioritised strategic list.
+- Prioritisation favours:
+  - overlap across multiple engines
+  - higher commercial/conversion value
+  - lower effort and lower risk opportunities
+  - opportunities supporting support/implementation/partners/NetSuite service paths
+- Individual engines remain available for detail, but command-centre ranking is the primary decision view.
+
+Recommended workflow:
+
+1. Run weekly health checks (`npm run seo:monitor`).
+2. If healthy, run `npm run seo:opportunities`.
+3. Select one top strategic opportunity.
+4. Generate/review a proposed plan first.
+5. Execute targeted changes only after human approval.
 
 Current snapshot (latest generated state):
 

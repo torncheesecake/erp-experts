@@ -1,5 +1,14 @@
 import { buildBatchQueue, readJson } from "./seo_batch_helpers.mjs";
 import { buildMonitorState } from "./seo_monitor_helpers.mjs";
+import fs from "node:fs";
+
+function readJsonSafe(filePath) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch {
+    return null;
+  }
+}
 
 function toYesNo(value) {
   return value ? "yes" : "no";
@@ -52,6 +61,7 @@ function printNextCommands({ blocked, humanReviewRecommended, needsReview }) {
   }
 
   console.log("npm run seo:monitor");
+  console.log("npm run seo:opportunities");
 }
 
 function modeFor({ blocked, humanReviewRecommended, needsReview }) {
@@ -88,10 +98,17 @@ function main() {
   console.log(`humanReviewRecommended=${toYesNo(humanReviewRecommended)}`);
   if (needsReview === 0 && blocked === 0 && !humanReviewRecommended) {
     console.log(`status=${monitor.status}`);
+    const opportunities = readJsonSafe("reports/seo-opportunity-centre.json");
+    if (Number(opportunities?.opportunityCount || 0) > 0) {
+      console.log(`strategicOpportunities=${opportunities.opportunityCount}`);
+    }
   }
   console.log("");
   console.log("Mode:");
   console.log(modeFor({ blocked, humanReviewRecommended, needsReview }));
+  if (needsReview === 0 && blocked === 0 && !humanReviewRecommended) {
+    console.log("Monitoring only. Review seo:opportunities for growth work.");
+  }
   console.log("");
   printQueue(queue);
   console.log("");

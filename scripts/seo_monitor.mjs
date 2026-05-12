@@ -1,5 +1,14 @@
 import { readJson } from "./seo_batch_helpers.mjs";
 import { buildMonitorState } from "./seo_monitor_helpers.mjs";
+import fs from "node:fs";
+
+function readJsonSafe(filePath) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch {
+    return null;
+  }
+}
 
 function printList(label, items) {
   console.log(label);
@@ -14,6 +23,7 @@ function main() {
   const summaryOnly = process.argv.includes("--summary");
   const qaReport = readJson("reports/resource-qa-report.json");
   const pipelineSummary = readJson("reports/seo-pipeline-summary.json");
+  const opportunityCentre = readJsonSafe("reports/seo-opportunity-centre.json");
   readJson("reports/seo-action-briefs.json");
   readJson("reports/seo-weekly-summary.json");
 
@@ -81,6 +91,10 @@ function main() {
   if (state.status === "HEALTHY") {
     console.log("No action required this week.");
     console.log("Continue weekly autopilot monitoring.");
+    if (Number(opportunityCentre?.opportunityCount || 0) > 0) {
+      console.log(`Strategic opportunities available: ${opportunityCentre.opportunityCount}.`);
+      console.log("Run npm run seo:opportunities");
+    }
   } else {
     console.log("Review latest changes and run:");
     console.log("npm run seo:operator");
