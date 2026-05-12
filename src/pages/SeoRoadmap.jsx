@@ -94,6 +94,44 @@ function readHistorySnapshots() {
   return points;
 }
 
+function buildMonitorInsights({ points, modeKey }) {
+  const list = Array.isArray(points) ? points : [];
+  const latest = list[list.length - 1] || null;
+  const previous = list.length > 1 ? list[list.length - 2] : null;
+  const isHealthy = (point) => Number(point?.needsReview || 0) === 0 && Number(point?.blocked || 0) === 0;
+
+  let healthyStreak = 0;
+  for (let i = list.length - 1; i >= 0; i -= 1) {
+    if (!isHealthy(list[i])) break;
+    healthyStreak += 1;
+  }
+
+  let regressionStreak = 0;
+  for (let i = list.length - 1; i >= 0; i -= 1) {
+    if (isHealthy(list[i])) break;
+    regressionStreak += 1;
+  }
+
+  let recoveredAgo = null;
+  if (latest && isHealthy(latest)) {
+    for (let i = list.length - 2; i >= 0; i -= 1) {
+      if (!isHealthy(list[i])) {
+        recoveredAgo = list.length - 1 - i;
+        break;
+      }
+    }
+  }
+
+  return {
+    latest,
+    previous,
+    healthyStreak,
+    regressionStreak,
+    recoveredAgo,
+    trendState: modeKey === "monitor" ? "Stable" : modeKey === "blocked" ? "Escalated" : "Watchlist",
+  };
+}
+
 function pickNextBestAction({ pipelineSummary, qaReport, weeklySummary, briefs }) {
   const gate = qaReport?.gateSummary || {};
   const blocked = Number(gate.blocked || 0);
@@ -416,6 +454,54 @@ function SystemStateRail({ mode }) {
         <span className="text-slate-400">→</span>
         <span className={`inline-flex rounded-full border px-2.5 py-1 ${toneClass}`}>{mode.outcomeLabel}</span>
       </div>
+    </div>
+  );
+}
+
+function AutopilotStatusPanel({ mode, pipelineSummary, monitorInsights }) {
+  const generatedAt = pipelineSummary?.generatedAt
+    ? new Date(pipelineSummary.generatedAt).toLocaleString("en-GB")
+    : "Unavailable";
+  const cadence = "Weekly via GitHub Actions";
+  const healthyLine = monitorInsights.healthyStreak > 0
+    ? `Healthy for ${monitorInsights.healthyStreak} consecutive snapshot${monitorInsights.healthyStreak === 1 ? "" : "s"}.`
+    : "Healthy streak not established yet.";
+  const recoveryLine = monitorInsights.recoveredAgo !== null
+    ? `Recovered from regression ${monitorInsights.recoveredAgo} snapshot${monitorInsights.recoveredAgo === 1 ? "" : "s"} ago.`
+    : null;
+  const warningLine = monitorInsights.regressionStreak > 0
+    ? `Regression streak: ${monitorInsights.regressionStreak} snapshot${monitorInsights.regressionStreak === 1 ? "" : "s"}.`
+    : "No active regression streak.";
+  const blockedTone = mode.key === "blocked";
+  const warningTone = mode.key === "operator";
+
+  return (
+    <div className={`rounded-2xl border ${blockedTone ? "border-rose-200 bg-rose-50" : warningTone ? "border-amber-200 bg-amber-50" : "border-emerald-200 bg-emerald-50"}`} style={{ padding: "var(--space-lg)" }}>
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            {mode.key === "monitor" ? "Weekly Autopilot Active" : mode.key === "blocked" ? "Autopilot Escalated" : "Autopilot Watch"}
+          </p>
+          <p className="text-sm font-semibold text-slate-900" style={{ marginTop: "4px" }}>
+            {mode.key === "monitor" ? "No action required" : mode.key === "blocked" ? "Immediate intervention required" : "Operator follow-up recommended"}
+          </p>
+        </div>
+        <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${blockedTone ? "border-rose-200 bg-white text-rose-700" : warningTone ? "border-amber-200 bg-white text-amber-700" : "border-emerald-200 bg-white text-emerald-700"}`}>
+          {monitorInsights.trendState}
+        </span>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-sm text-xs text-slate-700" style={{ marginTop: "var(--space-sm)" }}>
+        <p>Last successful monitor check: <strong>{generatedAt}</strong></p>
+        <p>Monitoring cadence: <strong>{cadence}</strong></p>
+      </div>
+
+      <p className="text-xs text-slate-700" style={{ marginTop: "var(--space-xs)" }}>
+        {mode.key === "monitor" ? healthyLine : warningLine}
+      </p>
+      {mode.key === "monitor" && recoveryLine ? (
+        <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>{recoveryLine}</p>
+      ) : null}
     </div>
   );
 }
@@ -1668,6 +1754,7 @@ function AdminView({ onPreview }) {
     queueLength: batchQueue.length,
   });
   const isMonitorMode = dashboardMode.key === "monitor";
+  const monitorInsights = buildMonitorInsights({ points: historyPoints, modeKey: dashboardMode.key });
   const activeRow = selectedSlug ? selectedRow : (filteredRows[0] || articleRows[0] || null);
 
   if (!loaded) return (
@@ -1754,6 +1841,12 @@ function AdminView({ onPreview }) {
 
           <div style={{ marginTop: "var(--space-md)", display: "grid", gap: "var(--space-md)" }}>
             <SystemStateRail mode={dashboardMode} />
+
+            <AutopilotStatusPanel
+              mode={dashboardMode}
+              pipelineSummary={pipelineSummary}
+              monitorInsights={monitorInsights}
+            />
 
             <OperatorModePanel
               summaryGate={summaryGate}
@@ -2244,6 +2337,7 @@ function OperatorModePanel({ summaryGate, humanReviewRecommended, queue, pipelin
                 >
                   {buttonLabel("monitor", "Copy monitor command")}
                 </button>
+                <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2.5 py-1.5 text-xs text-slate-100">npm run seo:monitor:summary</code>
               </div>
             </div>
           ) : null}

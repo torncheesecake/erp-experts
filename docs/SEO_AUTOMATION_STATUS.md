@@ -39,6 +39,7 @@ Primary automation commands:
 - `npm run seo:batch:complete`
 - `npm run seo:operator`
 - `npm run seo:monitor`
+- `npm run seo:monitor:summary`
 
 CI workflow command coverage:
 
@@ -109,6 +110,23 @@ Monitoring lifecycle:
   - `npm run seo:monitor` reports HEALTHY/WARNING/ACTION REQUIRED and trend signals.
 4. Re-enter operator/batch mode only when regressions, blocked pages, or human-review flags appear.
 
+Weekly autopilot:
+
+- Workflow: `.github/workflows/seo-weekly-monitor.yml`
+- Trigger: weekly schedule (Monday 07:00 UTC) and manual dispatch
+- Runs:
+  - `npm ci --legacy-peer-deps`
+  - `npm run lint`
+  - `npm run build`
+  - `npm run seo:pipeline`
+  - `npm run seo:stats`
+  - `npm run seo:monitor`
+- Uploads report artefacts every run:
+  - `reports/resource-qa-report.json`
+  - `reports/seo-action-briefs.json`
+  - `reports/seo-weekly-summary.json`
+  - `reports/seo-pipeline-summary.json`
+
 Monitor mode behaviour:
 
 - `npm run seo:monitor` is read-only.
@@ -122,6 +140,12 @@ Monitor mode behaviour:
   - `HEALTHY`: no action required, continue weekly monitoring
   - `WARNING`: regression or needs_review present
   - `ACTION REQUIRED`: blocked pages or human review required
+- Includes previous vs current totals and newly failing/newly blocked lists.
+- Includes streak context when snapshots exist:
+  - consecutive healthy runs
+  - consecutive regression runs
+  - recovery distance from last regression
+- `npm run seo:monitor:summary` provides a concise terminal status for quick checks.
 
 Current snapshot (latest generated state):
 

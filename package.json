@@ -25,7 +25,8 @@
     "seo:batch:prompt": "node scripts/seo_batch_prompt.mjs",
     "seo:batch:complete": "node scripts/seo_batch_complete.mjs",
     "seo:operator": "node scripts/seo_operator.mjs",
-    "seo:monitor": "node scripts/seo_monitor.mjs"
+    "seo:monitor": "node scripts/seo_monitor.mjs",
+    "seo:monitor:summary": "node scripts/seo_monitor.mjs --summary"
   },
   "homepage": "https://torncheesecake.github.io/erp-experts",
   "dependencies": {
