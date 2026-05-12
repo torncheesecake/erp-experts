@@ -1541,6 +1541,8 @@ function AdminView({ onPreview }) {
   const [linksLoading, setLinksLoading] = useState(true);
   const [freshnessReport, setFreshnessReport] = useState(null);
   const [freshnessLoading, setFreshnessLoading] = useState(true);
+  const [conversionReport, setConversionReport] = useState(null);
+  const [conversionLoading, setConversionLoading] = useState(true);
   const [articleFilter, setArticleFilter] = useState("needs_review");
   const [sortBy, setSortBy] = useState("score");
   const [selectedSlug, setSelectedSlug] = useState("");
@@ -1582,6 +1584,37 @@ function AdminView({ onPreview }) {
     }
 
     loadQaReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadConversionReport() {
+      const paths = ["/reports/seo-conversion-paths.json", "/seo-conversion-paths.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setConversionReport(data);
+            setConversionLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setConversionReport(null);
+        setConversionLoading(false);
+      }
+    }
+
+    loadConversionReport();
     return () => {
       alive = false;
     };
@@ -1992,6 +2025,13 @@ function AdminView({ onPreview }) {
               <FreshnessDecayPanel
                 freshnessReport={freshnessReport}
                 loading={freshnessLoading}
+              />
+            ) : null}
+
+            {isMonitorMode ? (
+              <ConversionPathPanel
+                conversionReport={conversionReport}
+                loading={conversionLoading}
               />
             ) : null}
 
@@ -2506,6 +2546,92 @@ function FreshnessDecayPanel({ freshnessReport, loading }) {
             </div>
           )}
         </>
+      )}
+    </div>
+  );
+}
+
+function ConversionPathPanel({ conversionReport, loading }) {
+  const [copyState, setCopyState] = useState("idle");
+  const [copyTarget, setCopyTarget] = useState("");
+  const top = Array.isArray(conversionReport?.topConversionPathRisks)
+    ? conversionReport.topConversionPathRisks.slice(0, 5)
+    : Array.isArray(conversionReport?.entries)
+      ? conversionReport.entries.slice(0, 5)
+      : [];
+
+  const copyItem = async (text, target) => {
+    const ok = await copyText(text, `conversion ${target}`);
+    setCopyTarget(target);
+    setCopyState(ok ? "copied" : "failed");
+    setTimeout(() => {
+      setCopyState("idle");
+      setCopyTarget("");
+    }, 1400);
+  };
+
+  const buttonLabel = (target, fallback) => {
+    if (copyTarget !== target) return fallback;
+    if (copyState === "copied") return "Copied";
+    if (copyState === "failed") return "Copy failed";
+    return fallback;
+  };
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Conversion path intelligence</p>
+          <p className="text-sm text-slate-700">Commercial path suggestions to improve reader-to-enquiry clarity.</p>
+        </div>
+        <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">npm run seo:conversion</code>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Loading conversion path opportunities…</p>
+      ) : !conversionReport ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>
+          Conversion report missing. Run <code>npm run seo:conversion</code> to generate <code>reports/seo-conversion-paths.json</code>.
+        </p>
+      ) : top.length === 0 ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>No conversion path opportunities found in the latest run.</p>
+      ) : (
+        <div className="grid gap-sm" style={{ marginTop: "var(--space-sm)" }}>
+          {top.map((entry, index) => (
+            <div key={entry.slug || index} className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-sm)" }}>
+              <div className="flex items-start justify-between gap-sm flex-wrap">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">{index + 1}. {entry.title}</p>
+                  <p className="text-xs text-slate-600">{entry.slug} · {entry.funnelStage} stage · {entry.intentLevel} intent</p>
+                </div>
+                <span className="inline-flex rounded-full border border-slate-300 bg-white px-2 py-0.5 text-xs text-slate-700">
+                  {entry.conversionRisk} risk
+                </span>
+              </div>
+              <p className="text-sm text-slate-700" style={{ marginTop: "6px" }}>
+                Score {entry.conversionPathScore} · Current {entry.currentCTATarget || "none"} → Suggested {entry.suggestedCTATarget}
+              </p>
+              <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>{entry.whyItMatters}</p>
+              <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "8px" }}>
+                <button
+                  type="button"
+                  onClick={() => copyItem(`${entry.slug}\nCurrent CTA: ${entry.currentCTA || "none"} (${entry.currentCTATarget || "none"})\nSuggested CTA: ${entry.suggestedCTA} (${entry.suggestedCTATarget})\nAction: ${entry.suggestedAction}`, `${entry.slug}-action`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  {buttonLabel(`${entry.slug}-action`, "Copy conversion suggestion")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => copyItem(entry.codexPrompt || "", `${entry.slug}-prompt`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                  disabled={!entry.codexPrompt}
+                >
+                  {buttonLabel(`${entry.slug}-prompt`, "Copy Codex prompt")}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

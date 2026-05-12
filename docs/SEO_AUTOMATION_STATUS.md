@@ -43,6 +43,7 @@ Primary automation commands:
 - `npm run seo:growth`
 - `npm run seo:links`
 - `npm run seo:freshness`
+- `npm run seo:conversion`
 
 CI workflow command coverage:
 
@@ -226,6 +227,35 @@ Lifecycle:
 4. Review internal link opportunities (`npm run seo:links`).
 5. Review freshness opportunities (`npm run seo:freshness`).
 6. Selectively refresh strategically important content with human approval first.
+
+Conversion path intelligence:
+
+- `npm run seo:conversion` generates `reports/seo-conversion-paths.json`.
+- Purpose: evaluate whether articles have commercially appropriate next-step paths.
+- Model includes:
+  - conversion score and risk
+  - intent level
+  - current vs suggested CTA/path
+  - service fit and funnel stage
+  - mismatch and missing-path signals
+  - suggested action and safe Codex plan prompt
+- Funnel stages:
+  - awareness
+  - consideration
+  - decision
+- Difference from other layers:
+  - QA checks content quality baseline.
+  - Freshness checks ageing and terminology drift.
+  - Internal links improve navigation and topic authority.
+  - Conversion intelligence checks whether the journey to enquiry is clear and context-appropriate.
+
+Safe workflow:
+
+1. Run `npm run seo:conversion`.
+2. Review top items in `/seo-roadmap`.
+3. Copy one conversion suggestion/prompt.
+4. Ask Codex for a proposed change plan first.
+5. Apply content changes only after manual approval.
 
 Current snapshot (latest generated state):
 
