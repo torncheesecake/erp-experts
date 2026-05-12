@@ -101,6 +101,111 @@ Constraints:
 - Do not invent unsupported claims.`;
 }
 
+function inferredClusterForText(text) {
+  const t = norm(text);
+  if (/erp consultant|erp consultants|independent erp consultant|erp consultant uk|consultant in the uk/.test(t)) {
+    return {
+      clusterId: "cluster-erp-consultant-uk",
+      clusterTitle: "ERP Consultant Selection Guide for UK Businesses",
+      canonicalOpportunityTitle: "ERP Consultant Selection Guide for UK Businesses",
+    };
+  }
+  if (/netsuite support|netsuite aftercare|netsuite maintenance|netsuite helpdesk/.test(t)) {
+    return {
+      clusterId: "cluster-netsuite-support",
+      clusterTitle: "NetSuite Support and Aftercare Guidance",
+      canonicalOpportunityTitle: "NetSuite Support and Aftercare Guidance",
+    };
+  }
+  if (/manufacturing erp|erp for manufacturers|factory erp|warehouse erp/.test(t)) {
+    return {
+      clusterId: "cluster-manufacturing-erp",
+      clusterTitle: "Manufacturing ERP Selection and Improvement",
+      canonicalOpportunityTitle: "Manufacturing ERP Selection and Improvement",
+    };
+  }
+  if (/finance erp|accounting erp|finance systems|accounts receivable|cfo/.test(t)) {
+    return {
+      clusterId: "cluster-finance-erp",
+      clusterTitle: "Finance and Accounting ERP Improvement",
+      canonicalOpportunityTitle: "Finance and Accounting ERP Improvement",
+    };
+  }
+  return null;
+}
+
+function applyOpportunityClustering(opportunities) {
+  const seeded = opportunities.map((op) => {
+    const inferred = inferredClusterForText(`${op.title} ${op.suggestedAction || ""} ${(op.evidence || []).join(" ")}`);
+    if (!inferred) {
+      return {
+        ...op,
+        clusterId: null,
+        clusterTitle: null,
+        clusterRole: "primary",
+        mergedQueries: [],
+        relatedIdeas: [],
+        canonicalOpportunityTitle: op.title,
+      };
+    }
+    return {
+      ...op,
+      ...inferred,
+      clusterRole: "primary",
+      mergedQueries: [],
+      relatedIdeas: [],
+    };
+  });
+
+  const grouped = new Map();
+  for (const op of seeded) {
+    const key = op.clusterId || `single-${op.id}`;
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key).push(op);
+  }
+
+  const finalList = [];
+  for (const [key, items] of grouped.entries()) {
+    if (!key.startsWith("cluster-") || items.length === 1) {
+      finalList.push(...items);
+      continue;
+    }
+
+    const sorted = [...items].sort((a, b) => b.score - a.score);
+    const primary = sorted[0];
+    const supporting = sorted.slice(1);
+    const mergedQueries = [...new Set(supporting.map((item) => item.rawQuery || item.title).filter(Boolean))];
+    const relatedIdeas = [...new Set(supporting.map((item) => item.title).filter(Boolean))];
+
+    finalList.push({
+      ...primary,
+      title: primary.canonicalOpportunityTitle || primary.title,
+      clusterRole: "primary",
+      mergedQueries,
+      relatedIdeas,
+      whyItMatters: `${primary.whyItMatters} Similar intent variants are grouped to avoid duplicate roadmap noise.`,
+    });
+
+    supporting.forEach((item, idx) => {
+      finalList.push({
+        ...item,
+        clusterRole: idx === 0 ? "supporting" : "variant",
+        mergedQueries: [],
+        relatedIdeas: [],
+      });
+    });
+  }
+
+  finalList.sort((a, b) => b.score - a.score);
+  return finalList;
+}
+
+function buildTopOpportunities(opportunities, limit = 5) {
+  const primaries = opportunities.filter((op) => op.clusterRole === "primary");
+  const sortedPrimaries = [...primaries].sort((a, b) => b.score - a.score);
+  return sortedPrimaries.slice(0, limit);
+}
+
 function buildCreateNewOpportunities({ briefs, demandSignals, existingSlugs }) {
   const createBriefs = (briefs?.allBriefs || briefs?.briefs || []).filter((b) => b.recommendationType === "create_new");
   return createBriefs.slice(0, 8).map((brief, index) => {
@@ -121,6 +226,7 @@ function buildCreateNewOpportunities({ briefs, demandSignals, existingSlugs }) {
       id: `growth-create-${index + 1}`,
       type: "create_new_resource",
       title,
+      rawQuery: brief.rawQuery || null,
       targetSlug: null,
       suggestedSlug,
       score,
@@ -300,9 +406,9 @@ function buildClusterOpportunities({ articles, demandSignals }) {
 }
 
 function printTop(opportunities) {
-  const top = opportunities.slice(0, 5);
+  const top = buildTopOpportunities(opportunities, 5);
   console.log("SEO Growth Opportunities");
-  console.log(`Generated ${opportunities.length} opportunities.`);
+  console.log(`Generated ${opportunities.length} opportunities (${top.length} primary top opportunities shown).`);
   if (!top.length) {
     console.log("No growth opportunities found.");
     return;
@@ -313,6 +419,12 @@ function printTop(opportunities) {
     console.log(`   - type: ${op.type}`);
     console.log(`   - score: ${op.score}`);
     console.log(`   - commercial intent: ${op.commercialIntentLabel}`);
+    if (op.clusterTitle) {
+      console.log(`   - cluster: ${op.clusterTitle}`);
+    }
+    if (Array.isArray(op.relatedIdeas) && op.relatedIdeas.length > 0) {
+      console.log(`   - related ideas: ${op.relatedIdeas.join(" | ")}`);
+    }
     console.log(`   - suggested action: ${op.suggestedAction}`);
     console.log(`   - scope: ${scope}`);
   });
@@ -328,13 +440,15 @@ function main() {
   const existingSlugs = new Set(articles.map((a) => a.slug));
   const demandSignals = reportsData?.ga4Period?.seoInsights?.demandSignals || {};
 
-  const opportunities = [
+  const rawOpportunities = [
     ...buildCreateNewOpportunities({ briefs: briefsReport, demandSignals, existingSlugs }),
     ...buildInternalLinkOpportunities({ qaReport, articles }),
     ...buildCommercialPathOpportunities({ articles, qaReport }),
     ...buildRefreshOpportunities({ articles }),
     ...buildClusterOpportunities({ articles, demandSignals }),
-  ].sort((a, b) => b.score - a.score);
+  ];
+  const opportunities = applyOpportunityClustering(rawOpportunities);
+  const topOpportunities = buildTopOpportunities(opportunities, 5);
 
   const output = {
     generatedAt: new Date().toISOString(),
@@ -353,6 +467,8 @@ function main() {
       demandSignalCount: Array.isArray(demandSignals?.topDemandGaps) ? demandSignals.topDemandGaps.length : 0,
     },
     opportunityCount: opportunities.length,
+    topOpportunityCount: topOpportunities.length,
+    topOpportunities,
     opportunities,
   };
 

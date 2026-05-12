@@ -158,6 +158,11 @@ Growth opportunity engine:
   - `strengthen_commercial_path`
   - `refresh_existing`
   - `expand_cluster`
+- Clustering and deduplication:
+  - Near-duplicate intents are grouped into clusters (for example ERP consultant UK variants).
+  - Primary opportunities are surfaced in top lists.
+  - Supporting/variant ideas are retained as related ideas under the primary cluster.
+  - Purpose: reduce repetitive recommendations and keep operator focus on one canonical growth angle per intent.
 - Growth opportunities are separate from QA fixing:
   - QA/batch mode restores quality and removes risk.
   - Growth mode prioritises commercially useful expansion once risk is low.

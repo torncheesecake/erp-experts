@@ -2146,7 +2146,11 @@ function NextBestActionPanel({ action, loading, headingLabel = "Next best action
 function GrowthOpportunitiesPanel({ growthReport, loading }) {
   const [copyState, setCopyState] = useState("idle");
   const [copyTarget, setCopyTarget] = useState("");
-  const top = Array.isArray(growthReport?.opportunities) ? growthReport.opportunities.slice(0, 3) : [];
+  const fromTop = Array.isArray(growthReport?.topOpportunities) ? growthReport.topOpportunities : [];
+  const fromAllPrimary = Array.isArray(growthReport?.opportunities)
+    ? growthReport.opportunities.filter((op) => op.clusterRole === "primary")
+    : [];
+  const top = (fromTop.length ? fromTop : fromAllPrimary).slice(0, 3);
 
   const copyItem = async (text, target) => {
     const ok = await copyText(text, `growth ${target}`);
@@ -2190,13 +2194,31 @@ function GrowthOpportunitiesPanel({ growthReport, loading }) {
               <div className="flex items-start justify-between gap-sm flex-wrap">
                 <div>
                   <p className="text-sm font-semibold text-slate-900">{index + 1}. {op.title}</p>
-                  <p className="text-xs text-slate-600">{op.type} · score {op.score} · {op.commercialIntentLabel} intent</p>
+                  <p className="text-xs text-slate-600">
+                    {op.clusterTitle ? `${op.clusterTitle} · ` : ""}
+                    {op.type} · score {op.score} · {op.commercialIntentLabel} intent
+                  </p>
                 </div>
                 <span className="inline-flex rounded-full border border-slate-300 bg-white px-2 py-0.5 text-xs text-slate-700">
                   {op.targetSlug ? "Improve/link existing" : "Create brief"}
                 </span>
               </div>
               <p className="text-sm text-slate-700" style={{ marginTop: "6px" }}>{op.suggestedAction}</p>
+              {(Array.isArray(op.relatedIdeas) && op.relatedIdeas.length > 0) || (Array.isArray(op.mergedQueries) && op.mergedQueries.length > 0) ? (
+                <details className="rounded-lg border border-slate-200 bg-white" style={{ marginTop: "8px", padding: "6px 10px" }}>
+                  <summary className="cursor-pointer text-xs font-semibold text-slate-600">Related ideas</summary>
+                  {Array.isArray(op.relatedIdeas) && op.relatedIdeas.length > 0 ? (
+                    <p className="text-xs text-slate-700" style={{ marginTop: "6px" }}>
+                      Variants: {op.relatedIdeas.join(" | ")}
+                    </p>
+                  ) : null}
+                  {Array.isArray(op.mergedQueries) && op.mergedQueries.length > 0 ? (
+                    <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
+                      Merged query intents: {op.mergedQueries.join(" | ")}
+                    </p>
+                  ) : null}
+                </details>
+              ) : null}
               <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "8px" }}>
                 <button
                   type="button"
