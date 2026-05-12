@@ -2483,6 +2483,7 @@ function ExecutionPlansPanel({ plansReport, loading }) {
                   <p className="text-xs text-slate-600">
                     {plan.planType} · impact {plan.estimatedImpact} · effort {plan.estimatedEffort} · confidence {plan.confidence}
                   </p>
+                  <p className="text-xs text-slate-500" style={{ marginTop: "4px" }}>Plan ID: <code>{plan.id}</code></p>
                 </div>
                 <span className={`inline-flex rounded-full border px-2 py-0.5 text-xs ${plan.requiredHumanReview ? "border-amber-300 bg-amber-50 text-amber-800" : "border-emerald-300 bg-emerald-50 text-emerald-700"}`}>
                   {plan.safetyLevel}
@@ -2494,6 +2495,9 @@ function ExecutionPlansPanel({ plansReport, loading }) {
               <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
                 {plan.requiredHumanReview ? "Human review required before patching." : "Safe patch candidate with standard review."}
               </p>
+              <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100" style={{ marginTop: "8px" }}>
+                npm run seo:plan:run -- {plan.id}
+              </code>
               <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "8px" }}>
                 <button
                   type="button"
@@ -2517,6 +2521,20 @@ function ExecutionPlansPanel({ plansReport, loading }) {
                   className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                 >
                   {buttonLabel(`${plan.id}-validate`, "Copy validation commands")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => copyItem(`npm run seo:plan:run -- ${plan.id}`, `${plan.id}-run-command`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  {buttonLabel(`${plan.id}-run-command`, "Copy run command")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => copyItem(`Run npm run seo:plan:run -- ${plan.id} to generate reports/seo-active-plan.md, review the stages, then apply only after explicit approval.`, `${plan.id}-run-instruction`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  {buttonLabel(`${plan.id}-run-instruction`, "Copy run-this-plan instruction")}
                 </button>
               </div>
             </div>

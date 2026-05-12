@@ -46,6 +46,7 @@ Primary automation commands:
 - `npm run seo:conversion`
 - `npm run seo:opportunities`
 - `npm run seo:plans`
+- `npm run seo:plan:run -- <planId>`
 
 CI workflow command coverage:
 
@@ -303,6 +304,19 @@ Execution planning engine:
 - Philosophy:
   - the system recommends and validates execution
   - humans approve and control applied changes
+- Plan runner:
+  - `npm run seo:plan:run -- <planId>`
+  - generates `reports/seo-active-plan.md`
+  - outputs a review-ready execution document with:
+    - plan overview
+    - target and safety level
+    - staged workflow with stop conditions
+    - planning prompt
+    - patch prompt handling by safety level
+    - validation commands and rollback notes
+- Safety-level behaviour in runner:
+  - `high_review_required`: planning prompt only by default, patching requires explicit human approval
+  - `safe_patch_candidate`: patch prompt included, but review is still required before commit
 
 Current snapshot (latest generated state):
 
