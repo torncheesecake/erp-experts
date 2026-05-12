@@ -2191,27 +2191,25 @@ function AdminView({ onPreview }) {
             />
 
             {isMonitorMode ? (
-              <WeeklyDigestPanel digestText={weeklyDigestText} loading={weeklyDigestLoading} />
-            ) : null}
-
-            {isMonitorMode ? (
               <ActionInboxPanel inboxReport={actionInboxReport} loading={actionInboxLoading} />
-            ) : null}
+            ) : (
+              <>
+                <OperatorModePanel
+                  summaryGate={summaryGate}
+                  humanReviewRecommended={humanReviewRecommended}
+                  queue={batchQueue}
+                  pipelineSummary={pipelineSummary}
+                  loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
+                  mode={dashboardMode}
+                />
 
-            <OperatorModePanel
-              summaryGate={summaryGate}
-              humanReviewRecommended={humanReviewRecommended}
-              queue={batchQueue}
-              pipelineSummary={pipelineSummary}
-              loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
-              mode={dashboardMode}
-            />
-
-            <NextBestActionPanel
-              action={nextBestAction}
-              loading={summaryLoading || pipelineLoading || briefsLoading}
-              headingLabel={dashboardMode.actionLabel}
-            />
+                <NextBestActionPanel
+                  action={nextBestAction}
+                  loading={summaryLoading || pipelineLoading || briefsLoading}
+                  headingLabel={dashboardMode.actionLabel}
+                />
+              </>
+            )}
 
             {isMonitorMode ? (
               <OpportunityCommandCentrePanel
@@ -2231,6 +2229,21 @@ function AdminView({ onPreview }) {
 
             {isMonitorMode ? (
               <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
+                <summary className="cursor-pointer text-sm font-semibold text-slate-700">Operational context</summary>
+                <div style={{ marginTop: "var(--space-sm)", display: "grid", gap: "var(--space-sm)" }}>
+                  <WeeklyDigestPanel digestText={weeklyDigestText} loading={weeklyDigestLoading} />
+                  <NextBestActionPanel
+                    action={nextBestAction}
+                    loading={summaryLoading || pipelineLoading || briefsLoading}
+                    headingLabel={dashboardMode.actionLabel}
+                  />
+                  <ProgressHistoryCard points={progressPoints} />
+                </div>
+              </details>
+            ) : null}
+
+            {isMonitorMode ? (
+              <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
                 <summary className="cursor-pointer text-sm font-semibold text-slate-700">Growth intelligence details</summary>
                 <div style={{ marginTop: "var(--space-sm)", display: "grid", gap: "var(--space-sm)" }}>
                   <GrowthOpportunitiesPanel growthReport={growthReport} loading={growthLoading} />
@@ -2240,8 +2253,6 @@ function AdminView({ onPreview }) {
                 </div>
               </details>
             ) : null}
-
-            <ProgressHistoryCard points={progressPoints} />
 
             {!isMonitorMode ? (
               <BatchImprovementQueue
