@@ -1537,6 +1537,8 @@ function AdminView({ onPreview }) {
   const [briefsLoading, setBriefsLoading] = useState(true);
   const [growthReport, setGrowthReport] = useState(null);
   const [growthLoading, setGrowthLoading] = useState(true);
+  const [linksReport, setLinksReport] = useState(null);
+  const [linksLoading, setLinksLoading] = useState(true);
   const [articleFilter, setArticleFilter] = useState("needs_review");
   const [sortBy, setSortBy] = useState("score");
   const [selectedSlug, setSelectedSlug] = useState("");
@@ -1578,6 +1580,37 @@ function AdminView({ onPreview }) {
     }
 
     loadQaReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadLinksReport() {
+      const paths = ["/reports/seo-internal-link-opportunities.json", "/seo-internal-link-opportunities.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setLinksReport(data);
+            setLinksLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setLinksReport(null);
+        setLinksLoading(false);
+      }
+    }
+
+    loadLinksReport();
     return () => {
       alive = false;
     };
@@ -1915,6 +1948,13 @@ function AdminView({ onPreview }) {
               />
             ) : null}
 
+            {isMonitorMode ? (
+              <InternalLinkOpportunitiesPanel
+                linksReport={linksReport}
+                loading={linksLoading}
+              />
+            ) : null}
+
             <ProgressHistoryCard points={progressPoints} />
 
             {!isMonitorMode ? (
@@ -2226,6 +2266,95 @@ function GrowthOpportunitiesPanel({ growthReport, loading }) {
                   className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                 >
                   {buttonLabel(`${op.id}-action`, "Copy suggested action")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => copyItem(op.codexPrompt || "", `${op.id}-prompt`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                  disabled={!op.codexPrompt}
+                >
+                  {buttonLabel(`${op.id}-prompt`, "Copy Codex prompt")}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function InternalLinkOpportunitiesPanel({ linksReport, loading }) {
+  const [copyState, setCopyState] = useState("idle");
+  const [copyTarget, setCopyTarget] = useState("");
+  const top = Array.isArray(linksReport?.topOpportunities)
+    ? linksReport.topOpportunities.slice(0, 5)
+    : Array.isArray(linksReport?.opportunities)
+      ? linksReport.opportunities.slice(0, 5)
+      : [];
+
+  const copyItem = async (text, target) => {
+    const ok = await copyText(text, `links ${target}`);
+    setCopyTarget(target);
+    setCopyState(ok ? "copied" : "failed");
+    setTimeout(() => {
+      setCopyState("idle");
+      setCopyTarget("");
+    }, 1400);
+  };
+
+  const buttonLabel = (target, fallback) => {
+    if (copyTarget !== target) return fallback;
+    if (copyState === "copied") return "Copied";
+    if (copyState === "failed") return "Copy failed";
+    return fallback;
+  };
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Internal link opportunities</p>
+          <p className="text-sm text-slate-700">Safe link suggestions to strengthen topic pathways and service discovery.</p>
+        </div>
+        <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">npm run seo:links</code>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Loading internal link opportunities…</p>
+      ) : !linksReport ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>
+          Internal link report missing. Run <code>npm run seo:links</code> to generate <code>reports/seo-internal-link-opportunities.json</code>.
+        </p>
+      ) : top.length === 0 ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>No internal link opportunities found in the latest run.</p>
+      ) : (
+        <div className="grid gap-sm" style={{ marginTop: "var(--space-sm)" }}>
+          {top.map((op, index) => (
+            <div key={op.id || `${op.sourceSlug}-${op.targetSlug || op.targetPath}-${index}`} className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-sm)" }}>
+              <div className="flex items-start justify-between gap-sm flex-wrap">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">{index + 1}. {op.sourceTitle}</p>
+                  <p className="text-xs text-slate-600">{op.sourceSlug} → {op.targetSlug || op.targetPath}</p>
+                </div>
+                <span className="inline-flex rounded-full border border-slate-300 bg-white px-2 py-0.5 text-xs text-slate-700">
+                  {op.riskLabel} risk
+                </span>
+              </div>
+              <p className="text-sm text-slate-700" style={{ marginTop: "6px" }}>
+                Anchor: <strong>{op.suggestedAnchorText}</strong> · Placement: {op.suggestedPlacement}
+              </p>
+              <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
+                Relevance {op.topicalRelevanceScore} · Commercial {op.commercialValueScore} · Intent {op.commercialIntentLabel}
+              </p>
+              <p className="text-sm text-slate-700" style={{ marginTop: "6px" }}>{op.whyItMatters}</p>
+              <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "8px" }}>
+                <button
+                  type="button"
+                  onClick={() => copyItem(`${op.sourceSlug} → ${op.targetSlug || op.targetPath}\nAnchor: ${op.suggestedAnchorText}\nPlacement: ${op.suggestedPlacement}\nReason: ${op.contextReason}`, `${op.id}-action`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  {buttonLabel(`${op.id}-action`, "Copy suggested link action")}
                 </button>
                 <button
                   type="button"

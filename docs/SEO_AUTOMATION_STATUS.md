@@ -41,6 +41,7 @@ Primary automation commands:
 - `npm run seo:monitor`
 - `npm run seo:monitor:summary`
 - `npm run seo:growth`
+- `npm run seo:links`
 
 CI workflow command coverage:
 
@@ -174,6 +175,30 @@ Recommended lifecycle:
 3. Choose one opportunity.
 4. Generate a brief/prompt and review internally.
 5. Execute only after human approval.
+
+Internal link opportunity engine:
+
+- `npm run seo:links` generates `reports/seo-internal-link-opportunities.json`.
+- Purpose: identify safe internal links between resources and relevant service paths.
+- Model includes:
+  - source/target mapping
+  - suggested anchor text
+  - relevance and commercial scoring
+  - risk label
+  - suggested placement
+  - copy-ready Codex prompt for a proposed patch only
+- Difference from QA/growth:
+  - QA checks article quality and structural readiness.
+  - Growth prioritises what to create or expand next.
+  - Internal link opportunities improve navigation, topical authority, and commercial pathways across existing content.
+
+Safe workflow:
+
+1. Run `npm run seo:links`.
+2. Review top opportunities in `/seo-roadmap`.
+3. Copy a prompt for one opportunity.
+4. Ask Codex for a proposed patch only.
+5. Manually review and approve before any edit is applied.
 
 Current snapshot (latest generated state):
 
