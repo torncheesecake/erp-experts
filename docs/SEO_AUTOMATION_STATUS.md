@@ -45,6 +45,7 @@ Primary automation commands:
 - `npm run seo:freshness`
 - `npm run seo:conversion`
 - `npm run seo:opportunities`
+- `npm run seo:plans`
 
 CI workflow command coverage:
 
@@ -280,6 +281,28 @@ Recommended workflow:
 3. Select one top strategic opportunity.
 4. Generate/review a proposed plan first.
 5. Execute targeted changes only after human approval.
+
+Execution planning engine:
+
+- `npm run seo:plans` generates `reports/seo-execution-plans.json`.
+- Purpose: convert prioritised opportunities into a safe staged workflow:
+  - Plan
+  - Review
+  - Apply
+  - Validate
+  - Commit
+- Safety levels:
+  - `review_only`
+  - `safe_patch_candidate`
+  - `high_review_required`
+- Every plan includes:
+  - execution stages with stop conditions and checkpoints
+  - validation command set
+  - rollback notes
+  - planning and patch prompts
+- Philosophy:
+  - the system recommends and validates execution
+  - humans approve and control applied changes
 
 Current snapshot (latest generated state):
 

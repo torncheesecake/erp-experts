@@ -1545,6 +1545,8 @@ function AdminView({ onPreview }) {
   const [conversionLoading, setConversionLoading] = useState(true);
   const [opportunityReport, setOpportunityReport] = useState(null);
   const [opportunityLoading, setOpportunityLoading] = useState(true);
+  const [plansReport, setPlansReport] = useState(null);
+  const [plansLoading, setPlansLoading] = useState(true);
   const [articleFilter, setArticleFilter] = useState("needs_review");
   const [sortBy, setSortBy] = useState("score");
   const [selectedSlug, setSelectedSlug] = useState("");
@@ -1586,6 +1588,37 @@ function AdminView({ onPreview }) {
     }
 
     loadQaReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadPlansReport() {
+      const paths = ["/reports/seo-execution-plans.json", "/seo-execution-plans.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setPlansReport(data);
+            setPlansLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setPlansReport(null);
+        setPlansLoading(false);
+      }
+    }
+
+    loadPlansReport();
     return () => {
       alive = false;
     };
@@ -2048,6 +2081,13 @@ function AdminView({ onPreview }) {
             ) : null}
 
             {isMonitorMode ? (
+              <ExecutionPlansPanel
+                plansReport={plansReport}
+                loading={plansLoading}
+              />
+            ) : null}
+
+            {isMonitorMode ? (
               <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
                 <summary className="cursor-pointer text-sm font-semibold text-slate-700">Growth intelligence details</summary>
                 <div style={{ marginTop: "var(--space-sm)", display: "grid", gap: "var(--space-sm)" }}>
@@ -2379,6 +2419,104 @@ function OpportunityCommandCentrePanel({ opportunityReport, loading }) {
                   disabled={!item.codexPrompt}
                 >
                   {buttonLabel(`${item.id}-prompt`, "Copy Codex prompt")}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ExecutionPlansPanel({ plansReport, loading }) {
+  const [copyState, setCopyState] = useState("idle");
+  const [copyTarget, setCopyTarget] = useState("");
+  const top = Array.isArray(plansReport?.topPlans)
+    ? plansReport.topPlans.slice(0, 5)
+    : Array.isArray(plansReport?.plans)
+      ? plansReport.plans.slice(0, 5)
+      : [];
+
+  const copyItem = async (text, target) => {
+    const ok = await copyText(text, `execution-plan ${target}`);
+    setCopyTarget(target);
+    setCopyState(ok ? "copied" : "failed");
+    setTimeout(() => {
+      setCopyState("idle");
+      setCopyTarget("");
+    }, 1400);
+  };
+
+  const buttonLabel = (target, fallback) => {
+    if (copyTarget !== target) return fallback;
+    if (copyState === "copied") return "Copied";
+    if (copyState === "failed") return "Copy failed";
+    return fallback;
+  };
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Execution plans</p>
+          <p className="text-sm text-slate-700">Recommended execution plans for review-first delivery.</p>
+        </div>
+        <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">npm run seo:plans</code>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Loading execution plans…</p>
+      ) : !plansReport ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>
+          Execution plans report missing. Run <code>npm run seo:plans</code>.
+        </p>
+      ) : top.length === 0 ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>No execution plans available.</p>
+      ) : (
+        <div className="grid gap-sm" style={{ marginTop: "var(--space-sm)" }}>
+          {top.map((plan, index) => (
+            <div key={plan.id || index} className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-sm)" }}>
+              <div className="flex items-start justify-between gap-sm flex-wrap">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">{index + 1}. {plan.title}</p>
+                  <p className="text-xs text-slate-600">
+                    {plan.planType} · impact {plan.estimatedImpact} · effort {plan.estimatedEffort} · confidence {plan.confidence}
+                  </p>
+                </div>
+                <span className={`inline-flex rounded-full border px-2 py-0.5 text-xs ${plan.requiredHumanReview ? "border-amber-300 bg-amber-50 text-amber-800" : "border-emerald-300 bg-emerald-50 text-emerald-700"}`}>
+                  {plan.safetyLevel}
+                </span>
+              </div>
+              <p className="text-sm text-slate-700" style={{ marginTop: "6px" }}>
+                Next step: {plan.recommendedWorkflow?.nextCommand || "Review plan output"}
+              </p>
+              <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
+                {plan.requiredHumanReview ? "Human review required before patching." : "Safe patch candidate with standard review."}
+              </p>
+              <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "8px" }}>
+                <button
+                  type="button"
+                  onClick={() => copyItem(plan.codexPlanningPrompt || "", `${plan.id}-planning`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                  disabled={!plan.codexPlanningPrompt}
+                >
+                  {buttonLabel(`${plan.id}-planning`, "Copy planning prompt")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => copyItem(plan.codexPatchPrompt || "", `${plan.id}-patch`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                  disabled={!plan.codexPatchPrompt}
+                >
+                  {buttonLabel(`${plan.id}-patch`, "Copy patch prompt")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => copyItem((plan.validationCommands || []).join("\n"), `${plan.id}-validate`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  {buttonLabel(`${plan.id}-validate`, "Copy validation commands")}
                 </button>
               </div>
             </div>

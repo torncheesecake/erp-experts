@@ -62,6 +62,7 @@ function printNextCommands({ blocked, humanReviewRecommended, needsReview }) {
 
   console.log("npm run seo:monitor");
   console.log("npm run seo:opportunities");
+  console.log("npm run seo:plans");
 }
 
 function modeFor({ blocked, humanReviewRecommended, needsReview }) {
@@ -107,7 +108,7 @@ function main() {
   console.log("Mode:");
   console.log(modeFor({ blocked, humanReviewRecommended, needsReview }));
   if (needsReview === 0 && blocked === 0 && !humanReviewRecommended) {
-    console.log("Monitoring only. Review seo:opportunities for growth work.");
+    console.log("Monitoring only. Review seo:opportunities, then seo:plans for execution workflow.");
   }
   console.log("");
   printQueue(queue);
