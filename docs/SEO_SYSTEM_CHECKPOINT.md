@@ -1,0 +1,91 @@
+# SEO System Checkpoint
+
+## Current commands
+
+- `npm run seo:pipeline`
+- `npm run seo:stats`
+- `npm run seo:monitor`
+- `npm run seo:operator`
+- `npm run seo:growth`
+- `npm run seo:links`
+- `npm run seo:freshness`
+- `npm run seo:conversion`
+- `npm run seo:opportunities`
+- `npm run seo:plans`
+- `npm run seo:plan:approve -- <planId>`
+- `npm run seo:plan:run -- <planId>`
+- `npm run seo:plan:status`
+- `npm run seo:digest`
+- `npm run seo:inbox`
+
+## Current architecture
+
+1. Quality baseline: resource QA report and gate totals.
+2. Opportunity intelligence: growth, links, freshness, conversion.
+3. Unified prioritisation: opportunity command centre output.
+4. Execution control: plans, approvals, active plan, plan status.
+5. Operator reporting: monitor, digest, stats, inbox.
+6. Dashboard: monitor-first control panel with secondary diagnostics.
+
+## Health status
+
+- Expected healthy target:
+  - `pass=26`
+  - `needs_review=0`
+  - `blocked=0`
+  - `humanReviewRecommended=no`
+- Monitor mode should remain `HEALTHY` unless regressions occur.
+
+## Automation lifecycle
+
+1. Run `seo:pipeline` and `seo:stats`.
+2. Confirm monitor health with `seo:monitor`.
+3. If healthy, review `seo:opportunities`.
+4. Create execution flow with `seo:plans`.
+5. Approve scope with `seo:plan:approve`.
+6. Generate active runbook with `seo:plan:run`.
+7. Track status with `seo:plan:status`.
+8. Use `seo:digest` and `seo:inbox` for weekly/operator view.
+
+## Generated and ignored report files
+
+Ignored local/generated outputs:
+
+- `reports/history/`
+- `reports/seo-growth-opportunities.json`
+- `reports/seo-internal-link-opportunities.json`
+- `reports/seo-freshness-report.json`
+- `reports/seo-conversion-paths.json`
+- `reports/seo-opportunity-centre.json`
+- `reports/seo-execution-plans.json`
+- `reports/seo-plan-approvals.json`
+- `reports/seo-plan-status.json`
+- `reports/seo-active-plan.md`
+- `reports/seo-weekly-digest.md`
+- `reports/seo-action-inbox.json`
+- `reports/seo-next-batch-prompt.md`
+
+## Dashboard sections (healthy mode)
+
+1. Health/autopilot summary.
+2. Action Inbox.
+3. Opportunity Command Centre.
+4. Execution Plans.
+5. Collapsed operational and intelligence details.
+
+## Safety gates
+
+- Review-first prompts only by default.
+- Approval gate controls planning vs patch proposal vs apply intent.
+- `--allow-apply` required for `apply_patch` approval state.
+- No automatic content edits, no automatic commits, no automatic publishing.
+- Validation commands remain mandatory before any manual commit.
+
+## Remaining future backlog
+
+- Real authentication for admin/roadmap control.
+- Standalone multi-client app architecture.
+- CRM and outcome integration.
+- Persistent backend for plan/approval/status storage.
+- Scheduled digest notification delivery.
+- Optional PR-based patch execution flow.
