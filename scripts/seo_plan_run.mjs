@@ -3,6 +3,7 @@ import path from "node:path";
 
 const INPUT = path.resolve("reports/seo-execution-plans.json");
 const OUTPUT = path.resolve("reports/seo-active-plan.md");
+const APPROVALS = path.resolve("reports/seo-plan-approvals.json");
 
 function readJson(filePath) {
   try {
@@ -48,7 +49,7 @@ function renderStage(stage) {
   ].join("\n");
 }
 
-function buildMarkdown(plan) {
+function buildMarkdown(plan, approval) {
   const target = plan.targetSlug ? `slug: \`${plan.targetSlug}\`` : plan.targetPath ? `path: \`${plan.targetPath}\`` : "n/a";
   const stopConditions = collectStopConditions(plan.executionStages || []);
   const validationCommands = (plan.validationCommands || []).map((cmd) => `- \`${cmd}\``).join("\n") || "- none";
@@ -56,6 +57,21 @@ function buildMarkdown(plan) {
   const stagesText = (plan.executionStages || []).map(renderStage).join("\n");
   const highReview = plan.safetyLevel === "high_review_required";
   const safePatch = plan.safetyLevel === "safe_patch_candidate";
+  const hasPatchProposalApproval = approval && (approval.approvedFor === "patch_proposal" || approval.approvedFor === "apply_patch");
+  const canShowPatchPrompt = !highReview || hasPatchProposalApproval;
+  const approvalLines = approval
+    ? [
+      `- Status: approved`,
+      `- Approved for: \`${approval.approvedFor}\``,
+      `- Approved at: ${approval.approvedAt || "n/a"}`,
+      `- Expires at: ${approval.expiresAt || "none"}`,
+      `- Note: ${approval.approvalNote || "none"}`,
+    ]
+    : [
+      "- Status: not approved",
+      "- Approved for: none",
+      "- Note: run `npm run seo:plan:approve -- <planId>` before patch workflows",
+    ];
 
   return [
     "# SEO Active Plan",
@@ -71,6 +87,9 @@ function buildMarkdown(plan) {
     `- Required human review: ${plan.requiredHumanReview ? "yes" : "no"}`,
     `- Priority: ${plan.executionPriority}`,
     `- Impact/Effort/Confidence: ${plan.estimatedImpact} / ${plan.estimatedEffort} / ${plan.confidence}`,
+    "",
+    "## Approval status",
+    ...approvalLines,
     "",
     "## Safety guidance",
     highReview
@@ -95,11 +114,14 @@ function buildMarkdown(plan) {
     "```",
     "",
     "## Patch prompt",
-    highReview
-      ? "Patching disabled by default for this safety level. Request explicit human approval first."
+    !canShowPatchPrompt
+      ? "Patching disabled by default for this safety level. Approve for patch proposal first: npm run seo:plan:approve -- <planId>"
       : "```text",
-    highReview ? "" : (plan.codexPatchPrompt || "No patch prompt available."),
-    highReview ? "" : "```",
+    canShowPatchPrompt ? (plan.codexPatchPrompt || "No patch prompt available.") : "",
+    canShowPatchPrompt ? "```" : "",
+    canShowPatchPrompt && highReview
+      ? "\nProposal only: even with approval, this remains review-first and not auto-apply."
+      : "",
     "",
     "## Validation commands",
     validationCommands,
@@ -144,12 +166,17 @@ function main() {
     process.exit(1);
   }
 
-  const markdown = buildMarkdown(plan);
+  const approvalsReport = readJson(APPROVALS);
+  const approvals = Array.isArray(approvalsReport?.approvals) ? approvalsReport.approvals : [];
+  const approval = approvals.find((item) => item.planId === plan.id) || null;
+
+  const markdown = buildMarkdown(plan, approval);
   fs.writeFileSync(OUTPUT, markdown, "utf8");
 
   console.log("SEO Plan Runner");
   console.log(`Plan: ${plan.id} - ${plan.title}`);
   console.log(`Safety: ${plan.safetyLevel} · requiredHumanReview=${plan.requiredHumanReview ? "yes" : "no"}`);
+  console.log(`Approval: ${approval ? `approved_for_${approval.approvedFor}` : "not_approved"}`);
   console.log(`Output: ${OUTPUT}`);
 }
 

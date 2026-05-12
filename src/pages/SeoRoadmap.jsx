@@ -1547,6 +1547,8 @@ function AdminView({ onPreview }) {
   const [opportunityLoading, setOpportunityLoading] = useState(true);
   const [plansReport, setPlansReport] = useState(null);
   const [plansLoading, setPlansLoading] = useState(true);
+  const [planApprovalsReport, setPlanApprovalsReport] = useState(null);
+  const [planApprovalsLoading, setPlanApprovalsLoading] = useState(true);
   const [articleFilter, setArticleFilter] = useState("needs_review");
   const [sortBy, setSortBy] = useState("score");
   const [selectedSlug, setSelectedSlug] = useState("");
@@ -1588,6 +1590,37 @@ function AdminView({ onPreview }) {
     }
 
     loadQaReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadPlanApprovalsReport() {
+      const paths = ["/reports/seo-plan-approvals.json", "/seo-plan-approvals.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setPlanApprovalsReport(data);
+            setPlanApprovalsLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setPlanApprovalsReport(null);
+        setPlanApprovalsLoading(false);
+      }
+    }
+
+    loadPlanApprovalsReport();
     return () => {
       alive = false;
     };
@@ -2083,7 +2116,8 @@ function AdminView({ onPreview }) {
             {isMonitorMode ? (
               <ExecutionPlansPanel
                 plansReport={plansReport}
-                loading={plansLoading}
+                loading={plansLoading || planApprovalsLoading}
+                planApprovalsReport={planApprovalsReport}
               />
             ) : null}
 
@@ -2429,7 +2463,7 @@ function OpportunityCommandCentrePanel({ opportunityReport, loading }) {
   );
 }
 
-function ExecutionPlansPanel({ plansReport, loading }) {
+function ExecutionPlansPanel({ plansReport, loading, planApprovalsReport }) {
   const [copyState, setCopyState] = useState("idle");
   const [copyTarget, setCopyTarget] = useState("");
   const top = Array.isArray(plansReport?.topPlans)
@@ -2437,6 +2471,10 @@ function ExecutionPlansPanel({ plansReport, loading }) {
     : Array.isArray(plansReport?.plans)
       ? plansReport.plans.slice(0, 5)
       : [];
+  const approvalByPlanId = new Map(
+    (Array.isArray(planApprovalsReport?.approvals) ? planApprovalsReport.approvals : [])
+      .map((entry) => [entry.planId, entry]),
+  );
 
   const copyItem = async (text, target) => {
     const ok = await copyText(text, `execution-plan ${target}`);
@@ -2477,6 +2515,10 @@ function ExecutionPlansPanel({ plansReport, loading }) {
         <div className="grid gap-sm" style={{ marginTop: "var(--space-sm)" }}>
           {top.map((plan, index) => (
             <div key={plan.id || index} className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-sm)" }}>
+              {(() => {
+                const approval = approvalByPlanId.get(plan.id);
+                return (
+                  <>
               <div className="flex items-start justify-between gap-sm flex-wrap">
                 <div>
                   <p className="text-sm font-semibold text-slate-900">{index + 1}. {plan.title}</p>
@@ -2484,6 +2526,9 @@ function ExecutionPlansPanel({ plansReport, loading }) {
                     {plan.planType} · impact {plan.estimatedImpact} · effort {plan.estimatedEffort} · confidence {plan.confidence}
                   </p>
                   <p className="text-xs text-slate-500" style={{ marginTop: "4px" }}>Plan ID: <code>{plan.id}</code></p>
+                  <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
+                    Approval: {approval ? `approved (${approval.approvedFor})` : "not approved"}
+                  </p>
                 </div>
                 <span className={`inline-flex rounded-full border px-2 py-0.5 text-xs ${plan.requiredHumanReview ? "border-amber-300 bg-amber-50 text-amber-800" : "border-emerald-300 bg-emerald-50 text-emerald-700"}`}>
                   {plan.safetyLevel}
@@ -2497,6 +2542,9 @@ function ExecutionPlansPanel({ plansReport, loading }) {
               </p>
               <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100" style={{ marginTop: "8px" }}>
                 npm run seo:plan:run -- {plan.id}
+              </code>
+              <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100" style={{ marginTop: "8px" }}>
+                npm run seo:plan:approve -- {plan.id}
               </code>
               <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "8px" }}>
                 <button
@@ -2531,12 +2579,22 @@ function ExecutionPlansPanel({ plansReport, loading }) {
                 </button>
                 <button
                   type="button"
+                  onClick={() => copyItem(`npm run seo:plan:approve -- ${plan.id}`, `${plan.id}-approve-command`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  {buttonLabel(`${plan.id}-approve-command`, "Copy approve command")}
+                </button>
+                <button
+                  type="button"
                   onClick={() => copyItem(`Run npm run seo:plan:run -- ${plan.id} to generate reports/seo-active-plan.md, review the stages, then apply only after explicit approval.`, `${plan.id}-run-instruction`)}
                   className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                 >
                   {buttonLabel(`${plan.id}-run-instruction`, "Copy run-this-plan instruction")}
                 </button>
               </div>
+                </>
+                );
+              })()}
             </div>
           ))}
         </div>

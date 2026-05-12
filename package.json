@@ -33,7 +33,8 @@
     "seo:conversion": "node scripts/seo_conversion_paths.mjs",
     "seo:opportunities": "node scripts/seo_opportunity_centre.mjs",
     "seo:plans": "node scripts/seo_execution_plans.mjs",
-    "seo:plan:run": "node scripts/seo_plan_run.mjs"
+    "seo:plan:run": "node scripts/seo_plan_run.mjs",
+    "seo:plan:approve": "node scripts/seo_plan_approve.mjs"
   },
   "homepage": "https://torncheesecake.github.io/erp-experts",
   "dependencies": {

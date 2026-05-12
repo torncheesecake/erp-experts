@@ -47,6 +47,7 @@ Primary automation commands:
 - `npm run seo:opportunities`
 - `npm run seo:plans`
 - `npm run seo:plan:run -- <planId>`
+- `npm run seo:plan:approve -- <planId>`
 
 CI workflow command coverage:
 
@@ -317,6 +318,22 @@ Execution planning engine:
 - Safety-level behaviour in runner:
   - `high_review_required`: planning prompt only by default, patching requires explicit human approval
   - `safe_patch_candidate`: patch prompt included, but review is still required before commit
+
+Approval gate:
+
+- `npm run seo:plan:approve -- <planId>` writes local approval state to `reports/seo-plan-approvals.json`.
+- Approval levels:
+  - `planning`
+  - `patch_proposal`
+  - `apply_patch`
+- Default behaviour:
+  - `high_review_required` plans default to `patch_proposal` only
+  - `safe_patch_candidate` plans default to `patch_proposal`
+  - `apply_patch` is only allowed with explicit `--allow-apply`
+- Review-first policy:
+  - approvals enable controlled workflow state, not automatic edits
+  - `apply_patch` approval does not bypass human review or validation
+  - commit remains manual and scoped
 
 Current snapshot (latest generated state):
 
