@@ -42,6 +42,7 @@ Primary automation commands:
 - `npm run seo:monitor:summary`
 - `npm run seo:growth`
 - `npm run seo:links`
+- `npm run seo:freshness`
 
 CI workflow command coverage:
 
@@ -199,6 +200,32 @@ Safe workflow:
 3. Copy a prompt for one opportunity.
 4. Ask Codex for a proposed patch only.
 5. Manually review and approve before any edit is applied.
+
+Freshness and content decay engine:
+
+- `npm run seo:freshness` generates `reports/seo-freshness-report.json`.
+- Purpose: detect ageing or commercially weakening content while QA remains pass.
+- Freshness model includes:
+  - freshness score and label
+  - decay risk
+  - age and topical area
+  - stale/decay signals
+  - commercial risk and refresh priority
+  - suggested refresh types and actions
+  - related growth clusters
+  - copy-ready Codex refresh-plan prompt (non-mutating by default)
+- Difference from QA:
+  - QA checks structural/content quality pass criteria.
+  - Freshness checks whether content is still current, relevant, and commercially useful over time.
+
+Lifecycle:
+
+1. Keep QA healthy (`pass` state).
+2. Monitor regressions (`npm run seo:monitor`).
+3. Review growth opportunities (`npm run seo:growth`).
+4. Review internal link opportunities (`npm run seo:links`).
+5. Review freshness opportunities (`npm run seo:freshness`).
+6. Selectively refresh strategically important content with human approval first.
 
 Current snapshot (latest generated state):
 

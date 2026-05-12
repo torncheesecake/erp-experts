@@ -1539,6 +1539,8 @@ function AdminView({ onPreview }) {
   const [growthLoading, setGrowthLoading] = useState(true);
   const [linksReport, setLinksReport] = useState(null);
   const [linksLoading, setLinksLoading] = useState(true);
+  const [freshnessReport, setFreshnessReport] = useState(null);
+  const [freshnessLoading, setFreshnessLoading] = useState(true);
   const [articleFilter, setArticleFilter] = useState("needs_review");
   const [sortBy, setSortBy] = useState("score");
   const [selectedSlug, setSelectedSlug] = useState("");
@@ -1580,6 +1582,37 @@ function AdminView({ onPreview }) {
     }
 
     loadQaReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadFreshnessReport() {
+      const paths = ["/reports/seo-freshness-report.json", "/seo-freshness-report.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setFreshnessReport(data);
+            setFreshnessLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setFreshnessReport(null);
+        setFreshnessLoading(false);
+      }
+    }
+
+    loadFreshnessReport();
     return () => {
       alive = false;
     };
@@ -1952,6 +1985,13 @@ function AdminView({ onPreview }) {
               <InternalLinkOpportunitiesPanel
                 linksReport={linksReport}
                 loading={linksLoading}
+              />
+            ) : null}
+
+            {isMonitorMode ? (
+              <FreshnessDecayPanel
+                freshnessReport={freshnessReport}
+                loading={freshnessLoading}
               />
             ) : null}
 
@@ -2368,6 +2408,104 @@ function InternalLinkOpportunitiesPanel({ linksReport, loading }) {
             </div>
           ))}
         </div>
+      )}
+    </div>
+  );
+}
+
+function FreshnessDecayPanel({ freshnessReport, loading }) {
+  const [copyState, setCopyState] = useState("idle");
+  const [copyTarget, setCopyTarget] = useState("");
+  const top = Array.isArray(freshnessReport?.topRefreshCandidates)
+    ? freshnessReport.topRefreshCandidates.slice(0, 5)
+    : Array.isArray(freshnessReport?.entries)
+      ? freshnessReport.entries.slice(0, 5)
+      : [];
+
+  const copyItem = async (text, target) => {
+    const ok = await copyText(text, `freshness ${target}`);
+    setCopyTarget(target);
+    setCopyState(ok ? "copied" : "failed");
+    setTimeout(() => {
+      setCopyState("idle");
+      setCopyTarget("");
+    }, 1400);
+  };
+
+  const buttonLabel = (target, fallback) => {
+    if (copyTarget !== target) return fallback;
+    if (copyState === "copied") return "Copied";
+    if (copyState === "failed") return "Copy failed";
+    return fallback;
+  };
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Content refresh opportunities</p>
+          <p className="text-sm text-slate-700">Freshness and positioning checks to keep high-value content commercially relevant.</p>
+        </div>
+        <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">npm run seo:freshness</code>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Loading freshness opportunities…</p>
+      ) : !freshnessReport ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>
+          Freshness report missing. Run <code>npm run seo:freshness</code> to generate <code>reports/seo-freshness-report.json</code>.
+        </p>
+      ) : (
+        <>
+          {Array.isArray(freshnessReport.trends) && freshnessReport.trends.length > 0 ? (
+            <p className="text-xs text-slate-600" style={{ marginTop: "var(--space-sm)" }}>
+              Trend: {freshnessReport.trends.join(" ")}
+            </p>
+          ) : null}
+
+          {top.length === 0 ? (
+            <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>No refresh candidates found in the latest run.</p>
+          ) : (
+            <div className="grid gap-sm" style={{ marginTop: "var(--space-sm)" }}>
+              {top.map((entry, index) => (
+                <div key={entry.slug || index} className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-sm)" }}>
+                  <div className="flex items-start justify-between gap-sm flex-wrap">
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900">{index + 1}. {entry.title}</p>
+                      <p className="text-xs text-slate-600">{entry.slug} · {entry.topicalArea}</p>
+                    </div>
+                    <span className="inline-flex rounded-full border border-slate-300 bg-white px-2 py-0.5 text-xs text-slate-700">
+                      {entry.decayRisk} decay risk
+                    </span>
+                  </div>
+                  <p className="text-sm text-slate-700" style={{ marginTop: "6px" }}>
+                    Freshness {entry.freshnessScore} · Suggested {entry.suggestedRefreshType}
+                  </p>
+                  <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
+                    Why: {(entry.staleSignals || []).slice(0, 2).join(" ")}
+                  </p>
+                  <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "8px" }}>
+                    <button
+                      type="button"
+                      onClick={() => copyItem(`${entry.slug}\nRefresh type: ${entry.suggestedRefreshType}\nSignals: ${(entry.staleSignals || []).join(" | ")}\nActions: ${(entry.suggestedActions || []).join(", ")}`, `${entry.slug}-action`)}
+                      className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                    >
+                      {buttonLabel(`${entry.slug}-action`, "Copy refresh suggestion")}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => copyItem(entry.codexPrompt || "", `${entry.slug}-prompt`)}
+                      className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                      disabled={!entry.codexPrompt}
+                    >
+                      {buttonLabel(`${entry.slug}-prompt`, "Copy Codex refresh prompt")}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
