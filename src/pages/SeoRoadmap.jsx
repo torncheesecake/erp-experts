@@ -1549,6 +1549,8 @@ function AdminView({ onPreview }) {
   const [plansLoading, setPlansLoading] = useState(true);
   const [planApprovalsReport, setPlanApprovalsReport] = useState(null);
   const [planApprovalsLoading, setPlanApprovalsLoading] = useState(true);
+  const [planStatusReport, setPlanStatusReport] = useState(null);
+  const [planStatusLoading, setPlanStatusLoading] = useState(true);
   const [articleFilter, setArticleFilter] = useState("needs_review");
   const [sortBy, setSortBy] = useState("score");
   const [selectedSlug, setSelectedSlug] = useState("");
@@ -1590,6 +1592,37 @@ function AdminView({ onPreview }) {
     }
 
     loadQaReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadPlanStatusReport() {
+      const paths = ["/reports/seo-plan-status.json", "/seo-plan-status.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setPlanStatusReport(data);
+            setPlanStatusLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setPlanStatusReport(null);
+        setPlanStatusLoading(false);
+      }
+    }
+
+    loadPlanStatusReport();
     return () => {
       alive = false;
     };
@@ -2116,8 +2149,9 @@ function AdminView({ onPreview }) {
             {isMonitorMode ? (
               <ExecutionPlansPanel
                 plansReport={plansReport}
-                loading={plansLoading || planApprovalsLoading}
+                loading={plansLoading || planApprovalsLoading || planStatusLoading}
                 planApprovalsReport={planApprovalsReport}
+                planStatusReport={planStatusReport}
               />
             ) : null}
 
@@ -2463,7 +2497,7 @@ function OpportunityCommandCentrePanel({ opportunityReport, loading }) {
   );
 }
 
-function ExecutionPlansPanel({ plansReport, loading, planApprovalsReport }) {
+function ExecutionPlansPanel({ plansReport, loading, planApprovalsReport, planStatusReport }) {
   const [copyState, setCopyState] = useState("idle");
   const [copyTarget, setCopyTarget] = useState("");
   const top = Array.isArray(plansReport?.topPlans)
@@ -2473,6 +2507,10 @@ function ExecutionPlansPanel({ plansReport, loading, planApprovalsReport }) {
       : [];
   const approvalByPlanId = new Map(
     (Array.isArray(planApprovalsReport?.approvals) ? planApprovalsReport.approvals : [])
+      .map((entry) => [entry.planId, entry]),
+  );
+  const statusByPlanId = new Map(
+    (Array.isArray(planStatusReport?.statuses) ? planStatusReport.statuses : [])
       .map((entry) => [entry.planId, entry]),
   );
 
@@ -2517,6 +2555,7 @@ function ExecutionPlansPanel({ plansReport, loading, planApprovalsReport }) {
             <div key={plan.id || index} className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-sm)" }}>
               {(() => {
                 const approval = approvalByPlanId.get(plan.id);
+                const status = statusByPlanId.get(plan.id);
                 return (
                   <>
               <div className="flex items-start justify-between gap-sm flex-wrap">
@@ -2529,6 +2568,9 @@ function ExecutionPlansPanel({ plansReport, loading, planApprovalsReport }) {
                   <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
                     Approval: {approval ? `approved (${approval.approvedFor})` : "not approved"}
                   </p>
+                  <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
+                    Status: {status?.currentStatus || "discovered"}
+                  </p>
                 </div>
                 <span className={`inline-flex rounded-full border px-2 py-0.5 text-xs ${plan.requiredHumanReview ? "border-amber-300 bg-amber-50 text-amber-800" : "border-emerald-300 bg-emerald-50 text-emerald-700"}`}>
                   {plan.safetyLevel}
@@ -2540,6 +2582,11 @@ function ExecutionPlansPanel({ plansReport, loading, planApprovalsReport }) {
               <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
                 {plan.requiredHumanReview ? "Human review required before patching." : "Safe patch candidate with standard review."}
               </p>
+              {status?.nextRecommendedStep ? (
+                <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
+                  Next recommended step: {status.nextRecommendedStep}
+                </p>
+              ) : null}
               <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100" style={{ marginTop: "8px" }}>
                 npm run seo:plan:run -- {plan.id}
               </code>

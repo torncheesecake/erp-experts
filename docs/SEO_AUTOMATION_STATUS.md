@@ -48,6 +48,7 @@ Primary automation commands:
 - `npm run seo:plans`
 - `npm run seo:plan:run -- <planId>`
 - `npm run seo:plan:approve -- <planId>`
+- `npm run seo:plan:status`
 
 CI workflow command coverage:
 
@@ -334,6 +335,24 @@ Approval gate:
   - approvals enable controlled workflow state, not automatic edits
   - `apply_patch` approval does not bypass human review or validation
   - commit remains manual and scoped
+
+Plan execution status tracker:
+
+- `npm run seo:plan:status` manages local plan lifecycle state in `reports/seo-plan-status.json`.
+- Supports local status updates:
+  - `npm run seo:plan:status -- --mark-completed <planId>`
+- Status values:
+  - `discovered`
+  - `active`
+  - `approved_for_planning`
+  - `approved_for_patch_proposal`
+  - `approved_for_apply`
+  - `completed`
+  - `paused`
+  - `blocked`
+- Source of truth:
+  - derives from execution plans, approvals, and active-plan file
+  - stores only local operational state, no source/content mutation
 
 Current snapshot (latest generated state):
 
