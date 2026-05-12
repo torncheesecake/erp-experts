@@ -2138,41 +2138,53 @@ function AdminView({ onPreview }) {
 
       <div className="container" style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-lg)" }}>
         <div className="grid gap-sm md:grid-cols-4">
-          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
             <p className="text-xs text-slate-500">System Status</p>
-            <p className="text-base font-semibold text-slate-900">{dashboardMode.stateLabel}</p>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"><CheckCircle2 size={14} /></span>
+              <p className="text-lg font-semibold text-slate-900">{dashboardMode.stateLabel}</p>
+            </div>
             <p className="text-xs text-slate-600">{dashboardMode.subtitle}</p>
           </div>
-          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
             <p className="text-xs text-slate-500">Pages</p>
-            <p className="text-base font-semibold text-slate-900">Pass {summaryGate.pass} · Review {summaryGate.needs_review} · Blocked {summaryGate.blocked}</p>
-            <p className="text-xs text-slate-600">Quality gate totals</p>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-slate-600"><BarChart3 size={14} /></span>
+              <p className="text-lg font-semibold text-slate-900">{summaryGate.pass}</p>
+            </div>
+            <p className="text-xs text-slate-600">{summaryGate.needs_review} review · {summaryGate.blocked} blocked</p>
           </div>
-          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
             <p className="text-xs text-slate-500">Top Priorities</p>
-            <p className="text-base font-semibold text-slate-900">{Number(opportunityReport?.opportunityCount || 0)} strategic opportunities</p>
-            <p className="text-xs text-slate-600">Unified opportunities available</p>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-blue-50 text-blue-600"><TrendingUp size={14} /></span>
+              <p className="text-lg font-semibold text-slate-900">{Number(opportunityReport?.opportunityCount || 0)}</p>
+            </div>
+            <p className="text-xs text-slate-600">Strategic opportunities</p>
           </div>
-          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
             <p className="text-xs text-slate-500">Autopilot</p>
-            <p className="text-base font-semibold text-slate-900">{isMonitorMode ? "Active" : "Monitoring"}</p>
-            <p className="text-xs text-slate-600">Weekly cadence</p>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-pink-50 text-pink-600"><Clock size={14} /></span>
+              <p className="text-lg font-semibold text-slate-900">{isMonitorMode ? "Active" : "Monitoring"}</p>
+            </div>
+            <p className="text-xs text-slate-600">Next run: Weekly</p>
           </div>
         </div>
       </div>
 
       <main className="container" style={{ paddingBottom: "var(--space-2xl)" }}>
         <div className="grid gap-lg lg:grid-cols-[220px_minmax(0,1fr)]">
-          <aside className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 h-fit lg:sticky lg:top-24">
+          <aside className="rounded-2xl bg-slate-50 p-4 shadow-sm ring-1 ring-slate-100 h-fit lg:sticky lg:top-24">
             <p className="text-xs font-semibold text-slate-500">Navigation</p>
             <nav className="grid gap-2" style={{ marginTop: "10px" }}>
-              {["Overview", "Opportunities", "Plans", "Inbox", "Reports", "Settings"].map((item) => (
-                <span key={item} className="rounded-lg px-2 py-1 text-sm text-slate-700 hover:bg-slate-100">{item}</span>
+              {["Overview", "Opportunities", "Plans", "Inbox", "Reports", "Settings"].map((item, idx) => (
+                <span key={item} className={`rounded-lg px-3 py-2 text-sm ${idx === 0 ? "bg-pink-50 text-pink-600 font-semibold" : "text-slate-700 hover:bg-white"}`}>{item}</span>
               ))}
             </nav>
-            <div className="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200" style={{ marginTop: "14px" }}>
+            <div className="rounded-lg bg-white p-3 ring-1 ring-slate-200" style={{ marginTop: "14px" }}>
               <p className="text-xs text-slate-500">System health</p>
-              <p className="text-sm font-semibold text-slate-900">{dashboardMode.stateLabel}</p>
+              <p className="text-sm font-semibold text-emerald-600">{dashboardMode.stateLabel}</p>
               <p className="text-xs text-slate-600">pass {summaryGate.pass} · blocked {summaryGate.blocked}</p>
             </div>
           </aside>
@@ -2217,7 +2229,7 @@ function AdminView({ onPreview }) {
                         "npm run seo:inbox",
                         "npm run seo:digest",
                       ].map((cmd) => (
-                        <code key={cmd} className="rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">{cmd}</code>
+                        <code key={cmd} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-700">{cmd}</code>
                       ))}
                     </div>
                   </div>
@@ -2494,13 +2506,10 @@ function OpportunityCommandCentrePanel({ opportunityReport, loading }) {
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-start justify-between gap-md flex-wrap">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Opportunity command centre</p>
-          <p className="text-sm text-slate-700">No maintenance action required. Strategic opportunities available.</p>
-        </div>
-        <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">npm run seo:opportunities</code>
+        <p className="text-sm text-slate-700">Top ranked opportunities for this week.</p>
+        <span className="text-xs text-slate-500">Top 5</span>
       </div>
 
       {loading ? (
@@ -2514,20 +2523,16 @@ function OpportunityCommandCentrePanel({ opportunityReport, loading }) {
       ) : (
         <div className="grid gap-sm" style={{ marginTop: "var(--space-sm)" }}>
           {top.map((item, index) => (
-            <div key={item.id || index} className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-sm)" }}>
-              <div className="flex items-start justify-between gap-sm flex-wrap">
+            <div key={item.id || index} className="rounded-xl border border-slate-100 bg-slate-50/60" style={{ padding: "var(--space-sm)" }}>
+              <div className="flex items-start justify-between gap-sm">
                 <div>
                   <p className="text-sm font-semibold text-slate-900">{index + 1}. {item.groupTitle || item.title}</p>
-                  <p className="text-xs text-slate-600">
-                    Score {item.score} · {item.priorityLabel} · {item.primaryType} · {item.actionTheme || "mixed"} · effort {item.effortLabel} · confidence {item.confidenceLabel}
-                  </p>
+                  <p className="text-xs text-slate-600">{item.recommendedAction}</p>
                 </div>
-                <span className="inline-flex rounded-full border border-slate-300 bg-white px-2 py-0.5 text-xs text-slate-700">
-                  {(item.combinedSignals || []).join(" + ")}{typeof item.sourceSignalCount === "number" ? ` (${item.sourceSignalCount})` : ""}
+                <span className="inline-flex shrink-0 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
+                  {item.priorityLabel} · {item.score}
                 </span>
               </div>
-              <p className="text-sm text-slate-700" style={{ marginTop: "6px" }}>{item.recommendedAction}</p>
-              <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>{item.whyThisRanks}</p>
               {Array.isArray(item.relatedActions) && item.relatedActions.length > 0 ? (
                 <details style={{ marginTop: "8px" }}>
                   <summary className="cursor-pointer text-xs font-semibold text-slate-600">
@@ -2548,17 +2553,17 @@ function OpportunityCommandCentrePanel({ opportunityReport, loading }) {
                 <button
                   type="button"
                   onClick={() => copyItem(`${item.groupTitle || item.title}\nTheme: ${item.actionTheme || "mixed"}\nSignals: ${(item.combinedSignals || []).join(", ")}\nAction: ${item.recommendedAction}\nNext: ${item.nextCommandOrPrompt || "n/a"}`, `${item.id}-action`)}
-                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                  className="inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
                 >
-                  {buttonLabel(`${item.id}-action`, "Copy strategic action")}
+                  {buttonLabel(`${item.id}-action`, "Action")}
                 </button>
                 <button
                   type="button"
                   onClick={() => copyItem(item.codexPrompt || "", `${item.id}-prompt`)}
-                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                  className="inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
                   disabled={!item.codexPrompt}
                 >
-                  {buttonLabel(`${item.id}-prompt`, "Copy Codex prompt")}
+                  {buttonLabel(`${item.id}-prompt`, "Details")}
                 </button>
               </div>
             </div>
@@ -2578,13 +2583,16 @@ function WeeklyDigestPanel({ digestText, loading }) {
     : [];
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-start justify-between gap-md flex-wrap">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Weekly digest</p>
-          <p className="text-sm text-slate-700">Plain-English weekly summary for non-technical stakeholders.</p>
+        <div className="flex items-center gap-2">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"><CheckCircle2 size={15} /></span>
+          <div>
+            <p className="text-sm font-semibold text-slate-900">Weekly Digest</p>
+            <p className="text-xs text-slate-600">Plain-English summary of what matters this week.</p>
+          </div>
         </div>
-        <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">npm run seo:digest</code>
+        <button className="rounded-md border border-slate-200 bg-white px-3 py-1 text-xs text-slate-700">View digest</button>
       </div>
       {loading ? (
         <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Loading digest preview…</p>
@@ -2593,7 +2601,7 @@ function WeeklyDigestPanel({ digestText, loading }) {
           Digest not found. Run <code>npm run seo:digest</code>.
         </p>
       ) : (
-        <details className="rounded-lg border border-slate-200 bg-slate-50" style={{ marginTop: "var(--space-sm)", padding: "var(--space-sm)" }}>
+        <details className="rounded-lg border border-slate-100 bg-slate-50" style={{ marginTop: "var(--space-sm)", padding: "var(--space-sm)" }}>
           <summary className="cursor-pointer text-xs font-semibold text-slate-700">Digest preview</summary>
           <div style={{ marginTop: "8px" }}>
             {previewLines.map((line, idx) => (
@@ -2607,17 +2615,18 @@ function WeeklyDigestPanel({ digestText, loading }) {
 }
 
 function ActionInboxPanel({ inboxReport, loading }) {
-  const topItems = Array.isArray(inboxReport?.items) ? inboxReport.items.slice(0, 5) : [];
+  const topItems = Array.isArray(inboxReport?.items) ? inboxReport.items.slice(0, 2) : [];
+  const restItems = Array.isArray(inboxReport?.items) ? inboxReport.items.slice(2, 8) : [];
   const summary = inboxReport?.summary || {};
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-start justify-between gap-md flex-wrap">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Action inbox</p>
-          <p className="text-sm text-slate-700">What needs attention and what can wait.</p>
+          <p className="text-sm font-semibold text-slate-900">Action Inbox</p>
+          <p className="text-xs text-slate-600">What needs attention and what can wait.</p>
         </div>
-        <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">npm run seo:inbox</code>
+        <button className="rounded-md border border-slate-200 bg-white px-3 py-1 text-xs text-slate-700">View inbox</button>
       </div>
       {loading ? (
         <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Loading inbox…</p>
@@ -2635,13 +2644,22 @@ function ActionInboxPanel({ inboxReport, loading }) {
           ) : null}
           <div className="grid gap-2" style={{ marginTop: "8px" }}>
             {topItems.map((item) => (
-              <div key={item.id} className="rounded-md border border-slate-200 bg-slate-50 px-2 py-2">
+              <div key={item.id} className="rounded-md border border-slate-100 bg-slate-50 px-2 py-2">
                 <p className="text-xs font-semibold text-slate-800">{item.title}</p>
-                <p className="text-xs text-slate-600">{item.source} · {item.priority} · {item.status}</p>
-                <p className="text-xs text-slate-700">{item.recommendedNextStep}</p>
+                <p className="text-xs text-slate-600">{item.source} · {item.priority}</p>
               </div>
             ))}
           </div>
+          {restItems.length > 0 ? (
+            <details style={{ marginTop: "8px" }}>
+              <summary className="cursor-pointer text-xs font-medium text-slate-600">Show all</summary>
+              <div className="grid gap-1" style={{ marginTop: "6px" }}>
+                {restItems.map((item) => (
+                  <p key={item.id} className="text-xs text-slate-600">{item.title}</p>
+                ))}
+              </div>
+            </details>
+          ) : null}
         </>
       )}
     </div>
@@ -2683,13 +2701,10 @@ function ExecutionPlansPanel({ plansReport, loading, planApprovalsReport, planSt
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" style={{ padding: "var(--space-lg)" }}>
       <div className="flex items-start justify-between gap-md flex-wrap">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Execution plans</p>
-          <p className="text-sm text-slate-700">Recommended execution plans for review-first delivery.</p>
-        </div>
-        <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">npm run seo:plans</code>
+        <p className="text-sm text-slate-700">Top plan queue for safe execution.</p>
+        <span className="text-xs text-slate-500">Top 5</span>
       </div>
 
       {loading ? (
@@ -2703,19 +2718,16 @@ function ExecutionPlansPanel({ plansReport, loading, planApprovalsReport, planSt
       ) : (
         <div className="grid gap-sm" style={{ marginTop: "var(--space-sm)" }}>
           {top.map((plan, index) => (
-            <div key={plan.id || index} className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-sm)" }}>
+            <div key={plan.id || index} className="rounded-xl border border-slate-100 bg-slate-50/60" style={{ padding: "var(--space-sm)" }}>
               {(() => {
                 const approval = approvalByPlanId.get(plan.id);
                 const status = statusByPlanId.get(plan.id);
                 return (
                   <>
-              <div className="flex items-start justify-between gap-sm flex-wrap">
+              <div className="flex items-start justify-between gap-sm">
                 <div>
                   <p className="text-sm font-semibold text-slate-900">{index + 1}. {plan.title}</p>
-                  <p className="text-xs text-slate-600">
-                    {plan.planType} · impact {plan.estimatedImpact} · effort {plan.estimatedEffort} · confidence {plan.confidence}
-                  </p>
-                  <p className="text-xs text-slate-500" style={{ marginTop: "4px" }}>Plan ID: <code>{plan.id}</code></p>
+                  <p className="text-xs text-slate-600">{plan.planType} · next: {plan.recommendedWorkflow?.nextCommand || "Review plan output"}</p>
                   <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
                     Approval: {approval ? `approved (${approval.approvedFor})` : "not approved"}
                   </p>
@@ -2738,12 +2750,6 @@ function ExecutionPlansPanel({ plansReport, loading, planApprovalsReport, planSt
                   Next recommended step: {status.nextRecommendedStep}
                 </p>
               ) : null}
-              <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100" style={{ marginTop: "8px" }}>
-                npm run seo:plan:run -- {plan.id}
-              </code>
-              <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100" style={{ marginTop: "8px" }}>
-                npm run seo:plan:approve -- {plan.id}
-              </code>
               <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "8px" }}>
                 <button
                   type="button"
@@ -2751,7 +2757,7 @@ function ExecutionPlansPanel({ plansReport, loading, planApprovalsReport, planSt
                   className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                   disabled={!plan.codexPlanningPrompt}
                 >
-                  {buttonLabel(`${plan.id}-planning`, "Copy planning prompt")}
+                  {buttonLabel(`${plan.id}-planning`, "Planning")}
                 </button>
                 <button
                   type="button"
@@ -2759,35 +2765,35 @@ function ExecutionPlansPanel({ plansReport, loading, planApprovalsReport, planSt
                   className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                   disabled={!plan.codexPatchPrompt}
                 >
-                  {buttonLabel(`${plan.id}-patch`, "Copy patch prompt")}
+                  {buttonLabel(`${plan.id}-patch`, "Patch")}
                 </button>
                 <button
                   type="button"
                   onClick={() => copyItem((plan.validationCommands || []).join("\n"), `${plan.id}-validate`)}
                   className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                 >
-                  {buttonLabel(`${plan.id}-validate`, "Copy validation commands")}
+                  {buttonLabel(`${plan.id}-validate`, "Validate")}
                 </button>
                 <button
                   type="button"
                   onClick={() => copyItem(`npm run seo:plan:run -- ${plan.id}`, `${plan.id}-run-command`)}
                   className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                 >
-                  {buttonLabel(`${plan.id}-run-command`, "Copy run command")}
+                  {buttonLabel(`${plan.id}-run-command`, "Run cmd")}
                 </button>
                 <button
                   type="button"
                   onClick={() => copyItem(`npm run seo:plan:approve -- ${plan.id}`, `${plan.id}-approve-command`)}
                   className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                 >
-                  {buttonLabel(`${plan.id}-approve-command`, "Copy approve command")}
+                  {buttonLabel(`${plan.id}-approve-command`, "Approve cmd")}
                 </button>
                 <button
                   type="button"
                   onClick={() => copyItem(`Run npm run seo:plan:run -- ${plan.id} to generate reports/seo-active-plan.md, review the stages, then apply only after explicit approval.`, `${plan.id}-run-instruction`)}
                   className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                 >
-                  {buttonLabel(`${plan.id}-run-instruction`, "Copy run-this-plan instruction")}
+                  {buttonLabel(`${plan.id}-run-instruction`, "Details")}
                 </button>
               </div>
                 </>
