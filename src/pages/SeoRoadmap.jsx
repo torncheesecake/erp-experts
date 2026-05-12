@@ -2136,36 +2136,36 @@ function AdminView({ onPreview }) {
         </div>
       </header>
 
-      <div className="container" style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-lg)" }}>
-        <div className="grid gap-sm md:grid-cols-4">
-          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
+      <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-lg)" }}>
+        <div className="grid gap-md md:grid-cols-4">
+          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100/70">
             <p className="text-xs text-slate-500">System Status</p>
             <div className="flex items-center gap-2">
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"><CheckCircle2 size={14} /></span>
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"><CheckCircle2 size={15} /></span>
               <p className="text-lg font-semibold text-slate-900">{dashboardMode.stateLabel}</p>
             </div>
             <p className="text-xs text-slate-600">{dashboardMode.subtitle}</p>
           </div>
-          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
+          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100/70">
             <p className="text-xs text-slate-500">Pages</p>
             <div className="flex items-center gap-2">
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-slate-600"><BarChart3 size={14} /></span>
-              <p className="text-lg font-semibold text-slate-900">{summaryGate.pass}</p>
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-600"><BarChart3 size={15} /></span>
+              <p className="text-xl font-semibold text-slate-900">{summaryGate.pass}</p>
             </div>
             <p className="text-xs text-slate-600">{summaryGate.needs_review} review · {summaryGate.blocked} blocked</p>
           </div>
-          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
+          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100/70">
             <p className="text-xs text-slate-500">Top Priorities</p>
             <div className="flex items-center gap-2">
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-blue-50 text-blue-600"><TrendingUp size={14} /></span>
-              <p className="text-lg font-semibold text-slate-900">{Number(opportunityReport?.opportunityCount || 0)}</p>
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-blue-600"><TrendingUp size={15} /></span>
+              <p className="text-xl font-semibold text-slate-900">{Number(opportunityReport?.opportunityCount || 0)}</p>
             </div>
             <p className="text-xs text-slate-600">Strategic opportunities</p>
           </div>
-          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
+          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100/70">
             <p className="text-xs text-slate-500">Autopilot</p>
             <div className="flex items-center gap-2">
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-pink-50 text-pink-600"><Clock size={14} /></span>
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-pink-50 text-pink-600"><Clock size={15} /></span>
               <p className="text-lg font-semibold text-slate-900">{isMonitorMode ? "Active" : "Monitoring"}</p>
             </div>
             <p className="text-xs text-slate-600">Next run: Weekly</p>
@@ -2174,36 +2174,36 @@ function AdminView({ onPreview }) {
       </div>
 
       <main className="container" style={{ paddingBottom: "var(--space-2xl)" }}>
-        <div className="grid gap-lg lg:grid-cols-[220px_minmax(0,1fr)]">
-          <aside className="rounded-2xl bg-slate-50 p-4 shadow-sm ring-1 ring-slate-100 h-fit lg:sticky lg:top-24">
+        <div className="grid gap-xl lg:grid-cols-[220px_minmax(0,1fr)]">
+          <aside className="rounded-2xl bg-slate-50/65 p-5 shadow-sm ring-1 ring-slate-100/70 h-fit lg:sticky lg:top-24">
             <p className="text-xs font-semibold text-slate-500">Navigation</p>
             <nav className="grid gap-2" style={{ marginTop: "10px" }}>
               {["Overview", "Opportunities", "Plans", "Inbox", "Reports", "Settings"].map((item, idx) => (
-                <span key={item} className={`rounded-lg px-3 py-2 text-sm ${idx === 0 ? "bg-pink-50 text-pink-600 font-semibold" : "text-slate-700 hover:bg-white"}`}>{item}</span>
+                <span key={item} className={`rounded-lg px-3 py-2 text-sm ${idx === 0 ? "bg-white text-pink-600 font-semibold ring-1 ring-pink-100" : "text-slate-700 hover:bg-white/80"}`}>{item}</span>
               ))}
             </nav>
-            <div className="rounded-lg bg-white p-3 ring-1 ring-slate-200" style={{ marginTop: "14px" }}>
+            <div className="rounded-lg bg-white/80 p-3 ring-1 ring-slate-100" style={{ marginTop: "16px" }}>
               <p className="text-xs text-slate-500">System health</p>
               <p className="text-sm font-semibold text-emerald-600">{dashboardMode.stateLabel}</p>
               <p className="text-xs text-slate-600">pass {summaryGate.pass} · blocked {summaryGate.blocked}</p>
             </div>
           </aside>
 
-          <div className="grid gap-md">
+          <div className="grid gap-lg">
             {isMonitorMode ? (
               <>
                 <section>
-                  <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "10px" }}>What needs attention</h2>
+                  <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "12px" }}>What needs attention</h2>
                   <ActionInboxPanel inboxReport={actionInboxReport} loading={actionInboxLoading} />
                 </section>
 
-                <section className="grid gap-md xl:grid-cols-2">
+                <section className="grid gap-lg xl:grid-cols-2">
                   <div>
-                    <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "10px" }}>Top opportunities</h2>
+                    <h2 className="text-xl font-semibold text-slate-900" style={{ marginBottom: "12px" }}>Top opportunities</h2>
                     <OpportunityCommandCentrePanel opportunityReport={opportunityReport} loading={opportunityLoading} />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "10px" }}>Execution plans</h2>
+                    <h2 className="text-xl font-semibold text-slate-900" style={{ marginBottom: "12px" }}>Execution plans</h2>
                     <ExecutionPlansPanel
                       plansReport={plansReport}
                       loading={plansLoading || planApprovalsLoading || planStatusLoading}
@@ -2213,14 +2213,14 @@ function AdminView({ onPreview }) {
                   </div>
                 </section>
 
-                <section className="grid gap-md xl:grid-cols-2">
+                <section className="grid gap-lg xl:grid-cols-2">
                   <div>
-                    <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "10px" }}>Weekly digest</h2>
+                    <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "12px" }}>Weekly digest</h2>
                     <WeeklyDigestPanel digestText={weeklyDigestText} loading={weeklyDigestLoading} />
                   </div>
-                  <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+                  <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
                     <h2 className="text-lg font-semibold text-slate-900">Quick actions</h2>
-                    <div className="flex flex-wrap gap-2" style={{ marginTop: "10px" }}>
+                    <div className="flex flex-wrap gap-2.5" style={{ marginTop: "10px" }}>
                       {[
                         "npm run seo:monitor",
                         "npm run seo:opportunities",
