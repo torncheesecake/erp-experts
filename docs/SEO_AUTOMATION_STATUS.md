@@ -262,6 +262,10 @@ Unified opportunity command centre:
 
 - `npm run seo:opportunities` generates `reports/seo-opportunity-centre.json`.
 - Purpose: merge growth, internal links, freshness, and conversion signals into one prioritised strategic list.
+- Grouping and deduplication:
+  - Opportunities are grouped by target slug, target path, or canonical opportunity title.
+  - Each group now has one `primary` opportunity and optional `supporting` related actions.
+  - Top lists prefer grouped primary opportunities to avoid repeated actions for the same target.
 - Prioritisation favours:
   - overlap across multiple engines
   - higher commercial/conversion value

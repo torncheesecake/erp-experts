@@ -2337,21 +2337,37 @@ function OpportunityCommandCentrePanel({ opportunityReport, loading }) {
             <div key={item.id || index} className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-sm)" }}>
               <div className="flex items-start justify-between gap-sm flex-wrap">
                 <div>
-                  <p className="text-sm font-semibold text-slate-900">{index + 1}. {item.title}</p>
+                  <p className="text-sm font-semibold text-slate-900">{index + 1}. {item.groupTitle || item.title}</p>
                   <p className="text-xs text-slate-600">
-                    Score {item.score} · {item.priorityLabel} · {item.primaryType} · effort {item.effortLabel} · confidence {item.confidenceLabel}
+                    Score {item.score} · {item.priorityLabel} · {item.primaryType} · {item.actionTheme || "mixed"} · effort {item.effortLabel} · confidence {item.confidenceLabel}
                   </p>
                 </div>
                 <span className="inline-flex rounded-full border border-slate-300 bg-white px-2 py-0.5 text-xs text-slate-700">
-                  {(item.combinedSignals || []).join(" + ")}
+                  {(item.combinedSignals || []).join(" + ")}{typeof item.sourceSignalCount === "number" ? ` (${item.sourceSignalCount})` : ""}
                 </span>
               </div>
               <p className="text-sm text-slate-700" style={{ marginTop: "6px" }}>{item.recommendedAction}</p>
               <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>{item.whyThisRanks}</p>
+              {Array.isArray(item.relatedActions) && item.relatedActions.length > 0 ? (
+                <details style={{ marginTop: "8px" }}>
+                  <summary className="cursor-pointer text-xs font-semibold text-slate-600">
+                    Related actions ({item.relatedActions.length})
+                  </summary>
+                  <div className="grid gap-2" style={{ marginTop: "8px" }}>
+                    {item.relatedActions.slice(0, 4).map((action) => (
+                      <div key={action.id} className="rounded-md border border-slate-200 bg-white px-2 py-2">
+                        <p className="text-xs font-semibold text-slate-800">{action.title}</p>
+                        <p className="text-xs text-slate-600">{action.type} · {action.actionTheme} · score {action.score}</p>
+                        <p className="text-xs text-slate-700" style={{ marginTop: "4px" }}>{action.recommendedAction}</p>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              ) : null}
               <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "8px" }}>
                 <button
                   type="button"
-                  onClick={() => copyItem(`${item.title}\nSignals: ${(item.combinedSignals || []).join(", ")}\nAction: ${item.recommendedAction}\nNext: ${item.nextCommandOrPrompt || "n/a"}`, `${item.id}-action`)}
+                  onClick={() => copyItem(`${item.groupTitle || item.title}\nTheme: ${item.actionTheme || "mixed"}\nSignals: ${(item.combinedSignals || []).join(", ")}\nAction: ${item.recommendedAction}\nNext: ${item.nextCommandOrPrompt || "n/a"}`, `${item.id}-action`)}
                   className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                 >
                   {buttonLabel(`${item.id}-action`, "Copy strategic action")}
