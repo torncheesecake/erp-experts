@@ -1526,7 +1526,7 @@ function RoadmapContent({ canEdit }) {
    ════════════════════════════════════════════════════════════ */
 
 function AdminView({ onPreview }) {
-  const { allItems, doneItems, loaded, statusSource, saveBlocked } = useRoadmapState();
+  const { allItems, loaded, statusSource, saveBlocked } = useRoadmapState();
   const [qaReport, setQaReport] = useState(null);
   const [qaLoading, setQaLoading] = useState(true);
   const [weeklySummary, setWeeklySummary] = useState(null);
@@ -2010,11 +2010,6 @@ function AdminView({ onPreview }) {
     </div>
   );
 
-  const countByStatus = (s) => allItems.filter((i) => i.status === s).length;
-  const doneCount = doneItems.length;
-  const progressCount = countByStatus("in_progress");
-  const todoCount = countByStatus("todo");
-  const pct = Math.round((doneCount / allItems.length) * 100);
   const demandGaps = demandSignals.contentGaps || [];
   const topicBacklog = demandSignals.topicBacklogV2 || [];
   const recommendations = buildFixCreateRecommendations({
@@ -2110,88 +2105,146 @@ function AdminView({ onPreview }) {
     : "Select an article to generate a prompt preview.";
 
   return (
-    <div className="min-h-screen bg-white">
-      <header className="bg-slate-900 text-white" style={{ paddingTop: "160px", paddingBottom: "var(--space-2xl)" }}>
-        <div className="container">
-          <div className="flex items-center justify-between" style={{ marginBottom: "var(--space-xl)" }}>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold bg-primary/20 text-primary ring-1 ring-primary/30">
-              <Lock size={13} />
-              Admin
-            </span>
-            <div className="flex items-center gap-lg">
+    <div className="min-h-screen bg-slate-50">
+      <header className="border-b border-slate-200 bg-white">
+        <div className="container" style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-lg)" }}>
+          <div className="flex items-start justify-between gap-md flex-wrap">
+            <div>
+              <h1 className="font-heading text-slate-900" style={{ fontSize: "clamp(1.6rem, 3vw, 2.1rem)" }}>SEO Overview</h1>
+              <p className="text-sm text-slate-600">Clear status. Top priorities. Next best actions.</p>
+              <p className="text-xs text-slate-500" style={{ marginTop: "6px" }}>
+                Last updated {dashboardLoadedAt.toLocaleTimeString("en-GB")}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => window.location.reload()}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30 transition-colors cursor-pointer"
-                title="Reload the dashboard to fetch the latest report files"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
               >
-                <CheckCircle2 size={15} />
-                Refresh latest reports
+                <CheckCircle2 size={14} />
+                Refresh
               </button>
-              <button onClick={onPreview} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer">
-                <Eye size={15} />
-                View as Tim
+              <button
+                onClick={onPreview}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                <Eye size={14} />
+                Preview
               </button>
             </div>
           </div>
-          <h1 className="font-heading text-white" style={{ fontSize: "clamp(1.5rem, 4vw, 2.25rem)", marginBottom: "var(--space-sm)" }}>
-            SEO Roadmap Dashboard v2
-          </h1>
-          <p className="text-white/60 text-sm">Operator control panel for selecting what to improve next.</p>
-          <p className="text-white/40 text-xs" style={{ marginTop: "var(--space-xs)" }}>
-            Dashboard loaded at {dashboardLoadedAt.toLocaleTimeString("en-GB")}
-          </p>
         </div>
       </header>
 
-      {/* ── Stats strip ── */}
-      <div className="bg-slate-800 border-t border-white/5">
-        <div className="container" style={{ padding: "var(--space-lg) var(--space-xl)" }}>
-          <div className="flex items-center gap-xl flex-wrap">
-            {/* Progress bar */}
-            <div className="flex-1 min-w-[200px]">
-              <div className="w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-green-400 to-emerald-500 rounded-full transition-all duration-500"
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
-            </div>
-            {/* Counts */}
-            <div className="flex items-center gap-lg text-sm">
-              <span className="flex items-center gap-1.5 text-green-400 font-semibold"><span className="w-2 h-2 rounded-full bg-green-400" />{doneCount} done</span>
-              <span className="flex items-center gap-1.5 text-amber-400 font-semibold"><span className="w-2 h-2 rounded-full bg-amber-400" />{progressCount} active</span>
-              <span className="flex items-center gap-1.5 text-slate-400 font-semibold"><span className="w-2 h-2 rounded-full bg-slate-500" />{todoCount} to do</span>
-              <span className="text-white/40 font-mono text-xs">{pct}%</span>
-            </div>
+      <div className="container" style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-lg)" }}>
+        <div className="grid gap-sm md:grid-cols-4">
+          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+            <p className="text-xs text-slate-500">System Status</p>
+            <p className="text-base font-semibold text-slate-900">{dashboardMode.stateLabel}</p>
+            <p className="text-xs text-slate-600">{dashboardMode.subtitle}</p>
+          </div>
+          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+            <p className="text-xs text-slate-500">Pages</p>
+            <p className="text-base font-semibold text-slate-900">Pass {summaryGate.pass} · Review {summaryGate.needs_review} · Blocked {summaryGate.blocked}</p>
+            <p className="text-xs text-slate-600">Quality gate totals</p>
+          </div>
+          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+            <p className="text-xs text-slate-500">Top Priorities</p>
+            <p className="text-base font-semibold text-slate-900">{Number(opportunityReport?.opportunityCount || 0)} strategic opportunities</p>
+            <p className="text-xs text-slate-600">Unified opportunities available</p>
+          </div>
+          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+            <p className="text-xs text-slate-500">Autopilot</p>
+            <p className="text-base font-semibold text-slate-900">{isMonitorMode ? "Active" : "Monitoring"}</p>
+            <p className="text-xs text-slate-600">Weekly cadence</p>
           </div>
         </div>
       </div>
-      <section className="bg-white border-b border-slate-200">
-        <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
-          <h2 className="font-heading" style={{ fontSize: "1.3rem", marginBottom: "var(--space-sm)" }}>Weekly SEO Executive Summary</h2>
-          {summaryLoading ? (
-            <p className="text-sm text-slate-500">Loading summary…</p>
-          ) : !weeklySummary ? (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
-              Weekly summary is missing. Run <code>npm run seo:summary</code> or <code>npm run seo:pipeline</code>.
+
+      <main className="container" style={{ paddingBottom: "var(--space-2xl)" }}>
+        <div className="grid gap-lg lg:grid-cols-[220px_minmax(0,1fr)]">
+          <aside className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 h-fit lg:sticky lg:top-24">
+            <p className="text-xs font-semibold text-slate-500">Navigation</p>
+            <nav className="grid gap-2" style={{ marginTop: "10px" }}>
+              {["Overview", "Opportunities", "Plans", "Inbox", "Reports", "Settings"].map((item) => (
+                <span key={item} className="rounded-lg px-2 py-1 text-sm text-slate-700 hover:bg-slate-100">{item}</span>
+              ))}
+            </nav>
+            <div className="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200" style={{ marginTop: "14px" }}>
+              <p className="text-xs text-slate-500">System health</p>
+              <p className="text-sm font-semibold text-slate-900">{dashboardMode.stateLabel}</p>
+              <p className="text-xs text-slate-600">pass {summaryGate.pass} · blocked {summaryGate.blocked}</p>
             </div>
-          ) : (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-lg)" }}>
-                <p className="text-sm text-slate-800 leading-relaxed">{weeklySummary.headlineSummary}</p>
-            </div>
-          )}
+          </aside>
 
-          <div style={{ marginTop: "var(--space-md)", display: "grid", gap: "var(--space-md)" }}>
-            <SystemStateRail mode={dashboardMode} />
-
-            <AutopilotStatusPanel
-              mode={dashboardMode}
-              pipelineSummary={pipelineSummary}
-              monitorInsights={monitorInsights}
-            />
-
+          <div className="grid gap-md">
             {isMonitorMode ? (
-              <ActionInboxPanel inboxReport={actionInboxReport} loading={actionInboxLoading} />
+              <>
+                <section>
+                  <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "10px" }}>What needs attention</h2>
+                  <ActionInboxPanel inboxReport={actionInboxReport} loading={actionInboxLoading} />
+                </section>
+
+                <section className="grid gap-md xl:grid-cols-2">
+                  <div>
+                    <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "10px" }}>Top opportunities</h2>
+                    <OpportunityCommandCentrePanel opportunityReport={opportunityReport} loading={opportunityLoading} />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "10px" }}>Execution plans</h2>
+                    <ExecutionPlansPanel
+                      plansReport={plansReport}
+                      loading={plansLoading || planApprovalsLoading || planStatusLoading}
+                      planApprovalsReport={planApprovalsReport}
+                      planStatusReport={planStatusReport}
+                    />
+                  </div>
+                </section>
+
+                <section className="grid gap-md xl:grid-cols-2">
+                  <div>
+                    <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "10px" }}>Weekly digest</h2>
+                    <WeeklyDigestPanel digestText={weeklyDigestText} loading={weeklyDigestLoading} />
+                  </div>
+                  <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+                    <h2 className="text-lg font-semibold text-slate-900">Quick actions</h2>
+                    <div className="flex flex-wrap gap-2" style={{ marginTop: "10px" }}>
+                      {[
+                        "npm run seo:monitor",
+                        "npm run seo:opportunities",
+                        "npm run seo:plans",
+                        "npm run seo:plan:status",
+                        "npm run seo:inbox",
+                        "npm run seo:digest",
+                      ].map((cmd) => (
+                        <code key={cmd} className="rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">{cmd}</code>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
+                  <summary className="cursor-pointer text-sm font-semibold text-slate-700">Reports and advanced details</summary>
+                  <div style={{ marginTop: "var(--space-sm)", display: "grid", gap: "var(--space-sm)" }}>
+                    <SystemStateRail mode={dashboardMode} />
+                    <AutopilotStatusPanel
+                      mode={dashboardMode}
+                      pipelineSummary={pipelineSummary}
+                      monitorInsights={monitorInsights}
+                    />
+                    <NextBestActionPanel
+                      action={nextBestAction}
+                      loading={summaryLoading || pipelineLoading || briefsLoading}
+                      headingLabel={dashboardMode.actionLabel}
+                    />
+                    <ProgressHistoryCard points={progressPoints} />
+                    <GrowthOpportunitiesPanel growthReport={growthReport} loading={growthLoading} />
+                    <InternalLinkOpportunitiesPanel linksReport={linksReport} loading={linksLoading} />
+                    <FreshnessDecayPanel freshnessReport={freshnessReport} loading={freshnessLoading} />
+                    <ConversionPathPanel conversionReport={conversionReport} loading={conversionLoading} />
+                  </div>
+                </details>
+              </>
             ) : (
               <>
                 <OperatorModePanel
@@ -2202,87 +2255,21 @@ function AdminView({ onPreview }) {
                   loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
                   mode={dashboardMode}
                 />
-
                 <NextBestActionPanel
                   action={nextBestAction}
                   loading={summaryLoading || pipelineLoading || briefsLoading}
                   headingLabel={dashboardMode.actionLabel}
                 />
+                <BatchImprovementQueue
+                  loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
+                  queue={batchQueue}
+                  reportsReady={Boolean(qaReport && pipelineSummary && weeklySummary && briefsReport)}
+                />
               </>
             )}
-
-            {isMonitorMode ? (
-              <OpportunityCommandCentrePanel
-                opportunityReport={opportunityReport}
-                loading={opportunityLoading}
-              />
-            ) : null}
-
-            {isMonitorMode ? (
-              <ExecutionPlansPanel
-                plansReport={plansReport}
-                loading={plansLoading || planApprovalsLoading || planStatusLoading}
-                planApprovalsReport={planApprovalsReport}
-                planStatusReport={planStatusReport}
-              />
-            ) : null}
-
-            {isMonitorMode ? (
-              <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
-                <summary className="cursor-pointer text-sm font-semibold text-slate-700">Operational context</summary>
-                <div style={{ marginTop: "var(--space-sm)", display: "grid", gap: "var(--space-sm)" }}>
-                  <WeeklyDigestPanel digestText={weeklyDigestText} loading={weeklyDigestLoading} />
-                  <NextBestActionPanel
-                    action={nextBestAction}
-                    loading={summaryLoading || pipelineLoading || briefsLoading}
-                    headingLabel={dashboardMode.actionLabel}
-                  />
-                  <ProgressHistoryCard points={progressPoints} />
-                </div>
-              </details>
-            ) : null}
-
-            {isMonitorMode ? (
-              <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
-                <summary className="cursor-pointer text-sm font-semibold text-slate-700">Growth intelligence details</summary>
-                <div style={{ marginTop: "var(--space-sm)", display: "grid", gap: "var(--space-sm)" }}>
-                  <GrowthOpportunitiesPanel growthReport={growthReport} loading={growthLoading} />
-                  <InternalLinkOpportunitiesPanel linksReport={linksReport} loading={linksLoading} />
-                  <FreshnessDecayPanel freshnessReport={freshnessReport} loading={freshnessLoading} />
-                  <ConversionPathPanel conversionReport={conversionReport} loading={conversionLoading} />
-                </div>
-              </details>
-            ) : null}
-
-            {!isMonitorMode ? (
-              <BatchImprovementQueue
-                loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
-                queue={batchQueue}
-                reportsReady={Boolean(qaReport && pipelineSummary && weeklySummary && briefsReport)}
-              />
-            ) : (
-              <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
-                <summary className="cursor-pointer text-sm font-semibold text-slate-700">Growth opportunities and batch queue</summary>
-                <div style={{ marginTop: "var(--space-sm)" }}>
-                  <BatchImprovementQueue
-                    loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
-                    queue={batchQueue}
-                    reportsReady={Boolean(qaReport && pipelineSummary && weeklySummary && briefsReport)}
-                  />
-                </div>
-              </details>
-            )}
-          </div>
-
-          <div className="grid md:grid-cols-5 gap-md" style={{ marginTop: "var(--space-md)" }}>
-            <StatMini label="Pass" value={summaryGate.pass} tone="green" />
-            <StatMini label="Needs Review" value={summaryGate.needs_review} tone="amber" />
-            <StatMini label="Blocked" value={summaryGate.blocked} tone={summaryGate.blocked > 0 ? "red" : "green"} />
-            <StatMini label="Human review flag" value={humanReviewRecommended ? "Yes" : "No"} tone={humanReviewRecommended ? "red" : "green"} />
-            <StatMini label="Snapshot" value={pipelineSummary?.pipeline?.snapshotDir?.split("/").at(-1) || "Unavailable"} />
           </div>
         </div>
-      </section>
+      </main>
 
       <section className="bg-slate-50 border-b border-slate-200">
         <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
