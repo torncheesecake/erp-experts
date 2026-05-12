@@ -175,6 +175,18 @@ function pickNextBestAction({ pipelineSummary, qaReport, weeklySummary, briefs }
       codexPrompt: null,
     };
   }
+  if (needsReview === 0 && blocked === 0) {
+    return {
+      title: "No maintenance action required. Growth opportunities available.",
+      why: "QA health is stable. Keep weekly monitoring active, then review growth opportunities below.",
+      targetTitle: pipelineSummary?.pipeline?.snapshotDir?.split("/").at(-1) || "latest snapshot",
+      priority: "Monitoring",
+      command: "npm run seo:monitor",
+      actionPath: "/seo-roadmap",
+      buttonLabel: "Open monitor view",
+      codexPrompt: null,
+    };
+  }
   if (improveBriefs.length > 0) {
     const brief = improveBriefs[0];
     return {
@@ -403,7 +415,7 @@ function computeDashboardMode({ summaryGate, humanReviewRecommended, queueLength
       stateLabel: "HEALTHY",
       flowLabel: "MONITORING",
       outcomeLabel: "NO ACTION REQUIRED",
-      actionLabel: "Growth Opportunity",
+      actionLabel: "Maintenance status",
       modeLabel: "Monitoring only",
       tone: "emerald",
       pass,
@@ -1523,6 +1535,8 @@ function AdminView({ onPreview }) {
   const [pipelineLoading, setPipelineLoading] = useState(true);
   const [briefsReport, setBriefsReport] = useState(null);
   const [briefsLoading, setBriefsLoading] = useState(true);
+  const [growthReport, setGrowthReport] = useState(null);
+  const [growthLoading, setGrowthLoading] = useState(true);
   const [articleFilter, setArticleFilter] = useState("needs_review");
   const [sortBy, setSortBy] = useState("score");
   const [selectedSlug, setSelectedSlug] = useState("");
@@ -1564,6 +1578,37 @@ function AdminView({ onPreview }) {
     }
 
     loadQaReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadGrowthReport() {
+      const paths = ["/reports/seo-growth-opportunities.json", "/seo-growth-opportunities.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setGrowthReport(data);
+            setGrowthLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setGrowthReport(null);
+        setGrowthLoading(false);
+      }
+    }
+
+    loadGrowthReport();
     return () => {
       alive = false;
     };
@@ -1863,6 +1908,13 @@ function AdminView({ onPreview }) {
               headingLabel={dashboardMode.actionLabel}
             />
 
+            {isMonitorMode ? (
+              <GrowthOpportunitiesPanel
+                growthReport={growthReport}
+                loading={growthLoading}
+              />
+            ) : null}
+
             <ProgressHistoryCard points={progressPoints} />
 
             {!isMonitorMode ? (
@@ -2086,6 +2138,85 @@ function NextBestActionPanel({ action, loading, headingLabel = "Next best action
             </details>
           ) : null}
         </>
+      )}
+    </div>
+  );
+}
+
+function GrowthOpportunitiesPanel({ growthReport, loading }) {
+  const [copyState, setCopyState] = useState("idle");
+  const [copyTarget, setCopyTarget] = useState("");
+  const top = Array.isArray(growthReport?.opportunities) ? growthReport.opportunities.slice(0, 3) : [];
+
+  const copyItem = async (text, target) => {
+    const ok = await copyText(text, `growth ${target}`);
+    setCopyTarget(target);
+    setCopyState(ok ? "copied" : "failed");
+    setTimeout(() => {
+      setCopyState("idle");
+      setCopyTarget("");
+    }, 1400);
+  };
+
+  const buttonLabel = (target, fallback) => {
+    if (copyTarget !== target) return fallback;
+    if (copyState === "copied") return "Copied";
+    if (copyState === "failed") return "Copy failed";
+    return fallback;
+  };
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Growth opportunities</p>
+          <p className="text-sm text-slate-700">No maintenance action required. Growth opportunities available.</p>
+        </div>
+        <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">npm run seo:growth</code>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Loading growth opportunities…</p>
+      ) : !growthReport ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>
+          Growth report missing. Run <code>npm run seo:growth</code> to generate <code>reports/seo-growth-opportunities.json</code>.
+        </p>
+      ) : top.length === 0 ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>No growth opportunities found in the latest run.</p>
+      ) : (
+        <div className="grid gap-sm" style={{ marginTop: "var(--space-sm)" }}>
+          {top.map((op, index) => (
+            <div key={op.id || `${op.type}-${index}`} className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-sm)" }}>
+              <div className="flex items-start justify-between gap-sm flex-wrap">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">{index + 1}. {op.title}</p>
+                  <p className="text-xs text-slate-600">{op.type} · score {op.score} · {op.commercialIntentLabel} intent</p>
+                </div>
+                <span className="inline-flex rounded-full border border-slate-300 bg-white px-2 py-0.5 text-xs text-slate-700">
+                  {op.targetSlug ? "Improve/link existing" : "Create brief"}
+                </span>
+              </div>
+              <p className="text-sm text-slate-700" style={{ marginTop: "6px" }}>{op.suggestedAction}</p>
+              <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "8px" }}>
+                <button
+                  type="button"
+                  onClick={() => copyItem(op.suggestedAction, `${op.id}-action`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  {buttonLabel(`${op.id}-action`, "Copy suggested action")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => copyItem(op.codexPrompt || "", `${op.id}-prompt`)}
+                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                  disabled={!op.codexPrompt}
+                >
+                  {buttonLabel(`${op.id}-prompt`, "Copy Codex prompt")}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

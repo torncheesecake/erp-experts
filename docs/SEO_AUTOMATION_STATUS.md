@@ -40,6 +40,7 @@ Primary automation commands:
 - `npm run seo:operator`
 - `npm run seo:monitor`
 - `npm run seo:monitor:summary`
+- `npm run seo:growth`
 
 CI workflow command coverage:
 
@@ -146,6 +147,28 @@ Monitor mode behaviour:
   - consecutive regression runs
   - recovery distance from last regression
 - `npm run seo:monitor:summary` provides a concise terminal status for quick checks.
+
+Growth opportunity engine:
+
+- `npm run seo:growth` generates `reports/seo-growth-opportunities.json`.
+- Purpose: identify commercial growth work when QA maintenance is already healthy.
+- Opportunity types:
+  - `create_new_resource`
+  - `improve_internal_links`
+  - `strengthen_commercial_path`
+  - `refresh_existing`
+  - `expand_cluster`
+- Growth opportunities are separate from QA fixing:
+  - QA/batch mode restores quality and removes risk.
+  - Growth mode prioritises commercially useful expansion once risk is low.
+
+Recommended lifecycle:
+
+1. Monitor quality weekly (`npm run seo:monitor`).
+2. If healthy, review `npm run seo:growth`.
+3. Choose one opportunity.
+4. Generate a brief/prompt and review internally.
+5. Execute only after human approval.
 
 Current snapshot (latest generated state):
 
