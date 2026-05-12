@@ -49,6 +49,7 @@ Primary automation commands:
 - `npm run seo:plan:run -- <planId>`
 - `npm run seo:plan:approve -- <planId>`
 - `npm run seo:plan:status`
+- `npm run seo:digest`
 
 CI workflow command coverage:
 
@@ -353,6 +354,17 @@ Plan execution status tracker:
 - Source of truth:
   - derives from execution plans, approvals, and active-plan file
   - stores only local operational state, no source/content mutation
+
+Weekly digest generator:
+
+- `npm run seo:digest` generates `reports/seo-weekly-digest.md`.
+- Purpose: provide a plain-English weekly view that combines:
+  - health and QA totals
+  - monitoring result
+  - top unified opportunities
+  - top internal-link, freshness, and conversion signals
+  - recommended weekly focus
+  - exact next commands (`seo:monitor`, `seo:opportunities`, `seo:plans`)
 
 Current snapshot (latest generated state):
 

@@ -1551,6 +1551,8 @@ function AdminView({ onPreview }) {
   const [planApprovalsLoading, setPlanApprovalsLoading] = useState(true);
   const [planStatusReport, setPlanStatusReport] = useState(null);
   const [planStatusLoading, setPlanStatusLoading] = useState(true);
+  const [weeklyDigestText, setWeeklyDigestText] = useState("");
+  const [weeklyDigestLoading, setWeeklyDigestLoading] = useState(true);
   const [articleFilter, setArticleFilter] = useState("needs_review");
   const [sortBy, setSortBy] = useState("score");
   const [selectedSlug, setSelectedSlug] = useState("");
@@ -1592,6 +1594,37 @@ function AdminView({ onPreview }) {
     }
 
     loadQaReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadWeeklyDigest() {
+      const paths = ["/reports/seo-weekly-digest.md", "/seo-weekly-digest.md"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const text = await res.text();
+          if (alive) {
+            setWeeklyDigestText(text);
+            setWeeklyDigestLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setWeeklyDigestText("");
+        setWeeklyDigestLoading(false);
+      }
+    }
+
+    loadWeeklyDigest();
     return () => {
       alive = false;
     };
@@ -2124,6 +2157,10 @@ function AdminView({ onPreview }) {
               monitorInsights={monitorInsights}
             />
 
+            {isMonitorMode ? (
+              <WeeklyDigestPanel digestText={weeklyDigestText} loading={weeklyDigestLoading} />
+            ) : null}
+
             <OperatorModePanel
               summaryGate={summaryGate}
               humanReviewRecommended={humanReviewRecommended}
@@ -2492,6 +2529,43 @@ function OpportunityCommandCentrePanel({ opportunityReport, loading }) {
             </div>
           ))}
         </div>
+      )}
+    </div>
+  );
+}
+
+function WeeklyDigestPanel({ digestText, loading }) {
+  const previewLines = digestText
+    ? digestText
+      .split("\n")
+      .filter((line) => line.trim().startsWith("- "))
+      .slice(0, 4)
+    : [];
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Weekly digest</p>
+          <p className="text-sm text-slate-700">Plain-English weekly summary for non-technical stakeholders.</p>
+        </div>
+        <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">npm run seo:digest</code>
+      </div>
+      {loading ? (
+        <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Loading digest preview…</p>
+      ) : !digestText ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>
+          Digest not found. Run <code>npm run seo:digest</code>.
+        </p>
+      ) : (
+        <details className="rounded-lg border border-slate-200 bg-slate-50" style={{ marginTop: "var(--space-sm)", padding: "var(--space-sm)" }}>
+          <summary className="cursor-pointer text-xs font-semibold text-slate-700">Digest preview</summary>
+          <div style={{ marginTop: "8px" }}>
+            {previewLines.map((line, idx) => (
+              <p key={idx} className="text-xs text-slate-700">{line}</p>
+            ))}
+          </div>
+        </details>
       )}
     </div>
   );
