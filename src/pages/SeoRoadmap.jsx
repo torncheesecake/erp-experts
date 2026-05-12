@@ -1553,6 +1553,8 @@ function AdminView({ onPreview }) {
   const [planStatusLoading, setPlanStatusLoading] = useState(true);
   const [weeklyDigestText, setWeeklyDigestText] = useState("");
   const [weeklyDigestLoading, setWeeklyDigestLoading] = useState(true);
+  const [actionInboxReport, setActionInboxReport] = useState(null);
+  const [actionInboxLoading, setActionInboxLoading] = useState(true);
   const [articleFilter, setArticleFilter] = useState("needs_review");
   const [sortBy, setSortBy] = useState("score");
   const [selectedSlug, setSelectedSlug] = useState("");
@@ -1594,6 +1596,37 @@ function AdminView({ onPreview }) {
     }
 
     loadQaReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadActionInboxReport() {
+      const paths = ["/reports/seo-action-inbox.json", "/seo-action-inbox.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setActionInboxReport(data);
+            setActionInboxLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setActionInboxReport(null);
+        setActionInboxLoading(false);
+      }
+    }
+
+    loadActionInboxReport();
     return () => {
       alive = false;
     };
@@ -2161,6 +2194,10 @@ function AdminView({ onPreview }) {
               <WeeklyDigestPanel digestText={weeklyDigestText} loading={weeklyDigestLoading} />
             ) : null}
 
+            {isMonitorMode ? (
+              <ActionInboxPanel inboxReport={actionInboxReport} loading={actionInboxLoading} />
+            ) : null}
+
             <OperatorModePanel
               summaryGate={summaryGate}
               humanReviewRecommended={humanReviewRecommended}
@@ -2566,6 +2603,48 @@ function WeeklyDigestPanel({ digestText, loading }) {
             ))}
           </div>
         </details>
+      )}
+    </div>
+  );
+}
+
+function ActionInboxPanel({ inboxReport, loading }) {
+  const topItems = Array.isArray(inboxReport?.items) ? inboxReport.items.slice(0, 5) : [];
+  const summary = inboxReport?.summary || {};
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-lg)" }}>
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Action inbox</p>
+          <p className="text-sm text-slate-700">What needs attention and what can wait.</p>
+        </div>
+        <code className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-slate-100">npm run seo:inbox</code>
+      </div>
+      {loading ? (
+        <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Loading inbox…</p>
+      ) : !inboxReport ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>
+          Inbox missing. Run <code>npm run seo:inbox</code>.
+        </p>
+      ) : (
+        <>
+          <p className="text-xs text-slate-600" style={{ marginTop: "var(--space-sm)" }}>
+            High priority: {summary.highPriority || 0} · Awaiting review: {summary.awaitingReview || 0} · Suggested: {summary.suggested || 0}
+          </p>
+          {summary.noUrgentAction ? (
+            <p className="text-sm text-emerald-700" style={{ marginTop: "6px" }}>No urgent action. Strategic opportunities available.</p>
+          ) : null}
+          <div className="grid gap-2" style={{ marginTop: "8px" }}>
+            {topItems.map((item) => (
+              <div key={item.id} className="rounded-md border border-slate-200 bg-slate-50 px-2 py-2">
+                <p className="text-xs font-semibold text-slate-800">{item.title}</p>
+                <p className="text-xs text-slate-600">{item.source} · {item.priority} · {item.status}</p>
+                <p className="text-xs text-slate-700">{item.recommendedNextStep}</p>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

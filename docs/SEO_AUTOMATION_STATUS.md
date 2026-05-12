@@ -50,6 +50,7 @@ Primary automation commands:
 - `npm run seo:plan:approve -- <planId>`
 - `npm run seo:plan:status`
 - `npm run seo:digest`
+- `npm run seo:inbox`
 
 CI workflow command coverage:
 
@@ -365,6 +366,16 @@ Weekly digest generator:
   - top internal-link, freshness, and conversion signals
   - recommended weekly focus
   - exact next commands (`seo:monitor`, `seo:opportunities`, `seo:plans`)
+
+Safe action inbox:
+
+- `npm run seo:inbox` generates `reports/seo-action-inbox.json`.
+- Purpose: consolidate monitor, opportunities, execution plans, links, freshness, and conversion into one safe review queue.
+- Item model includes:
+  - source, priority, status, recommended next step, command, target slug/path, safety level, and review requirement
+- Healthy-state behaviour:
+  - prints grouped summary and shows when there is no urgent action
+  - keeps strategic opportunities visible without forcing immediate edits
 
 Current snapshot (latest generated state):
 
