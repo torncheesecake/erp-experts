@@ -6,7 +6,7 @@
  * Client bundles must not include hardcoded secrets/passwords.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CheckCircle2,
   Circle,
@@ -1569,6 +1569,13 @@ function AdminView({ onPreview }) {
   });
   const [copyState, setCopyState] = useState("idle");
   const [dashboardLoadedAt] = useState(() => new Date());
+  const [activeNav, setActiveNav] = useState("overview");
+  const overviewRef = useRef(null);
+  const opportunitiesRef = useRef(null);
+  const plansRef = useRef(null);
+  const inboxRef = useRef(null);
+  const reportsRef = useRef(null);
+  const settingsRef = useRef(null);
 
   useEffect(() => {
     let alive = true;
@@ -2103,6 +2110,27 @@ function AdminView({ onPreview }) {
   const promptText = displayRow
     ? buildPlannerPrompt(displayRow, plannerToggles)
     : "Select an article to generate a prompt preview.";
+  const showOverviewTab = activeNav === "overview";
+  const showOpportunitiesTab = activeNav === "opportunities";
+  const showPlansTab = activeNav === "plans";
+  const showInboxTab = activeNav === "inbox";
+  const showReportsTab = activeNav === "reports";
+  const showSettingsTab = activeNav === "settings";
+  const navItems = [
+    { key: "overview", label: "Overview", ref: overviewRef },
+    { key: "opportunities", label: "Opportunities", ref: opportunitiesRef },
+    { key: "plans", label: "Plans", ref: plansRef },
+    { key: "inbox", label: "Inbox", ref: inboxRef },
+    { key: "reports", label: "Reports", ref: reportsRef },
+    { key: "settings", label: "Settings", ref: settingsRef },
+  ];
+
+  const handleSidebarNav = (item) => {
+    setActiveNav(item.key);
+    window.requestAnimationFrame(() => {
+      item.ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -2178,8 +2206,18 @@ function AdminView({ onPreview }) {
           <aside className="rounded-2xl bg-slate-50/65 p-5 shadow-sm ring-1 ring-slate-100/70 h-fit lg:sticky lg:top-24">
             <p className="text-xs font-semibold text-slate-500">Navigation</p>
             <nav className="grid gap-2" style={{ marginTop: "10px" }}>
-              {["Overview", "Opportunities", "Plans", "Inbox", "Reports", "Settings"].map((item, idx) => (
-                <span key={item} className={`rounded-lg px-3 py-2 text-sm ${idx === 0 ? "bg-white text-pink-600 font-semibold ring-1 ring-pink-100" : "text-slate-700 hover:bg-white/80"}`}>{item}</span>
+              {navItems.map((item) => (
+                <button
+                  key={item.key}
+                  onClick={() => handleSidebarNav(item)}
+                  className={`rounded-lg px-3 py-2 text-sm text-left transition-colors cursor-pointer ${
+                    activeNav === item.key
+                      ? "bg-white text-pink-600 font-semibold ring-1 ring-pink-100"
+                      : "text-slate-700 hover:bg-white/80"
+                  }`}
+                >
+                  {item.label}
+                </button>
               ))}
             </nav>
             <div className="rounded-lg bg-white/80 p-3 ring-1 ring-slate-100" style={{ marginTop: "16px" }}>
@@ -2190,14 +2228,9 @@ function AdminView({ onPreview }) {
           </aside>
 
           <div className="grid gap-lg">
-            {isMonitorMode ? (
+            {isMonitorMode && showOverviewTab ? (
               <>
-                <section>
-                  <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "12px" }}>What needs attention</h2>
-                  <ActionInboxPanel inboxReport={actionInboxReport} loading={actionInboxLoading} />
-                </section>
-
-                <section className="grid gap-lg xl:grid-cols-2">
+                <section ref={overviewRef} className="grid gap-lg xl:grid-cols-2">
                   <div>
                     <h2 className="text-xl font-semibold text-slate-900" style={{ marginBottom: "12px" }}>Top opportunities</h2>
                     <OpportunityCommandCentrePanel opportunityReport={opportunityReport} loading={opportunityLoading} />
@@ -2214,59 +2247,108 @@ function AdminView({ onPreview }) {
                 </section>
 
                 <section className="grid gap-lg xl:grid-cols-2">
+                  <div ref={inboxRef}>
+                    <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "12px" }}>Action inbox</h2>
+                    <ActionInboxPanel inboxReport={actionInboxReport} loading={actionInboxLoading} />
+                  </div>
                   <div>
                     <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "12px" }}>Weekly digest</h2>
                     <WeeklyDigestPanel digestText={weeklyDigestText} loading={weeklyDigestLoading} />
                   </div>
-                  <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
-                    <h2 className="text-lg font-semibold text-slate-900">Quick actions</h2>
-                    <div className="flex flex-wrap gap-2.5" style={{ marginTop: "10px" }}>
-                      {[
-                        "npm run seo:monitor",
-                        "npm run seo:opportunities",
-                        "npm run seo:plans",
-                        "npm run seo:plan:status",
-                        "npm run seo:inbox",
-                        "npm run seo:digest",
-                      ].map((cmd) => (
-                        <code key={cmd} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-700">{cmd}</code>
-                      ))}
-                    </div>
-                  </div>
                 </section>
 
+                <section className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
+                  <h2 className="text-lg font-semibold text-slate-900">Quick actions</h2>
+                  <div className="flex flex-wrap gap-2.5" style={{ marginTop: "10px" }}>
+                    {[
+                      "npm run seo:monitor",
+                      "npm run seo:opportunities",
+                      "npm run seo:plans",
+                      "npm run seo:plan:status",
+                      "npm run seo:inbox",
+                      "npm run seo:digest",
+                    ].map((cmd) => (
+                      <code key={cmd} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-700">{cmd}</code>
+                    ))}
+                  </div>
+                </section>
+              </>
+            ) : null}
+
+            {isMonitorMode && showOpportunitiesTab ? (
+              <section ref={opportunitiesRef} className="grid gap-md">
+                <h2 className="text-xl font-semibold text-slate-900">Opportunity Command Centre</h2>
+                <OpportunityCommandCentrePanel opportunityReport={opportunityReport} loading={opportunityLoading} />
                 <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
-                  <summary className="cursor-pointer text-sm font-semibold text-slate-700">Reports and advanced details</summary>
+                  <summary className="cursor-pointer text-sm font-semibold text-slate-700">View supporting opportunity intelligence</summary>
                   <div style={{ marginTop: "var(--space-sm)", display: "grid", gap: "var(--space-sm)" }}>
-                    <SystemStateRail mode={dashboardMode} />
-                    <AutopilotStatusPanel
-                      mode={dashboardMode}
-                      pipelineSummary={pipelineSummary}
-                      monitorInsights={monitorInsights}
-                    />
-                    <NextBestActionPanel
-                      action={nextBestAction}
-                      loading={summaryLoading || pipelineLoading || briefsLoading}
-                      headingLabel={dashboardMode.actionLabel}
-                    />
-                    <ProgressHistoryCard points={progressPoints} />
                     <GrowthOpportunitiesPanel growthReport={growthReport} loading={growthLoading} />
                     <InternalLinkOpportunitiesPanel linksReport={linksReport} loading={linksLoading} />
                     <FreshnessDecayPanel freshnessReport={freshnessReport} loading={freshnessLoading} />
                     <ConversionPathPanel conversionReport={conversionReport} loading={conversionLoading} />
                   </div>
                 </details>
-              </>
-            ) : (
-              <>
-                <OperatorModePanel
-                  summaryGate={summaryGate}
-                  humanReviewRecommended={humanReviewRecommended}
-                  queue={batchQueue}
-                  pipelineSummary={pipelineSummary}
-                  loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
-                  mode={dashboardMode}
+              </section>
+            ) : null}
+
+            {isMonitorMode && showPlansTab ? (
+              <section ref={plansRef} className="grid gap-md">
+                <h2 className="text-xl font-semibold text-slate-900">Execution Plans</h2>
+                <ExecutionPlansPanel
+                  plansReport={plansReport}
+                  loading={plansLoading || planApprovalsLoading || planStatusLoading}
+                  planApprovalsReport={planApprovalsReport}
+                  planStatusReport={planStatusReport}
                 />
+              </section>
+            ) : null}
+
+            {isMonitorMode && showInboxTab ? (
+              <section ref={inboxRef} className="grid gap-md">
+                <h2 className="text-xl font-semibold text-slate-900">Action Inbox</h2>
+                <ActionInboxPanel inboxReport={actionInboxReport} loading={actionInboxLoading} />
+              </section>
+            ) : null}
+
+            {isMonitorMode && showReportsTab ? (
+              <section ref={reportsRef} className="grid gap-md">
+                <h2 className="text-xl font-semibold text-slate-900">Reports and Monitoring</h2>
+                <WeeklyDigestPanel digestText={weeklyDigestText} loading={weeklyDigestLoading} />
+                <SystemStateRail mode={dashboardMode} />
+                <AutopilotStatusPanel
+                  mode={dashboardMode}
+                  pipelineSummary={pipelineSummary}
+                  monitorInsights={monitorInsights}
+                />
+                <NextBestActionPanel
+                  action={nextBestAction}
+                  loading={summaryLoading || pipelineLoading || briefsLoading}
+                  headingLabel={dashboardMode.actionLabel}
+                />
+                <ProgressHistoryCard points={progressPoints} />
+              </section>
+            ) : null}
+
+            {isMonitorMode && showSettingsTab ? (
+              <section ref={settingsRef} className="grid gap-md">
+                <h2 className="text-xl font-semibold text-slate-900">Settings and Diagnostics</h2>
+                <p className="text-sm text-slate-600">Advanced diagnostics and persistence checks are shown below.</p>
+              </section>
+            ) : null}
+
+            {!isMonitorMode ? (
+              <>
+                <section ref={overviewRef}>
+                  <h2 className="text-xl font-semibold text-slate-900" style={{ marginBottom: "12px" }}>Operator queue</h2>
+                  <OperatorModePanel
+                    summaryGate={summaryGate}
+                    humanReviewRecommended={humanReviewRecommended}
+                    queue={batchQueue}
+                    pipelineSummary={pipelineSummary}
+                    loading={qaLoading || briefsLoading || pipelineLoading || summaryLoading}
+                    mode={dashboardMode}
+                  />
+                </section>
                 <NextBestActionPanel
                   action={nextBestAction}
                   loading={summaryLoading || pipelineLoading || briefsLoading}
@@ -2278,11 +2360,22 @@ function AdminView({ onPreview }) {
                   reportsReady={Boolean(qaReport && pipelineSummary && weeklySummary && briefsReport)}
                 />
               </>
-            )}
+            ) : null}
+
+            {isMonitorMode ? (
+              <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
+                <summary className="cursor-pointer text-sm font-semibold text-slate-700">Advanced details</summary>
+                <div style={{ marginTop: "var(--space-sm)", display: "grid", gap: "var(--space-sm)" }}>
+                  <h2 className="text-lg font-semibold text-slate-900">Quick actions</h2>
+                  <p className="text-sm text-slate-600">Use the sidebar tabs to focus each operational section. Diagnostics and workbench remain below.</p>
+                </div>
+              </details>
+            ) : null}
           </div>
         </div>
       </main>
 
+      {(!isMonitorMode || showPlansTab || showSettingsTab) ? (
       <section className="bg-slate-50 border-b border-slate-200">
         <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
           {isMonitorMode ? (
@@ -2338,7 +2431,9 @@ function AdminView({ onPreview }) {
           )}
         </div>
       </section>
+      ) : null}
 
+      {(!isMonitorMode || showReportsTab || showSettingsTab) ? (
       <section className="bg-white border-b border-slate-200">
         <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
           <details className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-md)" }}>
@@ -2358,6 +2453,7 @@ function AdminView({ onPreview }) {
           </details>
         </div>
       </section>
+      ) : null}
 
       {/* ── Footer ── */}
       <div className="container text-center" style={{ padding: "var(--space-lg) 0 var(--space-2xl)" }}>
