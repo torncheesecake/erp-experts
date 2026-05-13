@@ -51,6 +51,7 @@ Primary automation commands:
 - `npm run seo:plan:status`
 - `npm run seo:digest`
 - `npm run seo:inbox`
+- `npm run seo:publish:preflight`
 
 CI workflow command coverage:
 
@@ -137,6 +138,19 @@ Weekly autopilot:
   - `reports/seo-action-briefs.json`
   - `reports/seo-weekly-summary.json`
   - `reports/seo-pipeline-summary.json`
+
+Publish preflight hardening:
+
+- `npm run seo:publish:preflight`
+- Purpose: reduce intermittent DNS/FTP false negatives before publish/deploy automation runs.
+- Checks (with retries):
+  - DNS resolution for `erpexperts.co.uk` and `ftp.erpexperts.co.uk`
+  - HTTPS reachability for `https://erpexperts.co.uk`
+  - FTP login/list check using `.ftpconfig` credentials
+- Behaviour:
+  - Retries transient failures (default 6 attempts with 20-second wait)
+  - Fails fast for missing/invalid `.ftpconfig`
+  - Intended for Tuesday/Thursday resource-publish runs and manual preflight checks
 
 Monitor mode behaviour:
 

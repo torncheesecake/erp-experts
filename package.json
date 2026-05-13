@@ -37,7 +37,8 @@
     "seo:plan:approve": "node scripts/seo_plan_approve.mjs",
     "seo:plan:status": "node scripts/seo_plan_status.mjs",
     "seo:digest": "node scripts/seo_digest.mjs",
-    "seo:inbox": "node scripts/seo_action_inbox.mjs"
+    "seo:inbox": "node scripts/seo_action_inbox.mjs",
+    "seo:publish:preflight": "bash scripts/seo_publish_preflight.sh"
   },
   "homepage": "https://torncheesecake.github.io/erp-experts",
   "dependencies": {
