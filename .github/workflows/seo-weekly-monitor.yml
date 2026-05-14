@@ -41,6 +41,9 @@ jobs:
       - name: Weekly monitor summary
         run: npm run seo:monitor:summary
 
+      - name: SEO autopilot orchestration
+        run: npm run seo:autopilot
+
       - name: Upload SEO reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -52,3 +55,5 @@ jobs:
             reports/seo-action-briefs.json
             reports/seo-weekly-summary.json
             reports/seo-pipeline-summary.json
+            reports/seo-autopilot-report.md
+            reports/seo-autopilot-report.json

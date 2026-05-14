@@ -518,6 +518,86 @@ function AutopilotStatusPanel({ mode, pipelineSummary, monitorInsights }) {
   );
 }
 
+function AutopilotOrchestratorPanel({ autopilotReport, loading }) {
+  const [copyState, setCopyState] = useState("idle");
+  const [copyTarget, setCopyTarget] = useState("");
+  const state = autopilotReport?.state || "healthy_monitoring";
+  const isHealthy = autopilotReport?.health === "HEALTHY" || state === "healthy_monitoring" || state === "growth_ready";
+  const topGap = autopilotReport?.topGap?.title || "Strategic growth opportunity available.";
+  const nextCommand = autopilotReport?.recommendedNextStep || "npm run seo:autopilot";
+  const prompt = autopilotReport?.codexPrompt || "Run npm run seo:autopilot, then review the generated report before making changes.";
+
+  const copyItem = async (text, target) => {
+    const ok = await copyText(text, `autopilot ${target}`);
+    setCopyTarget(target);
+    setCopyState(ok ? "copied" : "failed");
+    setTimeout(() => {
+      setCopyState("idle");
+      setCopyTarget("");
+    }, 1400);
+  };
+
+  const buttonLabel = (target, fallback) => {
+    if (copyTarget !== target) return fallback;
+    if (copyState === "copied") return "Copied";
+    if (copyState === "failed") return "Copy failed";
+    return fallback;
+  };
+
+  return (
+    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-sm font-semibold text-slate-900">Autopilot</p>
+          <p className="text-xs text-slate-600">
+            {isHealthy ? "Autopilot is monitoring. No maintenance work required." : "Autopilot has found work that needs operator attention."}
+          </p>
+        </div>
+        <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${isHealthy ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-amber-200 bg-amber-50 text-amber-800"}`}>
+          {loading ? "loading" : state}
+        </span>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Loading autopilot report...</p>
+      ) : !autopilotReport ? (
+        <div className="flex items-center justify-between gap-sm flex-wrap" style={{ marginTop: "var(--space-sm)" }}>
+          <p className="text-sm text-slate-600">Autopilot report missing. Run the orchestrator to generate the latest decision.</p>
+          <code className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-700">npm run seo:autopilot</code>
+        </div>
+      ) : (
+        <div className="grid gap-sm md:grid-cols-[1fr_auto]" style={{ marginTop: "var(--space-sm)" }}>
+          <div>
+            <p className="text-sm font-semibold text-slate-900">{topGap}</p>
+            <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
+              Next: <code className="rounded bg-slate-100 px-1.5 py-0.5">{nextCommand}</code>
+            </p>
+            <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>
+              Human input required: {autopilotReport.humanInputRequired ? "yes" : "no"} · Report: reports/seo-autopilot-report.md
+            </p>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap md:justify-end">
+            <button
+              type="button"
+              onClick={() => copyItem(nextCommand, "command")}
+              className="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              {buttonLabel("command", "Copy command")}
+            </button>
+            <button
+              type="button"
+              onClick={() => copyItem(prompt, "prompt")}
+              className="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              {buttonLabel("prompt", "Copy prompt")}
+            </button>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 /* ── client edit mode (temporary control, not auth) ── */
 const EDITS_ENABLED = import.meta.env.VITE_SEO_ROADMAP_EDITS === "true";
 
@@ -1555,6 +1635,8 @@ function AdminView({ onPreview }) {
   const [weeklyDigestLoading, setWeeklyDigestLoading] = useState(true);
   const [actionInboxReport, setActionInboxReport] = useState(null);
   const [actionInboxLoading, setActionInboxLoading] = useState(true);
+  const [autopilotReport, setAutopilotReport] = useState(null);
+  const [autopilotLoading, setAutopilotLoading] = useState(true);
   const [articleFilter, setArticleFilter] = useState("needs_review");
   const [sortBy, setSortBy] = useState("score");
   const [selectedSlug, setSelectedSlug] = useState("");
@@ -1576,6 +1658,37 @@ function AdminView({ onPreview }) {
   const inboxRef = useRef(null);
   const reportsRef = useRef(null);
   const settingsRef = useRef(null);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadAutopilotReport() {
+      const paths = ["/reports/seo-autopilot-report.json", "/seo-autopilot-report.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setAutopilotReport(data);
+            setAutopilotLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setAutopilotReport(null);
+        setAutopilotLoading(false);
+      }
+    }
+
+    loadAutopilotReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -2230,6 +2343,8 @@ function AdminView({ onPreview }) {
           <div className="grid gap-lg">
             {isMonitorMode && showOverviewTab ? (
               <>
+                <AutopilotOrchestratorPanel autopilotReport={autopilotReport} loading={autopilotLoading} />
+
                 <section ref={overviewRef} className="grid gap-lg xl:grid-cols-2">
                   <div>
                     <h2 className="text-xl font-semibold text-slate-900" style={{ marginBottom: "12px" }}>Top opportunities</h2>

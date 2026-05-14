@@ -118,6 +118,9 @@ function main() {
   console.log("Dashboard:");
   console.log("/seo-roadmap");
   console.log("");
+  console.log("Autopilot:");
+  console.log("For full orchestration, run npm run seo:autopilot.");
+  console.log("");
   console.log("Git safety:");
   console.log("Run git status --short before switching tasks.");
 }

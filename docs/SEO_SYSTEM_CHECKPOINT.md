@@ -17,6 +17,7 @@
 - `npm run seo:plan:status`
 - `npm run seo:digest`
 - `npm run seo:inbox`
+- `npm run seo:autopilot`
 
 ## Current architecture
 
@@ -25,7 +26,8 @@
 3. Unified prioritisation: opportunity command centre output.
 4. Execution control: plans, approvals, active plan, plan status.
 5. Operator reporting: monitor, digest, stats, inbox.
-6. Dashboard: monitor-first control panel with secondary diagnostics.
+6. Autopilot orchestration: one command runs the intelligence chain and decides the next safe step.
+7. Dashboard: monitor-first control panel with secondary diagnostics.
 
 ## Health status
 
@@ -46,6 +48,7 @@
 6. Generate active runbook with `seo:plan:run`.
 7. Track status with `seo:plan:status`.
 8. Use `seo:digest` and `seo:inbox` for weekly/operator view.
+9. Use `seo:autopilot` when you want the system to run the full chain and recommend one next step.
 
 ## Generated and ignored report files
 
@@ -63,6 +66,8 @@ Ignored local/generated outputs:
 - `reports/seo-active-plan.md`
 - `reports/seo-weekly-digest.md`
 - `reports/seo-action-inbox.json`
+- `reports/seo-autopilot-report.md`
+- `reports/seo-autopilot-report.json`
 - `reports/seo-next-batch-prompt.md`
 
 ## Dashboard sections (healthy mode)
@@ -79,6 +84,7 @@ Ignored local/generated outputs:
 - Approval gate controls planning vs patch proposal vs apply intent.
 - `--allow-apply` required for `apply_patch` approval state.
 - No automatic content edits, no automatic commits, no automatic publishing.
+- `seo:autopilot` orchestrates reports and recommendations only; it does not approve, edit, patch, publish, or commit.
 - Validation commands remain mandatory before any manual commit.
 
 ## Remaining future backlog

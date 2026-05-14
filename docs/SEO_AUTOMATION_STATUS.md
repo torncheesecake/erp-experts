@@ -51,6 +51,7 @@ Primary automation commands:
 - `npm run seo:plan:status`
 - `npm run seo:digest`
 - `npm run seo:inbox`
+- `npm run seo:autopilot`
 - `npm run seo:publish:preflight`
 
 CI workflow command coverage:
@@ -133,11 +134,50 @@ Weekly autopilot:
   - `npm run seo:pipeline`
   - `npm run seo:stats`
   - `npm run seo:monitor`
+  - `npm run seo:autopilot`
 - Uploads report artefacts every run:
   - `reports/resource-qa-report.json`
   - `reports/seo-action-briefs.json`
   - `reports/seo-weekly-summary.json`
   - `reports/seo-pipeline-summary.json`
+  - `reports/seo-autopilot-report.md`
+  - `reports/seo-autopilot-report.json`
+
+SEO autopilot orchestrator:
+
+- `npm run seo:autopilot`
+- Purpose: run the full SEO intelligence chain and produce one master decision report.
+- Runs, in order:
+  - `seo:pipeline`
+  - `seo:stats`
+  - `seo:monitor`
+  - `seo:growth`
+  - `seo:links`
+  - `seo:freshness`
+  - `seo:conversion`
+  - `seo:opportunities`
+  - `seo:plans`
+  - `seo:inbox`
+  - `seo:digest`
+- Generates:
+  - `reports/seo-autopilot-report.md`
+  - `reports/seo-autopilot-report.json`
+- Decision states:
+  - `healthy_monitoring`
+  - `maintenance_required`
+  - `growth_ready`
+  - `planning_required`
+  - `approval_required`
+  - `execution_ready`
+  - `blocked`
+  - `human_review_required`
+- Refuses to do automatically:
+  - edit article content
+  - publish content
+  - approve plans
+  - apply patches
+  - commit changes
+- Human input is required when a plan needs approval, patch proposal review, blocked-page fixing, or any content creation/refinement decision.
 
 Publish preflight hardening:
 
