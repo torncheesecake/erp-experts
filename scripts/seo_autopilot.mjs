@@ -17,6 +17,7 @@ const COMMANDS = [
   ["seo:conversion", ["npm", ["run", "seo:conversion"]]],
   ["seo:opportunities", ["npm", ["run", "seo:opportunities"]]],
   ["seo:plans", ["npm", ["run", "seo:plans"]]],
+  ["seo:decisions", ["npm", ["run", "seo:decisions"]]],
   ["seo:inbox", ["npm", ["run", "seo:inbox"]]],
   ["seo:digest", ["npm", ["run", "seo:digest"]]],
 ];
@@ -68,7 +69,10 @@ function commandForPlanRun(plan) {
   return plan?.id ? `npm run seo:plan:run -- ${plan.id}` : "npm run seo:plans";
 }
 
-function buildCodexPrompt({ state, topPlan, activePlanId }) {
+function buildCodexPrompt({ state, topPlan, activePlanId, topDecision }) {
+  if (topDecision?.codexDecisionPrompt && (state === "growth_ready" || state === "planning_required")) {
+    return topDecision.codexDecisionPrompt;
+  }
   if (state === "maintenance_required") {
     return "Run the SEO batch from reports/seo-next-batch-prompt.md exactly as written. Work sequentially, validate after each article, and stop if any validation stop condition is triggered.";
   }
@@ -86,7 +90,7 @@ function buildCodexPrompt({ state, topPlan, activePlanId }) {
   return "No maintenance action is required. Keep weekly monitoring active and review the top strategic opportunity when planning growth work.";
 }
 
-function decideState({ qaReport, pipelineSummary, opportunitiesReport, plansReport, approvalsReport }) {
+function decideState({ qaReport, pipelineSummary, opportunitiesReport, plansReport, approvalsReport, decisionsReport }) {
   const gate = qaReport?.gateSummary || {};
   const pass = Number(gate.pass || 0);
   const needsReview = Number(gate.needs_review || 0);
@@ -105,6 +109,12 @@ function decideState({ qaReport, pipelineSummary, opportunitiesReport, plansRepo
       : [];
   const topOpportunity = opportunities[0] || null;
   const topPlan = plans[0] || null;
+  const decisions = Array.isArray(decisionsReport?.topDecisions)
+    ? decisionsReport.topDecisions
+    : Array.isArray(decisionsReport?.decisions)
+      ? decisionsReport.decisions
+      : [];
+  const topDecision = decisions[0] || null;
   const activePlanId = parseActivePlanId();
   const activePlan = plans.find((plan) => plan.id === activePlanId) || null;
   const selectedPlan = activePlan || topPlan;
@@ -148,11 +158,11 @@ function decideState({ qaReport, pipelineSummary, opportunitiesReport, plansRepo
     humanInputRequired = true;
   } else if (plans.length > 0) {
     state = "growth_ready";
-    recommendedNextStep = commandForPlanRun(topPlan);
+    recommendedNextStep = topDecision?.nextRecommendedCommand || commandForPlanRun(topPlan);
     humanInputRequired = true;
   } else if (opportunities.length > 0) {
     state = "growth_ready";
-    recommendedNextStep = "npm run seo:opportunities";
+    recommendedNextStep = topDecision?.nextRecommendedCommand || "npm run seo:decisions";
     humanInputRequired = true;
   }
 
@@ -164,12 +174,13 @@ function decideState({ qaReport, pipelineSummary, opportunitiesReport, plansRepo
     reviewReason,
     topOpportunity,
     topPlan,
+    topDecision,
     activePlanId: activePlanId || null,
     selectedApproval,
     recommendedNextStep,
     humanInputRequired,
     stopReason,
-    codexPrompt: buildCodexPrompt({ state, topPlan: selectedPlan, activePlanId }),
+    codexPrompt: buildCodexPrompt({ state, topPlan: selectedPlan, activePlanId, topDecision }),
   };
 }
 
@@ -181,6 +192,7 @@ function asLineList(items, formatter) {
 function buildMarkdown({ generatedAt, decision, commandResults, reports }) {
   const opportunities = (reports.opportunities?.topOpportunities || reports.opportunities?.opportunities || []).slice(0, 5);
   const plans = (reports.plans?.topPlans || reports.plans?.plans || []).slice(0, 5);
+  const decisions = (reports.decisions?.topDecisions || reports.decisions?.decisions || []).slice(0, 5);
   const inboxSummary = reports.inbox?.summary || {};
   const didAutomatically = commandResults.map((item) => `- ${item.command}: ${item.ok ? "passed" : "failed"}`).join("\n");
 
@@ -207,6 +219,10 @@ ${asLineList(opportunities, (item, index) => `- ${index + 1}. ${item.groupTitle 
 ## Top Execution Plans
 
 ${asLineList(plans, (item, index) => `- ${index + 1}. ${item.title} (${item.planType || "plan"}, ${item.safetyLevel || "unknown safety"}) - ${item.recommendedWorkflow?.nextCommand || "Review plan"}`)}
+
+## Strategic Decisions
+
+${asLineList(decisions, (item, index) => `- ${index + 1}. ${item.title} - ${item.decisionType} (${item.confidence}) - ${item.preferredPath}`)}
 
 ## Action Inbox
 
@@ -261,6 +277,7 @@ function main() {
     pipeline: readJson("reports/seo-pipeline-summary.json"),
     opportunities: readJson("reports/seo-opportunity-centre.json"),
     plans: readJson("reports/seo-execution-plans.json"),
+    decisions: readJson("reports/seo-decision-engine.json"),
     approvals: readJson("reports/seo-plan-approvals.json", { approvals: [] }),
     inbox: readJson("reports/seo-action-inbox.json"),
     digest: readText("reports/seo-weekly-digest.md"),
@@ -272,6 +289,7 @@ function main() {
     opportunitiesReport: reports.opportunities,
     plansReport: reports.plans,
     approvalsReport: reports.approvals,
+    decisionsReport: reports.decisions,
   });
 
   const generatedAt = new Date().toISOString();
@@ -296,6 +314,16 @@ function main() {
           title: decision.topPlan.title,
           planType: decision.topPlan.planType,
           safetyLevel: decision.topPlan.safetyLevel,
+        }
+      : null,
+    topDecision: decision.topDecision
+      ? {
+          id: decision.topDecision.id,
+          title: decision.topDecision.title,
+          decisionType: decision.topDecision.decisionType,
+          confidence: decision.topDecision.confidence,
+          preferredPath: decision.topDecision.preferredPath,
+          cannibalisationRisk: decision.topDecision.cannibalisationRisk,
         }
       : null,
     activePlanId: decision.activePlanId,

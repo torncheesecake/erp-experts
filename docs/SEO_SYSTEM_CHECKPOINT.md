@@ -11,6 +11,7 @@
 - `npm run seo:freshness`
 - `npm run seo:conversion`
 - `npm run seo:opportunities`
+- `npm run seo:decisions`
 - `npm run seo:plans`
 - `npm run seo:plan:approve -- <planId>`
 - `npm run seo:plan:run -- <planId>`
@@ -24,10 +25,11 @@
 1. Quality baseline: resource QA report and gate totals.
 2. Opportunity intelligence: growth, links, freshness, conversion.
 3. Unified prioritisation: opportunity command centre output.
-4. Execution control: plans, approvals, active plan, plan status.
-5. Operator reporting: monitor, digest, stats, inbox.
-6. Autopilot orchestration: one command runs the intelligence chain and decides the next safe step.
-7. Dashboard: monitor-first control panel with secondary diagnostics.
+4. Strategic decisions: resolve overlap, cannibalisation, and create-vs-expand choices.
+5. Execution control: plans, approvals, active plan, plan status.
+6. Operator reporting: monitor, digest, stats, inbox.
+7. Autopilot orchestration: one command runs the intelligence chain and decides the next safe step.
+8. Dashboard: monitor-first control panel with secondary diagnostics.
 
 ## Health status
 
@@ -43,12 +45,13 @@
 1. Run `seo:pipeline` and `seo:stats`.
 2. Confirm monitor health with `seo:monitor`.
 3. If healthy, review `seo:opportunities`.
-4. Create execution flow with `seo:plans`.
-5. Approve scope with `seo:plan:approve`.
-6. Generate active runbook with `seo:plan:run`.
-7. Track status with `seo:plan:status`.
-8. Use `seo:digest` and `seo:inbox` for weekly/operator view.
-9. Use `seo:autopilot` when you want the system to run the full chain and recommend one next step.
+4. Resolve strategic direction with `seo:decisions`.
+5. Create execution flow with `seo:plans`.
+6. Approve scope with `seo:plan:approve`.
+7. Generate active runbook with `seo:plan:run`.
+8. Track status with `seo:plan:status`.
+9. Use `seo:digest` and `seo:inbox` for weekly/operator view.
+10. Use `seo:autopilot` when you want the system to run the full chain and recommend one next step.
 
 ## Generated and ignored report files
 
@@ -60,6 +63,7 @@ Ignored local/generated outputs:
 - `reports/seo-freshness-report.json`
 - `reports/seo-conversion-paths.json`
 - `reports/seo-opportunity-centre.json`
+- `reports/seo-decision-engine.json`
 - `reports/seo-execution-plans.json`
 - `reports/seo-plan-approvals.json`
 - `reports/seo-plan-status.json`
@@ -69,6 +73,7 @@ Ignored local/generated outputs:
 - `reports/seo-autopilot-report.md`
 - `reports/seo-autopilot-report.json`
 - `reports/seo-next-batch-prompt.md`
+- `reports/briefs/`
 
 ## Dashboard sections (healthy mode)
 
@@ -81,6 +86,8 @@ Ignored local/generated outputs:
 ## Safety gates
 
 - Review-first prompts only by default.
+- The decision engine must resolve create-vs-expand conflicts before content drafting.
+- Cannibalisation risk defaults to conservative recommendations: expand existing content first unless differentiation is clear.
 - Approval gate controls planning vs patch proposal vs apply intent.
 - `--allow-apply` required for `apply_patch` approval state.
 - No automatic content edits, no automatic commits, no automatic publishing.

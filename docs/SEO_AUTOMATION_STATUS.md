@@ -45,6 +45,7 @@ Primary automation commands:
 - `npm run seo:freshness`
 - `npm run seo:conversion`
 - `npm run seo:opportunities`
+- `npm run seo:decisions`
 - `npm run seo:plans`
 - `npm run seo:plan:run -- <planId>`
 - `npm run seo:plan:approve -- <planId>`
@@ -157,6 +158,7 @@ SEO autopilot orchestrator:
   - `seo:conversion`
   - `seo:opportunities`
   - `seo:plans`
+  - `seo:decisions`
   - `seo:inbox`
   - `seo:digest`
 - Generates:
@@ -340,6 +342,41 @@ Recommended workflow:
 3. Select one top strategic opportunity.
 4. Generate/review a proposed plan first.
 5. Execute targeted changes only after human approval.
+
+Strategic decision engine:
+
+- `npm run seo:decisions` generates `reports/seo-decision-engine.json`.
+- Purpose: resolve opportunity conflicts before execution planning turns into content work.
+- Reads:
+  - unified opportunities
+  - execution plans
+  - resource QA
+  - growth opportunities
+  - local planning briefs when present
+  - existing article titles/slugs from `src/data/articles.js`
+- Decision types:
+  - `expand_existing`
+  - `create_new`
+  - `merge_topics`
+  - `split_cluster`
+  - `refresh_existing`
+  - `monitor_only`
+  - `reject`
+- Conflict handling:
+  - Similar new-topic ideas are compared with existing resources before recommending creation.
+  - Existing article plus similar growth opportunity defaults to `expand_existing` unless differentiation is strong.
+  - Clustered variants are grouped into one canonical primary path rather than separate competing pages.
+  - Refresh/conversion/link overlap defaults to improving the existing page first.
+  - Briefs that flag cannibalisation, overlap, or "revise before proceeding" are used as decision evidence.
+- For the ERP consultant opportunity, the expected strategic resolution is to expand or differentiate the existing consultant-selection article before creating a broad duplicate.
+
+Recommended decision lifecycle:
+
+1. Run `npm run seo:opportunities`.
+2. Run `npm run seo:plans`.
+3. Run `npm run seo:decisions`.
+4. Review the preferred path and cannibalisation risk.
+5. Only then create a brief, refresh plan, or patch proposal.
 
 Execution planning engine:
 

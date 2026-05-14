@@ -598,6 +598,92 @@ function AutopilotOrchestratorPanel({ autopilotReport, loading }) {
   );
 }
 
+function StrategicDecisionsPanel({ decisionReport, loading }) {
+  const [copyState, setCopyState] = useState("idle");
+  const [copyTarget, setCopyTarget] = useState("");
+  const top = Array.isArray(decisionReport?.topDecisions)
+    ? decisionReport.topDecisions.slice(0, 3)
+    : Array.isArray(decisionReport?.decisions)
+      ? decisionReport.decisions.slice(0, 3)
+      : [];
+
+  const copyItem = async (text, target) => {
+    const ok = await copyText(text, `strategic-decision ${target}`);
+    setCopyTarget(target);
+    setCopyState(ok ? "copied" : "failed");
+    setTimeout(() => {
+      setCopyState("idle");
+      setCopyTarget("");
+    }, 1400);
+  };
+
+  const buttonLabel = (target, fallback) => {
+    if (copyTarget !== target) return fallback;
+    if (copyState === "copied") return "Copied";
+    if (copyState === "failed") return "Copy failed";
+    return fallback;
+  };
+
+  return (
+    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-sm font-semibold text-slate-900">Strategic Decisions</p>
+          <p className="text-xs text-slate-600">Recommended strategic direction before execution.</p>
+        </div>
+        <code className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-700">npm run seo:decisions</code>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-slate-500" style={{ marginTop: "var(--space-sm)" }}>Loading strategic decisions...</p>
+      ) : !decisionReport ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>
+          Decision report missing. Run <code>npm run seo:decisions</code>.
+        </p>
+      ) : top.length === 0 ? (
+        <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)" }}>No strategic decisions available.</p>
+      ) : (
+        <div className="grid gap-sm" style={{ marginTop: "var(--space-sm)" }}>
+          {top.map((decision) => (
+            <div key={decision.id} className="rounded-xl border border-slate-100 bg-slate-50/60" style={{ padding: "var(--space-sm)" }}>
+              <div className="flex items-start justify-between gap-sm">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">{decision.title}</p>
+                  <p className="text-xs text-slate-600">{decision.preferredPath}</p>
+                </div>
+                <span className="inline-flex shrink-0 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
+                  {decision.decisionType}
+                </span>
+              </div>
+              <p className="text-xs text-slate-600" style={{ marginTop: "6px" }}>
+                Confidence: {decision.confidence} · Cannibalisation: {decision.cannibalisationRisk}
+              </p>
+              <p className="text-xs text-slate-700" style={{ marginTop: "4px" }}>{decision.reasoning}</p>
+              <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: "8px" }}>
+                <button
+                  type="button"
+                  onClick={() => copyItem(decision.nextRecommendedCommand || "", `${decision.id}-command`)}
+                  className="inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                >
+                  {buttonLabel(`${decision.id}-command`, "Copy next")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => copyItem(decision.codexDecisionPrompt || "", `${decision.id}-prompt`)}
+                  className="inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                  disabled={!decision.codexDecisionPrompt}
+                >
+                  {buttonLabel(`${decision.id}-prompt`, "Copy prompt")}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
 /* ── client edit mode (temporary control, not auth) ── */
 const EDITS_ENABLED = import.meta.env.VITE_SEO_ROADMAP_EDITS === "true";
 
@@ -1637,6 +1723,8 @@ function AdminView({ onPreview }) {
   const [actionInboxLoading, setActionInboxLoading] = useState(true);
   const [autopilotReport, setAutopilotReport] = useState(null);
   const [autopilotLoading, setAutopilotLoading] = useState(true);
+  const [decisionReport, setDecisionReport] = useState(null);
+  const [decisionLoading, setDecisionLoading] = useState(true);
   const [articleFilter, setArticleFilter] = useState("needs_review");
   const [sortBy, setSortBy] = useState("score");
   const [selectedSlug, setSelectedSlug] = useState("");
@@ -1658,6 +1746,37 @@ function AdminView({ onPreview }) {
   const inboxRef = useRef(null);
   const reportsRef = useRef(null);
   const settingsRef = useRef(null);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadDecisionReport() {
+      const paths = ["/reports/seo-decision-engine.json", "/seo-decision-engine.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setDecisionReport(data);
+            setDecisionLoading(false);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setDecisionReport(null);
+        setDecisionLoading(false);
+      }
+    }
+
+    loadDecisionReport();
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -2344,6 +2463,7 @@ function AdminView({ onPreview }) {
             {isMonitorMode && showOverviewTab ? (
               <>
                 <AutopilotOrchestratorPanel autopilotReport={autopilotReport} loading={autopilotLoading} />
+                <StrategicDecisionsPanel decisionReport={decisionReport} loading={decisionLoading} />
 
                 <section ref={overviewRef} className="grid gap-lg xl:grid-cols-2">
                   <div>
@@ -2393,6 +2513,7 @@ function AdminView({ onPreview }) {
             {isMonitorMode && showOpportunitiesTab ? (
               <section ref={opportunitiesRef} className="grid gap-md">
                 <h2 className="text-xl font-semibold text-slate-900">Opportunity Command Centre</h2>
+                <StrategicDecisionsPanel decisionReport={decisionReport} loading={decisionLoading} />
                 <OpportunityCommandCentrePanel opportunityReport={opportunityReport} loading={opportunityLoading} />
                 <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
                   <summary className="cursor-pointer text-sm font-semibold text-slate-700">View supporting opportunity intelligence</summary>
