@@ -226,3 +226,17 @@ Current policy:
 - `npm run platform:status` shows the opportunity summary count and latest persisted opportunities.
 
 This is the third persisted platform state after monitor snapshots and run history.
+
+## SQLite execution plan summaries
+
+Sentinel now persists top execution plan summaries from `seo:plans` into the SQLite `plan_summaries` table.
+
+Current policy:
+
+- `reports/seo-execution-plans.json` remains the runtime source for dashboard and automation behaviour.
+- SQLite stores append-only execution planning history.
+- Persistence is warning-only and must not change plan generation, dashboard consumers or command success.
+- `seo:plans` supports default ERP Experts usage and explicit tenant usage with `--tenant erp-experts`.
+- `npm run platform:status` shows the plan summary count and latest persisted plans.
+
+This is the fourth persisted platform state after monitor snapshots, run history and opportunity summaries.

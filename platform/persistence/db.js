@@ -128,6 +128,46 @@ export function persistOpportunitySummaries({ tenantId, opportunities = [] }, db
   return opportunities.length;
 }
 
+export function persistPlanSummaries({ tenantId, plans = [] }, dbPath = DEFAULT_DB_PATH) {
+  if (!plans.length) return 0;
+
+  const statements = plans.map((plan) => (
+    `INSERT INTO plan_summaries (
+       tenant_id,
+       plan_id,
+       title,
+       plan_type,
+       execution_priority,
+       estimated_impact,
+       estimated_effort,
+       confidence,
+       safety_level,
+       required_human_review,
+       target_slug,
+       target_path,
+       state
+     )
+     VALUES (
+       '${quoteSql(tenantId)}',
+       '${quoteSql(plan.id || plan.planId || "")}',
+       '${quoteSql(plan.title)}',
+       '${quoteSql(plan.planType || "")}',
+       '${quoteSql(plan.executionPriority || "")}',
+       '${quoteSql(plan.estimatedImpact || "")}',
+       '${quoteSql(plan.estimatedEffort || "")}',
+       '${quoteSql(plan.confidence || "")}',
+       '${quoteSql(plan.safetyLevel || "")}',
+       ${plan.requiredHumanReview ? 1 : 0},
+       '${quoteSql(plan.targetSlug || "")}',
+       '${quoteSql(plan.targetPath || "")}',
+       'suggested'
+     );`
+  ));
+
+  executeSql(statements.join("\n"), dbPath);
+  return plans.length;
+}
+
 export function startRun(run, dbPath = DEFAULT_DB_PATH) {
   return Number(queryValue(
     `INSERT INTO runs (tenant_id, command, status, started_at)
@@ -202,10 +242,63 @@ export function listLatestOpportunitySummaries(limit = 5, dbPath = DEFAULT_DB_PA
   }));
 }
 
+export function listLatestPlanSummaries(limit = 5, dbPath = DEFAULT_DB_PATH) {
+  if (!tableExists("plan_summaries", dbPath)) return [];
+
+  return queryRows(
+    `SELECT id, tenant_id, plan_id, title, plan_type, execution_priority, estimated_impact, estimated_effort, confidence, safety_level, required_human_review, target_slug, target_path, state, created_at
+     FROM plan_summaries
+     ORDER BY created_at DESC,
+       CASE execution_priority
+         WHEN 'high' THEN 3
+         WHEN 'medium' THEN 2
+         WHEN 'low' THEN 1
+         ELSE 0
+       END DESC,
+       id DESC
+     LIMIT ${Number(limit) || 5};`,
+    dbPath,
+  ).map(([
+    id,
+    tenantId,
+    planId,
+    title,
+    planType,
+    executionPriority,
+    estimatedImpact,
+    estimatedEffort,
+    confidence,
+    safetyLevel,
+    requiredHumanReview,
+    targetSlug,
+    targetPath,
+    state,
+    createdAt,
+  ]) => ({
+    id: Number(id),
+    tenantId,
+    planId,
+    title,
+    planType,
+    executionPriority,
+    estimatedImpact,
+    estimatedEffort,
+    confidence,
+    safetyLevel,
+    requiredHumanReview: requiredHumanReview === "1",
+    targetSlug,
+    targetPath,
+    state,
+    createdAt,
+  }));
+}
+
 export function getPersistenceSummary(dbPath = DEFAULT_DB_PATH) {
   const latestRuns = listLatestRuns(5, dbPath);
   const hasOpportunitySummaries = tableExists("opportunity_summaries", dbPath);
   const latestOpportunitySummaries = hasOpportunitySummaries ? listLatestOpportunitySummaries(5, dbPath) : [];
+  const hasPlanSummaries = tableExists("plan_summaries", dbPath);
+  const latestPlanSummaries = hasPlanSummaries ? listLatestPlanSummaries(5, dbPath) : [];
 
   return {
     dbPath,
@@ -216,10 +309,15 @@ export function getPersistenceSummary(dbPath = DEFAULT_DB_PATH) {
     opportunitySummaryCount: hasOpportunitySummaries
       ? Number(queryValue("SELECT COUNT(*) FROM opportunity_summaries;", dbPath) || 0)
       : 0,
+    planSummaryCount: hasPlanSummaries
+      ? Number(queryValue("SELECT COUNT(*) FROM plan_summaries;", dbPath) || 0)
+      : 0,
     erpExpertsTenantExists: queryValue("SELECT COUNT(*) FROM tenants WHERE tenant_id = 'erp-experts';", dbPath) === "1",
     latestRun: latestRuns[0] || null,
     latestRuns,
     latestOpportunitySummary: latestOpportunitySummaries[0] || null,
     latestOpportunitySummaries,
+    latestPlanSummary: latestPlanSummaries[0] || null,
+    latestPlanSummaries,
   };
 }

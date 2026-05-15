@@ -1,16 +1,34 @@
 import fs from "node:fs";
 import path from "node:path";
+import { DEFAULT_DB_PATH, databaseExists, persistPlanSummaries } from "../platform/persistence/db.js";
+import { loadTenantConfig, printTenantError } from "./platform/tenant_config.mjs";
 
+function getArgValue(flag, fallback = null) {
+  const index = process.argv.indexOf(flag);
+  if (index === -1) return fallback;
+  return process.argv[index + 1] || fallback;
+}
+
+const tenantId = getArgValue("--tenant", "erp-experts");
+const tenantResult = loadTenantConfig(tenantId);
+
+if (!tenantResult.ok) {
+  printTenantError(tenantResult);
+  process.exit(1);
+}
+
+const tenant = tenantResult.config;
+const REPORTS_DIR = path.resolve(tenant.reportOutputPath || "reports");
 const INPUTS = {
-  opportunities: path.resolve("reports/seo-opportunity-centre.json"),
-  qa: path.resolve("reports/resource-qa-report.json"),
-  growth: path.resolve("reports/seo-growth-opportunities.json"),
-  links: path.resolve("reports/seo-internal-link-opportunities.json"),
-  freshness: path.resolve("reports/seo-freshness-report.json"),
-  conversion: path.resolve("reports/seo-conversion-paths.json"),
+  opportunities: path.join(REPORTS_DIR, "seo-opportunity-centre.json"),
+  qa: path.join(REPORTS_DIR, "resource-qa-report.json"),
+  growth: path.join(REPORTS_DIR, "seo-growth-opportunities.json"),
+  links: path.join(REPORTS_DIR, "seo-internal-link-opportunities.json"),
+  freshness: path.join(REPORTS_DIR, "seo-freshness-report.json"),
+  conversion: path.join(REPORTS_DIR, "seo-conversion-paths.json"),
 };
 
-const OUTPUT = path.resolve("reports/seo-execution-plans.json");
+const OUTPUT = path.join(REPORTS_DIR, "seo-execution-plans.json");
 
 const clamp = (n) => Math.max(0, Math.min(100, Math.round(n)));
 
@@ -193,6 +211,9 @@ function createPlan(item, qaBySlug) {
 
 function printTop(plans) {
   console.log("SEO Execution Plans");
+  console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
+  console.log(`Reports: ${path.relative(process.cwd(), REPORTS_DIR)}`);
+  console.log(`Dashboard: ${tenant.dashboardRoute || "/seo-roadmap"}`);
   if (!plans.length) {
     console.log("No execution plans generated.");
     return;
@@ -203,6 +224,22 @@ function printTop(plans) {
     console.log(`   Priority: ${plan.executionPriority} · Impact: ${plan.estimatedImpact} · Effort: ${plan.estimatedEffort} · Safety: ${plan.safetyLevel}`);
     console.log(`   Next: ${plan.recommendedWorkflow.nextCommand}`);
   });
+}
+
+function persistTopPlanSummaries(plans) {
+  if (!databaseExists(DEFAULT_DB_PATH)) return;
+
+  try {
+    const count = persistPlanSummaries({
+      tenantId: tenant.tenantId,
+      plans: plans.slice(0, 10),
+    });
+    if (count) {
+      console.log(`Persisted plan summaries: ${count}`);
+    }
+  } catch (error) {
+    console.warn(`[seo:plans] SQLite plan summary warning: ${error.message}`);
+  }
 }
 
 function main() {
@@ -245,6 +282,13 @@ function main() {
 
   const output = {
     generatedAt: new Date().toISOString(),
+    tenant: {
+      tenantId: tenant.tenantId,
+      name: tenant.name,
+      baseUrl: tenant.baseUrl,
+      dashboardRoute: tenant.dashboardRoute || "/seo-roadmap",
+      reportOutputPath: tenant.reportOutputPath || "reports",
+    },
     sourceReports: Object.fromEntries(Object.entries(INPUTS).map(([k, v]) => [k, path.relative(process.cwd(), v)])),
     missingReports: missing,
     lifecycle: "Plan -> Review -> Apply -> Validate -> Commit",
@@ -254,6 +298,7 @@ function main() {
   };
 
   fs.writeFileSync(OUTPUT, `${JSON.stringify(output, null, 2)}\n`, "utf8");
+  persistTopPlanSummaries(plans);
   printTop(plans);
   console.log(`Report written: ${OUTPUT}`);
 }

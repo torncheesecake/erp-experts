@@ -44,6 +44,25 @@ CREATE TABLE IF NOT EXISTS opportunity_summaries (
   FOREIGN KEY (tenant_id) REFERENCES tenants (tenant_id)
 );
 
+CREATE TABLE IF NOT EXISTS plan_summaries (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tenant_id TEXT NOT NULL,
+  plan_id TEXT,
+  title TEXT NOT NULL,
+  plan_type TEXT,
+  execution_priority TEXT,
+  estimated_impact TEXT,
+  estimated_effort TEXT,
+  confidence TEXT,
+  safety_level TEXT,
+  required_human_review INTEGER,
+  target_slug TEXT,
+  target_path TEXT,
+  state TEXT NOT NULL DEFAULT 'suggested',
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  FOREIGN KEY (tenant_id) REFERENCES tenants (tenant_id)
+);
+
 CREATE INDEX IF NOT EXISTS idx_runs_tenant_started_at
   ON runs (tenant_id, started_at);
 
@@ -58,3 +77,15 @@ CREATE INDEX IF NOT EXISTS idx_opportunity_summaries_opportunity
 
 CREATE INDEX IF NOT EXISTS idx_opportunity_summaries_state
   ON opportunity_summaries (state);
+
+CREATE INDEX IF NOT EXISTS idx_plan_summaries_tenant
+  ON plan_summaries (tenant_id);
+
+CREATE INDEX IF NOT EXISTS idx_plan_summaries_plan
+  ON plan_summaries (plan_id);
+
+CREATE INDEX IF NOT EXISTS idx_plan_summaries_state
+  ON plan_summaries (state);
+
+CREATE INDEX IF NOT EXISTS idx_plan_summaries_safety
+  ON plan_summaries (safety_level);

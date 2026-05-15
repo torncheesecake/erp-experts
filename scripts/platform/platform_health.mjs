@@ -103,6 +103,7 @@ function main() {
   let dbStatus = "missing";
   let snapshotCount = "unknown";
   let opportunitySummaryCount = "unknown";
+  let planSummaryCount = "unknown";
   let latestRun = null;
   let tenantPresent = false;
   const schemaExists = fs.existsSync(SCHEMA_PATH);
@@ -115,7 +116,7 @@ function main() {
     warnings.push("SQLite DB is not present yet. Run npm run platform:init before server readiness checks.");
   } else if (sqliteAvailable) {
     try {
-      const requiredTables = ["tenants", "runs", "snapshots", "opportunity_summaries"];
+      const requiredTables = ["tenants", "runs", "snapshots", "opportunity_summaries", "plan_summaries"];
       const missingTables = requiredTables.filter((table) => !tableExists(table));
       if (missingTables.length) {
         critical.push(`SQLite DB is missing required tables: ${missingTables.join(", ")}`);
@@ -124,6 +125,7 @@ function main() {
         const persistenceSummary = getPersistenceSummary(DEFAULT_DB_PATH);
         snapshotCount = persistenceSummary.snapshotCount;
         opportunitySummaryCount = persistenceSummary.opportunitySummaryCount;
+        planSummaryCount = persistenceSummary.planSummaryCount;
         latestRun = persistenceSummary.latestRuns.find((run) => run.id !== runId) || null;
         dbStatus = tenantPresent ? "ready" : "needs tenant";
         if (!tenantPresent) {
@@ -140,16 +142,21 @@ function main() {
   const pipelineReportPath = path.join(reportBase, "seo-pipeline-summary.json");
   const autopilotReportPath = path.join(reportBase, "seo-autopilot-report.json");
   const opportunityReportPath = path.join(reportBase, "seo-opportunity-centre.json");
+  const planReportPath = path.join(reportBase, "seo-execution-plans.json");
   const qaReport = readJson(qaReportPath);
   const pipelineReport = readJson(pipelineReportPath);
   const autopilotReport = readJson(autopilotReportPath);
   const opportunityReport = readJson(opportunityReportPath);
+  const planReport = readJson(planReportPath);
 
   if (!qaReport) critical.push(`Missing QA report: ${qaReportPath}`);
   if (!pipelineReport) critical.push(`Missing pipeline summary: ${pipelineReportPath}`);
   if (!autopilotReport) warnings.push(`Autopilot report is not present. Run npm run seo:autopilot when orchestration context is needed.`);
   if (opportunityReport && Number(opportunitySummaryCount || 0) === 0) {
     warnings.push("Opportunity report exists, but no opportunity summaries are persisted yet. Run npm run seo:opportunities after npm run platform:init.");
+  }
+  if (planReport && Number(planSummaryCount || 0) === 0) {
+    warnings.push("Execution plan report exists, but no plan summaries are persisted yet. Run npm run seo:plans after npm run platform:init.");
   }
 
   const gateSummary = qaReport?.gateSummary || pipelineReport?.current?.gateSummary || {};
@@ -179,6 +186,7 @@ function main() {
   printCheck("DB", dbStatus, rel(DEFAULT_DB_PATH));
   printCheck("Snapshots", String(snapshotCount));
   printCheck("Opportunity summaries", String(opportunitySummaryCount));
+  printCheck("Plan summaries", String(planSummaryCount));
   printCheck("SEO", monitorStatus);
   printCheck("QA", `${pass} pass, ${review} review, ${blocked} blocked`);
   if (latestRun) {

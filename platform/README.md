@@ -115,3 +115,20 @@ This is intentionally append-only for now:
 - `npm run platform:status` shows the opportunity summary count, latest top opportunity and latest five persisted opportunity summaries.
 
 Run `npm run platform:init` after pulling schema changes so the local SQLite database has the `opportunity_summaries` table.
+
+## Execution Plan Summary Persistence
+
+`seo:plans` now reads the tenant configuration and dual-writes the latest execution plan summaries into SQLite after generating `reports/seo-execution-plans.json`.
+
+Default use still targets ERP Experts:
+
+```bash
+npm run seo:plans
+npm run seo:plans -- --tenant erp-experts
+```
+
+The persisted summaries include plan ID, title, plan type, priority, impact, effort, confidence, safety level, review requirement and target slug/path. This is append-only for now.
+
+JSON execution plans remain the runtime source for dashboard and automation behaviour. SQLite is accumulating workflow history so Sentinel can later track planning state across clients, approvals and execution.
+
+Run `npm run platform:init` after pulling schema changes so the local SQLite database has the `plan_summaries` table.

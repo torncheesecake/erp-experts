@@ -17,6 +17,7 @@ console.log(`Tenant count: ${summary.tenantCount}`);
 console.log(`Run count: ${summary.runCount}`);
 console.log(`Snapshot count: ${summary.snapshotCount}`);
 console.log(`Opportunity summary count: ${summary.opportunitySummaryCount}`);
+console.log(`Plan summary count: ${summary.planSummaryCount}`);
 console.log(`ERP Experts tenant: ${summary.erpExpertsTenantExists ? "present" : "missing"}`);
 
 if (summary.latestRun) {
@@ -42,5 +43,18 @@ if (!summary.latestOpportunitySummaries.length) {
 } else {
   summary.latestOpportunitySummaries.forEach((opportunity) => {
     console.log(`  - #${opportunity.id} ${opportunity.title} ${opportunity.score} ${opportunity.priorityLabel} ${opportunity.createdAt}`);
+  });
+}
+
+if (summary.latestPlanSummary) {
+  console.log(`Latest top plan: ${summary.latestPlanSummary.title} (${summary.latestPlanSummary.safetyLevel}, ${summary.latestPlanSummary.executionPriority})`);
+}
+
+console.log("Latest plan summaries:");
+if (!summary.latestPlanSummaries.length) {
+  console.log("  None recorded yet.");
+} else {
+  summary.latestPlanSummaries.forEach((plan) => {
+    console.log(`  - #${plan.id} ${plan.title} ${plan.planType} ${plan.executionPriority} ${plan.safetyLevel} ${plan.createdAt}`);
   });
 }

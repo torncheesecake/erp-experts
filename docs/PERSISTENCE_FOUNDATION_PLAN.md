@@ -258,3 +258,27 @@ The new `opportunity_summaries` table stores the latest top opportunities produc
 This does not replace `reports/seo-opportunity-centre.json`. The JSON report remains the runtime source for the dashboard and downstream scripts. SQLite is used as an append-only history layer so Sentinel can start tracking strategic opportunities over time.
 
 This layer is deliberately simple. It does not dedupe perfectly yet, and DB write failures are warning-only. The future platform can later promote these summaries into canonical opportunity state after the dual-write path has proved stable.
+
+## Execution plan summary persistence
+
+Execution plan summaries are now dual-written from `seo:plans` into SQLite.
+
+The new `plan_summaries` table stores:
+
+- tenant ID
+- plan ID
+- title
+- plan type
+- execution priority
+- estimated impact
+- estimated effort
+- confidence
+- safety level
+- required human review flag
+- target slug or path
+- suggested state
+- created timestamp
+
+`seo:plans` remains JSON-first for runtime behaviour. `reports/seo-execution-plans.json` is still the dashboard and automation source. SQLite stores append-only planning history for Sentinel so future platform stages can track planning state, review state and execution readiness without treating generated files as canonical state.
+
+This is intentionally not a full workflow migration. No plan approval, patching or dashboard behaviour is changed by this persistence layer.
