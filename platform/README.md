@@ -95,6 +95,16 @@ npm run platform:start -- --with-api
 
 This starts `platform:api:serve` only for the current foreground session when the API is not already running. Stop it with `Ctrl+C`. Keep this local-only until auth and Raspberry Pi service hardening are complete.
 
+## Daily Operator Report
+
+Use the daily report when you want a human-readable operator handoff:
+
+```bash
+npm run platform:daily
+```
+
+It reads the persisted Sentinel state through `platform/api/state_api.mjs`, adds the latest deployment readiness status if available, and writes `reports/sentinel-daily-operator-report.md`. The report is local/operator-only, ignored by Git, and is not stakeholder-facing.
+
 ## Operational State Summary
 
 Use the Sentinel state command when you want the current persisted operating picture:

@@ -33,6 +33,7 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 - `npm run platform:init`
 - `npm run platform:status`
 - `npm run platform:start`
+- `npm run platform:daily`
 - `npm run platform:state`
 
 ## Current architecture
@@ -379,3 +380,11 @@ It does not change SEO scoring, edit content, approve plans, apply patches, publ
 - latest deployment readiness status
 
 It does not deploy, SSH, open browsers, start Vite or permanently start daemons. Optional `npm run platform:start -- --with-api` starts the local API server only as a foreground child process for that terminal session and stops it on `Ctrl+C`.
+
+## Daily operator report
+
+`npm run platform:daily` creates a concise Markdown handoff at `reports/sentinel-daily-operator-report.md`.
+
+The report includes tenant, health, QA totals, workflow state, latest opportunity, latest plan, latest inbox item, approval/status summary, deployment readiness status, recent runs, Matthew attention items and safe next commands. It reads persisted state through `platform/api/state_api.mjs` and does not run orchestration, edit content, expose private data publicly or deploy anything.
+
+The report is ignored local operator output, not a stakeholder-facing artefact.

@@ -175,6 +175,9 @@ function printSummary({ healthResult, monitorResult, apiRunning }) {
   console.log("Readiness:");
   console.log(`${readiness.status} - ${readiness.detail}`);
   console.log("");
+  console.log("Daily Report:");
+  console.log("Run npm run platform:daily for the operator report.");
+  console.log("");
   console.log("Checks:");
   console.log(`platform:health ${healthResult.ok ? "passed" : "failed"}`);
   console.log(`seo:monitor ${monitorResult.ok ? "passed" : "failed"}`);
