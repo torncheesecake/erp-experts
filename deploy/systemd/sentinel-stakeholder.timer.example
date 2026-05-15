@@ -1,0 +1,14 @@
+# Sentinel stakeholder report timer template.
+# Template only. Do not install or enable until the Raspberry Pi environment is ready.
+# Runs the stakeholder-safe weekly report on Monday mornings.
+
+[Unit]
+Description=Run Sentinel weekly stakeholder progress report
+
+[Timer]
+OnCalendar=Mon 08:00
+Persistent=true
+Unit=sentinel-stakeholder.service
+
+[Install]
+WantedBy=timers.target

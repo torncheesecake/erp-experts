@@ -128,6 +128,14 @@ npm run platform:cadence -- --stakeholder-only
 
 Default cadence runs `seo:monitor`, `platform:state`, `platform:daily` and `platform:stakeholder`, then writes `reports/sentinel-cadence-summary.json` as ignored local output. It does not deploy, start the API, install cron jobs or expose services. See `docs/SENTINEL_AUTOMATION_CADENCE.md`.
 
+Raspberry Pi systemd timer templates are available but inactive:
+
+```bash
+npm run cadence:service:dry-run
+```
+
+The dry-run validates the cadence and stakeholder timer templates and prints future install commands only.
+
 ## Operational State Summary
 
 Use the Sentinel state command when you want the current persisted operating picture:

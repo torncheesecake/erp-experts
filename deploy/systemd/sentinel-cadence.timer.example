@@ -1,0 +1,14 @@
+# Sentinel cadence timer template.
+# Template only. Do not install or enable until the Raspberry Pi environment is ready.
+# Runs the daily cadence on weekday mornings.
+
+[Unit]
+Description=Run Sentinel daily automation cadence on weekdays
+
+[Timer]
+OnCalendar=Mon..Fri 07:30
+Persistent=true
+Unit=sentinel-cadence.service
+
+[Install]
+WantedBy=timers.target

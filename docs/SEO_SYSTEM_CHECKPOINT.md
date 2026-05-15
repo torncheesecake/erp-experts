@@ -411,3 +411,12 @@ Default cadence runs:
 - `platform:stakeholder`
 
 It writes ignored output to `reports/sentinel-cadence-summary.json` and does not deploy, start services, install cron jobs or expose private data publicly. Use `--dry-run`, `--operator-only` or `--stakeholder-only` for narrower local scheduling. Cron and future Raspberry Pi examples are documented in `docs/SENTINEL_AUTOMATION_CADENCE.md`.
+
+Inactive Raspberry Pi systemd timer templates are also present for later controlled deployment:
+
+- `deploy/systemd/sentinel-cadence.service.example`
+- `deploy/systemd/sentinel-cadence.timer.example`
+- `deploy/systemd/sentinel-stakeholder.service.example`
+- `deploy/systemd/sentinel-stakeholder.timer.example`
+
+`npm run cadence:service:dry-run` validates those templates and prints future install commands without modifying system files.

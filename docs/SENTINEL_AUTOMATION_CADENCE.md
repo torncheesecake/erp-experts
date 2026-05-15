@@ -60,8 +60,25 @@ Alternative future systemd timer approach:
 
 - `sentinel-cadence.service`
 - `sentinel-cadence.timer`
+- `sentinel-stakeholder.service`
+- `sentinel-stakeholder.timer`
 
 Do not enable timers until auth, backup verification, data paths and log rotation are confirmed.
+
+Template files are present under `deploy/systemd/`:
+
+- `sentinel-cadence.service.example`
+- `sentinel-cadence.timer.example`
+- `sentinel-stakeholder.service.example`
+- `sentinel-stakeholder.timer.example`
+
+Dry-run the future systemd setup with:
+
+```bash
+npm run cadence:service:dry-run
+```
+
+This only checks templates and prints the future copy, enable and start commands. It does not modify `/etc/systemd/system`, reload systemd, enable timers or start jobs.
 
 ## Safety Rules
 

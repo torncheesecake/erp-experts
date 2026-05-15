@@ -1,0 +1,16 @@
+# Sentinel cadence systemd service template.
+# Template only. Do not install, enable or start until Raspberry Pi deployment controls are agreed.
+# Copy to /etc/systemd/system/sentinel-cadence.service only during a controlled deployment.
+
+[Unit]
+Description=Sentinel daily automation cadence
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/srv/matthew-platform/apps/seo-ops
+EnvironmentFile=/srv/matthew-platform/apps/seo-ops/.env
+Environment=PLATFORM_TENANT=erp-experts
+ExecStart=/usr/bin/npm run platform:cadence -- --daily
+User=matthew
+Group=matthew

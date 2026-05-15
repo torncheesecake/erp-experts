@@ -107,6 +107,21 @@ npm run platform:cadence -- --stakeholder-only
 
 The cadence command is safe to call from cron later, but no cron jobs or systemd timers are installed by the repo. See `docs/SENTINEL_AUTOMATION_CADENCE.md` before enabling anything on the Raspberry Pi.
 
+Inactive systemd timer templates also exist:
+
+- `deploy/systemd/sentinel-cadence.service.example`
+- `deploy/systemd/sentinel-cadence.timer.example`
+- `deploy/systemd/sentinel-stakeholder.service.example`
+- `deploy/systemd/sentinel-stakeholder.timer.example`
+
+Preview the future timer setup with:
+
+```bash
+npm run cadence:service:dry-run
+```
+
+The dry-run prints planned install commands and expected schedules only. It does not copy files, reload systemd, enable timers or start jobs.
+
 ## Reverse proxy rule
 
 Do not expose the Sentinel API through Nginx, Apache, Caddy or any public domain until auth exists. If a reverse proxy is later added, it should start behind basic auth or a stronger tenant-aware auth layer.

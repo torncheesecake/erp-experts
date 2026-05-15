@@ -56,6 +56,7 @@
     "platform:stakeholder": "node scripts/platform/platform_stakeholder_report.mjs",
     "platform:start": "node scripts/platform/platform_bootstrap.mjs",
     "deploy:dry-run": "bash deploy/scripts/deploy-dry-run.sh",
+    "cadence:service:dry-run": "bash deploy/scripts/cadence-service-dry-run.sh",
     "backup:dry-run": "bash deploy/scripts/backup-dry-run.sh",
     "backup:verify": "bash deploy/scripts/verify-backup.sh",
     "backup:restore:test": "bash deploy/scripts/restore-simulate.sh",
