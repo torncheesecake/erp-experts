@@ -1,16 +1,32 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execSync } from "node:child_process";
+import { loadTenantConfig, printTenantError } from "./platform/tenant_config.mjs";
 
-const REPORTS_DIR = path.resolve("reports");
-const HISTORY_DIR = path.resolve("reports/history");
-const QA_REPORT = path.resolve("reports/resource-qa-report.json");
-const BRIEFS_REPORT = path.resolve("reports/seo-action-briefs.json");
-const WEEKLY_REPORT = path.resolve("reports/seo-weekly-summary.json");
-const PIPELINE_SUMMARY_REPORT = path.resolve("reports/seo-pipeline-summary.json");
+function getArgValue(flag, fallback = null) {
+  const index = process.argv.indexOf(flag);
+  if (index === -1) return fallback;
+  return process.argv[index + 1] || fallback;
+}
+
+const tenantId = getArgValue("--tenant", "erp-experts");
+const tenantResult = loadTenantConfig(tenantId);
+
+if (!tenantResult.ok) {
+  printTenantError(tenantResult);
+  process.exit(1);
+}
+
+const tenant = tenantResult.config;
+const REPORTS_DIR = path.resolve(tenant.reportOutputPath || "reports");
+const HISTORY_DIR = path.join(REPORTS_DIR, "history");
+const QA_REPORT = path.join(REPORTS_DIR, "resource-qa-report.json");
+const BRIEFS_REPORT = path.join(REPORTS_DIR, "seo-action-briefs.json");
+const WEEKLY_REPORT = path.join(REPORTS_DIR, "seo-weekly-summary.json");
+const PIPELINE_SUMMARY_REPORT = path.join(REPORTS_DIR, "seo-pipeline-summary.json");
 
 function runStep(label, cmd) {
-  console.log(`\\n[seo:pipeline] ${label}`);
+  console.log(`\n[seo:pipeline] ${label}`);
   execSync(cmd, { stdio: "inherit" });
 }
 
@@ -131,6 +147,11 @@ function copySnapshotFile(src, destDir) {
 }
 
 function main() {
+  console.log("SEO Pipeline");
+  console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
+  console.log(`Reports: ${path.relative(process.cwd(), REPORTS_DIR)}`);
+  console.log(`Dashboard: ${tenant.dashboardRoute || "/seo-roadmap"}`);
+
   runStep("Run resource QA", "node scripts/qa_resources.mjs");
   runStep("Generate action briefs", "node scripts/seo_action_briefs.mjs");
   runStep("Generate weekly summary", "node scripts/seo_weekly_summary.mjs");
@@ -206,7 +227,8 @@ function main() {
 
   fs.writeFileSync(PIPELINE_SUMMARY_REPORT, `${JSON.stringify(summary, null, 2)}\n`, "utf8");
 
-  console.log("\\nSEO Pipeline");
+  console.log("\nSEO Pipeline Result");
+  console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
   console.log(`Snapshot: ${summary.pipeline.snapshotDir}`);
   console.log(`QA gates: pass=${summary.current.gateSummary?.pass || 0}, needs_review=${summary.current.gateSummary?.needs_review || 0}, blocked=${summary.current.gateSummary?.blocked || 0}`);
   console.log(`Diff vs previous snapshot: pass ${diff.passChange >= 0 ? "+" : ""}${diff.passChange}, needs_review ${diff.needsReviewChange >= 0 ? "+" : ""}${diff.needsReviewChange}, blocked ${diff.blockedChange >= 0 ? "+" : ""}${diff.blockedChange}`);

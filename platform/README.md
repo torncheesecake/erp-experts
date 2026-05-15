@@ -39,11 +39,12 @@ The loader prints a summary and validates required fields. It does not mutate so
 
 ## Tenant-Aware Reporting Commands
 
-`seo:monitor` and `seo:stats` read the tenant config.
+`seo:pipeline`, `seo:monitor` and `seo:stats` read the tenant config.
 
 Default use still targets ERP Experts:
 
 ```bash
+npm run seo:pipeline
 npm run seo:monitor
 npm run seo:stats
 ```
@@ -51,12 +52,13 @@ npm run seo:stats
 Explicit tenant use is also supported:
 
 ```bash
+npm run seo:pipeline -- --tenant erp-experts
 npm run seo:monitor -- --tenant erp-experts
 npm run seo:stats -- --tenant erp-experts
 ```
 
-These commands use the tenant name, report output path, dashboard route and base URL where relevant from `platform/tenants/erp-experts.config.json`. Their scoring, regression, consistency and health logic are unchanged.
+These commands use the tenant name, report output path, dashboard route and base URL where relevant from `platform/tenants/erp-experts.config.json`. Their scoring, report generation, regression, consistency and health logic are unchanged.
 
 ## Extraction Boundary
 
-Most SEO engines still use their current ERP Experts paths. `seo:monitor` and `seo:stats` are tenant-aware. The next safe step is to make one more low-risk reporting helper tenant-aware in the same pattern and compare output before replacing broader engine behaviour.
+Most SEO engines still use their current ERP Experts paths. `seo:pipeline`, `seo:monitor` and `seo:stats` are tenant-aware at the orchestration/reporting layer. The next safe step is to make one more low-risk reporting helper tenant-aware in the same pattern and compare output before replacing broader engine behaviour.
