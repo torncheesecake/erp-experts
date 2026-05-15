@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-05-11T10:11:51.759Z",
-  "articleCount": 26,
+  "generatedAt": "2026-05-15T07:02:08.925Z",
+  "articleCount": 27,
   "gateSummary": {
-    "pass": 26,
+    "pass": 27,
     "needs_review": 0,
     "blocked": 0
   },
@@ -561,6 +561,36 @@
         "introWords": 69,
         "bodyDepthWords": 467,
         "tipsCount": 8,
+        "thinTipsCount": 0,
+        "nearDuplicateMatches": 0,
+        "hasCTAPath": true,
+        "hasServiceRelevantCTA": true,
+        "hasPublishedAt": true,
+        "internalPathCTA": true,
+        "routeMentionSignals": true
+      },
+      "issues": {
+        "structural": [],
+        "warnings": []
+      }
+    },
+    {
+      "slug": "optimise-end-of-year-accounting-with-netsuite",
+      "title": "Optimise End-of-Year Accounting with NetSuite",
+      "gate": "pass",
+      "score": 98,
+      "categoryScores": {
+        "metadataCompleteness": 100,
+        "contentDepth": 92,
+        "duplicateCannibalisationRisk": 100,
+        "ctaServiceRelevance": 100,
+        "freshnessPublishedAtValidity": 100,
+        "internalLinkReadiness": 100
+      },
+      "metrics": {
+        "introWords": 62,
+        "bodyDepthWords": 488,
+        "tipsCount": 7,
         "thinTipsCount": 0,
         "nearDuplicateMatches": 0,
         "hasCTAPath": true,

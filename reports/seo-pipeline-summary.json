@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-05-11T10:11:51.835Z",
+  "generatedAt": "2026-05-15T07:02:09.006Z",
   "pipeline": {
     "steps": [
       "qa:resources",
       "seo:briefs",
       "seo:summary"
     ],
-    "snapshotDir": "reports/history/2026-05-11-1111",
-    "previousSnapshot": "reports/history/2026-05-11-1107"
+    "snapshotDir": "reports/history/2026-05-15-0802",
+    "previousSnapshot": "reports/history/2026-05-15-0801"
   },
   "outputs": {
     "qaReport": "reports/resource-qa-report.json",
@@ -16,7 +16,7 @@
   },
   "current": {
     "gateSummary": {
-      "pass": 26,
+      "pass": 27,
       "needs_review": 0,
       "blocked": 0
     },

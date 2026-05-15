@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-11T10:11:51.827Z",
+  "generatedAt": "2026-05-15T07:02:08.999Z",
   "sourceReports": {
     "qaReport": "reports/resource-qa-report.json",
     "seoActionBriefs": "reports/seo-action-briefs.json",
@@ -7,8 +7,8 @@
   },
   "reportContext": {
     "reportsLastUpdated": "2026-05-08",
-    "qaGeneratedAt": "2026-05-11T10:11:51.759Z",
-    "briefsGeneratedAt": "2026-05-11T10:11:51.794Z"
+    "qaGeneratedAt": "2026-05-15T07:02:08.925Z",
+    "briefsGeneratedAt": "2026-05-15T07:02:08.964Z"
   },
   "headlineSummary": "This week, SEO automation recommends creating new demand-led resources while keeping quality control visible. 0 pages need review and 0 are blocked.",
   "topRecommendedActions": [
