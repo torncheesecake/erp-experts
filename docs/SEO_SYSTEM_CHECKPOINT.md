@@ -202,3 +202,14 @@ bash deploy/scripts/backup-platform.sh --confirm
 ```
 
 Current backup behaviour is intentionally non-mutating. The dry-run prints expected paths and retention. The placeholder backup script refuses without `--confirm`, and even with `--confirm` it prints TODO steps only. Real backup file creation is not implemented yet.
+
+## SQLite run logging
+
+Sentinel now uses the SQLite `runs` table for selected command execution history:
+
+- `seo:monitor`
+- `seo:pipeline`
+- `seo:autopilot`
+- `platform:health`
+
+Run logging is warning-only. A DB logging failure should not fail the command unless the command itself fails. `npm run platform:status` shows run count, the last run and the latest five runs.

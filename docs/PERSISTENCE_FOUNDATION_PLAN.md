@@ -224,3 +224,16 @@ After this foundation stabilises, the next safe persistence-backed feature is pi
 - keep failure handling explicit
 
 That would give the platform a real execution history without changing SEO scoring or report consumers.
+
+## Run logging foundation
+
+The existing `runs` table is now used by selected commands:
+
+- `seo:monitor`
+- `seo:pipeline`
+- `seo:autopilot`
+- `platform:health`
+
+Each logged run records tenant ID, command, status, start time and finish time. DB write failures are warning-only and must not change command success unless the underlying command failed.
+
+`npm run platform:status` now shows total run count, the last run and the latest five runs. This is the second persisted platform state after monitor snapshots.

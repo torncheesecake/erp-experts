@@ -56,6 +56,12 @@ export function queryValue(sql, dbPath = DEFAULT_DB_PATH) {
   return output;
 }
 
+export function queryRows(sql, dbPath = DEFAULT_DB_PATH) {
+  const output = runSqlite(["-noheader", "-batch", "-separator", "\t", dbPath, sql]).trim();
+  if (!output) return [];
+  return output.split("\n").map((line) => line.split("\t"));
+}
+
 export function upsertTenant(tenant, dbPath = DEFAULT_DB_PATH) {
   executeSql(
     `INSERT INTO tenants (tenant_id, name, domain)
@@ -81,7 +87,57 @@ export function insertSnapshot(snapshot, dbPath = DEFAULT_DB_PATH) {
   );
 }
 
+export function startRun(run, dbPath = DEFAULT_DB_PATH) {
+  return Number(queryValue(
+    `INSERT INTO runs (tenant_id, command, status, started_at)
+     VALUES ('${quoteSql(run.tenantId)}', '${quoteSql(run.command)}', 'running', datetime('now'));
+     SELECT last_insert_rowid();`,
+    dbPath,
+  ));
+}
+
+export function finishRun(run, dbPath = DEFAULT_DB_PATH) {
+  executeSql(
+    `UPDATE runs
+     SET status = '${quoteSql(run.status)}', finished_at = datetime('now')
+     WHERE id = ${Number(run.runId)};`,
+    dbPath,
+  );
+}
+
+export function logRun(run, dbPath = DEFAULT_DB_PATH) {
+  executeSql(
+    `INSERT INTO runs (tenant_id, command, status, started_at, finished_at)
+     VALUES (
+       '${quoteSql(run.tenantId)}',
+       '${quoteSql(run.command)}',
+       '${quoteSql(run.status)}',
+       '${quoteSql(run.startedAt)}',
+       '${quoteSql(run.finishedAt)}'
+     );`,
+    dbPath,
+  );
+}
+
+export function listLatestRuns(limit = 5, dbPath = DEFAULT_DB_PATH) {
+  return queryRows(
+    `SELECT id, tenant_id, command, status, COALESCE(started_at, ''), COALESCE(finished_at, '')
+     FROM runs
+     ORDER BY COALESCE(finished_at, started_at) DESC, id DESC
+     LIMIT ${Number(limit) || 5};`,
+    dbPath,
+  ).map(([id, tenantId, command, status, startedAt, finishedAt]) => ({
+    id: Number(id),
+    tenantId,
+    command,
+    status,
+    startedAt,
+    finishedAt,
+  }));
+}
+
 export function getPersistenceSummary(dbPath = DEFAULT_DB_PATH) {
+  const latestRuns = listLatestRuns(5, dbPath);
   return {
     dbPath,
     exists: databaseExists(dbPath),
@@ -89,5 +145,7 @@ export function getPersistenceSummary(dbPath = DEFAULT_DB_PATH) {
     runCount: Number(queryValue("SELECT COUNT(*) FROM runs;", dbPath) || 0),
     snapshotCount: Number(queryValue("SELECT COUNT(*) FROM snapshots;", dbPath) || 0),
     erpExpertsTenantExists: queryValue("SELECT COUNT(*) FROM tenants WHERE tenant_id = 'erp-experts';", dbPath) === "1",
+    latestRun: latestRuns[0] || null,
+    latestRuns,
   };
 }

@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { execSync } from "node:child_process";
 import { loadTenantConfig, printTenantError } from "./platform/tenant_config.mjs";
+import { safeFinishRun, safeStartRun } from "./platform/run_logger.mjs";
 
 function getArgValue(flag, fallback = null) {
   const index = process.argv.indexOf(flag);
@@ -147,94 +148,104 @@ function copySnapshotFile(src, destDir) {
 }
 
 function main() {
-  console.log("SEO Pipeline");
-  console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
-  console.log(`Reports: ${path.relative(process.cwd(), REPORTS_DIR)}`);
-  console.log(`Dashboard: ${tenant.dashboardRoute || "/seo-roadmap"}`);
+  const runId = safeStartRun({ tenantId: tenant.tenantId, command: "seo:pipeline" });
+  let runStatus = "success";
 
-  runStep("Run resource QA", "node scripts/qa_resources.mjs");
-  runStep("Generate action briefs", "node scripts/seo_action_briefs.mjs");
-  runStep("Generate weekly summary", "node scripts/seo_weekly_summary.mjs");
+  try {
+    console.log("SEO Pipeline");
+    console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
+    console.log(`Reports: ${path.relative(process.cwd(), REPORTS_DIR)}`);
+    console.log(`Dashboard: ${tenant.dashboardRoute || "/seo-roadmap"}`);
 
-  ensureFile(QA_REPORT);
-  ensureFile(BRIEFS_REPORT);
-  ensureFile(WEEKLY_REPORT);
+    runStep("Run resource QA", "node scripts/qa_resources.mjs");
+    runStep("Generate action briefs", "node scripts/seo_action_briefs.mjs");
+    runStep("Generate weekly summary", "node scripts/seo_weekly_summary.mjs");
 
-  fs.mkdirSync(HISTORY_DIR, { recursive: true });
-  const existingSnapshots = listSnapshotDirs();
-  const previousSnapshot = existingSnapshots.length > 0 ? existingSnapshots[existingSnapshots.length - 1] : null;
+    ensureFile(QA_REPORT);
+    ensureFile(BRIEFS_REPORT);
+    ensureFile(WEEKLY_REPORT);
 
-  const currentQa = readJson(QA_REPORT);
-  const currentBriefs = readJson(BRIEFS_REPORT);
-  const currentWeekly = readJson(WEEKLY_REPORT);
+    fs.mkdirSync(HISTORY_DIR, { recursive: true });
+    const existingSnapshots = listSnapshotDirs();
+    const previousSnapshot = existingSnapshots.length > 0 ? existingSnapshots[existingSnapshots.length - 1] : null;
 
-  let previousQa = null;
-  let previousBriefs = null;
-  if (previousSnapshot) {
-    const prevDir = path.join(HISTORY_DIR, previousSnapshot);
-    const prevQaPath = path.join(prevDir, "resource-qa-report.json");
-    const prevBriefsPath = path.join(prevDir, "seo-action-briefs.json");
-    if (fs.existsSync(prevQaPath) && fs.existsSync(prevBriefsPath)) {
-      previousQa = readJson(prevQaPath);
-      previousBriefs = readJson(prevBriefsPath);
+    const currentQa = readJson(QA_REPORT);
+    const currentBriefs = readJson(BRIEFS_REPORT);
+    const currentWeekly = readJson(WEEKLY_REPORT);
+
+    let previousQa = null;
+    let previousBriefs = null;
+    if (previousSnapshot) {
+      const prevDir = path.join(HISTORY_DIR, previousSnapshot);
+      const prevQaPath = path.join(prevDir, "resource-qa-report.json");
+      const prevBriefsPath = path.join(prevDir, "seo-action-briefs.json");
+      if (fs.existsSync(prevQaPath) && fs.existsSync(prevBriefsPath)) {
+        previousQa = readJson(prevQaPath);
+        previousBriefs = readJson(prevBriefsPath);
+      }
     }
-  }
 
-  const diff = previousQa && previousBriefs
-    ? buildDiff(previousQa, currentQa, previousBriefs, currentBriefs)
-    : {
-      passChange: 0,
-      needsReviewChange: 0,
-      blockedChange: 0,
-      newlyPassing: [],
-      newlyFailing: [],
-      recommendationCountChange: 0,
-      largeScoreSwings: [],
-      structuralRegressionCount: 0,
+    const diff = previousQa && previousBriefs
+      ? buildDiff(previousQa, currentQa, previousBriefs, currentBriefs)
+      : {
+        passChange: 0,
+        needsReviewChange: 0,
+        blockedChange: 0,
+        newlyPassing: [],
+        newlyFailing: [],
+        recommendationCountChange: 0,
+        largeScoreSwings: [],
+        structuralRegressionCount: 0,
+      };
+
+    const reviewFlag = buildReviewFlag(currentQa, currentBriefs, diff);
+
+    const snapshotName = formatSnapshotTimestamp(new Date());
+    const snapshotDir = path.join(HISTORY_DIR, snapshotName);
+    fs.mkdirSync(snapshotDir, { recursive: true });
+    copySnapshotFile(QA_REPORT, snapshotDir);
+    copySnapshotFile(BRIEFS_REPORT, snapshotDir);
+    copySnapshotFile(WEEKLY_REPORT, snapshotDir);
+
+    const summary = {
+      generatedAt: new Date().toISOString(),
+      pipeline: {
+        steps: ["qa:resources", "seo:briefs", "seo:summary"],
+        snapshotDir: path.relative(process.cwd(), snapshotDir),
+        previousSnapshot: previousSnapshot ? path.relative(process.cwd(), path.join(HISTORY_DIR, previousSnapshot)) : null,
+      },
+      outputs: {
+        qaReport: path.relative(process.cwd(), QA_REPORT),
+        briefsReport: path.relative(process.cwd(), BRIEFS_REPORT),
+        weeklySummary: path.relative(process.cwd(), WEEKLY_REPORT),
+      },
+      current: {
+        gateSummary: currentQa.gateSummary,
+        recommendationCount: getBriefCount(currentBriefs),
+        dashboardBriefCount: currentBriefs.dashboardBriefCount || (currentBriefs.briefs || []).length,
+        sprintBacklogCount: currentBriefs.sprintBacklogCount || (currentBriefs.sprintBacklogBriefs || []).length,
+        weeklyHeadline: currentWeekly.headlineSummary,
+      },
+      diff,
+      review: reviewFlag,
     };
 
-  const reviewFlag = buildReviewFlag(currentQa, currentBriefs, diff);
+    fs.writeFileSync(PIPELINE_SUMMARY_REPORT, `${JSON.stringify(summary, null, 2)}\n`, "utf8");
 
-  const snapshotName = formatSnapshotTimestamp(new Date());
-  const snapshotDir = path.join(HISTORY_DIR, snapshotName);
-  fs.mkdirSync(snapshotDir, { recursive: true });
-  copySnapshotFile(QA_REPORT, snapshotDir);
-  copySnapshotFile(BRIEFS_REPORT, snapshotDir);
-  copySnapshotFile(WEEKLY_REPORT, snapshotDir);
-
-  const summary = {
-    generatedAt: new Date().toISOString(),
-    pipeline: {
-      steps: ["qa:resources", "seo:briefs", "seo:summary"],
-      snapshotDir: path.relative(process.cwd(), snapshotDir),
-      previousSnapshot: previousSnapshot ? path.relative(process.cwd(), path.join(HISTORY_DIR, previousSnapshot)) : null,
-    },
-    outputs: {
-      qaReport: path.relative(process.cwd(), QA_REPORT),
-      briefsReport: path.relative(process.cwd(), BRIEFS_REPORT),
-      weeklySummary: path.relative(process.cwd(), WEEKLY_REPORT),
-    },
-    current: {
-      gateSummary: currentQa.gateSummary,
-      recommendationCount: getBriefCount(currentBriefs),
-      dashboardBriefCount: currentBriefs.dashboardBriefCount || (currentBriefs.briefs || []).length,
-      sprintBacklogCount: currentBriefs.sprintBacklogCount || (currentBriefs.sprintBacklogBriefs || []).length,
-      weeklyHeadline: currentWeekly.headlineSummary,
-    },
-    diff,
-    review: reviewFlag,
-  };
-
-  fs.writeFileSync(PIPELINE_SUMMARY_REPORT, `${JSON.stringify(summary, null, 2)}\n`, "utf8");
-
-  console.log("\nSEO Pipeline Result");
-  console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
-  console.log(`Snapshot: ${summary.pipeline.snapshotDir}`);
-  console.log(`QA gates: pass=${summary.current.gateSummary?.pass || 0}, needs_review=${summary.current.gateSummary?.needs_review || 0}, blocked=${summary.current.gateSummary?.blocked || 0}`);
-  console.log(`Diff vs previous snapshot: pass ${diff.passChange >= 0 ? "+" : ""}${diff.passChange}, needs_review ${diff.needsReviewChange >= 0 ? "+" : ""}${diff.needsReviewChange}, blocked ${diff.blockedChange >= 0 ? "+" : ""}${diff.blockedChange}`);
-  console.log(`Newly passing: ${diff.newlyPassing.length}; newly failing: ${diff.newlyFailing.length}; recommendations delta: ${diff.recommendationCountChange >= 0 ? "+" : ""}${diff.recommendationCountChange}`);
-  console.log(`Human review recommended: ${reviewFlag.humanReviewRecommended ? "yes" : "no"}`);
-  console.log(`Pipeline summary report: ${PIPELINE_SUMMARY_REPORT}`);
+    console.log("\nSEO Pipeline Result");
+    console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
+    console.log(`Snapshot: ${summary.pipeline.snapshotDir}`);
+    console.log(`QA gates: pass=${summary.current.gateSummary?.pass || 0}, needs_review=${summary.current.gateSummary?.needs_review || 0}, blocked=${summary.current.gateSummary?.blocked || 0}`);
+    console.log(`Diff vs previous snapshot: pass ${diff.passChange >= 0 ? "+" : ""}${diff.passChange}, needs_review ${diff.needsReviewChange >= 0 ? "+" : ""}${diff.needsReviewChange}, blocked ${diff.blockedChange >= 0 ? "+" : ""}${diff.blockedChange}`);
+    console.log(`Newly passing: ${diff.newlyPassing.length}; newly failing: ${diff.newlyFailing.length}; recommendations delta: ${diff.recommendationCountChange >= 0 ? "+" : ""}${diff.recommendationCountChange}`);
+    console.log(`Human review recommended: ${reviewFlag.humanReviewRecommended ? "yes" : "no"}`);
+    console.log(`Pipeline summary report: ${PIPELINE_SUMMARY_REPORT}`);
+  } catch (error) {
+    runStatus = "failure";
+    throw error;
+  } finally {
+    safeFinishRun({ runId, command: "seo:pipeline", status: runStatus });
+  }
 }
 
 main();

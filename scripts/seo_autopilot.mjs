@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { loadTenantConfig, printTenantError } from "./platform/tenant_config.mjs";
+import { safeFinishRun, safeStartRun } from "./platform/run_logger.mjs";
 
 const ROOT = process.cwd();
 
@@ -289,116 +290,129 @@ function ensureReportsDir() {
 }
 
 function main() {
-  console.log("SEO Autopilot");
-  console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
-  console.log(`Reports: ${path.relative(ROOT, REPORTS_DIR)}`);
-  console.log(`Dashboard: ${tenant.dashboardRoute || "/seo-roadmap"}`);
+  const runId = safeStartRun({ tenantId: tenant.tenantId, command: "seo:autopilot" });
+  let runStatus = "success";
 
-  const commandResults = [];
-  for (const [label, [command, args]] of COMMANDS) {
-    const result = runCommand(label, command, args);
-    commandResults.push(result);
-    if (!result.ok) {
-      console.error(`\n[seo:autopilot] ${label} failed. Stopping.`);
-      process.exit(result.status || 1);
+  try {
+    console.log("SEO Autopilot");
+    console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
+    console.log(`Reports: ${path.relative(ROOT, REPORTS_DIR)}`);
+    console.log(`Dashboard: ${tenant.dashboardRoute || "/seo-roadmap"}`);
+
+    const commandResults = [];
+    for (const [label, [command, args]] of COMMANDS) {
+      const result = runCommand(label, command, args);
+      commandResults.push(result);
+      if (!result.ok) {
+        console.error(`\n[seo:autopilot] ${label} failed. Stopping.`);
+        const error = new Error(`${label} failed`);
+        error.exitCode = result.status || 1;
+        throw error;
+      }
     }
+
+    const reports = {
+      qa: readJson("resource-qa-report.json"),
+      pipeline: readJson("seo-pipeline-summary.json"),
+      opportunities: readJson("seo-opportunity-centre.json"),
+      plans: readJson("seo-execution-plans.json"),
+      decisions: readJson("seo-decision-engine.json"),
+      approvals: readJson("seo-plan-approvals.json", { approvals: [] }),
+      inbox: readJson("seo-action-inbox.json"),
+      digest: readText("seo-weekly-digest.md"),
+    };
+
+    const decision = decideState({
+      qaReport: reports.qa,
+      pipelineSummary: reports.pipeline,
+      opportunitiesReport: reports.opportunities,
+      plansReport: reports.plans,
+      approvalsReport: reports.approvals,
+      decisionsReport: reports.decisions,
+    });
+
+    const generatedAt = new Date().toISOString();
+    const output = {
+      generatedAt,
+      tenant: {
+        tenantId: tenant.tenantId,
+        name: tenant.name,
+        baseUrl: tenant.baseUrl,
+        dashboardRoute: tenant.dashboardRoute || "/seo-roadmap",
+        reportOutputPath: tenant.reportOutputPath || "reports",
+      },
+      state: decision.state,
+      health: decision.health,
+      qa: decision.qa,
+      humanReviewRecommended: decision.humanReviewRecommended,
+      topGap: decision.topOpportunity
+        ? {
+            id: decision.topOpportunity.id,
+            title: decision.topOpportunity.groupTitle || decision.topOpportunity.title,
+            score: decision.topOpportunity.score,
+            actionTheme: decision.topOpportunity.actionTheme,
+            signals: decision.topOpportunity.combinedSignals || [],
+          }
+        : null,
+      topPlan: decision.topPlan
+        ? {
+            id: decision.topPlan.id,
+            title: decision.topPlan.title,
+            planType: decision.topPlan.planType,
+            safetyLevel: decision.topPlan.safetyLevel,
+          }
+        : null,
+      topDecision: decision.topDecision
+        ? {
+            id: decision.topDecision.id,
+            title: decision.topDecision.title,
+            decisionType: decision.topDecision.decisionType,
+            confidence: decision.topDecision.confidence,
+            preferredPath: decision.topDecision.preferredPath,
+            cannibalisationRisk: decision.topDecision.cannibalisationRisk,
+          }
+        : null,
+      activePlanId: decision.activePlanId,
+      recommendedNextStep: decision.recommendedNextStep,
+      humanInputRequired: decision.humanInputRequired,
+      stopReason: decision.stopReason || null,
+      codexPrompt: decision.codexPrompt,
+      generatedReports: {
+        markdown: path.relative(ROOT, OUTPUT_MD),
+        json: path.relative(ROOT, OUTPUT_JSON),
+      },
+      commandResults,
+    };
+
+    ensureReportsDir();
+    fs.writeFileSync(OUTPUT_JSON, `${JSON.stringify(output, null, 2)}\n`, "utf8");
+    fs.writeFileSync(OUTPUT_MD, buildMarkdown({ generatedAt, decision, commandResults, reports }), "utf8");
+
+    console.log("\nSEO Autopilot Report");
+    console.log("");
+    console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
+    console.log(`State: ${decision.state}`);
+    console.log(`Health: ${decision.health}`);
+    console.log(`QA: ${decision.qa.pass} pass, ${decision.qa.needsReview} review, ${decision.qa.blocked} blocked`);
+    console.log("");
+    console.log("Top gap:");
+    console.log(decision.topOpportunity ? decision.topOpportunity.groupTitle || decision.topOpportunity.title : "None detected");
+    console.log("");
+    console.log("Recommended next step:");
+    console.log(decision.recommendedNextStep);
+    console.log("");
+    console.log(`Human input required: ${decision.humanInputRequired ? "Yes" : "No"}`);
+    console.log("");
+    console.log("Generated:");
+    console.log(path.relative(ROOT, OUTPUT_MD));
+    console.log(path.relative(ROOT, OUTPUT_JSON));
+  } catch (error) {
+    runStatus = "failure";
+    process.exitCode = error.exitCode || 1;
+    if (!error.exitCode) throw error;
+  } finally {
+    safeFinishRun({ runId, command: "seo:autopilot", status: runStatus });
   }
-
-  const reports = {
-    qa: readJson("resource-qa-report.json"),
-    pipeline: readJson("seo-pipeline-summary.json"),
-    opportunities: readJson("seo-opportunity-centre.json"),
-    plans: readJson("seo-execution-plans.json"),
-    decisions: readJson("seo-decision-engine.json"),
-    approvals: readJson("seo-plan-approvals.json", { approvals: [] }),
-    inbox: readJson("seo-action-inbox.json"),
-    digest: readText("seo-weekly-digest.md"),
-  };
-
-  const decision = decideState({
-    qaReport: reports.qa,
-    pipelineSummary: reports.pipeline,
-    opportunitiesReport: reports.opportunities,
-    plansReport: reports.plans,
-    approvalsReport: reports.approvals,
-    decisionsReport: reports.decisions,
-  });
-
-  const generatedAt = new Date().toISOString();
-  const output = {
-    generatedAt,
-    tenant: {
-      tenantId: tenant.tenantId,
-      name: tenant.name,
-      baseUrl: tenant.baseUrl,
-      dashboardRoute: tenant.dashboardRoute || "/seo-roadmap",
-      reportOutputPath: tenant.reportOutputPath || "reports",
-    },
-    state: decision.state,
-    health: decision.health,
-    qa: decision.qa,
-    humanReviewRecommended: decision.humanReviewRecommended,
-    topGap: decision.topOpportunity
-      ? {
-          id: decision.topOpportunity.id,
-          title: decision.topOpportunity.groupTitle || decision.topOpportunity.title,
-          score: decision.topOpportunity.score,
-          actionTheme: decision.topOpportunity.actionTheme,
-          signals: decision.topOpportunity.combinedSignals || [],
-        }
-      : null,
-    topPlan: decision.topPlan
-      ? {
-          id: decision.topPlan.id,
-          title: decision.topPlan.title,
-          planType: decision.topPlan.planType,
-          safetyLevel: decision.topPlan.safetyLevel,
-        }
-      : null,
-    topDecision: decision.topDecision
-      ? {
-          id: decision.topDecision.id,
-          title: decision.topDecision.title,
-          decisionType: decision.topDecision.decisionType,
-          confidence: decision.topDecision.confidence,
-          preferredPath: decision.topDecision.preferredPath,
-          cannibalisationRisk: decision.topDecision.cannibalisationRisk,
-        }
-      : null,
-    activePlanId: decision.activePlanId,
-    recommendedNextStep: decision.recommendedNextStep,
-    humanInputRequired: decision.humanInputRequired,
-    stopReason: decision.stopReason || null,
-    codexPrompt: decision.codexPrompt,
-    generatedReports: {
-      markdown: path.relative(ROOT, OUTPUT_MD),
-      json: path.relative(ROOT, OUTPUT_JSON),
-    },
-    commandResults,
-  };
-
-  ensureReportsDir();
-  fs.writeFileSync(OUTPUT_JSON, `${JSON.stringify(output, null, 2)}\n`, "utf8");
-  fs.writeFileSync(OUTPUT_MD, buildMarkdown({ generatedAt, decision, commandResults, reports }), "utf8");
-
-  console.log("\nSEO Autopilot Report");
-  console.log("");
-  console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
-  console.log(`State: ${decision.state}`);
-  console.log(`Health: ${decision.health}`);
-  console.log(`QA: ${decision.qa.pass} pass, ${decision.qa.needsReview} review, ${decision.qa.blocked} blocked`);
-  console.log("");
-  console.log("Top gap:");
-  console.log(decision.topOpportunity ? decision.topOpportunity.groupTitle || decision.topOpportunity.title : "None detected");
-  console.log("");
-  console.log("Recommended next step:");
-  console.log(decision.recommendedNextStep);
-  console.log("");
-  console.log(`Human input required: ${decision.humanInputRequired ? "Yes" : "No"}`);
-  console.log("");
-  console.log("Generated:");
-  console.log(path.relative(ROOT, OUTPUT_MD));
-  console.log(path.relative(ROOT, OUTPUT_JSON));
 }
 
 main();

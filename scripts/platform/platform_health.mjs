@@ -3,7 +3,8 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { loadTenantConfig } from "./tenant_config.mjs";
-import { DEFAULT_DB_PATH, SCHEMA_PATH, databaseExists, queryValue } from "../../platform/persistence/db.js";
+import { DEFAULT_DB_PATH, SCHEMA_PATH, databaseExists, getPersistenceSummary, queryValue } from "../../platform/persistence/db.js";
+import { safeFinishRun, safeStartRun } from "./run_logger.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -76,6 +77,7 @@ function printCheck(label, status, detail = "") {
 }
 
 function main() {
+  const runId = safeStartRun({ tenantId: "erp-experts", command: "platform:health" });
   const warnings = [];
   const actions = [];
   const critical = [];
@@ -100,6 +102,7 @@ function main() {
 
   let dbStatus = "missing";
   let snapshotCount = "unknown";
+  let latestRun = null;
   let tenantPresent = false;
   const schemaExists = fs.existsSync(SCHEMA_PATH);
 
@@ -117,7 +120,9 @@ function main() {
         critical.push(`SQLite DB is missing required tables: ${missingTables.join(", ")}`);
       } else {
         tenantPresent = queryValue("SELECT COUNT(*) FROM tenants WHERE tenant_id = 'erp-experts';") === "1";
-        snapshotCount = Number(queryValue("SELECT COUNT(*) FROM snapshots;") || 0);
+        const persistenceSummary = getPersistenceSummary(DEFAULT_DB_PATH);
+        snapshotCount = persistenceSummary.snapshotCount;
+        latestRun = persistenceSummary.latestRuns.find((run) => run.id !== runId) || null;
         dbStatus = tenantPresent ? "ready" : "needs tenant";
         if (!tenantPresent) {
           warnings.push("SQLite DB exists, but ERP Experts tenant is not present. Run npm run platform:init.");
@@ -168,6 +173,9 @@ function main() {
   printCheck("Snapshots", String(snapshotCount));
   printCheck("SEO", monitorStatus);
   printCheck("QA", `${pass} pass, ${review} review, ${blocked} blocked`);
+  if (latestRun) {
+    printCheck("Latest run", `${latestRun.command} ${latestRun.status}`, latestRun.finishedAt || latestRun.startedAt);
+  }
   printCheck("Deployment docs", exists("docs/PINHOLE_SERVER_DEPLOYMENT_PLAN.md") ? "present" : "missing");
   printCheck("Runtime ignore policy", notIgnored.length ? "warning" : "ready");
   console.log(`Status: ${status}`);
@@ -188,6 +196,8 @@ function main() {
     critical.forEach((item) => console.error(`- ${item}`));
     process.exitCode = 1;
   }
+
+  safeFinishRun({ runId, command: "platform:health", status: critical.length ? "failure" : "success" });
 }
 
 main();

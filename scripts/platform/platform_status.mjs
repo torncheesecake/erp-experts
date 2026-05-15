@@ -17,3 +17,16 @@ console.log(`Tenant count: ${summary.tenantCount}`);
 console.log(`Run count: ${summary.runCount}`);
 console.log(`Snapshot count: ${summary.snapshotCount}`);
 console.log(`ERP Experts tenant: ${summary.erpExpertsTenantExists ? "present" : "missing"}`);
+
+if (summary.latestRun) {
+  console.log(`Last run: ${summary.latestRun.command} (${summary.latestRun.status}) at ${summary.latestRun.finishedAt || summary.latestRun.startedAt}`);
+}
+
+console.log("Latest runs:");
+if (!summary.latestRuns.length) {
+  console.log("  None recorded yet.");
+} else {
+  summary.latestRuns.forEach((run) => {
+    console.log(`  - #${run.id} ${run.command} ${run.status} ${run.finishedAt || run.startedAt}`);
+  });
+}

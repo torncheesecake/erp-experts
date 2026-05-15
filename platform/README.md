@@ -91,3 +91,14 @@ The Raspberry Pi server readiness scaffold is documentation-first:
 ## Raspberry Pi Deployment Target
 
 The future deployment target is Matthew's Raspberry Pi server. Current files, commands and folders keep their existing names while Sentinel is extracted gradually. Do not rename commands or routes until a separate migration is planned.
+
+## Run Logging
+
+Sentinel now records a small SQLite run history for selected commands:
+
+- `seo:monitor`
+- `seo:pipeline`
+- `seo:autopilot`
+- `platform:health`
+
+Run logging is additive and warning-only. If SQLite logging fails, the command should continue unless the command itself failed. Use `npm run platform:status` to see the run count, last run and latest five runs.
