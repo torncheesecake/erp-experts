@@ -49,6 +49,8 @@ SENTINEL_API_HOST=127.0.0.1
 SENTINEL_API_PORT=4317
 ```
 
+The repo contains `platform/persistence/backups/.gitkeep` only so local readiness checks have a safe backup folder convention. Do not use that repo folder for production backups. Raspberry Pi backups should stay under `/srv/matthew-platform/data/seo-ops/backups` or another server data path outside Git.
+
 ## Dry-run command
 
 Use the dry-run script before any real service work:

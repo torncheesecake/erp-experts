@@ -265,7 +265,7 @@ npm run backup:restore:test
 npm run backup:restore:test -- --keep-temp
 ```
 
-`backup:verify` checks that the SQLite DB exists, runs the integrity helper, confirms required tables, prints row counts, prints file size and prints the last modified time. It warns if the configured backup path does not exist yet.
+`backup:verify` checks that the SQLite DB exists, runs the integrity helper, confirms required tables, prints row counts, prints file size and prints the last modified time. Local verification uses `platform/persistence/backups` by default. The folder is kept with `.gitkeep`, while real backup artefacts inside it are ignored.
 
 `backup:restore:test` copies `platform.db` to a temporary restore-test file, validates the copy, prints the temporary path and removes it afterwards unless `--keep-temp` is supplied. It never overwrites the live DB.
 
@@ -281,4 +281,6 @@ npm run platform:deploy:ready
 
 It checks Git cleanliness, production build readiness, platform health, DB integrity, backup verification, restore simulation, SEO monitor, service scaffold readiness, deployment dry run and API smoke status if the local API is already running.
 
-It does not deploy, SSH, upload files, create server directories, start services or expose the API. `READY WITH WARNINGS` is acceptable for local-only warnings such as a missing backup path or API smoke skipped because the API server is not running. `NOT READY` blocks deployment work.
+It does not deploy, SSH, upload files, create server directories, start services or expose the API. `READY WITH WARNINGS` is acceptable for local-only warnings such as API smoke skipped because the API server is not running. `NOT READY` blocks deployment work.
+
+On the Raspberry Pi, real backups must live outside the repo, for example `/srv/matthew-platform/data/seo-ops/backups`, and should not use the local `.gitkeep` directory as the production backup destination.

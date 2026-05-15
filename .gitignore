@@ -78,3 +78,5 @@ reports/briefs/
 platform/persistence/platform.db
 platform/persistence/platform.db-shm
 platform/persistence/platform.db-wal
+platform/persistence/backups/*
+!platform/persistence/backups/.gitkeep
