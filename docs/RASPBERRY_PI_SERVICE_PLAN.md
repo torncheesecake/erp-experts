@@ -97,6 +97,16 @@ npm run platform:start
 
 This checks platform health, runs the SEO monitor, reports the current persisted Sentinel state and tells you whether the local API is running. It does not start the Raspberry Pi service, deploy files or expose anything publicly. `npm run platform:start -- --with-api` is local-only and keeps the API attached to the current terminal until `Ctrl+C`.
 
+For scheduled local reporting, use the cadence wrapper:
+
+```bash
+npm run platform:cadence
+npm run platform:cadence -- --operator-only
+npm run platform:cadence -- --stakeholder-only
+```
+
+The cadence command is safe to call from cron later, but no cron jobs or systemd timers are installed by the repo. See `docs/SENTINEL_AUTOMATION_CADENCE.md` before enabling anything on the Raspberry Pi.
+
 ## Reverse proxy rule
 
 Do not expose the Sentinel API through Nginx, Apache, Caddy or any public domain until auth exists. If a reverse proxy is later added, it should start behind basic auth or a stronger tenant-aware auth layer.

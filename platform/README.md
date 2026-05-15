@@ -115,6 +115,19 @@ npm run platform:stakeholder
 
 It writes `reports/sentinel-stakeholder-weekly-report.md` as ignored local output. The content is plain English and excludes commands, prompts, approvals, database details, API details, private routes and operator-only diagnostics. Use `platform:daily` for Matthew/operator handoff and `platform:stakeholder` for Tim/Ric/internal business visibility.
 
+## Local Automation Cadence
+
+Use the cadence command when you want Sentinel to refresh state and reports in one safe local workflow:
+
+```bash
+npm run platform:cadence
+npm run platform:cadence -- --dry-run
+npm run platform:cadence -- --operator-only
+npm run platform:cadence -- --stakeholder-only
+```
+
+Default cadence runs `seo:monitor`, `platform:state`, `platform:daily` and `platform:stakeholder`, then writes `reports/sentinel-cadence-summary.json` as ignored local output. It does not deploy, start the API, install cron jobs or expose services. See `docs/SENTINEL_AUTOMATION_CADENCE.md`.
+
 ## Operational State Summary
 
 Use the Sentinel state command when you want the current persisted operating picture:

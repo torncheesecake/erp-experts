@@ -33,6 +33,7 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 - `npm run platform:init`
 - `npm run platform:status`
 - `npm run platform:start`
+- `npm run platform:cadence`
 - `npm run platform:daily`
 - `npm run platform:stakeholder`
 - `npm run platform:state`
@@ -397,3 +398,16 @@ The report is ignored local operator output, not a stakeholder-facing artefact.
 It translates safe state and public report data into plain English: content health, QA totals, completed work, current work, planned next items, strategic opportunities and recommended focus. It deliberately excludes npm commands, Codex prompts, approval state, database/API internals, private route names, diagnostics and operator-only details.
 
 Use `platform:daily` for Matthew's private operator handoff. Use `platform:stakeholder` for Tim/Ric/internal non-technical visibility. The generated report is ignored local output.
+
+## Local automation cadence
+
+`npm run platform:cadence` is the safe scheduled workflow wrapper for local Sentinel operation.
+
+Default cadence runs:
+
+- `seo:monitor`
+- `platform:state`
+- `platform:daily`
+- `platform:stakeholder`
+
+It writes ignored output to `reports/sentinel-cadence-summary.json` and does not deploy, start services, install cron jobs or expose private data publicly. Use `--dry-run`, `--operator-only` or `--stakeholder-only` for narrower local scheduling. Cron and future Raspberry Pi examples are documented in `docs/SENTINEL_AUTOMATION_CADENCE.md`.

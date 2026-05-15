@@ -74,6 +74,7 @@ reports/sentinel-state.json
 reports/sentinel-deploy-readiness.json
 reports/sentinel-daily-operator-report.md
 reports/sentinel-stakeholder-weekly-report.md
+reports/sentinel-cadence-summary.json
 reports/briefs/
 
 # Local platform persistence
