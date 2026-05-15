@@ -39,14 +39,14 @@ on run
     set targetWindow to missing value
     set targetTab to missing value
 
-    -- Prefer a Safari Work profile window first
+    -- Prefer the dedicated ERP Experts Safari profile window first
     repeat with w in windows
       try
         set windowName to (name of w) as text
       on error
         set windowName to ""
       end try
-      if windowName contains "Work" or windowName contains "work" then
+      if windowName contains "ERP Experts" or windowName contains "erp experts" then
         repeat with t in tabs of w
           set u to URL of t
           if u contains "linkedin.com/analytics/creator" then
