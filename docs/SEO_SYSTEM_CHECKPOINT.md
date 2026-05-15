@@ -216,6 +216,18 @@ Current backup behaviour is intentionally non-mutating. The dry-run prints expec
 
 `backup:verify` checks the current SQLite DB, required tables, row counts, integrity, file size and modified time. `backup:restore:test` copies the DB to a temporary restore-test file, validates the copy and removes it afterwards unless `--keep-temp` is used. No live DB overwrite or destructive restore behaviour exists.
 
+## Deployment readiness gate
+
+Use the read-only readiness gate before any Raspberry Pi promotion:
+
+```bash
+npm run platform:deploy:ready
+```
+
+It checks Git cleanliness, build readiness, platform health, DB integrity, backup verification, restore simulation, SEO monitor, service scaffold readiness, deployment dry run and API smoke status if the local API is running. It writes ignored output to `reports/sentinel-deploy-readiness.json`.
+
+It does not deploy, SSH, create directories, upload files, start services or expose the API. `READY WITH WARNINGS` is acceptable for local-only warnings. `NOT READY` blocks deployment work.
+
 ## SQLite run logging
 
 Sentinel now uses the SQLite `runs` table for selected command execution history:

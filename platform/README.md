@@ -270,3 +270,15 @@ npm run backup:restore:test -- --keep-temp
 `backup:restore:test` copies `platform.db` to a temporary restore-test file, validates the copy, prints the temporary path and removes it afterwards unless `--keep-temp` is supplied. It never overwrites the live DB.
 
 `scripts/platform/platform_db_integrity.mjs` is the shared integrity helper used by backup verification, restore simulation and `platform:health`.
+
+## Deployment Readiness Gate
+
+Use the read-only deployment gate before any Raspberry Pi promotion work:
+
+```bash
+npm run platform:deploy:ready
+```
+
+It checks Git cleanliness, production build readiness, platform health, DB integrity, backup verification, restore simulation, SEO monitor, service scaffold readiness, deployment dry run and API smoke status if the local API is already running.
+
+It does not deploy, SSH, upload files, create server directories, start services or expose the API. `READY WITH WARNINGS` is acceptable for local-only warnings such as a missing backup path or API smoke skipped because the API server is not running. `NOT READY` blocks deployment work.

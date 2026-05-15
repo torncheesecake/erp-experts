@@ -50,6 +50,7 @@
     "platform:api:serve": "node platform/api/server.mjs",
     "platform:api:smoke": "node scripts/platform/platform_api_smoke.mjs",
     "platform:cleanup": "node scripts/platform/platform_cleanup.mjs",
+    "platform:deploy:ready": "node scripts/platform/platform_deploy_readiness.mjs",
     "deploy:dry-run": "bash deploy/scripts/deploy-dry-run.sh",
     "backup:dry-run": "bash deploy/scripts/backup-dry-run.sh",
     "backup:verify": "bash deploy/scripts/verify-backup.sh",

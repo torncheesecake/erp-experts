@@ -113,6 +113,18 @@ Before enabling a managed API service:
 
 Backups are not trusted until a restore simulation succeeds. The current restore simulation is non-destructive: it validates a temporary copy and never overwrites the live DB.
 
+## Deployment readiness gate
+
+Before any Raspberry Pi promotion, run:
+
+```bash
+npm run platform:deploy:ready
+```
+
+This is the pre-deployment gate. It checks Git cleanliness, build readiness, platform health, DB integrity, backup verification, restore simulation, SEO monitor, service scaffold readiness, deployment dry run and API smoke status if the API is already running.
+
+It does not deploy, SSH, create directories, upload files, start services or expose the API. `READY WITH WARNINGS` is acceptable for local-only warnings. `NOT READY` blocks deployment work.
+
 ## Next safe step
 
 Keep the service scaffold committed but inactive. The next safe implementation step is a local service dry run on the Raspberry Pi that confirms paths, Node, npm, Git and `.env` presence without installing the service.
