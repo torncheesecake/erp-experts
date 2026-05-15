@@ -1,6 +1,7 @@
 import { readJson } from "./seo_batch_helpers.mjs";
 import { buildMonitorState } from "./seo_monitor_helpers.mjs";
 import { loadTenantConfig, printTenantError } from "./platform/tenant_config.mjs";
+import { DEFAULT_DB_PATH, databaseExists, insertSnapshot } from "../platform/persistence/db.js";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -31,6 +32,22 @@ function reportPath(tenant, fileName) {
   return path.join(tenant.reportOutputPath || "reports", fileName);
 }
 
+function persistMonitorSnapshot(tenant, state) {
+  if (!databaseExists(DEFAULT_DB_PATH)) return;
+
+  try {
+    insertSnapshot({
+      tenantId: tenant.tenantId,
+      passCount: state.pass,
+      reviewCount: state.needsReview,
+      blockedCount: state.blocked,
+      monitorStatus: state.status,
+    });
+  } catch (error) {
+    console.warn(`[seo:monitor] SQLite snapshot warning: ${error.message}`);
+  }
+}
+
 function main() {
   const summaryOnly = process.argv.includes("--summary");
   const tenantId = getArgValue("--tenant", "erp-experts");
@@ -50,6 +67,7 @@ function main() {
   readJson(reportPath(tenant, "seo-weekly-summary.json"));
 
   const state = buildMonitorState({ qaReport, pipelineSummary });
+  persistMonitorSnapshot(tenant, state);
 
   if (summaryOnly) {
     console.log(state.status);

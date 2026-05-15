@@ -71,3 +71,8 @@ reports/seo-autopilot-report.md
 reports/seo-autopilot-report.json
 reports/seo-decision-engine.json
 reports/briefs/
+
+# Local platform persistence
+platform/persistence/platform.db
+platform/persistence/platform.db-shm
+platform/persistence/platform.db-wal

@@ -41,7 +41,9 @@
     "seo:autopilot": "node scripts/seo_autopilot.mjs",
     "seo:decisions": "node scripts/seo_decisions.mjs",
     "seo:publish:preflight": "bash scripts/seo_publish_preflight.sh",
-    "platform:tenant": "node scripts/platform/tenant_loader.mjs"
+    "platform:tenant": "node scripts/platform/tenant_loader.mjs",
+    "platform:init": "node scripts/platform/platform_init_db.mjs",
+    "platform:status": "node scripts/platform/platform_status.mjs"
   },
   "homepage": "https://torncheesecake.github.io/erp-experts",
   "dependencies": {

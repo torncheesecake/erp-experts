@@ -672,6 +672,37 @@ Unchanged:
 - Dedupe rules.
 - Existing default command behaviour for ERP Experts.
 
+## 18. Persistence Foundation Step
+
+The platform now has its first SQLite persistence layer.
+
+Added:
+
+- `docs/PERSISTENCE_FOUNDATION_PLAN.md`
+- `platform/persistence/schema.sql`
+- `platform/persistence/db.js`
+- `platform/persistence/README.md`
+- `scripts/platform/platform_init_db.mjs`
+- `scripts/platform/platform_status.mjs`
+- `npm run platform:init`
+- `npm run platform:status`
+
+Initial persisted entities:
+
+- tenants
+- runs
+- snapshots
+
+Current dual-write:
+
+- `seo:monitor` writes one monitor snapshot row after a successful monitor state is built.
+- The monitor remains JSON/report-first and will still succeed if SQLite persistence fails.
+
+Current policy:
+
+- `platform/persistence/platform.db` is local operational state and is ignored by Git.
+- JSON reports remain the primary runtime output for the existing dashboard and commands.
+
 ## Non-Goals for the Next Step
 
 Do not start with:

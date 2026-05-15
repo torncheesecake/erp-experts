@@ -25,6 +25,8 @@
 - `npm run seo:autopilot`
 - `npm run seo:autopilot -- --tenant erp-experts`
 - `npm run platform:tenant -- erp-experts`
+- `npm run platform:init`
+- `npm run platform:status`
 
 ## Current architecture
 
@@ -38,6 +40,7 @@
 8. Dashboard: monitor-first control panel with secondary diagnostics.
 9. Platform tenant foundation: read-only tenant config schema, ERP Experts tenant prototype and loader command.
 10. Tenant-aware reporting: `seo:autopilot`, `seo:pipeline`, `seo:monitor`, `seo:stats` and `seo:opportunities` now read tenant name, report output path, dashboard route and base URL where relevant from config.
+11. Platform persistence foundation: local SQLite DB for tenants, runs and monitor snapshots.
 
 ## Health status
 
@@ -60,6 +63,18 @@ The first platform extraction boundary is now present under `platform/`.
 Current engines still use their existing ERP Experts paths. The tenant layer is a safe foundation for future extraction, not a behaviour change.
 
 `seo:autopilot`, `seo:pipeline`, `seo:monitor`, `seo:stats` and `seo:opportunities` are now tenant-aware. They still default to ERP Experts, so existing usage is unchanged. Explicit tenant usage is available with `npm run seo:autopilot -- --tenant erp-experts`, `npm run seo:pipeline -- --tenant erp-experts`, `npm run seo:monitor -- --tenant erp-experts`, `npm run seo:stats -- --tenant erp-experts` and `npm run seo:opportunities -- --tenant erp-experts`.
+
+## Platform persistence layer
+
+The first persistence layer is available under `platform/persistence/`.
+
+- `platform/persistence/schema.sql` defines `tenants`, `runs` and `snapshots`.
+- `platform/persistence/db.js` provides a minimal SQLite helper.
+- `npm run platform:init` creates `platform/persistence/platform.db` and inserts ERP Experts as a tenant.
+- `npm run platform:status` prints tenant, run and snapshot counts.
+- `seo:monitor` dual-writes one snapshot row after a successful monitor state is built.
+
+JSON reports remain the primary runtime outputs. SQLite is additive platform state at this stage.
 
 ## Automation lifecycle
 
