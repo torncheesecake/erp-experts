@@ -206,11 +206,15 @@ Backup planning commands:
 
 ```bash
 npm run backup:dry-run
+npm run backup:verify
+npm run backup:restore:test
 bash deploy/scripts/backup-platform.sh
 bash deploy/scripts/backup-platform.sh --confirm
 ```
 
 Current backup behaviour is intentionally non-mutating. The dry-run prints expected paths and retention. The placeholder backup script refuses without `--confirm`, and even with `--confirm` it prints TODO steps only. Real backup file creation is not implemented yet.
+
+`backup:verify` checks the current SQLite DB, required tables, row counts, integrity, file size and modified time. `backup:restore:test` copies the DB to a temporary restore-test file, validates the copy and removes it afterwards unless `--keep-temp` is used. No live DB overwrite or destructive restore behaviour exists.
 
 ## SQLite run logging
 

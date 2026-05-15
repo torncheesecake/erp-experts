@@ -52,6 +52,8 @@
     "platform:cleanup": "node scripts/platform/platform_cleanup.mjs",
     "deploy:dry-run": "bash deploy/scripts/deploy-dry-run.sh",
     "backup:dry-run": "bash deploy/scripts/backup-dry-run.sh",
+    "backup:verify": "bash deploy/scripts/verify-backup.sh",
+    "backup:restore:test": "bash deploy/scripts/restore-simulate.sh",
     "service:dry-run": "bash deploy/scripts/service-dry-run.sh"
   },
   "homepage": "https://torncheesecake.github.io/erp-experts",

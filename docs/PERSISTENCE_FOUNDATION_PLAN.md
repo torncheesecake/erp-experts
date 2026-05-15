@@ -364,6 +364,21 @@ The command never deletes tenants. It is scoped to one tenant, keeps the latest 
 
 `platform:health` warns if any append-heavy table grows beyond 1,000 rows, but row count alone is not a health failure.
 
+## Backup verification and restore simulation
+
+Sentinel now has safe verification and restore-test commands for the SQLite platform DB:
+
+```bash
+npm run backup:verify
+npm run backup:restore:test
+```
+
+`backup:verify` is read-only. It checks that `platform.db` exists, runs SQLite `integrity_check`, verifies required tables, prints row counts, prints DB file size and prints last modified time. It warns if the configured backup path is not present yet.
+
+`backup:restore:test` is simulation-only. It copies the DB to a temporary restore-test file, validates the copy, then removes the temporary file unless `--keep-temp` is passed. It never overwrites the live DB and does not mutate source files.
+
+Both commands use `scripts/platform/platform_db_integrity.mjs`, which also supports `platform:health`. This keeps backup confidence separate from real restore behaviour. Real destructive restore remains intentionally unimplemented.
+
 ## Operational state summary
 
 `npm run platform:state` is the first high-level operational summary layer on top of persisted Sentinel state.

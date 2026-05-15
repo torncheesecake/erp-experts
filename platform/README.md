@@ -254,3 +254,19 @@ Covered tables:
 - `inbox_items`
 
 `platform:health` warns when append-heavy tables exceed 1,000 rows and suggests `npm run platform:cleanup`; high row counts do not fail health.
+
+## Backup Verification And Restore Simulation
+
+Backups are not trusted until they have been verified and restore-tested. Sentinel now includes read-only checks for the local SQLite state:
+
+```bash
+npm run backup:verify
+npm run backup:restore:test
+npm run backup:restore:test -- --keep-temp
+```
+
+`backup:verify` checks that the SQLite DB exists, runs the integrity helper, confirms required tables, prints row counts, prints file size and prints the last modified time. It warns if the configured backup path does not exist yet.
+
+`backup:restore:test` copies `platform.db` to a temporary restore-test file, validates the copy, prints the temporary path and removes it afterwards unless `--keep-temp` is supplied. It never overwrites the live DB.
+
+`scripts/platform/platform_db_integrity.mjs` is the shared integrity helper used by backup verification, restore simulation and `platform:health`.

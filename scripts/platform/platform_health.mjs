@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { loadTenantConfig } from "./tenant_config.mjs";
 import { DEFAULT_DB_PATH, SCHEMA_PATH, databaseExists, getPersistenceSummary, queryValue } from "../../platform/persistence/db.js";
 import { safeFinishRun, safeStartRun } from "./run_logger.mjs";
+import { checkDbIntegrity } from "./platform_db_integrity.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,6 +38,10 @@ const appendHeavyTables = [
   ["plan_statuses", "planStatusCount"],
   ["inbox_items", "inboxItemCount"],
 ];
+const backupPath = process.env.PLATFORM_BACKUP_PATH
+  ? path.resolve(process.env.PLATFORM_BACKUP_PATH)
+  : path.join(repoRoot, "platform/persistence/backups");
+const dbAgeWarningDays = 7;
 
 function rel(filePath) {
   return path.relative(repoRoot, filePath) || ".";
@@ -122,16 +127,32 @@ function main() {
   let latestPlanStatus = null;
   let latestInboxItem = null;
   let tenantPresent = false;
+  let dbIntegrityResult = null;
   const schemaExists = fs.existsSync(SCHEMA_PATH);
 
   if (!schemaExists) {
     critical.push(`SQLite schema is missing: ${rel(SCHEMA_PATH)}`);
   }
 
+  if (!fs.existsSync(backupPath)) {
+    warnings.push(`Backup path is not present yet: ${rel(backupPath)}. Configure PLATFORM_BACKUP_PATH before server deployment.`);
+  }
+
   if (!databaseExists(DEFAULT_DB_PATH)) {
     warnings.push("SQLite DB is not present yet. Run npm run platform:init before server readiness checks.");
   } else if (sqliteAvailable) {
     try {
+      dbIntegrityResult = checkDbIntegrity(DEFAULT_DB_PATH);
+      if (!dbIntegrityResult.readable) {
+        critical.push(`SQLite DB integrity check failed: ${dbIntegrityResult.errors.join("; ") || dbIntegrityResult.integrity}`);
+      }
+      if (dbIntegrityResult.modifiedAt) {
+        const ageMs = Date.now() - new Date(dbIntegrityResult.modifiedAt).getTime();
+        const ageDays = ageMs / (24 * 60 * 60 * 1000);
+        if (ageDays > dbAgeWarningDays) {
+          warnings.push(`SQLite DB file is older than ${dbAgeWarningDays} days. Verify backup and monitor freshness.`);
+        }
+      }
       const requiredTables = [
         "tenants",
         "runs",
@@ -232,6 +253,10 @@ function main() {
   printCheck("Approvals", String(planApprovalCount));
   printCheck("Plan statuses", String(planStatusCount));
   printCheck("Inbox items", String(inboxItemCount));
+  if (dbIntegrityResult) {
+    printCheck("DB integrity", dbIntegrityResult.integrity, `${dbIntegrityResult.requiredTables.length}/${dbIntegrityResult.requiredTables.length + dbIntegrityResult.missingTables.length} required tables`);
+    printCheck("Backup path", fs.existsSync(backupPath) ? "present" : "missing", rel(backupPath));
+  }
   printCheck("SEO", monitorStatus);
   printCheck("QA", `${pass} pass, ${review} review, ${blocked} blocked`);
   if (latestRun) {

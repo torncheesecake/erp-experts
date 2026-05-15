@@ -106,8 +106,12 @@ Before enabling a managed API service:
 - Confirm `platform.db` lives outside Git.
 - Confirm daily or weekly backups exist.
 - Back up `platform.db` before any service migration.
+- Run `npm run backup:verify`.
+- Run `npm run backup:restore:test`.
 - Keep generated reports and backups outside the public web root.
 - Test restore steps before treating SQLite as canonical platform state.
+
+Backups are not trusted until a restore simulation succeeds. The current restore simulation is non-destructive: it validates a temporary copy and never overwrites the live DB.
 
 ## Next safe step
 
