@@ -340,6 +340,30 @@ This does not replace `reports/seo-action-inbox.json`. The JSON report remains t
 
 DB persistence is additive and warning-only. A database write failure must not apply work, approve plans, alter scoring or change the generated inbox behaviour.
 
+## Retention and cleanup
+
+Sentinel now has a dry-run-first DB cleanup command:
+
+```bash
+npm run platform:cleanup
+npm run platform:cleanup -- --days 30 --keep-latest 20
+npm run platform:cleanup -- --days 30 --keep-latest 20 --confirm
+```
+
+Cleanup covers append-heavy history tables:
+
+- `runs`
+- `snapshots`
+- `opportunity_summaries`
+- `plan_summaries`
+- `plan_approvals`
+- `plan_statuses`
+- `inbox_items`
+
+The command never deletes tenants. It is scoped to one tenant, keeps the latest N rows per table, and only deletes rows older than the chosen retention window when `--confirm` is explicitly passed.
+
+`platform:health` warns if any append-heavy table grows beyond 1,000 rows, but row count alone is not a health failure.
+
 ## Operational state summary
 
 `npm run platform:state` is the first high-level operational summary layer on top of persisted Sentinel state.

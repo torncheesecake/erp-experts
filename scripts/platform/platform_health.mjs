@@ -28,6 +28,15 @@ const expectedIgnoredPaths = [
   "reports/seo-weekly-digest.md",
   "reports/sentinel-state.json",
 ];
+const appendHeavyTables = [
+  ["runs", "runCount"],
+  ["snapshots", "snapshotCount"],
+  ["opportunity_summaries", "opportunitySummaryCount"],
+  ["plan_summaries", "planSummaryCount"],
+  ["plan_approvals", "planApprovalCount"],
+  ["plan_statuses", "planStatusCount"],
+  ["inbox_items", "inboxItemCount"],
+];
 
 function rel(filePath) {
   return path.relative(repoRoot, filePath) || ".";
@@ -153,6 +162,12 @@ function main() {
         if (!tenantPresent) {
           warnings.push("SQLite DB exists, but ERP Experts tenant is not present. Run npm run platform:init.");
         }
+        appendHeavyTables.forEach(([tableName, summaryKey]) => {
+          const count = Number(persistenceSummary[summaryKey] || 0);
+          if (count > 1000) {
+            warnings.push(`${tableName} has ${count} rows. Consider npm run platform:cleanup.`);
+          }
+        });
       }
     } catch (error) {
       critical.push(`Could not inspect SQLite DB: ${error.message}`);

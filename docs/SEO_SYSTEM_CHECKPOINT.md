@@ -284,6 +284,27 @@ Current policy:
 
 This is the sixth persisted platform state after monitor snapshots, run history, opportunity summaries, execution plan summaries, approvals and plan statuses.
 
+## SQLite retention cleanup
+
+Sentinel now includes a dry-run-first cleanup command for append-only platform history:
+
+```bash
+npm run platform:cleanup
+npm run platform:cleanup -- --days 30 --keep-latest 20
+npm run platform:cleanup -- --days 30 --keep-latest 20 --confirm
+```
+
+Current policy:
+
+- Dry-run is the default.
+- `--confirm` is required before any deletion.
+- Tenants are never deleted.
+- Cleanup is scoped to the selected tenant.
+- Latest rows are protected per table.
+- Only rows older than the retention window are eligible.
+- Missing tables warn and continue.
+- `platform:health` warns when append-heavy tables exceed 1,000 rows but does not fail on row count alone.
+
 ## Sentinel operational state
 
 `npm run platform:state` is the operator-level summary of what Sentinel currently knows from SQLite.

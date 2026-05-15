@@ -188,3 +188,27 @@ The persisted inbox rows include source, title, priority, status, recommended ne
 SQLite is append-only history for now. JSON remains the runtime/report source, and DB write failures warn only.
 
 Run `npm run platform:init` after pulling schema changes so the local SQLite database has the `inbox_items` table.
+
+## DB Retention Cleanup
+
+Sentinel appends operational history into SQLite, so use the cleanup command periodically:
+
+```bash
+npm run platform:cleanup
+npm run platform:cleanup -- --days 30 --keep-latest 20
+npm run platform:cleanup -- --days 30 --keep-latest 20 --confirm
+```
+
+The default is dry-run only. Nothing is deleted unless `--confirm` is passed. Cleanup never deletes tenants, only applies to the selected tenant, keeps the latest rows per table, and only removes rows older than the retention window.
+
+Covered tables:
+
+- `runs`
+- `snapshots`
+- `opportunity_summaries`
+- `plan_summaries`
+- `plan_approvals`
+- `plan_statuses`
+- `inbox_items`
+
+`platform:health` warns when append-heavy tables exceed 1,000 rows and suggests `npm run platform:cleanup`; high row counts do not fail health.
