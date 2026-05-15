@@ -26,6 +26,7 @@ const expectedIgnoredPaths = [
   "reports/seo-execution-plans.json",
   "reports/seo-action-inbox.json",
   "reports/seo-weekly-digest.md",
+  "reports/sentinel-state.json",
 ];
 
 function rel(filePath) {

@@ -3,6 +3,7 @@ import { DEFAULT_DB_PATH, databaseExists, getPersistenceSummary } from "../../pl
 
 console.log("Platform Persistence Status");
 console.log(`DB path: ${path.relative(process.cwd(), DEFAULT_DB_PATH)}`);
+console.log("Operational summary: run npm run platform:state");
 
 if (!databaseExists(DEFAULT_DB_PATH)) {
   console.log("Status: missing");

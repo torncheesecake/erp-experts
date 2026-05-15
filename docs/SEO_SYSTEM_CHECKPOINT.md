@@ -32,6 +32,7 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 - `npm run platform:tenant -- erp-experts`
 - `npm run platform:init`
 - `npm run platform:status`
+- `npm run platform:state`
 
 ## Current architecture
 
@@ -46,6 +47,7 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 9. Platform tenant foundation: read-only tenant config schema, ERP Experts tenant prototype and loader command.
 10. Tenant-aware reporting: `seo:autopilot`, `seo:pipeline`, `seo:monitor`, `seo:stats` and `seo:opportunities` now read tenant name, report output path, dashboard route and base URL where relevant from config.
 11. Platform persistence foundation: local SQLite DB for tenants, runs and monitor snapshots.
+12. Sentinel operational state: `platform:state` summarises persisted health, opportunities, plans, approvals, statuses and next action.
 
 ## Health status
 
@@ -265,3 +267,29 @@ Current policy:
 - `npm run platform:health` checks the approval/status tables and prints the latest approval/status summary when present.
 
 This is the fifth persisted platform state after monitor snapshots, run history, opportunity summaries and execution plan summaries.
+
+## Sentinel operational state
+
+`npm run platform:state` is the operator-level summary of what Sentinel currently knows from SQLite.
+
+It generates ignored output:
+
+- `reports/sentinel-state.json`
+
+It reads persisted tenant, run, snapshot, opportunity, plan, approval and status state, then classifies the current workflow as one of:
+
+- `healthy_monitoring`
+- `growth_ready`
+- `planning_required`
+- `approval_required`
+- `execution_ready`
+- `blocked`
+- `human_review_required`
+
+Command distinction:
+
+- `platform:status` shows low-level DB readiness and table counts.
+- `seo:autopilot` runs the orchestration workflow and regenerates reports.
+- `platform:state` provides the concise operational intelligence summary.
+
+It does not change SEO scoring, edit content, approve plans, apply patches, publish or commit.

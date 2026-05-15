@@ -315,3 +315,28 @@ The new `plan_statuses` table stores:
 This does not replace `reports/seo-plan-approvals.json` or `reports/seo-plan-status.json`. Those ignored JSON files remain the local operational state used by the current scripts. SQLite is accumulating append-only workflow history so Sentinel can later track approvals and execution lifecycle across tenants without relying on generated files as the long-term source of truth.
 
 DB persistence is additive and warning-only. A database write failure must not approve, reject, apply, block or otherwise alter the existing file-based workflow.
+
+## Operational state summary
+
+`npm run platform:state` is the first high-level operational summary layer on top of persisted Sentinel state.
+
+It reads SQLite and summarises:
+
+- tenant identity
+- latest health snapshot
+- recent runs and failed runs
+- latest persisted opportunities
+- latest persisted plans
+- current approval and plan status state
+- workflow classification
+- recommended next action
+
+It also writes `reports/sentinel-state.json`, which is ignored as generated operational output. This JSON file is a future candidate for a lightweight API or dashboard state source.
+
+The distinction is:
+
+- `platform:status`: low-level persistence and table counts.
+- `seo:autopilot`: run the full orchestration chain and regenerate reports.
+- `platform:state`: explain what Sentinel currently knows from the persisted DB.
+
+This does not replace JSON reports, run orchestration, apply approvals, edit content or change scoring.

@@ -77,6 +77,22 @@ npm run platform:health
 
 The command checks the ERP Experts tenant config, SQLite schema/readiness, report presence, latest QA totals, deployment documentation and ignore policy for local runtime files. It does not initialise, migrate, deploy or edit content.
 
+## Operational State Summary
+
+Use the Sentinel state command when you want the current persisted operating picture:
+
+```bash
+npm run platform:state
+```
+
+It reads SQLite and summarises tenant, latest health snapshot, recent runs, top persisted opportunities, plan summaries, approvals, plan statuses and the recommended next move. It also writes `reports/sentinel-state.json` as an ignored future API/state source.
+
+Command distinction:
+
+- `platform:status` is infrastructure and persistence counts.
+- `seo:autopilot` runs the orchestration workflow and regenerates reports.
+- `platform:state` explains what Sentinel currently knows from persisted state.
+
 ## Deployment Readiness Scaffold
 
 The Raspberry Pi server readiness scaffold is documentation-first:

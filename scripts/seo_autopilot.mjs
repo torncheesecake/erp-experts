@@ -406,6 +406,9 @@ function main() {
     console.log("Generated:");
     console.log(path.relative(ROOT, OUTPUT_MD));
     console.log(path.relative(ROOT, OUTPUT_JSON));
+    console.log("");
+    console.log("Operational summary:");
+    console.log("Run npm run platform:state for persisted Sentinel state.");
   } catch (error) {
     runStatus = "failure";
     process.exitCode = error.exitCode || 1;
