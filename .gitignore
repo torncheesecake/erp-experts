@@ -73,6 +73,7 @@ reports/seo-decision-engine.json
 reports/sentinel-state.json
 reports/sentinel-deploy-readiness.json
 reports/sentinel-daily-operator-report.md
+reports/sentinel-stakeholder-weekly-report.md
 reports/briefs/
 
 # Local platform persistence

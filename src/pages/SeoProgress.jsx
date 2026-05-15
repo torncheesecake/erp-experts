@@ -194,6 +194,9 @@ export default function SeoProgress() {
               <div>
                 <h2 className="text-2xl font-semibold tracking-tight text-slate-950">Plain-English summary</h2>
                 <p className="mt-3 max-w-4xl text-base leading-8 text-slate-600">{currentSummary}</p>
+                <p className="mt-3 max-w-4xl text-sm leading-6 text-slate-500">
+                  A weekly stakeholder summary can be prepared from this same progress data for internal meetings.
+                </p>
               </div>
               <div className="shrink-0 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
                 <Calendar className="mr-2 inline h-4 w-4 text-slate-400" />

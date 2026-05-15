@@ -105,6 +105,16 @@ npm run platform:daily
 
 It reads the persisted Sentinel state through `platform/api/state_api.mjs`, adds the latest deployment readiness status if available, and writes `reports/sentinel-daily-operator-report.md`. The report is local/operator-only, ignored by Git, and is not stakeholder-facing.
 
+## Stakeholder Weekly Report
+
+Use the stakeholder report when you need a business-facing SEO and content progress summary:
+
+```bash
+npm run platform:stakeholder
+```
+
+It writes `reports/sentinel-stakeholder-weekly-report.md` as ignored local output. The content is plain English and excludes commands, prompts, approvals, database details, API details, private routes and operator-only diagnostics. Use `platform:daily` for Matthew/operator handoff and `platform:stakeholder` for Tim/Ric/internal business visibility.
+
 ## Operational State Summary
 
 Use the Sentinel state command when you want the current persisted operating picture:

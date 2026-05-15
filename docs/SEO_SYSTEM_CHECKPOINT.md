@@ -34,6 +34,7 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 - `npm run platform:status`
 - `npm run platform:start`
 - `npm run platform:daily`
+- `npm run platform:stakeholder`
 - `npm run platform:state`
 
 ## Current architecture
@@ -388,3 +389,11 @@ It does not deploy, SSH, open browsers, start Vite or permanently start daemons.
 The report includes tenant, health, QA totals, workflow state, latest opportunity, latest plan, latest inbox item, approval/status summary, deployment readiness status, recent runs, Matthew attention items and safe next commands. It reads persisted state through `platform/api/state_api.mjs` and does not run orchestration, edit content, expose private data publicly or deploy anything.
 
 The report is ignored local operator output, not a stakeholder-facing artefact.
+
+## Stakeholder weekly report
+
+`npm run platform:stakeholder` creates a business-facing weekly progress summary at `reports/sentinel-stakeholder-weekly-report.md`.
+
+It translates safe state and public report data into plain English: content health, QA totals, completed work, current work, planned next items, strategic opportunities and recommended focus. It deliberately excludes npm commands, Codex prompts, approval state, database/API internals, private route names, diagnostics and operator-only details.
+
+Use `platform:daily` for Matthew's private operator handoff. Use `platform:stakeholder` for Tim/Ric/internal non-technical visibility. The generated report is ignored local output.
