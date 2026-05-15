@@ -89,6 +89,8 @@ It reads SQLite and summarises tenant, latest health snapshot, recent runs, top 
 
 The private `/seo-roadmap` operator dashboard consumes `reports/sentinel-state.json` for its compact Current Sentinel State panel. Stakeholder routes such as `/seo-progress` do not show this operational state.
 
+`seo:inbox` also reads this state and places the current Sentinel recommendation at the top of the operator queue. This keeps the inbox focused on the practical next review action while the existing JSON report sources remain as fallback context. Full DB-backed inbox item persistence is still future work.
+
 Command distinction:
 
 - `platform:status` is infrastructure and persistence counts.

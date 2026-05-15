@@ -192,6 +192,82 @@ function countBy(items, key) {
   }, {});
 }
 
+function buildInboxRecommendation({ workflow, topPlan, topOpportunity, approvals, statuses }) {
+  const planningApproval = approvals.find((approval) => approval.approvedFor === "planning");
+  const executionApproval = approvals.find((approval) => ["patch_proposal", "apply_patch"].includes(approval.approvedFor));
+  const activeStatus = statuses.find((status) => status.currentStatus === "active");
+
+  if (workflow.state === "blocked" || workflow.state === "human_review_required") {
+    return {
+      title: workflow.state === "blocked" ? "Resolve blocked workflow item" : "Review flagged SEO workflow",
+      priority: "high",
+      status: "awaiting_review",
+      recommendedNextStep: workflow.recommendedNextStep,
+      relatedPlanId: activeStatus?.planId || topPlan?.planId || null,
+      relatedOpportunityId: topOpportunity?.opportunityId || null,
+      requiresHumanReview: true,
+    };
+  }
+
+  if (workflow.state === "execution_ready" && executionApproval) {
+    return {
+      title: "Review approved patch proposal workflow",
+      priority: "high",
+      status: "awaiting_review",
+      recommendedNextStep: workflow.recommendedNextStep,
+      relatedPlanId: executionApproval.planId,
+      relatedOpportunityId: topOpportunity?.opportunityId || null,
+      requiresHumanReview: true,
+    };
+  }
+
+  if (workflow.state === "approval_required" && activeStatus) {
+    return {
+      title: "Review active plan approval",
+      priority: "high",
+      status: "awaiting_review",
+      recommendedNextStep: workflow.recommendedNextStep,
+      relatedPlanId: activeStatus.planId,
+      relatedOpportunityId: topOpportunity?.opportunityId || null,
+      requiresHumanReview: true,
+    };
+  }
+
+  if (workflow.state === "growth_ready" && planningApproval) {
+    return {
+      title: "Review approved planning work",
+      priority: "medium",
+      status: "awaiting_review",
+      recommendedNextStep: workflow.recommendedNextStep,
+      relatedPlanId: planningApproval.planId,
+      relatedOpportunityId: topOpportunity?.opportunityId || null,
+      requiresHumanReview: true,
+    };
+  }
+
+  if (workflow.state === "planning_required") {
+    return {
+      title: "Create execution plans for strategic opportunities",
+      priority: "medium",
+      status: "suggested",
+      recommendedNextStep: workflow.recommendedNextStep,
+      relatedPlanId: null,
+      relatedOpportunityId: topOpportunity?.opportunityId || null,
+      requiresHumanReview: Boolean(workflow.humanInputRequired),
+    };
+  }
+
+  return {
+    title: "No maintenance action required",
+    priority: "low",
+    status: "suggested",
+    recommendedNextStep: workflow.recommendedNextStep,
+    relatedPlanId: topPlan?.planId || null,
+    relatedOpportunityId: topOpportunity?.opportunityId || null,
+    requiresHumanReview: Boolean(workflow.humanInputRequired),
+  };
+}
+
 function chooseWorkflow({ snapshot, summary, statuses, approvals, failedRuns }) {
   const topStatus = statuses[0] || null;
   const topApproval = approvals[0] || null;
@@ -308,6 +384,13 @@ function main() {
   const workflow = chooseWorkflow({ snapshot, summary, statuses, approvals, failedRuns });
   const topOpportunity = summary.latestOpportunitySummary;
   const topPlan = summary.latestPlanSummary;
+  const inboxRecommendation = buildInboxRecommendation({
+    workflow,
+    topPlan,
+    topOpportunity,
+    approvals,
+    statuses,
+  });
   const latestAutopilot = runs.find((run) => run.command === "seo:autopilot") || null;
   const lastSuccessfulRun = runs.find((run) => run.status === "success") || null;
 
@@ -359,6 +442,7 @@ function main() {
       reason: workflow.reason,
       humanInputRequired: workflow.humanInputRequired,
     },
+    inboxRecommendation,
   };
 
   ensureReportsDir(reportsDir);

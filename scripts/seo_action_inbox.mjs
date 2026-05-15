@@ -7,6 +7,7 @@ const INPUTS = {
   opportunities: path.resolve("reports/seo-opportunity-centre.json"),
   plans: path.resolve("reports/seo-execution-plans.json"),
   planStatus: path.resolve("reports/seo-plan-status.json"),
+  sentinelState: path.resolve("reports/sentinel-state.json"),
   links: path.resolve("reports/seo-internal-link-opportunities.json"),
   freshness: path.resolve("reports/seo-freshness-report.json"),
   conversion: path.resolve("reports/seo-conversion-paths.json"),
@@ -32,12 +33,52 @@ function priorityFromScore(score) {
   return "low";
 }
 
+function stateItemPriority(workflowState, fallbackPriority) {
+  if (workflowState === "blocked" || workflowState === "human_review_required") return "high";
+  if (workflowState === "approval_required" || workflowState === "execution_ready") return "high";
+  return fallbackPriority || "medium";
+}
+
+function buildSentinelStateItem({ sentinelState, stamp }) {
+  const recommendation = sentinelState?.inboxRecommendation;
+  const workflow = sentinelState?.workflow || {};
+  const latestPlan = sentinelState?.plans?.top;
+  const latestOpportunity = sentinelState?.opportunities?.top;
+  if (!recommendation && !workflow.state) return null;
+
+  const workflowState = workflow.state || "healthy_monitoring";
+  const title = recommendation?.title
+    || (workflowState === "healthy_monitoring" ? "No maintenance action required" : "Review Sentinel recommendation");
+  const relatedPlanId = recommendation?.relatedPlanId || latestPlan?.planId || null;
+  const relatedOpportunityId = recommendation?.relatedOpportunityId || latestOpportunity?.opportunityId || null;
+
+  return {
+    id: `sentinel-state-${workflowState}-${relatedPlanId || relatedOpportunityId || "current"}`,
+    source: "sentinel_state",
+    title,
+    priority: stateItemPriority(workflowState, recommendation?.priority),
+    status: recommendation?.status || (workflow.humanInputRequired ? "awaiting_review" : "suggested"),
+    recommendedNextStep: recommendation?.recommendedNextStep || workflow.recommendedNextStep || "Review current Sentinel state.",
+    command: null,
+    targetSlug: latestPlan?.targetSlug || latestOpportunity?.targetSlug || null,
+    targetPath: latestPlan?.targetPath || latestOpportunity?.targetPath || null,
+    safetyLevel: latestPlan?.safetyLevel || "review_only",
+    requiresHumanReview: Boolean(recommendation?.requiresHumanReview ?? workflow.humanInputRequired),
+    createdAt: stamp,
+    relatedIds: [relatedPlanId, relatedOpportunityId].filter(Boolean),
+    workflowState,
+    relatedPlanId,
+    relatedOpportunityId,
+  };
+}
+
 function main() {
   const qa = readJson(INPUTS.qa);
   const pipeline = readJson(INPUTS.pipeline);
   const opportunities = readJson(INPUTS.opportunities);
   const plans = readJson(INPUTS.plans);
   const planStatus = readJson(INPUTS.planStatus);
+  const sentinelState = readJson(INPUTS.sentinelState);
   const links = readJson(INPUTS.links);
   const freshness = readJson(INPUTS.freshness);
   const conversion = readJson(INPUTS.conversion);
@@ -49,6 +90,7 @@ function main() {
   const stamp = nowIso();
 
   const items = [];
+  const stateItem = buildSentinelStateItem({ sentinelState, stamp });
 
   if (humanReview || blocked > 0 || needsReview > 0) {
     items.push({
@@ -66,6 +108,10 @@ function main() {
       createdAt: stamp,
       relatedIds: [],
     });
+  }
+
+  if (stateItem) {
+    items.push(stateItem);
   }
 
   const topOpp = Array.isArray(opportunities?.topOpportunities) ? opportunities.topOpportunities.slice(0, 5) : [];
@@ -167,13 +213,31 @@ function main() {
   }
 
   const priorityRank = { high: 3, medium: 2, low: 1 };
-  const sorted = items.sort((a, b) => (priorityRank[b.priority] || 0) - (priorityRank[a.priority] || 0));
+  const sourceRank = {
+    monitor: 100,
+    sentinel_state: 90,
+    execution_plan: 70,
+    opportunity: 60,
+    conversion: 50,
+    internal_link: 40,
+    freshness: 30,
+  };
+  const sorted = items.sort((a, b) => {
+    if (a.source === "monitor" && b.source !== "monitor") return -1;
+    if (b.source === "monitor" && a.source !== "monitor") return 1;
+    if (a.source === "sentinel_state" && b.source !== "sentinel_state") return -1;
+    if (b.source === "sentinel_state" && a.source !== "sentinel_state") return 1;
+    const priorityDelta = (priorityRank[b.priority] || 0) - (priorityRank[a.priority] || 0);
+    if (priorityDelta !== 0) return priorityDelta;
+    return (sourceRank[b.source] || 0) - (sourceRank[a.source] || 0);
+  });
 
   const summary = {
     highPriority: sorted.filter((item) => item.priority === "high").length,
     awaitingReview: sorted.filter((item) => item.status === "awaiting_review").length,
     suggested: sorted.filter((item) => item.status === "suggested").length,
     noUrgentAction: !sorted.some((item) => item.priority === "high" && item.source === "monitor"),
+    stateDerived: Boolean(stateItem),
   };
 
   const output = {
@@ -189,6 +253,10 @@ function main() {
   console.log(`Suggested: ${summary.suggested}`);
   if (summary.noUrgentAction) {
     console.log("No urgent action. Strategic opportunities available.");
+  }
+  if (stateItem) {
+    console.log(`Top state action: ${stateItem.title}`);
+    console.log(`Next: ${stateItem.recommendedNextStep}`);
   }
   console.log(`Report written: ${OUTPUT}`);
 }

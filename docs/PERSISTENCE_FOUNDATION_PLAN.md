@@ -333,6 +333,8 @@ It reads SQLite and summarises:
 
 It also writes `reports/sentinel-state.json`, which is ignored as generated operational output. This JSON file is a future candidate for a lightweight API or dashboard state source.
 
+The generated Action Inbox now reads this state and promotes the current Sentinel recommendation to the top of the queue. For example, when persisted approvals show planning work is ready for review, the inbox creates a `sentinel_state` item with status `awaiting_review`. This is still a generated JSON inbox, not canonical DB-backed inbox persistence.
+
 The distinction is:
 
 - `platform:status`: low-level persistence and table counts.
