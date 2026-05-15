@@ -268,3 +268,14 @@ It is read-only and suitable for local checks and future pinhole server checks. 
 - Runtime database and generated operational reports are ignored by Git policy.
 
 The command does not deploy, initialise, migrate, edit reports, edit content or change production state. If it reports missing DB state, run `npm run platform:init` first.
+
+## 13. Readiness scaffold
+
+The repo now includes a pre-deployment scaffold only:
+
+- `docs/PINHOLE_SERVER_READINESS_CHECKLIST.md`
+- `.env.example`
+- `deploy/scripts/check-local.sh`
+- `deploy/scripts/check-server.sh`
+
+These files do not deploy anything and do not touch the server. `check-local.sh` runs local validation. `check-server.sh` prints read-only environment and directory status and can be run locally or on the server later.

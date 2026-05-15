@@ -162,3 +162,14 @@ npm run platform:health
 ```
 
 It checks tenant config, SQLite readiness, report presence, latest QA totals, deployment docs and Git ignore policy for runtime files. It does not mutate source files, reports, article data or server state.
+
+## Pinhole readiness scaffold
+
+The future server deployment scaffold is present:
+
+- `docs/PINHOLE_SERVER_READINESS_CHECKLIST.md`
+- `.env.example`
+- `deploy/scripts/check-local.sh`
+- `deploy/scripts/check-server.sh`
+
+The scripts are scaffolds only. They do not deploy, create server folders, move repos, add secrets, or change production hosting.

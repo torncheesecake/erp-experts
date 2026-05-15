@@ -76,3 +76,14 @@ npm run platform:health
 ```
 
 The command checks the ERP Experts tenant config, SQLite schema/readiness, report presence, latest QA totals, deployment documentation and ignore policy for local runtime files. It does not initialise, migrate, deploy or edit content.
+
+## Deployment Readiness Scaffold
+
+The pinhole server readiness scaffold is documentation-first:
+
+- `docs/PINHOLE_SERVER_READINESS_CHECKLIST.md`
+- `.env.example`
+- `deploy/scripts/check-local.sh`
+- `deploy/scripts/check-server.sh`
+
+`check-local.sh` runs local validation. `check-server.sh` performs read-only environment and directory checks. Neither script deploys the platform.
