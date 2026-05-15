@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import reportData from "../data/reports.json";
 const historyQaModules = import.meta.glob("../../reports/history/*/resource-qa-report.json", { eager: true });
+const sentinelStateModules = import.meta.glob("../../reports/sentinel-state.json", { eager: true });
 
 const seoSnapshotDate =
   reportData?.ga4Period?.seoInsights?.period?.split(" to ").at(-1) || reportData?.lastUpdated;
@@ -92,6 +93,28 @@ function readHistorySnapshots() {
   });
   points.sort((a, b) => String(a.orderKey).localeCompare(String(b.orderKey)));
   return points;
+}
+
+function readSentinelState() {
+  const stateModule = Object.values(sentinelStateModules)[0];
+  return stateModule?.default || stateModule || null;
+}
+
+function formatStateLabel(value = "") {
+  return String(value || "unknown").replaceAll("_", " ");
+}
+
+function workflowBadgeClass(state = "") {
+  if (state === "blocked" || state === "human_review_required") {
+    return "bg-rose-50 text-rose-700 ring-rose-100";
+  }
+  if (state === "planning_required" || state === "approval_required" || state === "execution_ready") {
+    return "bg-amber-50 text-amber-800 ring-amber-100";
+  }
+  if (state === "healthy_monitoring") {
+    return "bg-emerald-50 text-emerald-700 ring-emerald-100";
+  }
+  return "bg-blue-50 text-blue-700 ring-blue-100";
 }
 
 function buildMonitorInsights({ points, modeKey }) {
@@ -515,6 +538,75 @@ function AutopilotStatusPanel({ mode, pipelineSummary, monitorInsights }) {
         <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>{recoveryLine}</p>
       ) : null}
     </div>
+  );
+}
+
+function SentinelStatePanel({ sentinelState }) {
+  if (!sentinelState) {
+    return (
+      <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100/80">
+        <div className="flex items-start justify-between gap-md flex-wrap">
+          <div>
+            <p className="text-sm font-semibold text-slate-900">Current Sentinel State</p>
+            <p className="text-xs text-slate-600">Persisted operational summary is not available yet.</p>
+          </div>
+          <span className="inline-flex rounded-full bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">
+            state missing
+          </span>
+        </div>
+        <p className="text-sm text-slate-600" style={{ marginTop: "10px" }}>
+          Generate the Sentinel state summary to populate this panel. The dashboard will continue to work without it.
+        </p>
+      </section>
+    );
+  }
+
+  const tenantName = sentinelState?.tenant?.name || "Current tenant";
+  const workflowState = sentinelState?.workflow?.state || "unknown";
+  const healthState = sentinelState?.health?.monitorStatus || "Unknown";
+  const latestOpportunity = sentinelState?.opportunities?.top;
+  const latestPlan = sentinelState?.plans?.top;
+  const recommendedNextStep = sentinelState?.workflow?.recommendedNextStep || "No maintenance action required.";
+  const humanInputRequired = Boolean(sentinelState?.workflow?.humanInputRequired);
+
+  return (
+    <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100/80">
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-sm font-semibold text-slate-900">Current Sentinel State</p>
+          <p className="text-xs text-slate-600">{tenantName} · Health {healthState}</p>
+        </div>
+        <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${workflowBadgeClass(workflowState)}`}>
+          {formatStateLabel(workflowState)}
+        </span>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3" style={{ marginTop: "14px" }}>
+        <div>
+          <p className="text-xs text-slate-500">Latest opportunity</p>
+          <p className="text-sm font-semibold text-slate-900">{latestOpportunity?.title || "No strategic opportunity recorded"}</p>
+          {latestOpportunity?.priorityLabel ? (
+            <p className="text-xs text-slate-500" style={{ marginTop: "3px" }}>
+              {latestOpportunity.priorityLabel} priority{latestOpportunity.score ? ` · score ${latestOpportunity.score}` : ""}
+            </p>
+          ) : null}
+        </div>
+        <div>
+          <p className="text-xs text-slate-500">Latest plan</p>
+          <p className="text-sm font-semibold text-slate-900">{latestPlan?.planId || "No plan recorded"}</p>
+          {latestPlan?.title ? (
+            <p className="text-xs text-slate-500" style={{ marginTop: "3px" }}>{latestPlan.title}</p>
+          ) : null}
+        </div>
+        <div>
+          <p className="text-xs text-slate-500">Recommended next step</p>
+          <p className="text-sm font-semibold text-slate-900">{recommendedNextStep}</p>
+          <p className="text-xs text-slate-500" style={{ marginTop: "3px" }}>
+            Human input: {humanInputRequired ? "required" : "not required"}
+          </p>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -2331,6 +2423,7 @@ function AdminView({ onPreview }) {
   });
   const isMonitorMode = dashboardMode.key === "monitor";
   const monitorInsights = buildMonitorInsights({ points: historyPoints, modeKey: dashboardMode.key });
+  const sentinelState = readSentinelState();
   const activeRow = selectedSlug ? selectedRow : (filteredRows[0] || articleRows[0] || null);
 
   if (!loaded) return (
@@ -2464,6 +2557,7 @@ function AdminView({ onPreview }) {
           <div className="grid gap-lg">
             {isMonitorMode && showOverviewTab ? (
               <>
+                <SentinelStatePanel sentinelState={sentinelState} />
                 <AutopilotOrchestratorPanel autopilotReport={autopilotReport} loading={autopilotLoading} />
                 <StrategicDecisionsPanel decisionReport={decisionReport} loading={decisionLoading} />
 

@@ -87,6 +87,8 @@ npm run platform:state
 
 It reads SQLite and summarises tenant, latest health snapshot, recent runs, top persisted opportunities, plan summaries, approvals, plan statuses and the recommended next move. It also writes `reports/sentinel-state.json` as an ignored future API/state source.
 
+The private `/seo-roadmap` operator dashboard consumes `reports/sentinel-state.json` for its compact Current Sentinel State panel. Stakeholder routes such as `/seo-progress` do not show this operational state.
+
 Command distinction:
 
 - `platform:status` is infrastructure and persistence counts.

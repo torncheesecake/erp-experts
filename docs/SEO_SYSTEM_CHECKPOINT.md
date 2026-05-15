@@ -292,4 +292,6 @@ Command distinction:
 - `seo:autopilot` runs the orchestration workflow and regenerates reports.
 - `platform:state` provides the concise operational intelligence summary.
 
+The private Sentinel operator dashboard at `/seo-roadmap` now reads `reports/sentinel-state.json` and shows the same high-level operating picture in a compact Current Sentinel State panel. The stakeholder-safe `/seo-progress` route does not expose this state, commands, approvals, diagnostics or prompts.
+
 It does not change SEO scoring, edit content, approve plans, apply patches, publish or commit.
