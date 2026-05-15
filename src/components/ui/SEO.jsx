@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { useEffect, useMemo } from "react";
 
 const DEFAULTS = {
   siteName: "ERP Experts",
@@ -29,11 +30,83 @@ export default function SEO({
   const fullTitle = buildTitle(title);
   const url = `${DEFAULTS.baseUrl}${path || ""}`;
   const fullImage = image.startsWith("http") ? image : `${DEFAULTS.baseUrl}${image}`;
-  const structuredDataItems = structuredData
-    ? Array.isArray(structuredData)
-      ? structuredData
-      : [structuredData]
-    : [];
+  const structuredDataItems = useMemo(
+    () =>
+      structuredData
+        ? Array.isArray(structuredData)
+          ? structuredData
+          : [structuredData]
+        : [],
+    [structuredData],
+  );
+
+  useEffect(() => {
+    const ensureMeta = (selector, attributes) => {
+      const existing = document.head.querySelectorAll(selector);
+      const target = existing[0] || document.createElement("meta");
+
+      Object.entries(attributes).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === false) return;
+        target.setAttribute(key, String(value));
+      });
+
+      if (existing.length === 0) {
+        document.head.appendChild(target);
+      }
+
+      existing.forEach((node, index) => {
+        if (index > 0) node.remove();
+      });
+    };
+
+    const ensureLink = (selector, attributes) => {
+      const existing = document.head.querySelectorAll(selector);
+      const target = existing[0] || document.createElement("link");
+
+      Object.entries(attributes).forEach(([key, value]) => {
+        target.setAttribute(key, String(value));
+      });
+
+      if (existing.length === 0) {
+        document.head.appendChild(target);
+      }
+
+      existing.forEach((node, index) => {
+        if (index > 0) node.remove();
+      });
+    };
+
+    document.title = fullTitle;
+    ensureMeta('meta[name="title"]', { name: "title", content: fullTitle });
+    ensureMeta('meta[name="description"]', { name: "description", content: description });
+    if (keywords) ensureMeta('meta[name="keywords"]', { name: "keywords", content: keywords });
+    ensureMeta('meta[name="robots"]', {
+      name: "robots",
+      content: noIndex ? "noindex, nofollow" : "index, follow",
+    });
+    ensureLink('link[rel="canonical"]', { rel: "canonical", href: url });
+    ensureMeta('meta[property="og:type"]', { property: "og:type", content: type });
+    ensureMeta('meta[property="og:url"]', { property: "og:url", content: url });
+    ensureMeta('meta[property="og:title"]', { property: "og:title", content: fullTitle });
+    ensureMeta('meta[property="og:description"]', { property: "og:description", content: description });
+    ensureMeta('meta[property="og:image"]', { property: "og:image", content: fullImage });
+    ensureMeta('meta[name="twitter:url"]', { name: "twitter:url", content: url });
+    ensureMeta('meta[name="twitter:title"]', { name: "twitter:title", content: fullTitle });
+    ensureMeta('meta[name="twitter:description"]', { name: "twitter:description", content: description });
+    ensureMeta('meta[name="twitter:image"]', { name: "twitter:image", content: fullImage });
+
+    document.head
+      .querySelectorAll('script[type="application/ld+json"][data-seo-managed="true"]')
+      .forEach((node) => node.remove());
+
+    structuredDataItems.forEach((item) => {
+      const script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.dataset.seoManaged = "true";
+      script.textContent = JSON.stringify(item);
+      document.head.appendChild(script);
+    });
+  }, [description, fullImage, fullTitle, keywords, noIndex, structuredDataItems, type, url]);
 
   return (
     <Helmet>

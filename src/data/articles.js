@@ -61,6 +61,193 @@ import netsuiteNextHero from "../assets/netsuite-next-hero.jpg";
 import netsuiteMcpHero from "../assets/netsuite-mcp-hero.jpg";
 
 export const articles = {
+  "optimise-end-of-year-accounting-with-netsuite": {
+    title: "Optimise End-of-Year Accounting with NetSuite",
+    subtitle: "A Practical Close Readiness Guide for Finance Teams",
+    cardDescription:
+      "Prepare NetSuite for year end with a controlled close plan covering periods, reconciliations, inventory, multi-book accounting, reporting, and governance.",
+    metaDescription:
+      "Learn how to optimise end-of-year accounting with NetSuite, including period close checklists, reconciliations, inventory, multi-book controls, and reporting governance.",
+    keywords:
+      "NetSuite year end close, NetSuite accounting period close, NetSuite period close checklist, NetSuite finance controls",
+    date: "May 2026",
+    publishedAt: "2026-05-14T14:35:00+01:00",
+    modifiedAt: "2026-05-14T14:35:00+01:00",
+    isNew: true,
+    newUntil: "2026-05-28",
+    readTime: "7 min read",
+    type: "Guide",
+    layoutVariant: 7,
+    heroImage: "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=1400&q=80",
+    featureImage: "https://images.unsplash.com/photo-1554224155-1696413565d3?w=800&q=80",
+    ctaText: "Book a NetSuite year-end close review",
+    ctaLabel: "Request close readiness review",
+    ctaTo: "/support",
+    ctaTrackingName: "resource_article_year_end_close_review",
+    challengeLabel: "The Pressure Point",
+    challengeHeading:
+      'Year End Exposes Every Weakness in <span class="text-primary">Finance Operations</span>',
+    challengeText:
+      "Year end is rarely difficult because of one large task. It becomes difficult when late postings, unclear period ownership, unresolved reconciliations, inventory exceptions, and reporting changes all arrive at the same time. NetSuite gives finance teams a strong control framework, but only if the close process is configured, owned, and rehearsed before pressure peaks.",
+    intro:
+      "A good NetSuite year-end close starts well before the final accounting period. Finance teams need confidence that periods are structured correctly, close tasks are sequenced, exceptions are visible, and reporting outputs can be trusted. This guide shows how to use NetSuite's period close framework as the control layer for year end, while keeping the process practical enough for busy UK finance teams.",
+
+    takeaways: [
+      "Confirm accounting periods and fiscal calendars before close pressure builds",
+      "Use the period close checklist as a controlled workflow, not a tick-box exercise",
+      "Resolve reconciliations, currency, revenue, and inventory exceptions early",
+      "Protect reporting confidence with clear ownership and audit evidence",
+      "Keep reopened periods and Quick Close use tightly governed",
+    ],
+
+    overviewHeading:
+      'Build a Controlled <span class="text-primary">Year-End Close</span>',
+    overviewSubtext:
+      "NetSuite can support a disciplined close by combining accounting periods, role-based permissions, period close tasks, system notes, and reporting. The value comes from joining those features into one clear operating rhythm with named owners and visible evidence.",
+    prioritiesLabel: "Close Priorities",
+    tipsHeading:
+      '7 Steps to Optimise <span class="text-primary">Year-End Accounting</span>',
+    tipsSectionLabel: "Close Readiness",
+    tipsIntro:
+      "Use this sequence to move from reactive period close work to a controlled year-end process that finance leaders can defend.",
+    stepLabel: "Step",
+    tipContentLabel: "Close Focus",
+    tipAsideLabel: "What to Confirm",
+    tipAsideIntro:
+      "Each check should create clear evidence, reduce late surprises, and make ownership visible.",
+    summaryLabel: "Next",
+    summaryNumber: "08",
+    summaryTitle: "Ready to Close With Confidence",
+    summaryText:
+      "By this stage, your NetSuite year-end close should have defined periods, clean exceptions, controlled task ownership, and reporting evidence that leadership can trust.",
+    bottomLineAsideLabel: "Close Controls to Protect",
+    bottomLineAsideItems: [
+      "Every open period has an owner, due date, and exception status",
+      "Key reconciliations are reviewed before the final close window",
+      "Any reopened period has approval, audit evidence, and a re-close plan",
+    ],
+
+    tips: [
+      {
+        number: "01",
+        icon: ClipboardCheck,
+        title: "Validate Accounting Periods and Fiscal Calendar Setup",
+        content:
+          "Start by checking that the year, quarter, and month structure reflects how the business reports. NetSuite allows accounting periods to be generated for a full year, and each day should sit inside an accounting period to keep reporting accurate. Confirm the first fiscal month, year-end period, and any adjustment period before the close timetable is finalised.",
+        actions: [
+          "Review Manage Accounting Periods before the close timetable is issued",
+          "Confirm each reporting day belongs to the correct accounting period",
+          "Document any adjustment period and reporting treatment clearly",
+        ],
+      },
+      {
+        number: "02",
+        icon: Shield,
+        title: "Use Period Locking to Control Late Postings",
+        content:
+          "Late postings are one of the most common causes of year-end rework. Use the period close checklist to sequence lock tasks for accounts payable, accounts receivable, payroll where relevant, and then all posting. Keep override permissions limited and reviewed so urgent corrections do not become uncontrolled changes.",
+        actions: [
+          "Set clear lock dates by transaction type and subsidiary",
+          "Restrict override permissions to named finance owners",
+          "Review late posting requests daily during the close window",
+        ],
+      },
+      {
+        number: "03",
+        icon: Search,
+        title: "Work the Period Close Checklist in Order",
+        content:
+          "NetSuite's period close checklist is most useful when it is treated as the official workflow. Complete prerequisite tasks in sequence and avoid marking work complete until the underlying exception has been reviewed. For year end, add operating discipline around who owns each task, what evidence is required, and when escalation starts.",
+        actions: [
+          "Assign every checklist task to a named owner",
+          "Define evidence required before each task is marked complete",
+          "Escalate overdue close tasks before they affect reporting dates",
+        ],
+      },
+      {
+        number: "04",
+        icon: BarChart3,
+        title: "Clear Reconciliation and Reporting Exceptions Early",
+        content:
+          "Do not leave balance sheet reconciliations, bank differences, intercompany mismatches, or revenue exceptions until the final close week. Use saved searches, exception reports, and dashboard reminders to highlight open items while there is still time to correct source transactions.",
+        actions: [
+          "Create a year-end exception dashboard for finance leads",
+          "Track reconciliation status by account and owner",
+          "Review revenue, intercompany, and foreign currency exceptions before final lock",
+        ],
+      },
+      {
+        number: "05",
+        icon: FileSpreadsheet,
+        title: "Review Inventory and Costing Tasks Where Relevant",
+        content:
+          "Inventory-led businesses need extra care because cost accounting and negative inventory issues can weaken margin reporting. NetSuite includes inventory-related close tasks, but finance and operations should agree the evidence needed before those tasks are completed.",
+        actions: [
+          "Review negative inventory and costing exceptions before close",
+          "Confirm stock adjustments have approval and business context",
+          "Tie inventory checks to margin reporting and audit evidence",
+        ],
+      },
+      {
+        number: "06",
+        icon: Database,
+        title: "Coordinate Multi-Book and Subsidiary Close Dependencies",
+        content:
+          "Where NetSuite OneWorld, multi-book accounting, or multiple subsidiaries are in use, year end needs clear dependency management. A period may not be truly closed for the group until all required books and entities are complete, so status reporting should show progress across the full close structure.",
+        actions: [
+          "Map close dependencies by subsidiary, book, and finance owner",
+          "Confirm which tasks are book-specific and which apply across books",
+          "Report close status in one shared view for leadership",
+        ],
+      },
+      {
+        number: "07",
+        icon: Clock,
+        title: "Govern Reopened Periods and Quick Close Carefully",
+        content:
+          "Reopening a period can be necessary, but it should never be casual. NetSuite records task changes through system notes, and Quick Close can help close reopened periods in smaller batches, but it does not run the underlying close tasks. Treat reopened periods as controlled exceptions with approval, evidence, and a re-close plan.",
+        actions: [
+          "Require approval before reopening any closed period",
+          "Document the reason, impact, and re-close owner",
+          "Use Quick Close only after the underlying tasks have been checked",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Users,
+        title: "Run a Close Readiness Meeting",
+        content:
+          "Bring finance, operations, and system owners together before year end to confirm dates, owners, dependencies, and unresolved risks.",
+      },
+      {
+        icon: Settings,
+        title: "Freeze Non-Essential Changes",
+        content:
+          "Avoid releasing avoidable workflow, field, or reporting changes during the close window unless there is a clear control benefit.",
+      },
+      {
+        icon: AlertTriangle,
+        title: "Separate Defects from Process Gaps",
+        content:
+          "Track whether close delays are caused by system defects, poor ownership, missing training, or late source data. The fix is different in each case.",
+      },
+      {
+        icon: Handshake,
+        title: "Plan Post-Close Improvements",
+        content:
+          "After sign-off, review what caused rework and convert the lessons into a focused optimisation backlog before the next close cycle.",
+      },
+    ],
+
+    conclusion:
+      "Year-end accounting is a control test for the whole finance operating model. NetSuite gives teams the tools to close periods, lock transactions, evidence task completion, and report with confidence, but the process still needs ownership and discipline. Start with period structure, work the checklist properly, clear exceptions early, and govern reopened periods carefully. That is how year end becomes repeatable rather than heroic.",
+
+    disclaimer:
+      "This guide is based on practical NetSuite close experience and Oracle NetSuite Help Center guidance on Accounting Period Close, Closing Tasks and Their Dependencies, Accounting Book Period Close Management, and Setting Up Accounting Periods for a Year. Always validate feature availability, permissions, and local accounting requirements for your own account before making final close decisions.",
+  },
+
   "is-netsuite-right-for-your-business": {
     title: "Is NetSuite Right for Your Business?",
     subtitle: "A Practical Evaluation Guide for Growing Organisations",
@@ -4736,6 +4923,8 @@ export const typeIcons = { Guide: BookOpen, Article: FileText, Assessment: Asses
 
 // Listing page card image mapping (some articles use different images for cards vs hero)
 const cardImages = {
+  "optimise-end-of-year-accounting-with-netsuite":
+    "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=600&q=80",
   "is-netsuite-right-for-your-business":
     "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=600&q=80",
   "future-of-work-generative-ai":
@@ -4789,6 +4978,7 @@ const cardImages = {
 
 // Ordered list of article slugs for the listing page
 const articleOrder = [
+  "optimise-end-of-year-accounting-with-netsuite",
   "why-netsuite-aftercare-is-essential",
   "netsuite-next-ai-ui-overhaul",
   "netsuite-apps-extensions",
