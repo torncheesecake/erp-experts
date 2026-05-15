@@ -56,6 +56,13 @@ Sentinel is the working name for the SEO/content operations platform. The existi
   - `humanReviewRecommended=no`
 - Monitor mode should remain `HEALTHY` unless regressions occur.
 
+## Dashboard access boundary
+
+- `/seo-progress` is the stakeholder-facing SEO and content progress view.
+- `/seo-roadmap` is the Sentinel operator dashboard for local/internal use only.
+- Production builds redirect `/seo-roadmap` to `/seo-progress` until real authentication exists.
+- Do not expose operator commands, prompts, diagnostics, tenant state, approval gates or generated report internals on public ERP Experts pages.
+
 ## Platform tenant layer
 
 The first platform extraction boundary is now present under `platform/`.

@@ -30,8 +30,11 @@ The ERP Experts repo contains a working local SEO/content operating system with 
 - Review-first plan runner, approval gate and local status tracking through `seo:plan:run`, `seo:plan:approve` and `seo:plan:status`.
 - Weekly digest, action inbox and autopilot orchestration through `seo:digest`, `seo:inbox` and `seo:autopilot`.
 - A private `/seo-roadmap` dashboard that reads generated reports and presents health, opportunities, plans and operational state.
+- A public-safe `/seo-progress` route that summarises SEO and content progress without exposing Sentinel internals.
 
 The system is currently most useful as a local or private operator console. It generates reviewable recommendations and prompts, but it does not auto-edit or auto-publish content.
+
+`/seo-roadmap` is operator-only. Production builds redirect it to `/seo-progress` until proper authentication and access control exist.
 
 ### ERP Experts-Specific Parts
 

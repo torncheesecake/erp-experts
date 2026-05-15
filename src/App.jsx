@@ -43,7 +43,7 @@ const Partners = lazy(() => import("./pages/Partners/Partners"));
 const PartnerDetail = lazy(() => import("./pages/Partners/PartnerDetail"));
 const FAQ = lazy(() => import("./pages/FAQ/FAQ"));
 const Reports = lazy(() => import("./pages/Reports"));
-const SeoRoadmap = lazy(() => import("./pages/SeoRoadmap"));
+const SeoRoadmap = import.meta.env.DEV ? lazy(() => import("./pages/SeoRoadmap")) : null;
 const SeoProgress = lazy(() => import("./pages/SeoProgress"));
 const VideoPage = lazy(() => import("./pages/VideoPage"));
 
@@ -55,6 +55,15 @@ function ScrollToTop() {
   }, [pathname]);
 
   return null;
+}
+
+function SentinelOperatorRoute() {
+  if (import.meta.env.PROD || !SeoRoadmap) {
+    return <Navigate to="/seo-progress" replace />;
+  }
+
+  const OperatorDashboard = SeoRoadmap;
+  return <OperatorDashboard />;
 }
 
 // v2
@@ -154,7 +163,7 @@ function App() {
             <Route path="/faq" element={<FAQ />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/seo-progress" element={<SeoProgress />} />
-            <Route path="/seo-roadmap" element={<SeoRoadmap />} />
+            <Route path="/seo-roadmap" element={<SentinelOperatorRoute />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

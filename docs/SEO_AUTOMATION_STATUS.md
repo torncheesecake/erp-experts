@@ -23,8 +23,11 @@ The current workflow combines data quality controls, search-demand inputs, and e
 - article workbench with filter/sort and article selection
 - front-end fix planner and prompt preview
 - advanced diagnostics for raw QA/recommendation/brief/pipeline detail
+7. Stakeholder-facing visibility in `/seo-progress`, which summarises progress without commands, prompts, approvals or diagnostics.
 
 No automatic publishing or automatic article editing is enabled.
+
+Access boundary: `/seo-roadmap` is the Sentinel operator dashboard and must not be exposed publicly until authentication exists. Production builds redirect `/seo-roadmap` to `/seo-progress`.
 
 ## Scripts and Commands
 
