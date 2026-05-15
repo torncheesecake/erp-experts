@@ -51,7 +51,8 @@
     "platform:api:smoke": "node scripts/platform/platform_api_smoke.mjs",
     "platform:cleanup": "node scripts/platform/platform_cleanup.mjs",
     "deploy:dry-run": "bash deploy/scripts/deploy-dry-run.sh",
-    "backup:dry-run": "bash deploy/scripts/backup-dry-run.sh"
+    "backup:dry-run": "bash deploy/scripts/backup-dry-run.sh",
+    "service:dry-run": "bash deploy/scripts/service-dry-run.sh"
   },
   "homepage": "https://torncheesecake.github.io/erp-experts",
   "dependencies": {

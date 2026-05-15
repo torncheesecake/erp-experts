@@ -292,7 +292,25 @@ It defaults to `127.0.0.1:4317` and exposes:
 
 This is not a deployment step. It has no authentication, no public hardening and no reverse proxy configuration. It should only run locally for development until authentication, service supervision and Raspberry Pi deployment controls are added.
 
-## 13. Readiness scaffold
+## 13. Sentinel API service scaffold
+
+The repo now includes a systemd template and dry-run script for a future private Raspberry Pi service:
+
+- `deploy/systemd/sentinel-api.service.example`
+- `deploy/scripts/service-dry-run.sh`
+- `docs/RASPBERRY_PI_SERVICE_PLAN.md`
+
+Run:
+
+```bash
+npm run service:dry-run
+```
+
+This prints the expected service path, validates the template and package script, and lists future systemd commands. It does not copy files, reload systemd, enable services, start services, SSH to the server or expose the API.
+
+The service template binds to `127.0.0.1` by default. Do not expose it through a reverse proxy until authentication exists.
+
+## 14. Readiness scaffold
 
 The repo now includes a pre-deployment scaffold only:
 

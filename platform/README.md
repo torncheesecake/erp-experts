@@ -105,6 +105,14 @@ npm run platform:api:smoke
 
 The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes `GET /health`, `GET /state` and `GET /tenant`. It is read-only, has no authentication, and must not be exposed publicly. Keep it local until authentication and service hardening are added.
 
+The Raspberry Pi service scaffold is also present but inactive:
+
+```bash
+npm run service:dry-run
+```
+
+It validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
+
 The private `/seo-roadmap` operator dashboard consumes `reports/sentinel-state.json` for its compact Current Sentinel State panel by default. For local API experiments, set:
 
 ```bash
