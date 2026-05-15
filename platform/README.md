@@ -85,7 +85,16 @@ Use the Sentinel state command when you want the current persisted operating pic
 npm run platform:state
 ```
 
-It reads SQLite and summarises tenant, latest health snapshot, recent runs, top persisted opportunities, plan summaries, approvals, plan statuses and the recommended next move. It also writes `reports/sentinel-state.json` as an ignored future API/state source.
+It reads SQLite through the read-only Sentinel state API and summarises tenant, latest health snapshot, recent runs, top persisted opportunities, plan summaries, approvals, plan statuses and the recommended next move. It also writes `reports/sentinel-state.json` as an ignored dashboard compatibility file.
+
+For API-style inspection without writing files, use:
+
+```bash
+npm run platform:api
+npm run platform:api -- --json
+```
+
+`platform/api/state_api.mjs` exposes read-only accessors such as `getOperationalSummary`, `getLatestSnapshot`, `getLatestRuns`, `getLatestOpportunities`, `getLatestPlans`, `getLatestApprovals` and `getLatestInboxItems`. This is the first reusable API layer over SQLite. It does not mutate the DB and does not replace the existing JSON report workflow yet.
 
 The private `/seo-roadmap` operator dashboard consumes `reports/sentinel-state.json` for its compact Current Sentinel State panel. Stakeholder routes such as `/seo-progress` do not show this operational state.
 
@@ -95,7 +104,8 @@ Command distinction:
 
 - `platform:status` is infrastructure and persistence counts.
 - `seo:autopilot` runs the orchestration workflow and regenerates reports.
-- `platform:state` explains what Sentinel currently knows from persisted state.
+- `platform:state` exports the operational summary to ignored JSON for the dashboard.
+- `platform:api` previews the same persisted state as a future API contract.
 
 ## Deployment Readiness Scaffold
 

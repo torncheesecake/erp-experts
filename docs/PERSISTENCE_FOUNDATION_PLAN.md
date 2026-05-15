@@ -379,7 +379,11 @@ It reads SQLite and summarises:
 - workflow classification
 - recommended next action
 
-It also writes `reports/sentinel-state.json`, which is ignored as generated operational output. This JSON file is a future candidate for a lightweight API or dashboard state source.
+It now uses the read-only Sentinel state API layer at `platform/api/state_api.mjs`. The API module exposes reusable SQLite accessors for tenant state, latest snapshots, runs, opportunities, plans, approvals, inbox items and the combined operational summary.
+
+`npm run platform:api` previews that API-style state without writing files. `npm run platform:api -- --json` writes the future API contract to stdout only.
+
+`platform:state` still writes `reports/sentinel-state.json`, which is ignored as generated operational output. This preserves dashboard compatibility while the canonical operational state gradually moves towards SQLite-backed accessors.
 
 The generated Action Inbox now reads this state and promotes the current Sentinel recommendation to the top of the queue. For example, when persisted approvals show planning work is ready for review, the inbox creates a `sentinel_state` item with status `awaiting_review`. Those inbox items are also appended to SQLite for history, while JSON remains the runtime source.
 
@@ -387,6 +391,7 @@ The distinction is:
 
 - `platform:status`: low-level persistence and table counts.
 - `seo:autopilot`: run the full orchestration chain and regenerate reports.
-- `platform:state`: explain what Sentinel currently knows from the persisted DB.
+- `platform:state`: export what Sentinel currently knows to ignored dashboard JSON.
+- `platform:api`: read-only API preview of the same persisted state.
 
 This does not replace JSON reports, run orchestration, apply approvals, edit content or change scoring.

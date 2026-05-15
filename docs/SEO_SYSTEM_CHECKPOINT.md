@@ -313,7 +313,7 @@ It generates ignored output:
 
 - `reports/sentinel-state.json`
 
-It reads persisted tenant, run, snapshot, opportunity, plan, approval and status state, then classifies the current workflow as one of:
+It reads persisted tenant, run, snapshot, opportunity, plan, approval and status state through the read-only Sentinel state API layer at `platform/api/state_api.mjs`, then classifies the current workflow as one of:
 
 - `healthy_monitoring`
 - `growth_ready`
@@ -327,9 +327,12 @@ Command distinction:
 
 - `platform:status` shows low-level DB readiness and table counts.
 - `seo:autopilot` runs the orchestration workflow and regenerates reports.
-- `platform:state` provides the concise operational intelligence summary.
+- `platform:state` exports the concise operational intelligence summary to `reports/sentinel-state.json`.
+- `platform:api` previews the same persisted state without writing files, with `--json` support for future services.
 
 The private Sentinel operator dashboard at `/seo-roadmap` now reads `reports/sentinel-state.json` and shows the same high-level operating picture in a compact Current Sentinel State panel. The stakeholder-safe `/seo-progress` route does not expose this state, commands, approvals, diagnostics or prompts.
+
+The current dashboard remains report-compatible. The new API layer is the first step towards DB-backed services and dashboard reads without relying entirely on generated report files.
 
 The Action Inbox now uses the same Sentinel operational state to create a top-level review item such as `Review approved planning work`. This makes the inbox the practical operator queue while preserving `reports/seo-action-inbox.json` and the existing opportunity, plan, link, freshness and conversion inputs. Inbox rows are also appended to SQLite as operator queue history.
 
