@@ -120,3 +120,22 @@ bash deploy/scripts/check-server.sh
 ```
 
 `check-server.sh` is currently read-only and can be run locally. It does not create directories or change server files.
+
+## 7. Deployment dry-run
+
+Before any real server action, run:
+
+```bash
+npm run deploy:dry-run
+```
+
+Expected behaviour:
+
+- Confirms local Git, Node and npm are available.
+- Confirms the current Git branch and clean local worktree.
+- Prints the future server paths.
+- Prints the server command sequence that would be used later.
+- Prints expected `.env` variables.
+- Clearly states that no deployment actions were performed.
+
+If the worktree is dirty, stop and resolve it before deployment planning continues.

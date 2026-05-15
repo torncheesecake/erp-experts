@@ -279,3 +279,13 @@ The repo now includes a pre-deployment scaffold only:
 - `deploy/scripts/check-server.sh`
 
 These files do not deploy anything and do not touch the server. `check-local.sh` runs local validation. `check-server.sh` prints read-only environment and directory status and can be run locally or on the server later.
+
+## 14. Deployment dry-run planner
+
+Use the dry-run planner before any real server work:
+
+```bash
+npm run deploy:dry-run
+```
+
+It is read-only. It checks local prerequisites, confirms the local Git branch and clean worktree, prints the intended server paths, lists the future server command sequence, lists expected `.env` values and repeats the key safety rules. It does not SSH, create directories, copy files, deploy, restart services or modify server state.

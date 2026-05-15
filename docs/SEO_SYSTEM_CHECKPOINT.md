@@ -173,3 +173,13 @@ The future server deployment scaffold is present:
 - `deploy/scripts/check-server.sh`
 
 The scripts are scaffolds only. They do not deploy, create server folders, move repos, add secrets, or change production hosting.
+
+## Deployment dry-run planner
+
+Use the read-only deployment planner before any future server work:
+
+```bash
+npm run deploy:dry-run
+```
+
+It prints the intended pinhole server paths, future command sequence, expected `.env` variables and safety notes. It does not SSH, create directories, copy files or deploy anything.
