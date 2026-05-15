@@ -40,7 +40,8 @@
     "seo:inbox": "node scripts/seo_action_inbox.mjs",
     "seo:autopilot": "node scripts/seo_autopilot.mjs",
     "seo:decisions": "node scripts/seo_decisions.mjs",
-    "seo:publish:preflight": "bash scripts/seo_publish_preflight.sh"
+    "seo:publish:preflight": "bash scripts/seo_publish_preflight.sh",
+    "platform:tenant": "node scripts/platform/tenant_loader.mjs"
   },
   "homepage": "https://torncheesecake.github.io/erp-experts",
   "dependencies": {

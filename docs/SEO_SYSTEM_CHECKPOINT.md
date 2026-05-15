@@ -19,6 +19,7 @@
 - `npm run seo:digest`
 - `npm run seo:inbox`
 - `npm run seo:autopilot`
+- `npm run platform:tenant -- erp-experts`
 
 ## Current architecture
 
@@ -30,15 +31,27 @@
 6. Operator reporting: monitor, digest, stats, inbox.
 7. Autopilot orchestration: one command runs the intelligence chain and decides the next safe step.
 8. Dashboard: monitor-first control panel with secondary diagnostics.
+9. Platform tenant foundation: read-only tenant config schema, ERP Experts tenant prototype and loader command.
 
 ## Health status
 
 - Expected healthy target:
-  - `pass=26`
+  - `pass=27`
   - `needs_review=0`
   - `blocked=0`
   - `humanReviewRecommended=no`
 - Monitor mode should remain `HEALTHY` unless regressions occur.
+
+## Platform tenant layer
+
+The first platform extraction boundary is now present under `platform/`.
+
+- `platform/schema/tenant.schema.json` defines the generic tenant config shape.
+- `platform/tenants/erp-experts.config.json` describes ERP Experts as the first tenant.
+- `platform/README.md` documents the read-only extraction boundary.
+- `npm run platform:tenant -- erp-experts` validates and prints the tenant summary.
+
+Current engines still use their existing ERP Experts paths. The tenant layer is a safe foundation for future extraction, not a behaviour change.
 
 ## Automation lifecycle
 

@@ -537,13 +537,35 @@ Why this is the right first step:
 - It makes ERP Experts the first tenant without breaking the current system.
 - It gives future engines a stable input contract.
 
-Suggested future command:
+Implemented foundation command:
 
 ```bash
-npm run platform:tenant:validate -- erp-experts
+npm run platform:tenant -- erp-experts
 ```
 
-This should be read-only and should fail clearly if a tenant config is incomplete.
+This is read-only and fails clearly if a tenant config is incomplete.
+
+## 12. Tenant Foundation Created
+
+The first platform boundary now exists without changing any current ERP Experts SEO automation commands.
+
+Added:
+
+- `platform/schema/tenant.schema.json` for the generic tenant configuration contract.
+- `platform/tenants/erp-experts.config.json` as the first tenant prototype.
+- `platform/README.md` to document the extraction boundary.
+- `scripts/platform/tenant_loader.mjs` as a read-only tenant loader.
+- `npm run platform:tenant -- erp-experts` to inspect and validate the tenant config.
+
+Current limitation:
+
+- Existing engines still read the current ERP Experts paths directly.
+- The tenant config is descriptive only for now.
+- No article data, report paths, scoring logic or dashboard route has been moved.
+
+Updated recommended next engineering task:
+
+> Make one non-critical engine tenant-aware in parallel mode, probably a read-only summary or monitor helper, then compare its output against the current ERP Experts command before replacing any existing behaviour.
 
 ## Non-Goals for the Next Step
 

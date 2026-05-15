@@ -1,0 +1,139 @@
+{
+  "tenantId": "erp-experts",
+  "name": "ERP Experts",
+  "brandName": "ERP Experts",
+  "domain": "erpexperts.co.uk",
+  "baseUrl": "https://erpexperts.co.uk",
+  "locale": "en-GB",
+  "market": "UK",
+  "industry": "ERP and NetSuite consulting",
+  "primaryServices": [
+    "NetSuite implementation",
+    "NetSuite support",
+    "ERP consulting",
+    "NetSuite optimisation"
+  ],
+  "servicePaths": {
+    "netsuite": {
+      "path": "/services/netsuite",
+      "label": "NetSuite services",
+      "intent": "NetSuite implementation and optimisation"
+    },
+    "support": {
+      "path": "/support",
+      "label": "NetSuite support",
+      "intent": "Support, aftercare and rescue work"
+    },
+    "implementation": {
+      "path": "/implementation",
+      "label": "Implementation",
+      "intent": "ERP and NetSuite implementation delivery"
+    },
+    "partners": {
+      "path": "/partners",
+      "label": "Partners",
+      "intent": "Partner-led ERP and NetSuite services"
+    },
+    "contact": {
+      "path": "/contact",
+      "label": "Contact",
+      "intent": "Direct enquiry"
+    }
+  },
+  "contactPaths": {
+    "primary": {
+      "path": "/contact",
+      "label": "Contact ERP Experts",
+      "intent": "General enquiry"
+    },
+    "support": {
+      "path": "/support",
+      "label": "Request support",
+      "intent": "Support review"
+    }
+  },
+  "contentSources": [
+    {
+      "id": "resource-articles",
+      "type": "local-js-object",
+      "path": "src/data/articles.js",
+      "routeBase": "/resources",
+      "description": "ERP Experts resource article data exported as an object keyed by slug."
+    },
+    {
+      "id": "reporting-demand",
+      "type": "local-json",
+      "path": "src/data/reports.json",
+      "description": "Search, reporting and demand signals used by SEO automation."
+    }
+  ],
+  "articleDataPath": "src/data/articles.js",
+  "reportOutputPath": "reports/",
+  "publicReportPaths": {
+    "seoStatusesJson": "public/api/seo-statuses.json",
+    "seoStatusesPhp": "/api/seo-statuses.php",
+    "dashboardRoute": "/seo-roadmap"
+  },
+  "dashboardRoute": "/seo-roadmap",
+  "scoringProfile": {
+    "commercialTopics": [
+      "NetSuite",
+      "ERP consultant",
+      "ERP partner",
+      "implementation",
+      "support",
+      "manufacturing ERP",
+      "finance systems",
+      "accounting systems",
+      "migration",
+      "rescue",
+      "aftercare"
+    ],
+    "genericInformationalPenalty": true,
+    "requiresPublishedAt": true
+  },
+  "opportunityProfile": {
+    "preferredMarketTerms": ["UK", "British", "Great Britain"],
+    "priorityServices": [
+      "NetSuite implementation",
+      "NetSuite support",
+      "ERP consulting",
+      "NetSuite optimisation"
+    ],
+    "avoidDuplicateIntent": true
+  },
+  "conversionProfile": {
+    "preferredCtaTargets": ["/support", "/implementation", "/partners", "/contact", "/services/netsuite"],
+    "highIntentTopics": ["support", "implementation", "consultant", "partner", "migration", "rescue"],
+    "awarenessTopicsNeedSoftCta": true
+  },
+  "freshnessProfile": {
+    "fastMovingTopics": ["AI", "NetSuite updates", "finance systems", "manufacturing workflows"],
+    "reviewOlderThanMonths": 18,
+    "requiresPublishedAt": true
+  },
+  "internalLinkProfile": {
+    "resourceBasePath": "/resources",
+    "serviceTargets": ["/services/netsuite", "/support", "/implementation", "/partners", "/contact"],
+    "avoidOverLinking": true
+  },
+  "approvalProfile": {
+    "reviewFirst": true,
+    "allowAutoPublish": false,
+    "allowAutoCommit": false,
+    "requiresHumanReviewForHighRisk": true
+  },
+  "commands": {
+    "pipeline": "npm run seo:pipeline",
+    "monitor": "npm run seo:monitor",
+    "autopilot": "npm run seo:autopilot",
+    "opportunities": "npm run seo:opportunities",
+    "plans": "npm run seo:plans",
+    "dashboard": "/seo-roadmap"
+  },
+  "notes": [
+    "Prototype tenant config only. Existing ERP Experts engines still use their current hardcoded paths.",
+    "Do not move article data or reports until one read-only engine has been proven tenant-aware.",
+    "Generated reports remain under reports/ for the current site."
+  ]
+}

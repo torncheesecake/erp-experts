@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://erpexperts.co.uk/platform/schema/tenant.schema.json",
+  "title": "SEO Platform Tenant Configuration",
+  "description": "Read-only tenant configuration contract for the SEO automation platform extraction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tenantId",
+    "name",
+    "brandName",
+    "domain",
+    "baseUrl",
+    "locale",
+    "market",
+    "industry",
+    "primaryServices",
+    "servicePaths",
+    "contactPaths",
+    "contentSources",
+    "articleDataPath",
+    "reportOutputPath",
+    "publicReportPaths",
+    "dashboardRoute",
+    "scoringProfile",
+    "opportunityProfile",
+    "conversionProfile",
+    "freshnessProfile",
+    "internalLinkProfile",
+    "approvalProfile",
+    "commands",
+    "notes"
+  ],
+  "properties": {
+    "tenantId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "brandName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "domain": {
+      "type": "string",
+      "minLength": 1
+    },
+    "baseUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "locale": {
+      "type": "string",
+      "minLength": 2
+    },
+    "market": {
+      "type": "string",
+      "minLength": 2
+    },
+    "industry": {
+      "type": "string",
+      "minLength": 1
+    },
+    "primaryServices": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "servicePaths": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/pathDefinition"
+      }
+    },
+    "contactPaths": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/pathDefinition"
+      }
+    },
+    "contentSources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/contentSource"
+      }
+    },
+    "articleDataPath": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reportOutputPath": {
+      "type": "string",
+      "minLength": 1
+    },
+    "publicReportPaths": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "dashboardRoute": {
+      "type": "string",
+      "pattern": "^/"
+    },
+    "scoringProfile": {
+      "$ref": "#/$defs/profile"
+    },
+    "opportunityProfile": {
+      "$ref": "#/$defs/profile"
+    },
+    "conversionProfile": {
+      "$ref": "#/$defs/profile"
+    },
+    "freshnessProfile": {
+      "$ref": "#/$defs/profile"
+    },
+    "internalLinkProfile": {
+      "$ref": "#/$defs/profile"
+    },
+    "approvalProfile": {
+      "$ref": "#/$defs/profile"
+    },
+    "commands": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "pathDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "label"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "intent": {
+          "type": "string"
+        }
+      }
+    },
+    "contentSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "path"],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "routeBase": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
