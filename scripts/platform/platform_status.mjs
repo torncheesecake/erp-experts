@@ -18,6 +18,8 @@ console.log(`Run count: ${summary.runCount}`);
 console.log(`Snapshot count: ${summary.snapshotCount}`);
 console.log(`Opportunity summary count: ${summary.opportunitySummaryCount}`);
 console.log(`Plan summary count: ${summary.planSummaryCount}`);
+console.log(`Approval count: ${summary.planApprovalCount}`);
+console.log(`Plan status count: ${summary.planStatusCount}`);
 console.log(`ERP Experts tenant: ${summary.erpExpertsTenantExists ? "present" : "missing"}`);
 
 if (summary.latestRun) {
@@ -56,5 +58,31 @@ if (!summary.latestPlanSummaries.length) {
 } else {
   summary.latestPlanSummaries.forEach((plan) => {
     console.log(`  - #${plan.id} ${plan.title} ${plan.planType} ${plan.executionPriority} ${plan.safetyLevel} ${plan.createdAt}`);
+  });
+}
+
+if (summary.latestPlanApproval) {
+  console.log(`Latest approval: ${summary.latestPlanApproval.planId} (${summary.latestPlanApproval.approvedFor}) at ${summary.latestPlanApproval.approvedAt}`);
+}
+
+console.log("Latest approvals:");
+if (!summary.latestPlanApprovals.length) {
+  console.log("  None recorded yet.");
+} else {
+  summary.latestPlanApprovals.forEach((approval) => {
+    console.log(`  - #${approval.id} ${approval.planId} ${approval.approvedFor} ${approval.safetyLevel} ${approval.approvedAt}`);
+  });
+}
+
+if (summary.latestPlanStatus) {
+  console.log(`Latest plan status: ${summary.latestPlanStatus.planId} (${summary.latestPlanStatus.currentStatus}) at ${summary.latestPlanStatus.lastUpdated}`);
+}
+
+console.log("Latest plan statuses:");
+if (!summary.latestPlanStatuses.length) {
+  console.log("  None recorded yet.");
+} else {
+  summary.latestPlanStatuses.forEach((status) => {
+    console.log(`  - #${status.id} ${status.planId} ${status.currentStatus} ${status.validationState} ${status.lastUpdated}`);
   });
 }

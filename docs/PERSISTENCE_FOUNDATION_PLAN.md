@@ -282,3 +282,36 @@ The new `plan_summaries` table stores:
 `seo:plans` remains JSON-first for runtime behaviour. `reports/seo-execution-plans.json` is still the dashboard and automation source. SQLite stores append-only planning history for Sentinel so future platform stages can track planning state, review state and execution readiness without treating generated files as canonical state.
 
 This is intentionally not a full workflow migration. No plan approval, patching or dashboard behaviour is changed by this persistence layer.
+
+## Approval and plan status persistence
+
+Plan approval and status workflow state is now also dual-written to SQLite.
+
+The new `plan_approvals` table stores:
+
+- tenant ID
+- plan ID
+- approved-for level
+- safety level
+- required human review flag
+- approval note
+- source plan title
+- approval timestamp
+- optional expiry timestamp
+
+The new `plan_statuses` table stores:
+
+- tenant ID
+- plan ID
+- title
+- current status
+- safety level
+- required human review flag
+- next recommended step
+- validation state
+- notes
+- last-updated timestamp
+
+This does not replace `reports/seo-plan-approvals.json` or `reports/seo-plan-status.json`. Those ignored JSON files remain the local operational state used by the current scripts. SQLite is accumulating append-only workflow history so Sentinel can later track approvals and execution lifecycle across tenants without relying on generated files as the long-term source of truth.
+
+DB persistence is additive and warning-only. A database write failure must not approve, reject, apply, block or otherwise alter the existing file-based workflow.

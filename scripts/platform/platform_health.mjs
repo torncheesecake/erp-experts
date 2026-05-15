@@ -104,7 +104,11 @@ function main() {
   let snapshotCount = "unknown";
   let opportunitySummaryCount = "unknown";
   let planSummaryCount = "unknown";
+  let planApprovalCount = "unknown";
+  let planStatusCount = "unknown";
   let latestRun = null;
+  let latestPlanApproval = null;
+  let latestPlanStatus = null;
   let tenantPresent = false;
   const schemaExists = fs.existsSync(SCHEMA_PATH);
 
@@ -116,7 +120,15 @@ function main() {
     warnings.push("SQLite DB is not present yet. Run npm run platform:init before server readiness checks.");
   } else if (sqliteAvailable) {
     try {
-      const requiredTables = ["tenants", "runs", "snapshots", "opportunity_summaries", "plan_summaries"];
+      const requiredTables = [
+        "tenants",
+        "runs",
+        "snapshots",
+        "opportunity_summaries",
+        "plan_summaries",
+        "plan_approvals",
+        "plan_statuses",
+      ];
       const missingTables = requiredTables.filter((table) => !tableExists(table));
       if (missingTables.length) {
         critical.push(`SQLite DB is missing required tables: ${missingTables.join(", ")}`);
@@ -126,6 +138,10 @@ function main() {
         snapshotCount = persistenceSummary.snapshotCount;
         opportunitySummaryCount = persistenceSummary.opportunitySummaryCount;
         planSummaryCount = persistenceSummary.planSummaryCount;
+        planApprovalCount = persistenceSummary.planApprovalCount;
+        planStatusCount = persistenceSummary.planStatusCount;
+        latestPlanApproval = persistenceSummary.latestPlanApproval;
+        latestPlanStatus = persistenceSummary.latestPlanStatus;
         latestRun = persistenceSummary.latestRuns.find((run) => run.id !== runId) || null;
         dbStatus = tenantPresent ? "ready" : "needs tenant";
         if (!tenantPresent) {
@@ -187,10 +203,18 @@ function main() {
   printCheck("Snapshots", String(snapshotCount));
   printCheck("Opportunity summaries", String(opportunitySummaryCount));
   printCheck("Plan summaries", String(planSummaryCount));
+  printCheck("Approvals", String(planApprovalCount));
+  printCheck("Plan statuses", String(planStatusCount));
   printCheck("SEO", monitorStatus);
   printCheck("QA", `${pass} pass, ${review} review, ${blocked} blocked`);
   if (latestRun) {
     printCheck("Latest run", `${latestRun.command} ${latestRun.status}`, latestRun.finishedAt || latestRun.startedAt);
+  }
+  if (latestPlanApproval) {
+    printCheck("Latest approval", `${latestPlanApproval.planId} ${latestPlanApproval.approvedFor}`, latestPlanApproval.approvedAt);
+  }
+  if (latestPlanStatus) {
+    printCheck("Latest plan status", `${latestPlanStatus.planId} ${latestPlanStatus.currentStatus}`, latestPlanStatus.lastUpdated);
   }
   printCheck("Deployment docs", exists("docs/PINHOLE_SERVER_DEPLOYMENT_PLAN.md") ? "present" : "missing");
   printCheck("Runtime ignore policy", notIgnored.length ? "warning" : "ready");

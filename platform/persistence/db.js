@@ -168,6 +168,148 @@ export function persistPlanSummaries({ tenantId, plans = [] }, dbPath = DEFAULT_
   return plans.length;
 }
 
+export function persistPlanApproval({ tenantId, approval }, dbPath = DEFAULT_DB_PATH) {
+  if (!approval?.planId) return 0;
+
+  executeSql(
+    `INSERT INTO plan_approvals (
+       tenant_id,
+       plan_id,
+       approved_for,
+       safety_level,
+       required_human_review,
+       approval_note,
+       source_plan_title,
+       approved_at,
+       expires_at
+     )
+     VALUES (
+       '${quoteSql(tenantId)}',
+       '${quoteSql(approval.planId)}',
+       '${quoteSql(approval.approvedFor || "")}',
+       '${quoteSql(approval.safetyLevel || "")}',
+       ${approval.requiredHumanReview ? 1 : 0},
+       '${quoteSql(approval.approvalNote || "")}',
+       '${quoteSql(approval.sourcePlanTitle || "")}',
+       '${quoteSql(approval.approvedAt || new Date().toISOString())}',
+       '${quoteSql(approval.expiresAt || "")}'
+     );`,
+    dbPath,
+  );
+
+  return 1;
+}
+
+export function persistPlanStatus({ tenantId, status }, dbPath = DEFAULT_DB_PATH) {
+  if (!status?.planId) return 0;
+
+  executeSql(
+    `INSERT INTO plan_statuses (
+       tenant_id,
+       plan_id,
+       title,
+       current_status,
+       safety_level,
+       required_human_review,
+       next_recommended_step,
+       validation_state,
+       notes,
+       last_updated
+     )
+     VALUES (
+       '${quoteSql(tenantId)}',
+       '${quoteSql(status.planId)}',
+       '${quoteSql(status.title || "")}',
+       '${quoteSql(status.currentStatus || "")}',
+       '${quoteSql(status.safetyLevel || "")}',
+       ${status.requiredHumanReview ? 1 : 0},
+       '${quoteSql(status.nextRecommendedStep || "")}',
+       '${quoteSql(status.validationState || "")}',
+       '${quoteSql(status.notes || "")}',
+       '${quoteSql(status.lastUpdated || new Date().toISOString())}'
+     );`,
+    dbPath,
+  );
+
+  return 1;
+}
+
+export function getLatestPlanApprovals({ tenantId = "", limit = 5 } = {}, dbPath = DEFAULT_DB_PATH) {
+  if (!tableExists("plan_approvals", dbPath)) return [];
+
+  const whereTenant = tenantId ? `WHERE tenant_id = '${quoteSql(tenantId)}'` : "";
+
+  return queryRows(
+    `SELECT id, tenant_id, plan_id, approved_for, safety_level, required_human_review, approval_note, source_plan_title, approved_at, expires_at
+     FROM plan_approvals
+     ${whereTenant}
+     ORDER BY approved_at DESC, id DESC
+     LIMIT ${Number(limit) || 5};`,
+    dbPath,
+  ).map(([
+    id,
+    rowTenantId,
+    planId,
+    approvedFor,
+    safetyLevel,
+    requiredHumanReview,
+    approvalNote,
+    sourcePlanTitle,
+    approvedAt,
+    expiresAt,
+  ]) => ({
+    id: Number(id),
+    tenantId: rowTenantId,
+    planId,
+    approvedFor,
+    safetyLevel,
+    requiredHumanReview: requiredHumanReview === "1",
+    approvalNote,
+    sourcePlanTitle,
+    approvedAt,
+    expiresAt,
+  }));
+}
+
+export function getLatestPlanStatuses({ tenantId = "", limit = 5 } = {}, dbPath = DEFAULT_DB_PATH) {
+  if (!tableExists("plan_statuses", dbPath)) return [];
+
+  const whereTenant = tenantId ? `WHERE tenant_id = '${quoteSql(tenantId)}'` : "";
+
+  return queryRows(
+    `SELECT id, tenant_id, plan_id, title, current_status, safety_level, required_human_review, next_recommended_step, validation_state, notes, last_updated
+     FROM plan_statuses
+     ${whereTenant}
+     ORDER BY last_updated DESC, id DESC
+     LIMIT ${Number(limit) || 5};`,
+    dbPath,
+  ).map(([
+    id,
+    rowTenantId,
+    planId,
+    title,
+    currentStatus,
+    safetyLevel,
+    requiredHumanReview,
+    nextRecommendedStep,
+    validationState,
+    notes,
+    lastUpdated,
+  ]) => ({
+    id: Number(id),
+    tenantId: rowTenantId,
+    planId,
+    title,
+    currentStatus,
+    safetyLevel,
+    requiredHumanReview: requiredHumanReview === "1",
+    nextRecommendedStep,
+    validationState,
+    notes,
+    lastUpdated,
+  }));
+}
+
 export function startRun(run, dbPath = DEFAULT_DB_PATH) {
   return Number(queryValue(
     `INSERT INTO runs (tenant_id, command, status, started_at)
@@ -299,6 +441,10 @@ export function getPersistenceSummary(dbPath = DEFAULT_DB_PATH) {
   const latestOpportunitySummaries = hasOpportunitySummaries ? listLatestOpportunitySummaries(5, dbPath) : [];
   const hasPlanSummaries = tableExists("plan_summaries", dbPath);
   const latestPlanSummaries = hasPlanSummaries ? listLatestPlanSummaries(5, dbPath) : [];
+  const hasPlanApprovals = tableExists("plan_approvals", dbPath);
+  const latestPlanApprovals = hasPlanApprovals ? getLatestPlanApprovals({ limit: 5 }, dbPath) : [];
+  const hasPlanStatuses = tableExists("plan_statuses", dbPath);
+  const latestPlanStatuses = hasPlanStatuses ? getLatestPlanStatuses({ limit: 5 }, dbPath) : [];
 
   return {
     dbPath,
@@ -312,6 +458,12 @@ export function getPersistenceSummary(dbPath = DEFAULT_DB_PATH) {
     planSummaryCount: hasPlanSummaries
       ? Number(queryValue("SELECT COUNT(*) FROM plan_summaries;", dbPath) || 0)
       : 0,
+    planApprovalCount: hasPlanApprovals
+      ? Number(queryValue("SELECT COUNT(*) FROM plan_approvals;", dbPath) || 0)
+      : 0,
+    planStatusCount: hasPlanStatuses
+      ? Number(queryValue("SELECT COUNT(*) FROM plan_statuses;", dbPath) || 0)
+      : 0,
     erpExpertsTenantExists: queryValue("SELECT COUNT(*) FROM tenants WHERE tenant_id = 'erp-experts';", dbPath) === "1",
     latestRun: latestRuns[0] || null,
     latestRuns,
@@ -319,5 +471,9 @@ export function getPersistenceSummary(dbPath = DEFAULT_DB_PATH) {
     latestOpportunitySummaries,
     latestPlanSummary: latestPlanSummaries[0] || null,
     latestPlanSummaries,
+    latestPlanApproval: latestPlanApprovals[0] || null,
+    latestPlanApprovals,
+    latestPlanStatus: latestPlanStatuses[0] || null,
+    latestPlanStatuses,
   };
 }

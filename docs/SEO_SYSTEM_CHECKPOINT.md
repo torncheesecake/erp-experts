@@ -247,3 +247,21 @@ Current policy:
 - `npm run platform:status` shows the plan summary count and latest persisted plans.
 
 This is the fourth persisted platform state after monitor snapshots, run history and opportunity summaries.
+
+## SQLite approval and plan status history
+
+Sentinel now persists approval and plan status workflow history into SQLite.
+
+Current policy:
+
+- `reports/seo-plan-approvals.json` remains the local operational approval file.
+- `reports/seo-plan-status.json` remains the local operational status file.
+- SQLite appends approval rows to `plan_approvals`.
+- SQLite appends status rows to `plan_statuses`.
+- `seo:plan:approve` defaults to ERP Experts and also supports `--tenant erp-experts`.
+- `seo:plan:status` defaults to ERP Experts and also supports `--tenant erp-experts`.
+- Persistence is warning-only and must not apply patches, approve work automatically, change QA scoring or change command success.
+- `npm run platform:status` shows approval/status counts and latest rows.
+- `npm run platform:health` checks the approval/status tables and prints the latest approval/status summary when present.
+
+This is the fifth persisted platform state after monitor snapshots, run history, opportunity summaries and execution plan summaries.

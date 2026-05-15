@@ -132,3 +132,22 @@ The persisted summaries include plan ID, title, plan type, priority, impact, eff
 JSON execution plans remain the runtime source for dashboard and automation behaviour. SQLite is accumulating workflow history so Sentinel can later track planning state across clients, approvals and execution.
 
 Run `npm run platform:init` after pulling schema changes so the local SQLite database has the `plan_summaries` table.
+
+## Approval And Plan Status Persistence
+
+`seo:plan:approve` and `seo:plan:status` now keep their ignored JSON files and also dual-write workflow history into SQLite.
+
+Default use still targets ERP Experts:
+
+```bash
+npm run seo:plan:approve -- <planId>
+npm run seo:plan:approve -- <planId> --tenant erp-experts
+npm run seo:plan:status
+npm run seo:plan:status -- --tenant erp-experts
+```
+
+The persisted approval rows include plan ID, approval level, safety level, review requirement, note, source title and approval time. The persisted status rows include current status, validation state, next recommended step and last-updated time.
+
+`reports/seo-plan-approvals.json` and `reports/seo-plan-status.json` remain ignored local operational state for now. SQLite is append-only workflow history, not yet the canonical execution state. DB write failures warn only.
+
+Run `npm run platform:init` after pulling schema changes so the local SQLite database has the `plan_approvals` and `plan_statuses` tables.

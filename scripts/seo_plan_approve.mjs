@@ -1,8 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-
-const PLANS_PATH = path.resolve("reports/seo-execution-plans.json");
-const APPROVALS_PATH = path.resolve("reports/seo-plan-approvals.json");
+import { DEFAULT_DB_PATH, databaseExists, persistPlanApproval } from "../platform/persistence/db.js";
+import { loadTenantConfig, printTenantError } from "./platform/tenant_config.mjs";
 
 function readJson(filePath, fallback = null) {
   try {
@@ -14,13 +13,16 @@ function readJson(filePath, fallback = null) {
 
 function usage() {
   console.log("Usage:");
-  console.log("npm run seo:plan:approve -- <planId> [--allow-apply] [--note \"...\"] [--expires \"ISO_DATETIME\"]");
+  console.log("npm run seo:plan:approve -- <planId> [--tenant erp-experts] [--allow-apply] [--note \"...\"] [--expires \"ISO_DATETIME\"]");
 }
 
 function parseArgs(argv) {
   const args = argv.slice(2);
   const first = args[0];
   const allowApply = args.includes("--allow-apply");
+
+  const tenantIndex = args.indexOf("--tenant");
+  const tenantId = tenantIndex >= 0 && args[tenantIndex + 1] ? args[tenantIndex + 1] : "erp-experts";
 
   const noteIndex = args.indexOf("--note");
   const approvalNote = noteIndex >= 0 && args[noteIndex + 1] ? args[noteIndex + 1] : "";
@@ -30,6 +32,7 @@ function parseArgs(argv) {
 
   return {
     planId: first && !first.startsWith("--") ? first : "",
+    tenantId,
     allowApply,
     approvalNote,
     expiresAtRaw,
@@ -50,14 +53,39 @@ function validateExpiry(raw) {
   return d.toISOString();
 }
 
+function persistApprovalToDb({ tenantId, record }) {
+  if (!databaseExists(DEFAULT_DB_PATH)) {
+    console.warn("[seo:plan:approve] SQLite approval warning: platform DB is missing. Run npm run platform:init to enable persistence.");
+    return;
+  }
+
+  try {
+    const count = persistPlanApproval({ tenantId, approval: record });
+    if (count) console.log(`Persisted approval summary: ${count}`);
+  } catch (error) {
+    console.warn(`[seo:plan:approve] SQLite approval warning: ${error.message}`);
+  }
+}
+
 function main() {
-  const { planId, allowApply, approvalNote, expiresAtRaw } = parseArgs(process.argv);
+  const { planId, tenantId, allowApply, approvalNote, expiresAtRaw } = parseArgs(process.argv);
   if (!planId) {
     usage();
     process.exit(1);
   }
 
-  const plansReport = readJson(PLANS_PATH);
+  const tenantResult = loadTenantConfig(tenantId);
+  if (!tenantResult.ok) {
+    printTenantError(tenantResult);
+    process.exit(1);
+  }
+
+  const tenant = tenantResult.config;
+  const reportsDir = path.resolve(tenant.reportOutputPath || "reports");
+  const plansPath = path.join(reportsDir, "seo-execution-plans.json");
+  const approvalsPath = path.join(reportsDir, "seo-plan-approvals.json");
+
+  const plansReport = readJson(plansPath);
   if (!plansReport) {
     console.log("Missing execution plans report.");
     console.log("Run npm run seo:plans first.");
@@ -84,7 +112,7 @@ function main() {
   }
 
   const approvedFor = approvalScope({ safetyLevel: plan.safetyLevel, allowApply });
-  const approvals = readJson(APPROVALS_PATH, { generatedAt: null, approvals: [] });
+  const approvals = readJson(approvalsPath, { generatedAt: null, approvals: [] });
   const existing = Array.isArray(approvals.approvals) ? approvals.approvals : [];
   const nowIso = new Date().toISOString();
 
@@ -107,9 +135,11 @@ function main() {
     approvals: nextApprovals.sort((a, b) => String(a.planId).localeCompare(String(b.planId))),
   };
 
-  fs.writeFileSync(APPROVALS_PATH, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+  fs.writeFileSync(approvalsPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+  persistApprovalToDb({ tenantId: tenant.tenantId, record });
 
   console.log("SEO Plan Approval Gate");
+  console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
   console.log(`Plan: ${record.planId} - ${record.sourcePlanTitle}`);
   console.log(`Approved for: ${record.approvedFor}`);
   console.log(`Safety: ${record.safetyLevel} · requiredHumanReview=${record.requiredHumanReview ? "yes" : "no"}`);
@@ -122,7 +152,7 @@ function main() {
   if (approvedFor === "apply_patch") {
     console.log("Warning: apply_patch approval recorded. Human review is still mandatory before any commit.");
   }
-  console.log(`Approval file: ${APPROVALS_PATH}`);
+  console.log(`Approval file: ${approvalsPath}`);
 }
 
 main();

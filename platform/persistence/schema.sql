@@ -63,6 +63,35 @@ CREATE TABLE IF NOT EXISTS plan_summaries (
   FOREIGN KEY (tenant_id) REFERENCES tenants (tenant_id)
 );
 
+CREATE TABLE IF NOT EXISTS plan_approvals (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tenant_id TEXT NOT NULL,
+  plan_id TEXT NOT NULL,
+  approved_for TEXT,
+  safety_level TEXT,
+  required_human_review INTEGER,
+  approval_note TEXT,
+  source_plan_title TEXT,
+  approved_at TEXT NOT NULL,
+  expires_at TEXT,
+  FOREIGN KEY (tenant_id) REFERENCES tenants (tenant_id)
+);
+
+CREATE TABLE IF NOT EXISTS plan_statuses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tenant_id TEXT NOT NULL,
+  plan_id TEXT NOT NULL,
+  title TEXT,
+  current_status TEXT,
+  safety_level TEXT,
+  required_human_review INTEGER,
+  next_recommended_step TEXT,
+  validation_state TEXT,
+  notes TEXT,
+  last_updated TEXT NOT NULL,
+  FOREIGN KEY (tenant_id) REFERENCES tenants (tenant_id)
+);
+
 CREATE INDEX IF NOT EXISTS idx_runs_tenant_started_at
   ON runs (tenant_id, started_at);
 
@@ -89,3 +118,21 @@ CREATE INDEX IF NOT EXISTS idx_plan_summaries_state
 
 CREATE INDEX IF NOT EXISTS idx_plan_summaries_safety
   ON plan_summaries (safety_level);
+
+CREATE INDEX IF NOT EXISTS idx_plan_approvals_tenant
+  ON plan_approvals (tenant_id);
+
+CREATE INDEX IF NOT EXISTS idx_plan_approvals_plan
+  ON plan_approvals (plan_id);
+
+CREATE INDEX IF NOT EXISTS idx_plan_approvals_approved_for
+  ON plan_approvals (approved_for);
+
+CREATE INDEX IF NOT EXISTS idx_plan_statuses_tenant
+  ON plan_statuses (tenant_id);
+
+CREATE INDEX IF NOT EXISTS idx_plan_statuses_plan
+  ON plan_statuses (plan_id);
+
+CREATE INDEX IF NOT EXISTS idx_plan_statuses_current_status
+  ON plan_statuses (current_status);

@@ -1,10 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-
-const PLANS_PATH = path.resolve("reports/seo-execution-plans.json");
-const APPROVALS_PATH = path.resolve("reports/seo-plan-approvals.json");
-const ACTIVE_PLAN_PATH = path.resolve("reports/seo-active-plan.md");
-const STATUS_PATH = path.resolve("reports/seo-plan-status.json");
+import { DEFAULT_DB_PATH, databaseExists, persistPlanStatus } from "../platform/persistence/db.js";
+import { loadTenantConfig, printTenantError } from "./platform/tenant_config.mjs";
 
 function readJson(filePath, fallback = null) {
   try {
@@ -16,20 +13,22 @@ function readJson(filePath, fallback = null) {
 
 function usage() {
   console.log("Usage:");
-  console.log("npm run seo:plan:status");
-  console.log("npm run seo:plan:status -- --mark-completed <planId>");
+  console.log("npm run seo:plan:status -- --tenant erp-experts");
+  console.log("npm run seo:plan:status -- --mark-completed <planId> --tenant erp-experts");
 }
 
 function parseArgs(argv) {
   const args = argv.slice(2);
   const markIdx = args.indexOf("--mark-completed");
   const markCompletedPlanId = markIdx >= 0 && args[markIdx + 1] ? args[markIdx + 1] : "";
-  return { markCompletedPlanId };
+  const tenantIndex = args.indexOf("--tenant");
+  const tenantId = tenantIndex >= 0 && args[tenantIndex + 1] ? args[tenantIndex + 1] : "erp-experts";
+  return { markCompletedPlanId, tenantId };
 }
 
-function parseActivePlanId() {
+function parseActivePlanId(activePlanPath) {
   try {
-    const text = fs.readFileSync(ACTIVE_PLAN_PATH, "utf8");
+    const text = fs.readFileSync(activePlanPath, "utf8");
     const match = text.match(/Plan ID:\s*`([^`]+)`/i);
     return match?.[1] || "";
   } catch {
@@ -64,9 +63,39 @@ function deriveValidationState(status, plan) {
   return "pending";
 }
 
+function persistStatusesToDb({ tenantId, statuses }) {
+  if (!databaseExists(DEFAULT_DB_PATH)) {
+    console.warn("[seo:plan:status] SQLite status warning: platform DB is missing. Run npm run platform:init to enable persistence.");
+    return;
+  }
+
+  try {
+    let count = 0;
+    statuses.forEach((status) => {
+      count += persistPlanStatus({ tenantId, status });
+    });
+    if (count) console.log(`Persisted plan status rows: ${count}`);
+  } catch (error) {
+    console.warn(`[seo:plan:status] SQLite status warning: ${error.message}`);
+  }
+}
+
 function main() {
-  const { markCompletedPlanId } = parseArgs(process.argv);
-  const plansReport = readJson(PLANS_PATH);
+  const { markCompletedPlanId, tenantId } = parseArgs(process.argv);
+  const tenantResult = loadTenantConfig(tenantId);
+  if (!tenantResult.ok) {
+    printTenantError(tenantResult);
+    process.exit(1);
+  }
+
+  const tenant = tenantResult.config;
+  const reportsDir = path.resolve(tenant.reportOutputPath || "reports");
+  const plansPath = path.join(reportsDir, "seo-execution-plans.json");
+  const approvalsPath = path.join(reportsDir, "seo-plan-approvals.json");
+  const activePlanPath = path.join(reportsDir, "seo-active-plan.md");
+  const statusPath = path.join(reportsDir, "seo-plan-status.json");
+
+  const plansReport = readJson(plansPath);
   if (!plansReport) {
     console.log("Missing execution plans report.");
     console.log("Run npm run seo:plans first.");
@@ -74,13 +103,13 @@ function main() {
   }
 
   const plans = Array.isArray(plansReport.plans) ? plansReport.plans : [];
-  const approvalsReport = readJson(APPROVALS_PATH, { approvals: [] });
+  const approvalsReport = readJson(approvalsPath, { approvals: [] });
   const approvals = Array.isArray(approvalsReport.approvals) ? approvalsReport.approvals : [];
   const approvalById = new Map(approvals.map((item) => [item.planId, item]));
-  const activePlanId = parseActivePlanId();
+  const activePlanId = parseActivePlanId(activePlanPath);
   const nowIso = new Date().toISOString();
 
-  const existingStatusReport = readJson(STATUS_PATH, { statuses: [] });
+  const existingStatusReport = readJson(statusPath, { statuses: [] });
   const existingStatuses = Array.isArray(existingStatusReport.statuses) ? existingStatusReport.statuses : [];
   const existingById = new Map(existingStatuses.map((item) => [item.planId, item]));
 
@@ -115,13 +144,15 @@ function main() {
     activePlanId: activePlanId || null,
     statuses,
   };
-  fs.writeFileSync(STATUS_PATH, `${JSON.stringify(output, null, 2)}\n`, "utf8");
+  fs.writeFileSync(statusPath, `${JSON.stringify(output, null, 2)}\n`, "utf8");
+  persistStatusesToDb({ tenantId: tenant.tenantId, statuses });
 
   const top = statuses
     .filter((item) => item.currentStatus !== "discovered")
     .slice(0, 5);
 
   console.log("SEO Plan Status Tracker");
+  console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
   console.log(`Tracked plans: ${statuses.length}`);
   if (markCompletedPlanId) {
     console.log(`Marked completed: ${markCompletedPlanId}`);
@@ -135,7 +166,7 @@ function main() {
       console.log(`   Next: ${item.nextRecommendedStep}`);
     });
   }
-  console.log(`Status file: ${STATUS_PATH}`);
+  console.log(`Status file: ${statusPath}`);
 }
 
 main();
