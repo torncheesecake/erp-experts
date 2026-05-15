@@ -22,6 +22,14 @@ It writes ignored output to:
 - `reports/sentinel-stakeholder-weekly-report.md`
 - `reports/sentinel-cadence-summary.json`
 
+Notification payloads can be prepared separately with:
+
+```bash
+npm run platform:notify -- --all
+```
+
+This generates ignored Markdown and JSON payloads under `reports/notifications/` but sends nothing.
+
 ## Modes
 
 ```bash
@@ -86,6 +94,7 @@ This only checks templates and prints the future copy, enable and start commands
 - Keep API binding to `127.0.0.1`.
 - Keep operator reports private.
 - Keep stakeholder reports business-facing and free of commands or private workflow details.
+- Keep stakeholder notifications business-facing and run the built-in safety scan before any future sending integration.
 - Monitor disk usage for reports, logs and SQLite history.
 - Run `npm run platform:cleanup -- --dry-run` style checks before pruning history.
 - Run `npm run backup:verify` and `npm run backup:restore:test` before trusting scheduled platform state.

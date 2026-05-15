@@ -35,6 +35,7 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 - `npm run platform:start`
 - `npm run platform:cadence`
 - `npm run platform:daily`
+- `npm run platform:notify`
 - `npm run platform:stakeholder`
 - `npm run platform:state`
 
@@ -420,3 +421,19 @@ Inactive Raspberry Pi systemd timer templates are also present for later control
 - `deploy/systemd/sentinel-stakeholder.timer.example`
 
 `npm run cadence:service:dry-run` validates those templates and prints future install commands without modifying system files.
+
+## Notification payload scaffold
+
+`npm run platform:notify` prepares local notification payloads only. It does not send email, connect Slack, call external APIs or use credentials.
+
+Modes:
+
+- `--operator`
+- `--stakeholder`
+- `--all`
+- `--json`
+- `--dry-run`
+
+Generated payloads are ignored under `reports/notifications/`. Operator payloads may include useful commands and workflow context. Stakeholder payloads are sanitised and blocked if forbidden internal terms are detected, including commands, Codex, Sentinel, SQLite, DB, API, approval, private route names, diagnostics, tenant wording or plan IDs.
+
+Future integrations may send these payloads via email, Slack or dashboard alerts, but delivery is intentionally not implemented yet.

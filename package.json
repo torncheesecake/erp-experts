@@ -53,6 +53,7 @@
     "platform:cleanup": "node scripts/platform/platform_cleanup.mjs",
     "platform:deploy:ready": "node scripts/platform/platform_deploy_readiness.mjs",
     "platform:daily": "node scripts/platform/platform_daily_report.mjs",
+    "platform:notify": "node scripts/platform/platform_notify.mjs",
     "platform:stakeholder": "node scripts/platform/platform_stakeholder_report.mjs",
     "platform:start": "node scripts/platform/platform_bootstrap.mjs",
     "deploy:dry-run": "bash deploy/scripts/deploy-dry-run.sh",

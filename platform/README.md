@@ -136,6 +136,19 @@ npm run cadence:service:dry-run
 
 The dry-run validates the cadence and stakeholder timer templates and prints future install commands only.
 
+## Notification Payloads
+
+Use notification payloads when you want a prepared message without sending anything:
+
+```bash
+npm run platform:notify -- --dry-run --all
+npm run platform:notify -- --operator
+npm run platform:notify -- --stakeholder
+npm run platform:notify -- --all
+```
+
+Generated payloads are ignored under `reports/notifications/`. Operator payloads may include commands and private workflow context. Stakeholder payloads are sanitised and safety-scanned so they do not expose commands, prompts, approvals, database/API details, private route names or operator diagnostics. No email, Slack or external delivery integration exists yet.
+
 ## Operational State Summary
 
 Use the Sentinel state command when you want the current persisted operating picture:
