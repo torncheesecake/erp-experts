@@ -716,3 +716,20 @@ Do not start with:
 - Changing article data shape.
 
 Those are later phases once the tenant boundary is proven.
+
+## 19. Pinhole Server Deployment Planning
+
+The planned server home for the platform is documented in `docs/PINHOLE_SERVER_DEPLOYMENT_PLAN.md`.
+
+Key decisions:
+
+- Keep source code in Git and runtime state outside Git.
+- Store server SQLite, reports, logs and backups under a stable `/srv/matthew-platform/` style layout.
+- Keep ERP Experts and the platform loosely coupled until the extraction boundary is proven.
+- Start with static dashboard plus CLI automation before adding a Node API service.
+- Use SQLite first, then Postgres only when multi-client concurrency or remote access requires it.
+- Do not expose dashboard or report data publicly without basic auth or stronger authentication.
+
+Recommended next deployment step:
+
+- Add read-only deployment support and a platform health-check command before moving anything live.

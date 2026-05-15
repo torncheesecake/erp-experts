@@ -138,3 +138,17 @@ Ignored local/generated outputs:
 - Persistent backend for plan/approval/status storage.
 - Scheduled digest notification delivery.
 - Optional PR-based patch execution flow.
+
+## Pinhole server deployment plan
+
+Deployment planning for Matthew's pinhole server is captured in `docs/PINHOLE_SERVER_DEPLOYMENT_PLAN.md`.
+
+Current policy:
+
+- No production deployment has been performed from this plan.
+- Runtime data belongs outside Git.
+- The server database should live outside the repo, for example `/srv/matthew-platform/data/seo-ops/platform.db`.
+- Generated reports, backups and logs should also live outside the repo.
+- The first deployment milestone should be documentation, environment templates and a read-only health check, not a live hosting move.
+
+This keeps the working ERP Experts automation stable while creating a safe path towards hosted, multi-client platform operations.
