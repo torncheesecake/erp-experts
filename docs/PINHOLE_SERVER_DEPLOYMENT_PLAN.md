@@ -274,6 +274,24 @@ It is read-only and suitable for local checks and future Raspberry Pi server che
 
 The command does not deploy, initialise, migrate, edit reports, edit content or change production state. If it reports missing DB state, run `npm run platform:init` first.
 
+## 12. Local Sentinel HTTP API prototype
+
+Sentinel now has a local read-only HTTP API prototype:
+
+```bash
+npm run platform:api:serve
+npm run platform:api:smoke
+```
+
+It defaults to `127.0.0.1:4317` and exposes:
+
+- `GET /health`
+- `GET /state`
+- `GET /state?tenant=erp-experts`
+- `GET /tenant`
+
+This is not a deployment step. It has no authentication, no public hardening and no reverse proxy configuration. It should only run locally for development until authentication, service supervision and Raspberry Pi deployment controls are added.
+
 ## 13. Readiness scaffold
 
 The repo now includes a pre-deployment scaffold only:

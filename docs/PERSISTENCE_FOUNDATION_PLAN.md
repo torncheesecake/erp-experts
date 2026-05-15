@@ -383,6 +383,15 @@ It now uses the read-only Sentinel state API layer at `platform/api/state_api.mj
 
 `npm run platform:api` previews that API-style state without writing files. `npm run platform:api -- --json` writes the future API contract to stdout only.
 
+`npm run platform:api:serve` starts a local read-only HTTP prototype on `127.0.0.1:4317` by default. It exposes:
+
+- `GET /health`
+- `GET /state`
+- `GET /state?tenant=erp-experts`
+- `GET /tenant`
+
+`npm run platform:api:smoke` checks a running local API server. This layer is deliberately localhost-first, unauthenticated and not suitable for public exposure. The future migration path is auth, dashboard API reads, Raspberry Pi service management, then a hardened multi-tenant API.
+
 `platform:state` still writes `reports/sentinel-state.json`, which is ignored as generated operational output. This preserves dashboard compatibility while the canonical operational state gradually moves towards SQLite-backed accessors.
 
 The generated Action Inbox now reads this state and promotes the current Sentinel recommendation to the top of the queue. For example, when persisted approvals show planning work is ready for review, the inbox creates a `sentinel_state` item with status `awaiting_review`. Those inbox items are also appended to SQLite for history, while JSON remains the runtime source.
@@ -393,5 +402,6 @@ The distinction is:
 - `seo:autopilot`: run the full orchestration chain and regenerate reports.
 - `platform:state`: export what Sentinel currently knows to ignored dashboard JSON.
 - `platform:api`: read-only API preview of the same persisted state.
+- `platform:api:serve`: local HTTP prototype for future dashboard and server use.
 
 This does not replace JSON reports, run orchestration, apply approvals, edit content or change scoring.

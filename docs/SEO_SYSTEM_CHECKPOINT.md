@@ -329,10 +329,13 @@ Command distinction:
 - `seo:autopilot` runs the orchestration workflow and regenerates reports.
 - `platform:state` exports the concise operational intelligence summary to `reports/sentinel-state.json`.
 - `platform:api` previews the same persisted state without writing files, with `--json` support for future services.
+- `platform:api:serve` exposes the same state through a local-only HTTP prototype.
 
 The private Sentinel operator dashboard at `/seo-roadmap` now reads `reports/sentinel-state.json` and shows the same high-level operating picture in a compact Current Sentinel State panel. The stakeholder-safe `/seo-progress` route does not expose this state, commands, approvals, diagnostics or prompts.
 
 The current dashboard remains report-compatible. The new API layer is the first step towards DB-backed services and dashboard reads without relying entirely on generated report files.
+
+The HTTP prototype defaults to `http://127.0.0.1:4317` and provides `GET /health`, `GET /state`, `GET /state?tenant=erp-experts` and `GET /tenant`. It is read-only and has no authentication. Do not expose it publicly or run it as a Raspberry Pi service until auth, process supervision and deployment hardening exist.
 
 The Action Inbox now uses the same Sentinel operational state to create a top-level review item such as `Review approved planning work`. This makes the inbox the practical operator queue while preserving `reports/seo-action-inbox.json` and the existing opportunity, plan, link, freshness and conversion inputs. Inbox rows are also appended to SQLite as operator queue history.
 

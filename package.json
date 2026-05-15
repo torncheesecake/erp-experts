@@ -47,6 +47,8 @@
     "platform:health": "node scripts/platform/platform_health.mjs",
     "platform:state": "node scripts/platform/platform_state.mjs",
     "platform:api": "node scripts/platform/platform_api_preview.mjs",
+    "platform:api:serve": "node platform/api/server.mjs",
+    "platform:api:smoke": "node scripts/platform/platform_api_smoke.mjs",
     "platform:cleanup": "node scripts/platform/platform_cleanup.mjs",
     "deploy:dry-run": "bash deploy/scripts/deploy-dry-run.sh",
     "backup:dry-run": "bash deploy/scripts/backup-dry-run.sh"

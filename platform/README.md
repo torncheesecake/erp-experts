@@ -96,6 +96,15 @@ npm run platform:api -- --json
 
 `platform/api/state_api.mjs` exposes read-only accessors such as `getOperationalSummary`, `getLatestSnapshot`, `getLatestRuns`, `getLatestOpportunities`, `getLatestPlans`, `getLatestApprovals` and `getLatestInboxItems`. This is the first reusable API layer over SQLite. It does not mutate the DB and does not replace the existing JSON report workflow yet.
 
+For local HTTP testing, run:
+
+```bash
+npm run platform:api:serve
+npm run platform:api:smoke
+```
+
+The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes `GET /health`, `GET /state` and `GET /tenant`. It is read-only, has no authentication, and must not be exposed publicly. Keep it local until authentication and service hardening are added.
+
 The private `/seo-roadmap` operator dashboard consumes `reports/sentinel-state.json` for its compact Current Sentinel State panel. Stakeholder routes such as `/seo-progress` do not show this operational state.
 
 `seo:inbox` also reads this state and places the current Sentinel recommendation at the top of the operator queue. This keeps the inbox focused on the practical next review action while the existing JSON report sources remain as fallback context.
@@ -106,6 +115,7 @@ Command distinction:
 - `seo:autopilot` runs the orchestration workflow and regenerates reports.
 - `platform:state` exports the operational summary to ignored JSON for the dashboard.
 - `platform:api` previews the same persisted state as a future API contract.
+- `platform:api:serve` exposes the same read-only state over a local-only HTTP prototype.
 
 ## Deployment Readiness Scaffold
 
