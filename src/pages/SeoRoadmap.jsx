@@ -2370,9 +2370,9 @@ function AdminView({ onPreview }) {
         <div className="container" style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-lg)" }}>
           <div className="flex items-start justify-between gap-md flex-wrap">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-pink-600">Sentinel</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-pink-600">Sentinel Operator Dashboard</p>
               <h1 className="font-heading text-slate-900" style={{ fontSize: "clamp(1.6rem, 3vw, 2.1rem)" }}>SEO Overview</h1>
-              <p className="text-sm text-slate-600">Clear status. Top priorities. Next best actions.</p>
+              <p className="text-sm text-slate-600">Private automation, approval and diagnostic view for operators.</p>
               <p className="text-xs text-slate-500" style={{ marginTop: "6px" }}>
                 Last updated {dashboardLoadedAt.toLocaleTimeString("en-GB")}
               </p>

@@ -44,6 +44,7 @@ const PartnerDetail = lazy(() => import("./pages/Partners/PartnerDetail"));
 const FAQ = lazy(() => import("./pages/FAQ/FAQ"));
 const Reports = lazy(() => import("./pages/Reports"));
 const SeoRoadmap = lazy(() => import("./pages/SeoRoadmap"));
+const SeoProgress = lazy(() => import("./pages/SeoProgress"));
 const VideoPage = lazy(() => import("./pages/VideoPage"));
 
 function ScrollToTop() {
@@ -152,6 +153,7 @@ function App() {
             <Route path="/partners/:slug" element={<PartnerDetail />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/seo-progress" element={<SeoProgress />} />
             <Route path="/seo-roadmap" element={<SeoRoadmap />} />
             <Route path="*" element={<NotFound />} />
           </Route>

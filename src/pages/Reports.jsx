@@ -2238,13 +2238,13 @@ export default function Reports() {
             {/* SEO Roadmap link */}
             <FadeIn>
               <Link
-                to="/seo-roadmap"
+                to="/seo-progress"
                 className="mt-lg flex items-center justify-between gap-md rounded-2xl border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors group"
                 style={{ padding: "16px 20px" }}
               >
                 <div>
-                  <p className="font-heading font-bold text-(--color-text)">SEO Content Roadmap</p>
-                  <p className="text-sm text-(--color-text)/60 mt-1">Prioritised articles to write based on Search Console data — 35,000+ monthly impressions to capture</p>
+                  <p className="font-heading font-bold text-(--color-text)">View SEO & Content Progress</p>
+                  <p className="text-sm text-(--color-text)/60 mt-1">Stakeholder-friendly summary of content health, completed work and planned next steps.</p>
                 </div>
                 <ArrowRight className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform shrink-0" />
               </Link>
