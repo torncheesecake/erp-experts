@@ -565,7 +565,7 @@ Current limitation:
 
 Updated recommended next engineering task:
 
-> Make the next low-risk reporting helper tenant-aware in the same pattern as `seo:autopilot`, `seo:pipeline`, `seo:monitor` and `seo:stats`, then compare output against the current ERP Experts command before replacing any broader engine behaviour.
+> Make the next low-risk intelligence command tenant-aware in the same pattern as `seo:autopilot`, `seo:pipeline`, `seo:monitor`, `seo:stats` and `seo:opportunities`, then compare output against the current ERP Experts command before replacing any broader engine behaviour.
 
 ## 13. Tenant-Aware Monitor Step
 
@@ -648,6 +648,28 @@ Unchanged:
 - QA scoring.
 - Opportunity and plan generation logic.
 - Report shapes used by dashboard consumers, apart from additive tenant metadata in autopilot reports.
+- Existing default command behaviour for ERP Experts.
+
+## 17. Tenant-Aware Opportunities Step
+
+`seo:opportunities` now uses the tenant configuration layer for the unified opportunity command centre.
+
+Behaviour:
+
+- `npm run seo:opportunities` defaults to `erp-experts`.
+- `npm run seo:opportunities -- --tenant erp-experts` explicitly loads the ERP Experts tenant.
+- Unknown tenant IDs fail with a clear error and list available tenants.
+- Console output includes tenant name, tenant ID, report output path and dashboard route.
+- Source report loading and output report writing use `reportOutputPath` from the tenant config.
+- `seo-opportunity-centre.json` includes additive tenant metadata.
+- `seo:autopilot -- --tenant erp-experts` now passes the tenant through to `seo:opportunities`.
+
+Unchanged:
+
+- Opportunity grouping.
+- Scoring.
+- Prioritisation.
+- Dedupe rules.
 - Existing default command behaviour for ERP Experts.
 
 ## Non-Goals for the Next Step

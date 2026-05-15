@@ -1,16 +1,33 @@
 import fs from "node:fs";
 import path from "node:path";
+import { loadTenantConfig, printTenantError } from "./platform/tenant_config.mjs";
 
+function getArgValue(flag, fallback = null) {
+  const index = process.argv.indexOf(flag);
+  if (index === -1) return fallback;
+  return process.argv[index + 1] || fallback;
+}
+
+const tenantId = getArgValue("--tenant", "erp-experts");
+const tenantResult = loadTenantConfig(tenantId);
+
+if (!tenantResult.ok) {
+  printTenantError(tenantResult);
+  process.exit(1);
+}
+
+const tenant = tenantResult.config;
+const REPORTS_DIR = path.resolve(tenant.reportOutputPath || "reports");
 const REPORT_PATHS = {
-  growth: path.resolve("reports/seo-growth-opportunities.json"),
-  links: path.resolve("reports/seo-internal-link-opportunities.json"),
-  freshness: path.resolve("reports/seo-freshness-report.json"),
-  conversion: path.resolve("reports/seo-conversion-paths.json"),
-  qa: path.resolve("reports/resource-qa-report.json"),
-  pipeline: path.resolve("reports/seo-pipeline-summary.json"),
+  growth: path.join(REPORTS_DIR, "seo-growth-opportunities.json"),
+  links: path.join(REPORTS_DIR, "seo-internal-link-opportunities.json"),
+  freshness: path.join(REPORTS_DIR, "seo-freshness-report.json"),
+  conversion: path.join(REPORTS_DIR, "seo-conversion-paths.json"),
+  qa: path.join(REPORTS_DIR, "resource-qa-report.json"),
+  pipeline: path.join(REPORTS_DIR, "seo-pipeline-summary.json"),
 };
 
-const OUTPUT_PATH = path.resolve("reports/seo-opportunity-centre.json");
+const OUTPUT_PATH = path.join(REPORTS_DIR, "seo-opportunity-centre.json");
 const typeWeights = { growth: 1.14, internal_link: 1.04, freshness: 0.97, conversion: 1.07, mixed: 1.12 };
 
 const norm = (s) => String(s || "").toLowerCase().trim();
@@ -258,6 +275,9 @@ function buildGroupedOpportunities(items) {
 
 function printTop(top) {
   console.log("SEO Opportunity Command Centre");
+  console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
+  console.log(`Reports: ${path.relative(process.cwd(), REPORTS_DIR)}`);
+  console.log(`Dashboard: ${tenant.dashboardRoute || "/seo-roadmap"}`);
   if (!top.length) {
     console.log("No unified opportunities found.");
     return;
@@ -304,6 +324,13 @@ function main() {
   const topOpportunities = grouped.slice(0, 5);
   const output = {
     generatedAt: new Date().toISOString(),
+    tenant: {
+      tenantId: tenant.tenantId,
+      name: tenant.name,
+      baseUrl: tenant.baseUrl,
+      dashboardRoute: tenant.dashboardRoute || "/seo-roadmap",
+      reportOutputPath: tenant.reportOutputPath || "reports",
+    },
     sourceReports: Object.fromEntries(Object.entries(REPORT_PATHS).map(([k, v]) => [k, path.relative(process.cwd(), v)])),
     missingReports: missing,
     gateSummary: reports.qa?.gateSummary || {},

@@ -34,7 +34,7 @@ const COMMANDS = [
   ["seo:links", ["npm", ["run", "seo:links"]]],
   ["seo:freshness", ["npm", ["run", "seo:freshness"]]],
   ["seo:conversion", ["npm", ["run", "seo:conversion"]]],
-  ["seo:opportunities", ["npm", ["run", "seo:opportunities"]]],
+  ["seo:opportunities", ["npm", ["run", "seo:opportunities", ...tenantArgs]]],
   ["seo:plans", ["npm", ["run", "seo:plans"]]],
   ["seo:decisions", ["npm", ["run", "seo:decisions"]]],
   ["seo:inbox", ["npm", ["run", "seo:inbox"]]],
