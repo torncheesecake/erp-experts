@@ -152,3 +152,13 @@ Current policy:
 - The first deployment milestone should be documentation, environment templates and a read-only health check, not a live hosting move.
 
 This keeps the working ERP Experts automation stable while creating a safe path towards hosted, multi-client platform operations.
+
+## Platform health check
+
+Use the read-only health command before deployment or server work:
+
+```bash
+npm run platform:health
+```
+
+It checks tenant config, SQLite readiness, report presence, latest QA totals, deployment docs and Git ignore policy for runtime files. It does not mutate source files, reports, article data or server state.

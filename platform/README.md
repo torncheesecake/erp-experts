@@ -66,3 +66,13 @@ These commands use the tenant name, report output path, dashboard route and base
 ## Extraction Boundary
 
 Most SEO engines still use their current ERP Experts paths. `seo:autopilot`, `seo:pipeline`, `seo:monitor`, `seo:stats` and `seo:opportunities` are tenant-aware at the orchestration/reporting layer. The next safe step is to make one more low-risk intelligence command tenant-aware in the same pattern and compare output before replacing broader engine behaviour.
+
+## Platform Health Check
+
+Use the read-only health check before deployment or server work:
+
+```bash
+npm run platform:health
+```
+
+The command checks the ERP Experts tenant config, SQLite schema/readiness, report presence, latest QA totals, deployment documentation and ignore policy for local runtime files. It does not initialise, migrate, deploy or edit content.

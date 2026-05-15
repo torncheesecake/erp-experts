@@ -246,3 +246,25 @@ Commercial packaging options:
 ## Recommendation
 
 Do not deploy the platform yet. The next safe step is to add read-only deployment support: server folder documentation, `.env.example`, and a `platform:health` command. Once that is proven locally, run the same health check on the pinhole server without changing production hosting.
+
+## 12. Read-only platform health command
+
+The first deployment-readiness command is now:
+
+```bash
+npm run platform:health
+```
+
+It is read-only and suitable for local checks and future pinhole server checks. It verifies:
+
+- ERP Experts tenant config is present and valid.
+- SQLite can be inspected.
+- Required SQLite tables exist.
+- ERP Experts tenant exists in the DB.
+- Snapshot count is readable.
+- Core SEO reports are present.
+- Latest QA totals can be read.
+- Pinhole deployment planning docs are present.
+- Runtime database and generated operational reports are ignored by Git policy.
+
+The command does not deploy, initialise, migrate, edit reports, edit content or change production state. If it reports missing DB state, run `npm run platform:init` first.
