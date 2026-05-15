@@ -91,6 +91,14 @@ For Raspberry Pi deployment, the dashboard should only use the API once auth, re
 
 Do not expose the Sentinel API through Nginx, Apache, Caddy or any public domain until auth exists. If a reverse proxy is later added, it should start behind basic auth or a stronger tenant-aware auth layer.
 
+The access-control scaffold is documented in:
+
+- `docs/SENTINEL_ACCESS_CONTROL_PLAN.md`
+- `docs/SENTINEL_BASIC_AUTH_SETUP.md`
+- `deploy/nginx/sentinel-basic-auth.example.conf`
+
+These are templates only. Do not enable them with real traffic until credentials are generated on the server and the operator routes are confirmed private.
+
 ## Backup considerations
 
 Before enabling a managed API service:

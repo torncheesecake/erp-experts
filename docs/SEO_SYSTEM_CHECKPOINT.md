@@ -341,6 +341,8 @@ For local operator testing, `/seo-roadmap` can try the HTTP API first when `VITE
 
 The inactive Raspberry Pi service scaffold is now documented in `docs/RASPBERRY_PI_SERVICE_PLAN.md`. `deploy/systemd/sentinel-api.service.example` is a template only, and `npm run service:dry-run` prints the future systemd install/start commands without modifying system files.
 
+Access control planning is now scaffolded in `docs/SENTINEL_ACCESS_CONTROL_PLAN.md`, `docs/SENTINEL_BASIC_AUTH_SETUP.md` and `deploy/nginx/sentinel-basic-auth.example.conf`. These files document basic auth and reverse-proxy protection only. No runtime auth is enabled, no credentials are committed and the production `/seo-roadmap` redirect remains unchanged.
+
 The Action Inbox now uses the same Sentinel operational state to create a top-level review item such as `Review approved planning work`. This makes the inbox the practical operator queue while preserving `reports/seo-action-inbox.json` and the existing opportunity, plan, link, freshness and conversion inputs. Inbox rows are also appended to SQLite as operator queue history.
 
 It does not change SEO scoring, edit content, approve plans, apply patches, publish or commit.

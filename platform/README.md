@@ -113,6 +113,14 @@ npm run service:dry-run
 
 It validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
+Access-control planning is also scaffolded but inactive:
+
+- `docs/SENTINEL_ACCESS_CONTROL_PLAN.md`
+- `docs/SENTINEL_BASIC_AUTH_SETUP.md`
+- `deploy/nginx/sentinel-basic-auth.example.conf`
+
+The short-term recommendation is reverse-proxy basic auth for operator routes, while the API remains bound to `127.0.0.1`. No auth code is active in the app yet, and no credentials belong in the repo.
+
 The private `/seo-roadmap` operator dashboard consumes `reports/sentinel-state.json` for its compact Current Sentinel State panel by default. For local API experiments, set:
 
 ```bash
