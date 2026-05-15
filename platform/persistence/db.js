@@ -62,6 +62,13 @@ export function queryRows(sql, dbPath = DEFAULT_DB_PATH) {
   return output.split("\n").map((line) => line.split("\t"));
 }
 
+export function tableExists(tableName, dbPath = DEFAULT_DB_PATH) {
+  return queryValue(
+    `SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = '${quoteSql(tableName)}';`,
+    dbPath,
+  ) === "1";
+}
+
 export function upsertTenant(tenant, dbPath = DEFAULT_DB_PATH) {
   executeSql(
     `INSERT INTO tenants (tenant_id, name, domain)
@@ -85,6 +92,40 @@ export function insertSnapshot(snapshot, dbPath = DEFAULT_DB_PATH) {
      );`,
     dbPath,
   );
+}
+
+export function persistOpportunitySummaries({ tenantId, opportunities = [] }, dbPath = DEFAULT_DB_PATH) {
+  if (!opportunities.length) return 0;
+
+  const statements = opportunities.map((opportunity) => (
+    `INSERT INTO opportunity_summaries (
+       tenant_id,
+       opportunity_id,
+       title,
+       primary_type,
+       score,
+       priority_label,
+       action_theme,
+       target_slug,
+       target_path,
+       state
+     )
+     VALUES (
+       '${quoteSql(tenantId)}',
+       '${quoteSql(opportunity.id || opportunity.opportunityId || "")}',
+       '${quoteSql(opportunity.groupTitle || opportunity.title)}',
+       '${quoteSql(opportunity.primaryType || "")}',
+       ${Number(opportunity.score || 0)},
+       '${quoteSql(opportunity.priorityLabel || "")}',
+       '${quoteSql(opportunity.actionTheme || "")}',
+       '${quoteSql(opportunity.targetSlug || "")}',
+       '${quoteSql(opportunity.targetPath || "")}',
+       'suggested'
+     );`
+  ));
+
+  executeSql(statements.join("\n"), dbPath);
+  return opportunities.length;
 }
 
 export function startRun(run, dbPath = DEFAULT_DB_PATH) {
@@ -136,16 +177,49 @@ export function listLatestRuns(limit = 5, dbPath = DEFAULT_DB_PATH) {
   }));
 }
 
+export function listLatestOpportunitySummaries(limit = 5, dbPath = DEFAULT_DB_PATH) {
+  if (!tableExists("opportunity_summaries", dbPath)) return [];
+
+  return queryRows(
+    `SELECT id, tenant_id, opportunity_id, title, primary_type, score, priority_label, action_theme, target_slug, target_path, state, created_at
+     FROM opportunity_summaries
+     ORDER BY created_at DESC, score DESC, id DESC
+     LIMIT ${Number(limit) || 5};`,
+    dbPath,
+  ).map(([id, tenantId, opportunityId, title, primaryType, score, priorityLabel, actionTheme, targetSlug, targetPath, state, createdAt]) => ({
+    id: Number(id),
+    tenantId,
+    opportunityId,
+    title,
+    primaryType,
+    score: Number(score || 0),
+    priorityLabel,
+    actionTheme,
+    targetSlug,
+    targetPath,
+    state,
+    createdAt,
+  }));
+}
+
 export function getPersistenceSummary(dbPath = DEFAULT_DB_PATH) {
   const latestRuns = listLatestRuns(5, dbPath);
+  const hasOpportunitySummaries = tableExists("opportunity_summaries", dbPath);
+  const latestOpportunitySummaries = hasOpportunitySummaries ? listLatestOpportunitySummaries(5, dbPath) : [];
+
   return {
     dbPath,
     exists: databaseExists(dbPath),
     tenantCount: Number(queryValue("SELECT COUNT(*) FROM tenants;", dbPath) || 0),
     runCount: Number(queryValue("SELECT COUNT(*) FROM runs;", dbPath) || 0),
     snapshotCount: Number(queryValue("SELECT COUNT(*) FROM snapshots;", dbPath) || 0),
+    opportunitySummaryCount: hasOpportunitySummaries
+      ? Number(queryValue("SELECT COUNT(*) FROM opportunity_summaries;", dbPath) || 0)
+      : 0,
     erpExpertsTenantExists: queryValue("SELECT COUNT(*) FROM tenants WHERE tenant_id = 'erp-experts';", dbPath) === "1",
     latestRun: latestRuns[0] || null,
     latestRuns,
+    latestOpportunitySummary: latestOpportunitySummaries[0] || null,
+    latestOpportunitySummaries,
   };
 }

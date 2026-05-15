@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { DEFAULT_DB_PATH, databaseExists, persistOpportunitySummaries } from "../platform/persistence/db.js";
 import { loadTenantConfig, printTenantError } from "./platform/tenant_config.mjs";
 
 function getArgValue(flag, fallback = null) {
@@ -294,6 +295,22 @@ function printTop(top) {
   });
 }
 
+function persistTopOpportunitySummaries(opportunities) {
+  if (!databaseExists(DEFAULT_DB_PATH)) return;
+
+  try {
+    const count = persistOpportunitySummaries({
+      tenantId: tenant.tenantId,
+      opportunities: opportunities.slice(0, 10),
+    });
+    if (count) {
+      console.log(`Persisted opportunity summaries: ${count}`);
+    }
+  } catch (error) {
+    console.warn(`[seo:opportunities] SQLite opportunity summary warning: ${error.message}`);
+  }
+}
+
 function main() {
   const reports = Object.fromEntries(Object.entries(REPORT_PATHS).map(([k, v]) => [k, readJson(v)]));
   const missing = Object.entries(reports).filter(([, v]) => !v).map(([k]) => k);
@@ -341,6 +358,7 @@ function main() {
   };
 
   fs.writeFileSync(OUTPUT_PATH, `${JSON.stringify(output, null, 2)}\n`, "utf8");
+  persistTopOpportunitySummaries(grouped);
   printTop(topOpportunities);
   console.log(`Report written: ${OUTPUT_PATH}`);
 }

@@ -102,3 +102,16 @@ Sentinel now records a small SQLite run history for selected commands:
 - `platform:health`
 
 Run logging is additive and warning-only. If SQLite logging fails, the command should continue unless the command itself failed. Use `npm run platform:status` to see the run count, last run and latest five runs.
+
+## Opportunity Summary Persistence
+
+`seo:opportunities` now dual-writes the latest strategic opportunity summaries into SQLite after generating `reports/seo-opportunity-centre.json`.
+
+This is intentionally append-only for now:
+
+- JSON reports remain the runtime source for the dashboard and existing commands.
+- SQLite accumulates platform history for future multi-client state.
+- Persistence failures warn only and must not fail `seo:opportunities`.
+- `npm run platform:status` shows the opportunity summary count, latest top opportunity and latest five persisted opportunity summaries.
+
+Run `npm run platform:init` after pulling schema changes so the local SQLite database has the `opportunity_summaries` table.

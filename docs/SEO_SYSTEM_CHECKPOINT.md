@@ -213,3 +213,16 @@ Sentinel now uses the SQLite `runs` table for selected command execution history
 - `platform:health`
 
 Run logging is warning-only. A DB logging failure should not fail the command unless the command itself fails. `npm run platform:status` shows run count, the last run and the latest five runs.
+
+## SQLite opportunity summaries
+
+Sentinel now also persists top strategic opportunity summaries from `seo:opportunities` into the SQLite `opportunity_summaries` table.
+
+Current policy:
+
+- `reports/seo-opportunity-centre.json` remains the runtime output consumed by the dashboard and existing automation.
+- SQLite stores append-only opportunity history for future platform state.
+- Persistence is warning-only and must not change opportunity scoring or command success.
+- `npm run platform:status` shows the opportunity summary count and latest persisted opportunities.
+
+This is the third persisted platform state after monitor snapshots and run history.

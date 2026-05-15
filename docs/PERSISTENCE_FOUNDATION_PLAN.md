@@ -237,3 +237,24 @@ The existing `runs` table is now used by selected commands:
 Each logged run records tenant ID, command, status, start time and finish time. DB write failures are warning-only and must not change command success unless the underlying command failed.
 
 `npm run platform:status` now shows total run count, the last run and the latest five runs. This is the second persisted platform state after monitor snapshots.
+
+## Opportunity summary persistence
+
+The next dual-write layer is strategic opportunity summaries.
+
+The new `opportunity_summaries` table stores the latest top opportunities produced by `seo:opportunities`:
+
+- tenant ID
+- opportunity ID
+- title
+- primary type
+- score
+- priority label
+- action theme
+- target slug or path
+- suggested state
+- created timestamp
+
+This does not replace `reports/seo-opportunity-centre.json`. The JSON report remains the runtime source for the dashboard and downstream scripts. SQLite is used as an append-only history layer so Sentinel can start tracking strategic opportunities over time.
+
+This layer is deliberately simple. It does not dedupe perfectly yet, and DB write failures are warning-only. The future platform can later promote these summaries into canonical opportunity state after the dual-write path has proved stable.
