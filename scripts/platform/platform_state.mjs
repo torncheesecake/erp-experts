@@ -430,6 +430,11 @@ function main() {
       current: approvals,
       countsByScope: countBy(approvals, "approvedFor"),
     },
+    inbox: {
+      count: summary.inboxItemCount,
+      latestActionable: summary.latestInboxItems.find((item) => item.status !== "done") || summary.latestInboxItem,
+      latest: summary.latestInboxItems,
+    },
     runs: {
       count: summary.runCount,
       latest: runs,

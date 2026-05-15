@@ -310,6 +310,121 @@ export function getLatestPlanStatuses({ tenantId = "", limit = 5 } = {}, dbPath 
   }));
 }
 
+export function persistInboxItems({ tenantId, items = [] }, dbPath = DEFAULT_DB_PATH) {
+  if (!items.length) return 0;
+  if (!tableExists("inbox_items", dbPath)) return 0;
+
+  const statements = items.map((item) => (
+    `INSERT INTO inbox_items (
+       tenant_id,
+       item_id,
+       source,
+       title,
+       priority,
+       status,
+       recommended_next_step,
+       command,
+       target_slug,
+       target_path,
+       safety_level,
+       requires_human_review,
+       related_ids,
+       created_at
+     )
+     VALUES (
+       '${quoteSql(tenantId)}',
+       '${quoteSql(item.id || item.itemId || "")}',
+       '${quoteSql(item.source || "")}',
+       '${quoteSql(item.title || "")}',
+       '${quoteSql(item.priority || "")}',
+       '${quoteSql(item.status || "")}',
+       '${quoteSql(item.recommendedNextStep || "")}',
+       '${quoteSql(item.command || "")}',
+       '${quoteSql(item.targetSlug || "")}',
+       '${quoteSql(item.targetPath || "")}',
+       '${quoteSql(item.safetyLevel || "")}',
+       ${item.requiresHumanReview ? 1 : 0},
+       '${quoteSql(JSON.stringify(item.relatedIds || []))}',
+       '${quoteSql(item.createdAt || new Date().toISOString())}'
+     );`
+  ));
+
+  executeSql(statements.join("\n"), dbPath);
+  return items.length;
+}
+
+export function getLatestInboxItems({ tenantId = "", limit = 5 } = {}, dbPath = DEFAULT_DB_PATH) {
+  if (!tableExists("inbox_items", dbPath)) return [];
+
+  const whereTenant = tenantId ? `WHERE tenant_id = '${quoteSql(tenantId)}'` : "";
+
+  return queryRows(
+    `SELECT id, tenant_id, item_id, source, title, priority, status, recommended_next_step,
+            command, target_slug, target_path, safety_level, requires_human_review,
+            related_ids, created_at
+     FROM inbox_items
+     ${whereTenant}
+     ORDER BY created_at DESC,
+       CASE source
+         WHEN 'monitor' THEN 100
+         WHEN 'sentinel_state' THEN 90
+         WHEN 'execution_plan' THEN 70
+         WHEN 'opportunity' THEN 60
+         WHEN 'conversion' THEN 50
+         WHEN 'internal_link' THEN 40
+         WHEN 'freshness' THEN 30
+         ELSE 0
+       END DESC,
+       CASE priority
+         WHEN 'high' THEN 3
+         WHEN 'medium' THEN 2
+         WHEN 'low' THEN 1
+         ELSE 0
+       END DESC,
+       id ASC
+     LIMIT ${Number(limit) || 5};`,
+    dbPath,
+  ).map(([
+    id,
+    rowTenantId,
+    itemId,
+    source,
+    title,
+    priority,
+    status,
+    recommendedNextStep,
+    command,
+    targetSlug,
+    targetPath,
+    safetyLevel,
+    requiresHumanReview,
+    relatedIds,
+    createdAt,
+  ]) => ({
+    id: Number(id),
+    tenantId: rowTenantId,
+    itemId,
+    source,
+    title,
+    priority,
+    status,
+    recommendedNextStep,
+    command,
+    targetSlug,
+    targetPath,
+    safetyLevel,
+    requiresHumanReview: requiresHumanReview === "1",
+    relatedIds: (() => {
+      try {
+        return JSON.parse(relatedIds || "[]");
+      } catch {
+        return [];
+      }
+    })(),
+    createdAt,
+  }));
+}
+
 export function startRun(run, dbPath = DEFAULT_DB_PATH) {
   return Number(queryValue(
     `INSERT INTO runs (tenant_id, command, status, started_at)
@@ -445,6 +560,8 @@ export function getPersistenceSummary(dbPath = DEFAULT_DB_PATH) {
   const latestPlanApprovals = hasPlanApprovals ? getLatestPlanApprovals({ limit: 5 }, dbPath) : [];
   const hasPlanStatuses = tableExists("plan_statuses", dbPath);
   const latestPlanStatuses = hasPlanStatuses ? getLatestPlanStatuses({ limit: 5 }, dbPath) : [];
+  const hasInboxItems = tableExists("inbox_items", dbPath);
+  const latestInboxItems = hasInboxItems ? getLatestInboxItems({ limit: 5 }, dbPath) : [];
 
   return {
     dbPath,
@@ -464,6 +581,9 @@ export function getPersistenceSummary(dbPath = DEFAULT_DB_PATH) {
     planStatusCount: hasPlanStatuses
       ? Number(queryValue("SELECT COUNT(*) FROM plan_statuses;", dbPath) || 0)
       : 0,
+    inboxItemCount: hasInboxItems
+      ? Number(queryValue("SELECT COUNT(*) FROM inbox_items;", dbPath) || 0)
+      : 0,
     erpExpertsTenantExists: queryValue("SELECT COUNT(*) FROM tenants WHERE tenant_id = 'erp-experts';", dbPath) === "1",
     latestRun: latestRuns[0] || null,
     latestRuns,
@@ -475,5 +595,7 @@ export function getPersistenceSummary(dbPath = DEFAULT_DB_PATH) {
     latestPlanApprovals,
     latestPlanStatus: latestPlanStatuses[0] || null,
     latestPlanStatuses,
+    latestInboxItem: latestInboxItems[0] || null,
+    latestInboxItems,
   };
 }

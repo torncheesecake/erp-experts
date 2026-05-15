@@ -107,9 +107,11 @@ function main() {
   let planSummaryCount = "unknown";
   let planApprovalCount = "unknown";
   let planStatusCount = "unknown";
+  let inboxItemCount = "unknown";
   let latestRun = null;
   let latestPlanApproval = null;
   let latestPlanStatus = null;
+  let latestInboxItem = null;
   let tenantPresent = false;
   const schemaExists = fs.existsSync(SCHEMA_PATH);
 
@@ -129,6 +131,7 @@ function main() {
         "plan_summaries",
         "plan_approvals",
         "plan_statuses",
+        "inbox_items",
       ];
       const missingTables = requiredTables.filter((table) => !tableExists(table));
       if (missingTables.length) {
@@ -141,8 +144,10 @@ function main() {
         planSummaryCount = persistenceSummary.planSummaryCount;
         planApprovalCount = persistenceSummary.planApprovalCount;
         planStatusCount = persistenceSummary.planStatusCount;
+        inboxItemCount = persistenceSummary.inboxItemCount;
         latestPlanApproval = persistenceSummary.latestPlanApproval;
         latestPlanStatus = persistenceSummary.latestPlanStatus;
+        latestInboxItem = persistenceSummary.latestInboxItem;
         latestRun = persistenceSummary.latestRuns.find((run) => run.id !== runId) || null;
         dbStatus = tenantPresent ? "ready" : "needs tenant";
         if (!tenantPresent) {
@@ -160,11 +165,13 @@ function main() {
   const autopilotReportPath = path.join(reportBase, "seo-autopilot-report.json");
   const opportunityReportPath = path.join(reportBase, "seo-opportunity-centre.json");
   const planReportPath = path.join(reportBase, "seo-execution-plans.json");
+  const inboxReportPath = path.join(reportBase, "seo-action-inbox.json");
   const qaReport = readJson(qaReportPath);
   const pipelineReport = readJson(pipelineReportPath);
   const autopilotReport = readJson(autopilotReportPath);
   const opportunityReport = readJson(opportunityReportPath);
   const planReport = readJson(planReportPath);
+  const inboxReport = readJson(inboxReportPath);
 
   if (!qaReport) critical.push(`Missing QA report: ${qaReportPath}`);
   if (!pipelineReport) critical.push(`Missing pipeline summary: ${pipelineReportPath}`);
@@ -174,6 +181,9 @@ function main() {
   }
   if (planReport && Number(planSummaryCount || 0) === 0) {
     warnings.push("Execution plan report exists, but no plan summaries are persisted yet. Run npm run seo:plans after npm run platform:init.");
+  }
+  if (inboxReport && Number(inboxItemCount || 0) === 0) {
+    warnings.push("Action inbox report exists, but no inbox items are persisted yet. Run npm run seo:inbox after npm run platform:init.");
   }
 
   const gateSummary = qaReport?.gateSummary || pipelineReport?.current?.gateSummary || {};
@@ -206,6 +216,7 @@ function main() {
   printCheck("Plan summaries", String(planSummaryCount));
   printCheck("Approvals", String(planApprovalCount));
   printCheck("Plan statuses", String(planStatusCount));
+  printCheck("Inbox items", String(inboxItemCount));
   printCheck("SEO", monitorStatus);
   printCheck("QA", `${pass} pass, ${review} review, ${blocked} blocked`);
   if (latestRun) {
@@ -216,6 +227,9 @@ function main() {
   }
   if (latestPlanStatus) {
     printCheck("Latest plan status", `${latestPlanStatus.planId} ${latestPlanStatus.currentStatus}`, latestPlanStatus.lastUpdated);
+  }
+  if (latestInboxItem) {
+    printCheck("Latest inbox item", `${latestInboxItem.title} ${latestInboxItem.status}`, latestInboxItem.createdAt);
   }
   printCheck("Deployment docs", exists("docs/PINHOLE_SERVER_DEPLOYMENT_PLAN.md") ? "present" : "missing");
   printCheck("Runtime ignore policy", notIgnored.length ? "warning" : "ready");

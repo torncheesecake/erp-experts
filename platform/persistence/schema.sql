@@ -92,6 +92,25 @@ CREATE TABLE IF NOT EXISTS plan_statuses (
   FOREIGN KEY (tenant_id) REFERENCES tenants (tenant_id)
 );
 
+CREATE TABLE IF NOT EXISTS inbox_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tenant_id TEXT NOT NULL,
+  item_id TEXT,
+  source TEXT,
+  title TEXT NOT NULL,
+  priority TEXT,
+  status TEXT,
+  recommended_next_step TEXT,
+  command TEXT,
+  target_slug TEXT,
+  target_path TEXT,
+  safety_level TEXT,
+  requires_human_review INTEGER,
+  related_ids TEXT,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (tenant_id) REFERENCES tenants (tenant_id)
+);
+
 CREATE INDEX IF NOT EXISTS idx_runs_tenant_started_at
   ON runs (tenant_id, started_at);
 
@@ -136,3 +155,15 @@ CREATE INDEX IF NOT EXISTS idx_plan_statuses_plan
 
 CREATE INDEX IF NOT EXISTS idx_plan_statuses_current_status
   ON plan_statuses (current_status);
+
+CREATE INDEX IF NOT EXISTS idx_inbox_items_tenant
+  ON inbox_items (tenant_id);
+
+CREATE INDEX IF NOT EXISTS idx_inbox_items_item
+  ON inbox_items (item_id);
+
+CREATE INDEX IF NOT EXISTS idx_inbox_items_status
+  ON inbox_items (status);
+
+CREATE INDEX IF NOT EXISTS idx_inbox_items_priority
+  ON inbox_items (priority);

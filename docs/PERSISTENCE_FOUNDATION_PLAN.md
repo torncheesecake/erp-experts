@@ -316,6 +316,30 @@ This does not replace `reports/seo-plan-approvals.json` or `reports/seo-plan-sta
 
 DB persistence is additive and warning-only. A database write failure must not approve, reject, apply, block or otherwise alter the existing file-based workflow.
 
+## Action Inbox persistence
+
+Action Inbox items are now also dual-written to SQLite.
+
+The new `inbox_items` table stores:
+
+- tenant ID
+- item ID
+- source
+- title
+- priority
+- status
+- recommended next step
+- command
+- target slug/path
+- safety level
+- required human review flag
+- related IDs
+- created timestamp
+
+This does not replace `reports/seo-action-inbox.json`. The JSON report remains the runtime source for the dashboard and existing automation. SQLite is accumulating append-only operator queue history so Sentinel can later track review work, completion state and hand-offs across tenants.
+
+DB persistence is additive and warning-only. A database write failure must not apply work, approve plans, alter scoring or change the generated inbox behaviour.
+
 ## Operational state summary
 
 `npm run platform:state` is the first high-level operational summary layer on top of persisted Sentinel state.
@@ -333,7 +357,7 @@ It reads SQLite and summarises:
 
 It also writes `reports/sentinel-state.json`, which is ignored as generated operational output. This JSON file is a future candidate for a lightweight API or dashboard state source.
 
-The generated Action Inbox now reads this state and promotes the current Sentinel recommendation to the top of the queue. For example, when persisted approvals show planning work is ready for review, the inbox creates a `sentinel_state` item with status `awaiting_review`. This is still a generated JSON inbox, not canonical DB-backed inbox persistence.
+The generated Action Inbox now reads this state and promotes the current Sentinel recommendation to the top of the queue. For example, when persisted approvals show planning work is ready for review, the inbox creates a `sentinel_state` item with status `awaiting_review`. Those inbox items are also appended to SQLite for history, while JSON remains the runtime source.
 
 The distinction is:
 

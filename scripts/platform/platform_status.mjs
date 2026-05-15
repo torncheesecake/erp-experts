@@ -21,6 +21,7 @@ console.log(`Opportunity summary count: ${summary.opportunitySummaryCount}`);
 console.log(`Plan summary count: ${summary.planSummaryCount}`);
 console.log(`Approval count: ${summary.planApprovalCount}`);
 console.log(`Plan status count: ${summary.planStatusCount}`);
+console.log(`Inbox item count: ${summary.inboxItemCount}`);
 console.log(`ERP Experts tenant: ${summary.erpExpertsTenantExists ? "present" : "missing"}`);
 
 if (summary.latestRun) {
@@ -85,5 +86,18 @@ if (!summary.latestPlanStatuses.length) {
 } else {
   summary.latestPlanStatuses.forEach((status) => {
     console.log(`  - #${status.id} ${status.planId} ${status.currentStatus} ${status.validationState} ${status.lastUpdated}`);
+  });
+}
+
+if (summary.latestInboxItem) {
+  console.log(`Latest inbox item: ${summary.latestInboxItem.title} (${summary.latestInboxItem.status}) at ${summary.latestInboxItem.createdAt}`);
+}
+
+console.log("Latest inbox items:");
+if (!summary.latestInboxItems.length) {
+  console.log("  None recorded yet.");
+} else {
+  summary.latestInboxItems.forEach((item) => {
+    console.log(`  - #${item.id} ${item.title} ${item.priority} ${item.status} ${item.createdAt}`);
   });
 }

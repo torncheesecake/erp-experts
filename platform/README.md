@@ -89,7 +89,7 @@ It reads SQLite and summarises tenant, latest health snapshot, recent runs, top 
 
 The private `/seo-roadmap` operator dashboard consumes `reports/sentinel-state.json` for its compact Current Sentinel State panel. Stakeholder routes such as `/seo-progress` do not show this operational state.
 
-`seo:inbox` also reads this state and places the current Sentinel recommendation at the top of the operator queue. This keeps the inbox focused on the practical next review action while the existing JSON report sources remain as fallback context. Full DB-backed inbox item persistence is still future work.
+`seo:inbox` also reads this state and places the current Sentinel recommendation at the top of the operator queue. This keeps the inbox focused on the practical next review action while the existing JSON report sources remain as fallback context.
 
 Command distinction:
 
@@ -171,3 +171,20 @@ The persisted approval rows include plan ID, approval level, safety level, revie
 `reports/seo-plan-approvals.json` and `reports/seo-plan-status.json` remain ignored local operational state for now. SQLite is append-only workflow history, not yet the canonical execution state. DB write failures warn only.
 
 Run `npm run platform:init` after pulling schema changes so the local SQLite database has the `plan_approvals` and `plan_statuses` tables.
+
+## Action Inbox Persistence
+
+`seo:inbox` now keeps `reports/seo-action-inbox.json` and also appends the top generated inbox items into SQLite.
+
+Default use still targets ERP Experts:
+
+```bash
+npm run seo:inbox
+npm run seo:inbox -- --tenant erp-experts
+```
+
+The persisted inbox rows include source, title, priority, status, recommended next step, command, target slug/path, safety level, human review flag and related IDs. The `sentinel_state` item is included when present, so the DB captures the practical operator queue, not only raw opportunity reports.
+
+SQLite is append-only history for now. JSON remains the runtime/report source, and DB write failures warn only.
+
+Run `npm run platform:init` after pulling schema changes so the local SQLite database has the `inbox_items` table.

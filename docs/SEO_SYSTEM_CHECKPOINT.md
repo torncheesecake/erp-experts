@@ -268,6 +268,22 @@ Current policy:
 
 This is the fifth persisted platform state after monitor snapshots, run history, opportunity summaries and execution plan summaries.
 
+## SQLite Action Inbox history
+
+Sentinel now persists generated Action Inbox rows into SQLite.
+
+Current policy:
+
+- `reports/seo-action-inbox.json` remains the runtime inbox report.
+- SQLite appends inbox rows to `inbox_items`.
+- The `sentinel_state` recommendation is persisted when present.
+- `seo:inbox` defaults to ERP Experts and also supports `--tenant erp-experts`.
+- Persistence is warning-only and must not apply work, approve plans, change QA scoring or change command success.
+- `npm run platform:status` shows inbox item counts and latest rows.
+- `npm run platform:health` checks the inbox table and warns if an inbox report exists without persisted inbox rows.
+
+This is the sixth persisted platform state after monitor snapshots, run history, opportunity summaries, execution plan summaries, approvals and plan statuses.
+
 ## Sentinel operational state
 
 `npm run platform:state` is the operator-level summary of what Sentinel currently knows from SQLite.
@@ -294,6 +310,6 @@ Command distinction:
 
 The private Sentinel operator dashboard at `/seo-roadmap` now reads `reports/sentinel-state.json` and shows the same high-level operating picture in a compact Current Sentinel State panel. The stakeholder-safe `/seo-progress` route does not expose this state, commands, approvals, diagnostics or prompts.
 
-The Action Inbox now uses the same Sentinel operational state to create a top-level review item such as `Review approved planning work`. This makes the inbox the practical operator queue while preserving `reports/seo-action-inbox.json` and the existing opportunity, plan, link, freshness and conversion inputs. Inbox rows are not yet persisted as canonical DB records.
+The Action Inbox now uses the same Sentinel operational state to create a top-level review item such as `Review approved planning work`. This makes the inbox the practical operator queue while preserving `reports/seo-action-inbox.json` and the existing opportunity, plan, link, freshness and conversion inputs. Inbox rows are also appended to SQLite as operator queue history.
 
 It does not change SEO scoring, edit content, approve plans, apply patches, publish or commit.

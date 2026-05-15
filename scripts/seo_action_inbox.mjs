@@ -1,19 +1,27 @@
 import fs from "node:fs";
 import path from "node:path";
+import { DEFAULT_DB_PATH, databaseExists, persistInboxItems, tableExists } from "../platform/persistence/db.js";
+import { loadTenantConfig, printTenantError } from "./platform/tenant_config.mjs";
 
-const INPUTS = {
-  qa: path.resolve("reports/resource-qa-report.json"),
-  pipeline: path.resolve("reports/seo-pipeline-summary.json"),
-  opportunities: path.resolve("reports/seo-opportunity-centre.json"),
-  plans: path.resolve("reports/seo-execution-plans.json"),
-  planStatus: path.resolve("reports/seo-plan-status.json"),
-  sentinelState: path.resolve("reports/sentinel-state.json"),
-  links: path.resolve("reports/seo-internal-link-opportunities.json"),
-  freshness: path.resolve("reports/seo-freshness-report.json"),
-  conversion: path.resolve("reports/seo-conversion-paths.json"),
-};
+function getArgValue(flag, fallback = null) {
+  const index = process.argv.indexOf(flag);
+  if (index === -1) return fallback;
+  return process.argv[index + 1] || fallback;
+}
 
-const OUTPUT = path.resolve("reports/seo-action-inbox.json");
+function inputPaths(reportsDir) {
+  return {
+    qa: path.join(reportsDir, "resource-qa-report.json"),
+    pipeline: path.join(reportsDir, "seo-pipeline-summary.json"),
+    opportunities: path.join(reportsDir, "seo-opportunity-centre.json"),
+    plans: path.join(reportsDir, "seo-execution-plans.json"),
+    planStatus: path.join(reportsDir, "seo-plan-status.json"),
+    sentinelState: path.join(reportsDir, "sentinel-state.json"),
+    links: path.join(reportsDir, "seo-internal-link-opportunities.json"),
+    freshness: path.join(reportsDir, "seo-freshness-report.json"),
+    conversion: path.join(reportsDir, "seo-conversion-paths.json"),
+  };
+}
 
 function readJson(filePath) {
   try {
@@ -72,16 +80,44 @@ function buildSentinelStateItem({ sentinelState, stamp }) {
   };
 }
 
+function safePersistInboxItems({ tenantId, items }) {
+  try {
+    if (!databaseExists(DEFAULT_DB_PATH)) {
+      console.warn("Warning: platform DB missing; skipped inbox item persistence. Run npm run platform:init.");
+      return 0;
+    }
+    if (!tableExists("inbox_items", DEFAULT_DB_PATH)) {
+      console.warn("Warning: inbox_items table missing; skipped inbox item persistence. Run npm run platform:init.");
+      return 0;
+    }
+    return persistInboxItems({ tenantId, items: items.slice(0, 10) }, DEFAULT_DB_PATH);
+  } catch (error) {
+    console.warn(`Warning: could not persist inbox items to platform DB: ${error.message}`);
+    return 0;
+  }
+}
+
 function main() {
-  const qa = readJson(INPUTS.qa);
-  const pipeline = readJson(INPUTS.pipeline);
-  const opportunities = readJson(INPUTS.opportunities);
-  const plans = readJson(INPUTS.plans);
-  const planStatus = readJson(INPUTS.planStatus);
-  const sentinelState = readJson(INPUTS.sentinelState);
-  const links = readJson(INPUTS.links);
-  const freshness = readJson(INPUTS.freshness);
-  const conversion = readJson(INPUTS.conversion);
+  const tenantId = getArgValue("--tenant", "erp-experts");
+  const tenantResult = loadTenantConfig(tenantId);
+  if (!tenantResult.ok) {
+    printTenantError(tenantResult);
+    process.exit(1);
+  }
+
+  const tenant = tenantResult.config;
+  const reportsDir = path.resolve(tenant.reportOutputPath || "reports");
+  const inputs = inputPaths(reportsDir);
+  const outputPath = path.join(reportsDir, "seo-action-inbox.json");
+  const qa = readJson(inputs.qa);
+  const pipeline = readJson(inputs.pipeline);
+  const opportunities = readJson(inputs.opportunities);
+  const plans = readJson(inputs.plans);
+  const planStatus = readJson(inputs.planStatus);
+  const sentinelState = readJson(inputs.sentinelState);
+  const links = readJson(inputs.links);
+  const freshness = readJson(inputs.freshness);
+  const conversion = readJson(inputs.conversion);
 
   const humanReview = Boolean(pipeline?.review?.humanReviewRecommended);
   const gate = qa?.gateSummary || {};
@@ -242,15 +278,26 @@ function main() {
 
   const output = {
     generatedAt: stamp,
+    tenant: {
+      tenantId: tenant.tenantId,
+      name: tenant.name,
+      dashboardRoute: tenant.dashboardRoute,
+      reportOutputPath: tenant.reportOutputPath,
+    },
     summary,
     items: sorted,
   };
-  fs.writeFileSync(OUTPUT, `${JSON.stringify(output, null, 2)}\n`, "utf8");
+  fs.mkdirSync(reportsDir, { recursive: true });
+  fs.writeFileSync(outputPath, `${JSON.stringify(output, null, 2)}\n`, "utf8");
+
+  const persistedCount = safePersistInboxItems({ tenantId: tenant.tenantId, items: sorted });
 
   console.log("SEO Action Inbox");
+  console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
   console.log(`High priority: ${summary.highPriority}`);
   console.log(`Awaiting review: ${summary.awaitingReview}`);
   console.log(`Suggested: ${summary.suggested}`);
+  console.log(`Persisted inbox items: ${persistedCount}`);
   if (summary.noUrgentAction) {
     console.log("No urgent action. Strategic opportunities available.");
   }
@@ -258,7 +305,7 @@ function main() {
     console.log(`Top state action: ${stateItem.title}`);
     console.log(`Next: ${stateItem.recommendedNextStep}`);
   }
-  console.log(`Report written: ${OUTPUT}`);
+  console.log(`Report written: ${outputPath}`);
 }
 
 main();
