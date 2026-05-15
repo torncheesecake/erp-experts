@@ -1,10 +1,15 @@
-# Pinhole Server Deployment Plan
+# Raspberry Pi Server Deployment Plan
 
-This plan describes how the SEO and content operations platform should eventually live on Matthew's pinhole web server. It is a planning document only. It does not deploy anything, move repositories, create secrets, or change production hosting.
+## Sentinel working name and filename note
+
+Sentinel is the working name for the SEO/content operations platform described in this deployment plan. This document now uses Raspberry Pi server wording, but the filename still contains `PINHOLE` for compatibility with the existing docs structure. Rename filenames later only as a separate cleanup.
+
+
+This plan describes how the SEO and content operations platform should eventually live on Matthew's Raspberry Pi server. It is a planning document only. It does not deploy anything, move repositories, create secrets, or change production hosting.
 
 ## 1. Current assumptions
 
-- Matthew has a pinhole server available for future platform hosting.
+- Matthew has a Raspberry Pi server available for future platform hosting.
 - Codex can access the server when a deployment task is explicitly approved.
 - Domains or subdomains can be pointed at the server later.
 - The ERP Experts SEO automation currently runs from this repository locally and in GitHub workflows.
@@ -214,7 +219,7 @@ Recommended first engineering task after this plan:
 
 ## 10. Future SaaS path
 
-The pinhole server can become the proving ground for the reusable platform before any full SaaS build.
+The Raspberry Pi server can become the proving ground for the reusable platform before any full SaaS build.
 
 Likely evolution:
 
@@ -245,7 +250,7 @@ Commercial packaging options:
 
 ## Recommendation
 
-Do not deploy the platform yet. The next safe step is to add read-only deployment support: server folder documentation, `.env.example`, and a `platform:health` command. Once that is proven locally, run the same health check on the pinhole server without changing production hosting.
+Do not deploy the platform yet. The next safe step is to add read-only deployment support: server folder documentation, `.env.example`, and a `platform:health` command. Once that is proven locally, run the same health check on the Raspberry Pi server without changing production hosting.
 
 ## 12. Read-only platform health command
 
@@ -255,7 +260,7 @@ The first deployment-readiness command is now:
 npm run platform:health
 ```
 
-It is read-only and suitable for local checks and future pinhole server checks. It verifies:
+It is read-only and suitable for local checks and future Raspberry Pi server checks. It verifies:
 
 - ERP Experts tenant config is present and valid.
 - SQLite can be inspected.
@@ -264,7 +269,7 @@ It is read-only and suitable for local checks and future pinhole server checks. 
 - Snapshot count is readable.
 - Core SEO reports are present.
 - Latest QA totals can be read.
-- Pinhole deployment planning docs are present.
+- Raspberry Pi deployment planning docs are present.
 - Runtime database and generated operational reports are ignored by Git policy.
 
 The command does not deploy, initialise, migrate, edit reports, edit content or change production state. If it reports missing DB state, run `npm run platform:init` first.

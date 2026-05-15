@@ -1,5 +1,10 @@
 # Platform Persistence Foundation Plan
 
+## Sentinel working name
+
+Sentinel is the working name for the platform persistence layer and wider SEO/content operations system. The persistence files, commands and database paths are not being renamed in this phase.
+
+
 ## Purpose
 
 The SEO automation system currently works well as a JSON-report orchestration layer. The next platform milestone is to introduce real persistent state without breaking the existing ERP Experts workflow.

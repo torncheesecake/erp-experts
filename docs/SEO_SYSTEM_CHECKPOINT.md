@@ -1,5 +1,10 @@
 # SEO System Checkpoint
 
+## Sentinel working name
+
+Sentinel is the working name for the SEO/content operations platform. The existing file names, commands, folders and routes have not been renamed. Any filename cleanup, including files that still contain `PINHOLE`, should happen later as a separate low-risk cleanup.
+
+
 ## Current commands
 
 - `npm run seo:pipeline`
@@ -139,9 +144,9 @@ Ignored local/generated outputs:
 - Scheduled digest notification delivery.
 - Optional PR-based patch execution flow.
 
-## Pinhole server deployment plan
+## Raspberry Pi server deployment plan
 
-Deployment planning for Matthew's pinhole server is captured in `docs/PINHOLE_SERVER_DEPLOYMENT_PLAN.md`.
+Deployment planning for Matthew's Raspberry Pi server is captured in `docs/PINHOLE_SERVER_DEPLOYMENT_PLAN.md`.
 
 Current policy:
 
@@ -163,7 +168,7 @@ npm run platform:health
 
 It checks tenant config, SQLite readiness, report presence, latest QA totals, deployment docs and Git ignore policy for runtime files. It does not mutate source files, reports, article data or server state.
 
-## Pinhole readiness scaffold
+## Raspberry Pi readiness scaffold
 
 The future server deployment scaffold is present:
 
@@ -182,7 +187,7 @@ Use the read-only deployment planner before any future server work:
 npm run deploy:dry-run
 ```
 
-It prints the intended pinhole server paths, future command sequence, expected `.env` variables and safety notes. It does not SSH, create directories, copy files or deploy anything.
+It prints the intended Raspberry Pi server paths, future command sequence, expected `.env` variables and safety notes. It does not SSH, create directories, copy files or deploy anything.
 
 ## Backup and environment scaffold
 

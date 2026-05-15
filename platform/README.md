@@ -1,6 +1,6 @@
-# SEO Platform Tenant Foundation
+# Sentinel Tenant Foundation
 
-This folder starts the extraction of the ERP Experts SEO automation system into a reusable multi-client platform.
+Sentinel is the working name for the SEO/content operations platform. This folder starts the extraction of the ERP Experts SEO automation system into a reusable multi-client platform.
 
 The current implementation is intentionally read-only. It does not move existing scripts, alter scoring logic, change article data, or change the `/seo-roadmap` dashboard.
 
@@ -16,7 +16,7 @@ platform/
 
 ## Current Tenant
 
-`platform/tenants/erp-experts.config.json` describes the current ERP Experts site as the first platform tenant.
+`platform/tenants/erp-experts.config.json` describes the current ERP Experts site as Sentinel's first tenant.
 
 It defines:
 
@@ -79,11 +79,15 @@ The command checks the ERP Experts tenant config, SQLite schema/readiness, repor
 
 ## Deployment Readiness Scaffold
 
-The pinhole server readiness scaffold is documentation-first:
+The Raspberry Pi server readiness scaffold is documentation-first:
 
 - `docs/PINHOLE_SERVER_READINESS_CHECKLIST.md`
 - `.env.example`
 - `deploy/scripts/check-local.sh`
 - `deploy/scripts/check-server.sh`
 
-`check-local.sh` runs local validation. `check-server.sh` performs read-only environment and directory checks. Neither script deploys the platform.
+`check-local.sh` runs local validation. `check-server.sh` performs read-only environment and directory checks. Neither script deploys Sentinel.
+
+## Raspberry Pi Deployment Target
+
+The future deployment target is Matthew's Raspberry Pi server. Current files, commands and folders keep their existing names while Sentinel is extracted gradually. Do not rename commands or routes until a separate migration is planned.

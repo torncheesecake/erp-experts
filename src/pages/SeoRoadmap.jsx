@@ -1600,7 +1600,7 @@ async function saveStatuses(map) {
 /* ── main component ── */
 export default function SeoRoadmap() {
   useEffect(() => {
-    document.title = "SEO Content Roadmap — ERP Experts (Internal)";
+    document.title = "Sentinel SEO Overview - ERP Experts (Internal)";
     let meta = document.querySelector('meta[name="robots"]');
     if (!meta) {
       meta = document.createElement("meta");
@@ -2370,6 +2370,7 @@ function AdminView({ onPreview }) {
         <div className="container" style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-lg)" }}>
           <div className="flex items-start justify-between gap-md flex-wrap">
             <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-pink-600">Sentinel</p>
               <h1 className="font-heading text-slate-900" style={{ fontSize: "clamp(1.6rem, 3vw, 2.1rem)" }}>SEO Overview</h1>
               <p className="text-sm text-slate-600">Clear status. Top priorities. Next best actions.</p>
               <p className="text-xs text-slate-500" style={{ marginTop: "6px" }}>
@@ -2436,7 +2437,8 @@ function AdminView({ onPreview }) {
       <main className="container" style={{ paddingBottom: "var(--space-2xl)" }}>
         <div className="grid gap-xl lg:grid-cols-[220px_minmax(0,1fr)]">
           <aside className="rounded-2xl bg-slate-50/65 p-5 shadow-sm ring-1 ring-slate-100/70 h-fit lg:sticky lg:top-24">
-            <p className="text-xs font-semibold text-slate-500">Navigation</p>
+            <p className="text-lg font-semibold text-slate-900">Sentinel</p>
+            <p className="text-xs text-slate-500">SEO operations</p>
             <nav className="grid gap-2" style={{ marginTop: "10px" }}>
               {navItems.map((item) => (
                 <button
@@ -2453,7 +2455,7 @@ function AdminView({ onPreview }) {
               ))}
             </nav>
             <div className="rounded-lg bg-white/80 p-3 ring-1 ring-slate-100" style={{ marginTop: "16px" }}>
-              <p className="text-xs text-slate-500">System health</p>
+              <p className="text-xs text-slate-500">Sentinel health</p>
               <p className="text-sm font-semibold text-emerald-600">{dashboardMode.stateLabel}</p>
               <p className="text-xs text-slate-600">pass {summaryGate.pass} · blocked {summaryGate.blocked}</p>
             </div>

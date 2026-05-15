@@ -1,6 +1,11 @@
-# Pinhole Server Readiness Checklist
+# Raspberry Pi Server Readiness Checklist
 
-This checklist prepares the SEO operations platform for a future safe deployment to Matthew's pinhole server. It is not a deployment runbook and does not require server access yet.
+## Sentinel working name and filename note
+
+Sentinel is the working name for the SEO/content operations platform. This checklist now uses Raspberry Pi server wording, but the filename still contains `PINHOLE` until a separate docs filename cleanup is approved.
+
+
+This checklist prepares the SEO operations platform for a future safe deployment to Matthew's Raspberry Pi server. It is not a deployment runbook and does not require server access yet.
 
 ## 1. Required server assumptions
 

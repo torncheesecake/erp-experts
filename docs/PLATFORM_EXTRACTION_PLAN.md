@@ -1,5 +1,10 @@
 # SEO Automation Platform Extraction Plan
 
+## Sentinel working name
+
+Sentinel is the working name for the reusable SEO/content operations platform being extracted from the ERP Experts system. This naming pass is intentionally light: commands, routes, folders, scripts and report structures keep their existing names until a separate rename is planned and tested.
+
+
 ## Purpose
 
 This document outlines a safe path for turning the current ERP Experts SEO automation system into a reusable multi-client SEO and content operations platform.
@@ -717,7 +722,7 @@ Do not start with:
 
 Those are later phases once the tenant boundary is proven.
 
-## 19. Pinhole Server Deployment Planning
+## 19. Raspberry Pi Server Deployment Planning
 
 The planned server home for the platform is documented in `docs/PINHOLE_SERVER_DEPLOYMENT_PLAN.md`.
 
