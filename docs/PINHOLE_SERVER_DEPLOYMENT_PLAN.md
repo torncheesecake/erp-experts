@@ -289,3 +289,32 @@ npm run deploy:dry-run
 ```
 
 It is read-only. It checks local prerequisites, confirms the local Git branch and clean worktree, prints the intended server paths, lists the future server command sequence, lists expected `.env` values and repeats the key safety rules. It does not SSH, create directories, copy files, deploy, restart services or modify server state.
+
+## 15. Environment and backup scaffold
+
+The server `.env` should live on the server only, outside Git. `.env.example` now documents placeholder values for runtime, platform paths, tenant defaults, security placeholders, deployment and backup settings.
+
+Recommended server paths:
+
+- DB: `/srv/matthew-platform/data/seo-ops/platform.db`
+- Reports: `/srv/matthew-platform/data/seo-ops/reports`
+- Backups: `/srv/matthew-platform/data/seo-ops/backups`
+- Logs: `/srv/matthew-platform/logs/seo-ops`
+
+Backup planning commands:
+
+```bash
+npm run backup:dry-run
+bash deploy/scripts/backup-platform.sh
+bash deploy/scripts/backup-platform.sh --confirm
+```
+
+`backup:dry-run` prints intended backup paths, file naming and retention only. `backup-platform.sh` refuses without `--confirm`. Even with `--confirm`, it is currently a safe placeholder that prints TODO backup steps only.
+
+Restore principles:
+
+- Back up before changing production DB state.
+- Restore DB and reports together when they represent the same run state.
+- Verify restored DB with `npm run platform:health`.
+- Verify SEO health with `npm run seo:monitor`.
+- Do not expose the dashboard publicly until authentication exists.

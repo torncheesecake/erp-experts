@@ -183,3 +183,17 @@ npm run deploy:dry-run
 ```
 
 It prints the intended pinhole server paths, future command sequence, expected `.env` variables and safety notes. It does not SSH, create directories, copy files or deploy anything.
+
+## Backup and environment scaffold
+
+`.env.example` now documents placeholder-only runtime, platform path, tenant, security, deployment and backup variables.
+
+Backup planning commands:
+
+```bash
+npm run backup:dry-run
+bash deploy/scripts/backup-platform.sh
+bash deploy/scripts/backup-platform.sh --confirm
+```
+
+Current backup behaviour is intentionally non-mutating. The dry-run prints expected paths and retention. The placeholder backup script refuses without `--confirm`, and even with `--confirm` it prints TODO steps only. Real backup file creation is not implemented yet.

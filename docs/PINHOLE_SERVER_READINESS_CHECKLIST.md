@@ -139,3 +139,31 @@ Expected behaviour:
 - Clearly states that no deployment actions were performed.
 
 If the worktree is dirty, stop and resolve it before deployment planning continues.
+
+## 8. Environment and backup checklist
+
+Environment:
+
+- [ ] Server `.env` is created outside Git.
+- [ ] `.env.example` remains placeholders only.
+- [ ] `PLATFORM_DB_PATH` points outside the repo.
+- [ ] `PLATFORM_REPORTS_PATH` points outside the repo.
+- [ ] `PLATFORM_BACKUP_PATH` points outside the repo.
+- [ ] `PLATFORM_LOG_PATH` points outside the repo.
+- [ ] Basic auth placeholders are replaced on the server only before public exposure.
+
+Backup planning:
+
+```bash
+npm run backup:dry-run
+bash deploy/scripts/backup-platform.sh
+bash deploy/scripts/backup-platform.sh --confirm
+```
+
+Checklist:
+
+- [ ] Backup dry-run prints DB, report and backup paths.
+- [ ] Backup placeholder refuses without `--confirm`.
+- [ ] Confirmed backup placeholder still creates no files until real backup logic is implemented.
+- [ ] Retention policy is agreed before live backups are enabled.
+- [ ] Restore test is planned before client data is added.

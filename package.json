@@ -45,7 +45,8 @@
     "platform:init": "node scripts/platform/platform_init_db.mjs",
     "platform:status": "node scripts/platform/platform_status.mjs",
     "platform:health": "node scripts/platform/platform_health.mjs",
-    "deploy:dry-run": "bash deploy/scripts/deploy-dry-run.sh"
+    "deploy:dry-run": "bash deploy/scripts/deploy-dry-run.sh",
+    "backup:dry-run": "bash deploy/scripts/backup-dry-run.sh"
   },
   "homepage": "https://torncheesecake.github.io/erp-experts",
   "dependencies": {
