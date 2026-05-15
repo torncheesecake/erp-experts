@@ -77,6 +77,24 @@ npm run platform:health
 
 The command checks the ERP Experts tenant config, SQLite schema/readiness, report presence, latest QA totals, deployment documentation and ignore policy for local runtime files. It does not initialise, migrate, deploy or edit content.
 
+## Local Operator Startup
+
+Use the local bootstrap command as the normal Sentinel operator entry point:
+
+```bash
+npm run platform:start
+```
+
+It runs `platform:health` and `seo:monitor`, checks whether the local API is reachable at `http://127.0.0.1:4317/health`, reads the persisted Sentinel state summary and prints the operator dashboard and stakeholder URLs. It does not deploy, open browsers, start Vite, edit content or start background daemons.
+
+If you want the API server attached to the current terminal session, use:
+
+```bash
+npm run platform:start -- --with-api
+```
+
+This starts `platform:api:serve` only for the current foreground session when the API is not already running. Stop it with `Ctrl+C`. Keep this local-only until auth and Raspberry Pi service hardening are complete.
+
 ## Operational State Summary
 
 Use the Sentinel state command when you want the current persisted operating picture:

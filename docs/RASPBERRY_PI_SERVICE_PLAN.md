@@ -89,6 +89,14 @@ VITE_SENTINEL_API_BASE_URL=http://127.0.0.1:4317
 
 For Raspberry Pi deployment, the dashboard should only use the API once auth, reverse proxy rules and service supervision are in place. Until then, keep report-based fallback behaviour.
 
+For daily local operator startup, use:
+
+```bash
+npm run platform:start
+```
+
+This checks platform health, runs the SEO monitor, reports the current persisted Sentinel state and tells you whether the local API is running. It does not start the Raspberry Pi service, deploy files or expose anything publicly. `npm run platform:start -- --with-api` is local-only and keeps the API attached to the current terminal until `Ctrl+C`.
+
 ## Reverse proxy rule
 
 Do not expose the Sentinel API through Nginx, Apache, Caddy or any public domain until auth exists. If a reverse proxy is later added, it should start behind basic auth or a stronger tenant-aware auth layer.

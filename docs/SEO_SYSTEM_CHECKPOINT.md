@@ -32,6 +32,7 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 - `npm run platform:tenant -- erp-experts`
 - `npm run platform:init`
 - `npm run platform:status`
+- `npm run platform:start`
 - `npm run platform:state`
 
 ## Current architecture
@@ -364,3 +365,17 @@ Access control planning is now scaffolded in `docs/SENTINEL_ACCESS_CONTROL_PLAN.
 The Action Inbox now uses the same Sentinel operational state to create a top-level review item such as `Review approved planning work`. This makes the inbox the practical operator queue while preserving `reports/seo-action-inbox.json` and the existing opportunity, plan, link, freshness and conversion inputs. Inbox rows are also appended to SQLite as operator queue history.
 
 It does not change SEO scoring, edit content, approve plans, apply patches, publish or commit.
+
+## Local operator bootstrap
+
+`npm run platform:start` is the preferred local operator startup command. It runs `platform:health` and `seo:monitor`, checks whether the local Sentinel API is available, reads the persisted operational summary and prints:
+
+- health and QA totals
+- workflow state
+- latest opportunity and plan
+- recommended next step
+- operator dashboard URL
+- stakeholder-safe URL
+- latest deployment readiness status
+
+It does not deploy, SSH, open browsers, start Vite or permanently start daemons. Optional `npm run platform:start -- --with-api` starts the local API server only as a foreground child process for that terminal session and stops it on `Ctrl+C`.
