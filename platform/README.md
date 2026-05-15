@@ -37,6 +37,24 @@ npm run platform:tenant -- erp-experts
 
 The loader prints a summary and validates required fields. It does not mutate source files or generated reports.
 
+## Tenant-Aware Monitor
+
+`seo:monitor` is the first SEO engine to read the tenant config.
+
+Default use still targets ERP Experts:
+
+```bash
+npm run seo:monitor
+```
+
+Explicit tenant use is also supported:
+
+```bash
+npm run seo:monitor -- --tenant erp-experts
+```
+
+The monitor uses the tenant name, report output path, dashboard route and base URL from `platform/tenants/erp-experts.config.json`. Its scoring, regression and health logic are unchanged.
+
 ## Extraction Boundary
 
-Existing SEO engines still use their current ERP Experts paths. The next safe step is to make one non-critical engine tenant-aware in read-only parallel mode and compare output before replacing any current command behaviour.
+Most SEO engines still use their current ERP Experts paths. `seo:monitor` is the first tenant-aware command. The next safe step is to make one more low-risk reporting helper tenant-aware in the same pattern and compare output before replacing broader engine behaviour.

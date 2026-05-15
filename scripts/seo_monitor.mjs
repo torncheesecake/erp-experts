@@ -1,6 +1,8 @@
 import { readJson } from "./seo_batch_helpers.mjs";
 import { buildMonitorState } from "./seo_monitor_helpers.mjs";
+import { loadTenantConfig, printTenantError } from "./platform/tenant_config.mjs";
 import fs from "node:fs";
+import path from "node:path";
 
 function readJsonSafe(filePath) {
   try {
@@ -19,13 +21,33 @@ function printList(label, items) {
   items.forEach((item) => console.log(`- ${item}`));
 }
 
+function getArgValue(flag, fallback = null) {
+  const index = process.argv.indexOf(flag);
+  if (index === -1) return fallback;
+  return process.argv[index + 1] || fallback;
+}
+
+function reportPath(tenant, fileName) {
+  return path.join(tenant.reportOutputPath || "reports", fileName);
+}
+
 function main() {
   const summaryOnly = process.argv.includes("--summary");
-  const qaReport = readJson("reports/resource-qa-report.json");
-  const pipelineSummary = readJson("reports/seo-pipeline-summary.json");
-  const opportunityCentre = readJsonSafe("reports/seo-opportunity-centre.json");
-  readJson("reports/seo-action-briefs.json");
-  readJson("reports/seo-weekly-summary.json");
+  const tenantId = getArgValue("--tenant", "erp-experts");
+  const tenantResult = loadTenantConfig(tenantId);
+
+  if (!tenantResult.ok) {
+    printTenantError(tenantResult);
+    process.exitCode = 1;
+    return;
+  }
+
+  const tenant = tenantResult.config;
+  const qaReport = readJson(reportPath(tenant, "resource-qa-report.json"));
+  const pipelineSummary = readJson(reportPath(tenant, "seo-pipeline-summary.json"));
+  const opportunityCentre = readJsonSafe(reportPath(tenant, "seo-opportunity-centre.json"));
+  readJson(reportPath(tenant, "seo-action-briefs.json"));
+  readJson(reportPath(tenant, "seo-weekly-summary.json"));
 
   const state = buildMonitorState({ qaReport, pipelineSummary });
 
@@ -45,7 +67,10 @@ function main() {
     return;
   }
 
-  console.log("SEO Weekly Monitor");
+  console.log(`SEO Monitor Report - ${tenant.name}`);
+  console.log("");
+  console.log(`Tenant: ${tenant.tenantId}`);
+  console.log(`Base URL: ${tenant.baseUrl}`);
   console.log("");
   console.log(`Status: ${state.status}`);
   console.log("");
@@ -101,7 +126,7 @@ function main() {
   }
   console.log("");
   console.log("Dashboard:");
-  console.log("/seo-roadmap");
+  console.log(tenant.dashboardRoute || "/seo-roadmap");
   console.log("");
   console.log("Git safety:");
   console.log("Run git status --short before switching tasks.");

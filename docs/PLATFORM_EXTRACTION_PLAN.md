@@ -559,13 +559,34 @@ Added:
 
 Current limitation:
 
-- Existing engines still read the current ERP Experts paths directly.
-- The tenant config is descriptive only for now.
+- Most existing engines still read the current ERP Experts paths directly.
+- `seo:monitor` now reads the tenant config while preserving default ERP Experts behaviour.
 - No article data, report paths, scoring logic or dashboard route has been moved.
 
 Updated recommended next engineering task:
 
-> Make one non-critical engine tenant-aware in parallel mode, probably a read-only summary or monitor helper, then compare its output against the current ERP Experts command before replacing any existing behaviour.
+> Make the next low-risk reporting helper tenant-aware in the same pattern as `seo:monitor`, then compare output against the current ERP Experts command before replacing any broader engine behaviour.
+
+## 13. Tenant-Aware Monitor Step
+
+`seo:monitor` is the first production SEO command to use the tenant configuration layer.
+
+Behaviour:
+
+- `npm run seo:monitor` defaults to `erp-experts`.
+- `npm run seo:monitor -- --tenant erp-experts` explicitly loads the ERP Experts tenant.
+- Unknown tenant IDs fail with a clear error and list available tenants.
+- Monitor output now includes the tenant name, tenant ID and base URL.
+- Report loading uses `reportOutputPath` from the tenant config.
+- Dashboard output uses `dashboardRoute` from the tenant config.
+
+Unchanged:
+
+- QA scoring.
+- Regression detection.
+- Snapshot logic.
+- Health state logic.
+- Existing default command behaviour for ERP Experts.
 
 ## Non-Goals for the Next Step
 
