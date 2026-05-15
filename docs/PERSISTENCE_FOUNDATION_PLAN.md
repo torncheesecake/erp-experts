@@ -392,6 +392,8 @@ It now uses the read-only Sentinel state API layer at `platform/api/state_api.mj
 
 `npm run platform:api:smoke` checks a running local API server. This layer is deliberately localhost-first, unauthenticated and not suitable for public exposure. The future migration path is auth, dashboard API reads, Raspberry Pi service management, then a hardened multi-tenant API.
 
+The private operator dashboard can optionally read this API by setting `VITE_SENTINEL_API_BASE_URL=http://127.0.0.1:4317` during local development. If the API is unavailable, the dashboard falls back to `reports/sentinel-state.json`. The stakeholder-safe `/seo-progress` route remains report-based and does not expose Sentinel operator state.
+
 `platform:state` still writes `reports/sentinel-state.json`, which is ignored as generated operational output. This preserves dashboard compatibility while the canonical operational state gradually moves towards SQLite-backed accessors.
 
 The generated Action Inbox now reads this state and promotes the current Sentinel recommendation to the top of the queue. For example, when persisted approvals show planning work is ready for review, the inbox creates a `sentinel_state` item with status `awaiting_review`. Those inbox items are also appended to SQLite for history, while JSON remains the runtime source.

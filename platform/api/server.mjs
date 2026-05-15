@@ -5,10 +5,36 @@ const DEFAULT_TENANT = process.env.PLATFORM_TENANT || "erp-experts";
 const HOST = process.env.SENTINEL_API_HOST || "127.0.0.1";
 const PORT = Number(process.env.SENTINEL_API_PORT || 4317);
 
-function sendJson(response, statusCode, payload) {
-  response.writeHead(statusCode, {
+function corsOrigin(request) {
+  const origin = request.headers.origin;
+  if (!origin) return null;
+
+  try {
+    const url = new URL(origin);
+    if (["127.0.0.1", "localhost"].includes(url.hostname)) {
+      return origin;
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+function sendJson(request, response, statusCode, payload) {
+  const origin = corsOrigin(request);
+  const headers = {
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store",
+  };
+
+  if (origin) {
+    headers["Access-Control-Allow-Origin"] = origin;
+    headers.Vary = "Origin";
+  }
+
+  response.writeHead(statusCode, {
+    ...headers,
   });
   response.end(`${JSON.stringify(payload, null, 2)}\n`);
 }
@@ -31,9 +57,9 @@ function tenantSummary(tenant) {
   };
 }
 
-function handleError(response, error) {
+function handleError(request, response, error) {
   if (error.code === "TENANT_CONFIG_ERROR") {
-    sendJson(response, 404, {
+    sendJson(request, response, 404, {
       error: "unknown_tenant",
       message: error.message,
       details: error.details || [],
@@ -41,7 +67,7 @@ function handleError(response, error) {
     return;
   }
 
-  sendJson(response, 500, {
+  sendJson(request, response, 500, {
     error: "sentinel_api_error",
     message: error.message,
   });
@@ -49,7 +75,7 @@ function handleError(response, error) {
 
 const server = http.createServer((request, response) => {
   if (request.method !== "GET") {
-    sendJson(response, 405, {
+    sendJson(request, response, 405, {
       error: "method_not_allowed",
       message: "Sentinel API prototype is read-only. Use GET.",
     });
@@ -60,7 +86,7 @@ const server = http.createServer((request, response) => {
 
   try {
     if (url.pathname === "/health") {
-      sendJson(response, 200, {
+      sendJson(request, response, 200, {
         status: "ok",
         service: "sentinel-api",
       });
@@ -68,21 +94,21 @@ const server = http.createServer((request, response) => {
     }
 
     if (url.pathname === "/state") {
-      sendJson(response, 200, getOperationalSummary(tenantFromUrl(url)));
+      sendJson(request, response, 200, getOperationalSummary(tenantFromUrl(url)));
       return;
     }
 
     if (url.pathname === "/tenant") {
-      sendJson(response, 200, tenantSummary(getTenantState(tenantFromUrl(url))));
+      sendJson(request, response, 200, tenantSummary(getTenantState(tenantFromUrl(url))));
       return;
     }
 
-    sendJson(response, 404, {
+    sendJson(request, response, 404, {
       error: "not_found",
       message: `Unknown endpoint: ${url.pathname}`,
     });
   } catch (error) {
-    handleError(response, error);
+    handleError(request, response, error);
   }
 });
 

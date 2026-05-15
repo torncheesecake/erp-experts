@@ -25,6 +25,7 @@ import {
 import reportData from "../data/reports.json";
 const historyQaModules = import.meta.glob("../../reports/history/*/resource-qa-report.json", { eager: true });
 const sentinelStateModules = import.meta.glob("../../reports/sentinel-state.json", { eager: true });
+const sentinelApiBaseUrl = String(import.meta.env.VITE_SENTINEL_API_BASE_URL || "").replace(/\/+$/, "");
 
 const seoSnapshotDate =
   reportData?.ga4Period?.seoInsights?.period?.split(" to ").at(-1) || reportData?.lastUpdated;
@@ -98,6 +99,14 @@ function readHistorySnapshots() {
 function readSentinelState() {
   const stateModule = Object.values(sentinelStateModules)[0];
   return stateModule?.default || stateModule || null;
+}
+
+function getInitialSentinelState() {
+  const reportState = readSentinelState();
+  return {
+    state: reportState,
+    source: reportState ? "report" : "fallback",
+  };
 }
 
 function formatStateLabel(value = "") {
@@ -541,7 +550,9 @@ function AutopilotStatusPanel({ mode, pipelineSummary, monitorInsights }) {
   );
 }
 
-function SentinelStatePanel({ sentinelState }) {
+function SentinelStatePanel({ sentinelState, source = "fallback" }) {
+  const sourceLabel = source === "api" ? "API" : source === "report" ? "report" : "fallback";
+
   if (!sentinelState) {
     return (
       <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100/80">
@@ -554,6 +565,9 @@ function SentinelStatePanel({ sentinelState }) {
             state missing
           </span>
         </div>
+        <p className="text-[11px] font-medium text-slate-400" style={{ marginTop: "6px" }}>
+          Source: {sourceLabel}
+        </p>
         <p className="text-sm text-slate-600" style={{ marginTop: "10px" }}>
           Generate the Sentinel state summary to populate this panel. The dashboard will continue to work without it.
         </p>
@@ -575,6 +589,9 @@ function SentinelStatePanel({ sentinelState }) {
         <div>
           <p className="text-sm font-semibold text-slate-900">Current Sentinel State</p>
           <p className="text-xs text-slate-600">{tenantName} · Health {healthState}</p>
+          <p className="text-[11px] font-medium text-slate-400" style={{ marginTop: "3px" }}>
+            Source: {sourceLabel}
+          </p>
         </div>
         <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${workflowBadgeClass(workflowState)}`}>
           {formatStateLabel(workflowState)}
@@ -1832,12 +1849,46 @@ function AdminView({ onPreview }) {
   const [copyState, setCopyState] = useState("idle");
   const [dashboardLoadedAt] = useState(() => new Date());
   const [activeNav, setActiveNav] = useState("overview");
+  const [sentinelStateSnapshot, setSentinelStateSnapshot] = useState(getInitialSentinelState);
   const overviewRef = useRef(null);
   const opportunitiesRef = useRef(null);
   const plansRef = useRef(null);
   const inboxRef = useRef(null);
   const reportsRef = useRef(null);
   const settingsRef = useRef(null);
+
+  useEffect(() => {
+    if (!sentinelApiBaseUrl) return undefined;
+
+    const controller = new AbortController();
+
+    async function loadSentinelStateFromApi() {
+      try {
+        const res = await fetch(`${sentinelApiBaseUrl}/state`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        if (!res.ok) throw new Error(`Sentinel API returned ${res.status}`);
+        const data = await res.json();
+        if (!data?.tenant || !data?.health) throw new Error("Sentinel API returned an invalid state payload");
+        if (!controller.signal.aborted) {
+          setSentinelStateSnapshot({ state: data, source: "api" });
+        }
+      } catch (error) {
+        if (error?.name === "AbortError") return;
+        const reportState = readSentinelState();
+        if (!controller.signal.aborted) {
+          setSentinelStateSnapshot({
+            state: reportState,
+            source: "fallback",
+          });
+        }
+      }
+    }
+
+    loadSentinelStateFromApi();
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -2423,7 +2474,8 @@ function AdminView({ onPreview }) {
   });
   const isMonitorMode = dashboardMode.key === "monitor";
   const monitorInsights = buildMonitorInsights({ points: historyPoints, modeKey: dashboardMode.key });
-  const sentinelState = readSentinelState();
+  const sentinelState = sentinelStateSnapshot.state;
+  const sentinelStateSource = sentinelStateSnapshot.source;
   const activeRow = selectedSlug ? selectedRow : (filteredRows[0] || articleRows[0] || null);
 
   if (!loaded) return (
@@ -2557,7 +2609,7 @@ function AdminView({ onPreview }) {
           <div className="grid gap-lg">
             {isMonitorMode && showOverviewTab ? (
               <>
-                <SentinelStatePanel sentinelState={sentinelState} />
+                <SentinelStatePanel sentinelState={sentinelState} source={sentinelStateSource} />
                 <AutopilotOrchestratorPanel autopilotReport={autopilotReport} loading={autopilotLoading} />
                 <StrategicDecisionsPanel decisionReport={decisionReport} loading={decisionLoading} />
 

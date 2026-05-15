@@ -105,7 +105,13 @@ npm run platform:api:smoke
 
 The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes `GET /health`, `GET /state` and `GET /tenant`. It is read-only, has no authentication, and must not be exposed publicly. Keep it local until authentication and service hardening are added.
 
-The private `/seo-roadmap` operator dashboard consumes `reports/sentinel-state.json` for its compact Current Sentinel State panel. Stakeholder routes such as `/seo-progress` do not show this operational state.
+The private `/seo-roadmap` operator dashboard consumes `reports/sentinel-state.json` for its compact Current Sentinel State panel by default. For local API experiments, set:
+
+```bash
+VITE_SENTINEL_API_BASE_URL=http://127.0.0.1:4317
+```
+
+When that Vite variable is present, `/seo-roadmap` tries the local API first and falls back quietly to the report JSON if the API is unavailable. Stakeholder routes such as `/seo-progress` do not show this operational state and do not use the operator API state.
 
 `seo:inbox` also reads this state and places the current Sentinel recommendation at the top of the operator queue. This keeps the inbox focused on the practical next review action while the existing JSON report sources remain as fallback context.
 
