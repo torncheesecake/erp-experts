@@ -1,16 +1,35 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { loadTenantConfig, printTenantError } from "./platform/tenant_config.mjs";
 
 const ROOT = process.cwd();
-const OUTPUT_MD = path.resolve(ROOT, "reports/seo-autopilot-report.md");
-const OUTPUT_JSON = path.resolve(ROOT, "reports/seo-autopilot-report.json");
-const ACTIVE_PLAN_PATH = path.resolve(ROOT, "reports/seo-active-plan.md");
+
+function getArgValue(flag, fallback = null) {
+  const index = process.argv.indexOf(flag);
+  if (index === -1) return fallback;
+  return process.argv[index + 1] || fallback;
+}
+
+const tenantId = getArgValue("--tenant", "erp-experts");
+const tenantResult = loadTenantConfig(tenantId);
+
+if (!tenantResult.ok) {
+  printTenantError(tenantResult);
+  process.exit(1);
+}
+
+const tenant = tenantResult.config;
+const REPORTS_DIR = path.resolve(ROOT, tenant.reportOutputPath || "reports");
+const OUTPUT_MD = path.join(REPORTS_DIR, "seo-autopilot-report.md");
+const OUTPUT_JSON = path.join(REPORTS_DIR, "seo-autopilot-report.json");
+const ACTIVE_PLAN_PATH = path.join(REPORTS_DIR, "seo-active-plan.md");
+const tenantArgs = ["--", "--tenant", tenant.tenantId];
 
 const COMMANDS = [
-  ["seo:pipeline", ["npm", ["run", "seo:pipeline"]]],
-  ["seo:stats", ["npm", ["run", "seo:stats"]]],
-  ["seo:monitor", ["npm", ["run", "seo:monitor"]]],
+  ["seo:pipeline", ["npm", ["run", "seo:pipeline", ...tenantArgs]]],
+  ["seo:stats", ["npm", ["run", "seo:stats", ...tenantArgs]]],
+  ["seo:monitor", ["npm", ["run", "seo:monitor", ...tenantArgs]]],
   ["seo:growth", ["npm", ["run", "seo:growth"]]],
   ["seo:links", ["npm", ["run", "seo:links"]]],
   ["seo:freshness", ["npm", ["run", "seo:freshness"]]],
@@ -24,7 +43,7 @@ const COMMANDS = [
 
 function readJson(filePath, fallback = null) {
   try {
-    return JSON.parse(fs.readFileSync(path.resolve(ROOT, filePath), "utf8"));
+    return JSON.parse(fs.readFileSync(path.resolve(REPORTS_DIR, filePath), "utf8"));
   } catch {
     return fallback;
   }
@@ -32,7 +51,7 @@ function readJson(filePath, fallback = null) {
 
 function readText(filePath, fallback = "") {
   try {
-    return fs.readFileSync(path.resolve(ROOT, filePath), "utf8");
+    return fs.readFileSync(path.resolve(REPORTS_DIR, filePath), "utf8");
   } catch {
     return fallback;
   }
@@ -200,6 +219,14 @@ function buildMarkdown({ generatedAt, decision, commandResults, reports }) {
 
 Generated: ${generatedAt}
 
+## Tenant
+
+- Name: ${tenant.name}
+- Tenant ID: ${tenant.tenantId}
+- Base URL: ${tenant.baseUrl}
+- Dashboard: ${tenant.dashboardRoute || "/seo-roadmap"}
+- Report output: ${tenant.reportOutputPath || "reports"}
+
 ## Current Health
 
 - State: ${decision.state}
@@ -258,10 +285,15 @@ ${decision.codexPrompt}
 }
 
 function ensureReportsDir() {
-  fs.mkdirSync(path.resolve(ROOT, "reports"), { recursive: true });
+  fs.mkdirSync(REPORTS_DIR, { recursive: true });
 }
 
 function main() {
+  console.log("SEO Autopilot");
+  console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
+  console.log(`Reports: ${path.relative(ROOT, REPORTS_DIR)}`);
+  console.log(`Dashboard: ${tenant.dashboardRoute || "/seo-roadmap"}`);
+
   const commandResults = [];
   for (const [label, [command, args]] of COMMANDS) {
     const result = runCommand(label, command, args);
@@ -273,14 +305,14 @@ function main() {
   }
 
   const reports = {
-    qa: readJson("reports/resource-qa-report.json"),
-    pipeline: readJson("reports/seo-pipeline-summary.json"),
-    opportunities: readJson("reports/seo-opportunity-centre.json"),
-    plans: readJson("reports/seo-execution-plans.json"),
-    decisions: readJson("reports/seo-decision-engine.json"),
-    approvals: readJson("reports/seo-plan-approvals.json", { approvals: [] }),
-    inbox: readJson("reports/seo-action-inbox.json"),
-    digest: readText("reports/seo-weekly-digest.md"),
+    qa: readJson("resource-qa-report.json"),
+    pipeline: readJson("seo-pipeline-summary.json"),
+    opportunities: readJson("seo-opportunity-centre.json"),
+    plans: readJson("seo-execution-plans.json"),
+    decisions: readJson("seo-decision-engine.json"),
+    approvals: readJson("seo-plan-approvals.json", { approvals: [] }),
+    inbox: readJson("seo-action-inbox.json"),
+    digest: readText("seo-weekly-digest.md"),
   };
 
   const decision = decideState({
@@ -295,6 +327,13 @@ function main() {
   const generatedAt = new Date().toISOString();
   const output = {
     generatedAt,
+    tenant: {
+      tenantId: tenant.tenantId,
+      name: tenant.name,
+      baseUrl: tenant.baseUrl,
+      dashboardRoute: tenant.dashboardRoute || "/seo-roadmap",
+      reportOutputPath: tenant.reportOutputPath || "reports",
+    },
     state: decision.state,
     health: decision.health,
     qa: decision.qa,
@@ -332,8 +371,8 @@ function main() {
     stopReason: decision.stopReason || null,
     codexPrompt: decision.codexPrompt,
     generatedReports: {
-      markdown: "reports/seo-autopilot-report.md",
-      json: "reports/seo-autopilot-report.json",
+      markdown: path.relative(ROOT, OUTPUT_MD),
+      json: path.relative(ROOT, OUTPUT_JSON),
     },
     commandResults,
   };
@@ -344,6 +383,7 @@ function main() {
 
   console.log("\nSEO Autopilot Report");
   console.log("");
+  console.log(`Tenant: ${tenant.name} (${tenant.tenantId})`);
   console.log(`State: ${decision.state}`);
   console.log(`Health: ${decision.health}`);
   console.log(`QA: ${decision.qa.pass} pass, ${decision.qa.needsReview} review, ${decision.qa.blocked} blocked`);
@@ -357,8 +397,8 @@ function main() {
   console.log(`Human input required: ${decision.humanInputRequired ? "Yes" : "No"}`);
   console.log("");
   console.log("Generated:");
-  console.log("reports/seo-autopilot-report.md");
-  console.log("reports/seo-autopilot-report.json");
+  console.log(path.relative(ROOT, OUTPUT_MD));
+  console.log(path.relative(ROOT, OUTPUT_JSON));
 }
 
 main();

@@ -565,7 +565,7 @@ Current limitation:
 
 Updated recommended next engineering task:
 
-> Make the next low-risk reporting helper tenant-aware in the same pattern as `seo:pipeline`, `seo:monitor` and `seo:stats`, then compare output against the current ERP Experts command before replacing any broader engine behaviour.
+> Make the next low-risk reporting helper tenant-aware in the same pattern as `seo:autopilot`, `seo:pipeline`, `seo:monitor` and `seo:stats`, then compare output against the current ERP Experts command before replacing any broader engine behaviour.
 
 ## 13. Tenant-Aware Monitor Step
 
@@ -626,6 +626,28 @@ Unchanged:
 - Weekly summary generation logic.
 - Pipeline summary report shape.
 - Snapshot/history behaviour.
+- Existing default command behaviour for ERP Experts.
+
+## 16. Tenant-Aware Autopilot Step
+
+`seo:autopilot` now uses the tenant configuration layer at the master orchestration level.
+
+Behaviour:
+
+- `npm run seo:autopilot` defaults to `erp-experts`.
+- `npm run seo:autopilot -- --tenant erp-experts` explicitly loads the ERP Experts tenant.
+- Unknown tenant IDs fail with a clear error and list available tenants.
+- Autopilot passes the tenant through to tenant-aware child commands: `seo:pipeline`, `seo:stats` and `seo:monitor`.
+- Child commands that are not tenant-aware keep their existing behaviour.
+- Console output includes tenant name, tenant ID, report output path and dashboard route.
+- `seo-autopilot-report.md` and `seo-autopilot-report.json` include tenant metadata.
+
+Unchanged:
+
+- Autopilot decision states.
+- QA scoring.
+- Opportunity and plan generation logic.
+- Report shapes used by dashboard consumers, apart from additive tenant metadata in autopilot reports.
 - Existing default command behaviour for ERP Experts.
 
 ## Non-Goals for the Next Step
