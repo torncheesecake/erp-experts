@@ -4,6 +4,7 @@
 
 - `npm run seo:pipeline`
 - `npm run seo:stats`
+- `npm run seo:stats -- --tenant erp-experts`
 - `npm run seo:monitor`
 - `npm run seo:monitor -- --tenant erp-experts`
 - `npm run seo:operator`
@@ -33,7 +34,7 @@
 7. Autopilot orchestration: one command runs the intelligence chain and decides the next safe step.
 8. Dashboard: monitor-first control panel with secondary diagnostics.
 9. Platform tenant foundation: read-only tenant config schema, ERP Experts tenant prototype and loader command.
-10. Tenant-aware monitor: `seo:monitor` now reads tenant name, report output path, dashboard route and base URL from config.
+10. Tenant-aware reporting: `seo:monitor` and `seo:stats` now read tenant name, report output path, dashboard route and base URL where relevant from config.
 
 ## Health status
 
@@ -55,7 +56,7 @@ The first platform extraction boundary is now present under `platform/`.
 
 Current engines still use their existing ERP Experts paths. The tenant layer is a safe foundation for future extraction, not a behaviour change.
 
-`seo:monitor` is now the first tenant-aware command. It still defaults to ERP Experts, so existing usage is unchanged. Explicit tenant usage is available with `npm run seo:monitor -- --tenant erp-experts`.
+`seo:monitor` and `seo:stats` are now tenant-aware. They still default to ERP Experts, so existing usage is unchanged. Explicit tenant usage is available with `npm run seo:monitor -- --tenant erp-experts` and `npm run seo:stats -- --tenant erp-experts`.
 
 ## Automation lifecycle
 

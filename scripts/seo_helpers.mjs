@@ -1,10 +1,21 @@
 import fs from "node:fs";
 import path from "node:path";
+import { loadTenantConfig, printTenantError } from "./platform/tenant_config.mjs";
 
-const QA_PATH = path.resolve("reports/resource-qa-report.json");
-const BRIEFS_PATH = path.resolve("reports/seo-action-briefs.json");
-const PIPELINE_PATH = path.resolve("reports/seo-pipeline-summary.json");
 const CURRENT_WINDOW_MS = 5 * 60 * 1000;
+const mode = process.argv[2] || "stats";
+const tenantId = getArgValue("--tenant", "erp-experts");
+const tenantResult = loadTenantConfig(tenantId);
+
+if (!tenantResult.ok) {
+  printTenantError(tenantResult);
+  process.exit(1);
+}
+
+const tenant = tenantResult.config;
+const QA_PATH = path.resolve(tenant.reportOutputPath || "reports", "resource-qa-report.json");
+const BRIEFS_PATH = path.resolve(tenant.reportOutputPath || "reports", "seo-action-briefs.json");
+const PIPELINE_PATH = path.resolve(tenant.reportOutputPath || "reports", "seo-pipeline-summary.json");
 
 function readJsonSafe(filePath) {
   try {
@@ -37,7 +48,21 @@ function getPipelineGateSummary(pipeline) {
 }
 
 function getSlugArg() {
-  return (process.argv[3] || "").trim();
+  const args = process.argv.slice(3);
+  for (let index = 0; index < args.length; index += 1) {
+    if (args[index] === "--tenant") {
+      index += 1;
+      continue;
+    }
+    if (!args[index].startsWith("--")) return args[index].trim();
+  }
+  return "";
+}
+
+function getArgValue(flag, fallback = null) {
+  const index = process.argv.indexOf(flag);
+  if (index === -1) return fallback;
+  return process.argv[index + 1] || fallback;
 }
 
 function findBriefForSlug(briefsReport, slug) {
@@ -81,7 +106,6 @@ function ensureReports(...reports) {
   }
 }
 
-const mode = process.argv[2] || "stats";
 const qa = readJsonSafe(QA_PATH);
 const briefs = readJsonSafe(BRIEFS_PATH);
 const pipeline = readJsonSafe(PIPELINE_PATH);
@@ -135,7 +159,9 @@ if (mode === "stats") {
     && (qaGate.needs_review || 0) === (pipelineGate.needs_review || 0)
     && (qaGate.blocked || 0) === (pipelineGate.blocked || 0);
 
-  console.log("SEO Stats");
+  console.log(`SEO Stats - ${tenant.name}`);
+  console.log(`  Tenant: ${tenant.tenantId}`);
+  console.log(`  Dashboard: ${tenant.dashboardRoute || "/seo-roadmap"}`);
   console.log(`  Source QA report: ${path.relative(process.cwd(), QA_PATH)} (updated ${toIsoOrUnknown(qaStat?.mtime)})`);
   console.log(`  Source briefs report: ${path.relative(process.cwd(), BRIEFS_PATH)} (updated ${toIsoOrUnknown(briefsStat?.mtime)})`);
   console.log(`  Source pipeline summary: ${path.relative(process.cwd(), PIPELINE_PATH)} (updated ${toIsoOrUnknown(pipelineStat?.mtime)})`);

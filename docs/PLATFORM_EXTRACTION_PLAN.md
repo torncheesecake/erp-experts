@@ -565,7 +565,7 @@ Current limitation:
 
 Updated recommended next engineering task:
 
-> Make the next low-risk reporting helper tenant-aware in the same pattern as `seo:monitor`, then compare output against the current ERP Experts command before replacing any broader engine behaviour.
+> Make the next low-risk reporting helper tenant-aware in the same pattern as `seo:monitor` and `seo:stats`, then compare output against the current ERP Experts command before replacing any broader engine behaviour.
 
 ## 13. Tenant-Aware Monitor Step
 
@@ -587,6 +587,25 @@ Unchanged:
 - Snapshot logic.
 - Health state logic.
 - Existing default command behaviour for ERP Experts.
+
+## 14. Tenant-Aware Stats Step
+
+`seo:stats` now also uses the tenant configuration layer.
+
+Behaviour:
+
+- `npm run seo:stats` defaults to `erp-experts`.
+- `npm run seo:stats -- --tenant erp-experts` explicitly loads the ERP Experts tenant.
+- Unknown tenant IDs fail with a clear error and list available tenants.
+- Stats output now includes the tenant name, tenant ID and dashboard route.
+- Report loading uses `reportOutputPath` from the tenant config.
+
+Unchanged:
+
+- QA total calculation.
+- Pipeline consistency checks.
+- Freshness/currentness checks.
+- Human review reporting.
 
 ## Non-Goals for the Next Step
 
