@@ -226,6 +226,8 @@ The Control Centre groups the operator experience into:
 
 The latest UX polish pass tightened the first-screen hierarchy around current focus, recommended next step and primary safe actions. Command groups are easier to scan, Activity Feed entries use calmer timeline styling and secondary details remain lower in the operator flow. This was a visual organisation pass only, with no SEO scoring or execution behaviour changes.
 
+A follow-up UI quality pass checked `/seo-roadmap` and `/seo-progress` across desktop, laptop, tablet and mobile widths. The Control Centre now has safer header wrapping, workspace controls, command/action rows and long command pills, while the stakeholder progress page keeps its health summary readable without overlapping the hero. This was layout and readability hardening only.
+
 Operator feedback capture is now available for local workflow discovery. The private Control Centre can save short notes for UX, workflow, automation, deployment, API, tenant, bug and idea categories through the local API. The terminal equivalent is:
 
 ```bash

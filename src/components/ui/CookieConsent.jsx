@@ -34,7 +34,10 @@ export default function CookieConsent() {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed left-0 right-0 bottom-sm md:bottom-lg z-50 px-sm md:px-lg animate-slideUp">
+    <div
+      className="fixed left-0 right-0 z-50 px-sm md:px-lg animate-slideUp"
+      style={{ bottom: "clamp(1rem, 2vw, 1.5rem)" }}
+    >
       <div className="max-w-xl md:ml-auto">
         <div className="bg-white rounded-xl md:rounded-2xl shadow-2xl border border-(--color-text)/10 p-md md:p-lg">
           <div className="flex flex-col gap-md">
@@ -51,7 +54,7 @@ export default function CookieConsent() {
                 </Link>
               </p>
             </div>
-            <div className="flex items-center gap-sm md:gap-md">
+            <div className="flex flex-wrap items-center gap-sm md:gap-md">
               <button
                 onClick={handleDecline}
                 className="btn btn-sm border border-(--color-text)/20 hover:bg-(--color-text)/5"

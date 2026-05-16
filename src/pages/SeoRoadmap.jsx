@@ -1182,7 +1182,7 @@ function SentinelAppHeader({
           </div>
 
           <div className="grid gap-2 sm:min-w-[420px]">
-            <div className="grid gap-2 sm:grid-cols-4">
+            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
               <div className="rounded-xl bg-slate-50/70 px-3 py-2 ring-1 ring-slate-100">
                 <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Health</p>
                 <p className="text-sm font-semibold text-slate-950">{dashboardMode.stateLabel}</p>
@@ -1204,7 +1204,7 @@ function SentinelAppHeader({
                 <p className="text-[11px] text-slate-500">Local gate</p>
               </div>
             </div>
-            <div className="flex flex-wrap items-center justify-end gap-2">
+            <div className="flex flex-wrap items-center justify-start gap-2 sm:justify-end">
               <button
                 onClick={() => onCompactViewChange(!compactView)}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
@@ -1367,7 +1367,7 @@ function ControlCentreHelpPanel({
           {keyActions.length ? (
             <div className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100 md:col-span-2">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Key actions</p>
-              <ul className="grid gap-1 text-sm text-slate-700 sm:grid-cols-3" style={{ marginTop: "6px" }}>
+              <ul className="grid gap-1 text-sm text-slate-700 lg:grid-cols-3" style={{ marginTop: "6px" }}>
                 {keyActions.slice(0, 3).map((item) => (
                   <li key={item}>{item}</li>
                 ))}
@@ -1419,7 +1419,7 @@ function OperatorWorkspaceSwitcher({
           </div>
         </div>
 
-        <div className="grid gap-2 sm:min-w-[300px]">
+        <div className="grid w-full max-w-sm gap-2">
           <label className="grid gap-1 text-xs font-semibold text-slate-600">
             Switch workspace
             <select
@@ -1437,7 +1437,7 @@ function OperatorWorkspaceSwitcher({
         </div>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(280px,360px)]" style={{ marginTop: "14px" }}>
+      <div className="grid gap-3" style={{ marginTop: "14px" }}>
         <div className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Workspace restores</p>
           <div className="flex flex-wrap gap-2" style={{ marginTop: "8px" }}>
@@ -2039,13 +2039,13 @@ function SentinelCommandsPanel({
                     const isRunning = safeAction && runningAction === safeAction.id;
                     return (
                       <>
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <code className="text-sm font-semibold text-slate-950">{item.command}</code>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
+                      <code className="break-all text-sm font-semibold text-slate-950">{item.command}</code>
                       <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>{item.description}</p>
                       <p className="text-[11px] text-slate-500" style={{ marginTop: "4px" }}>{item.recommendedUsage}</p>
                     </div>
-                    <div className="flex shrink-0 items-center gap-2">
+                    <div className="flex shrink-0 items-center gap-2 self-start">
                       {safeAction ? (
                         <button
                           type="button"
@@ -2155,12 +2155,12 @@ function RecentOperatorActionsPanel({ history, actionRegistry, onRefresh }) {
 
         {!loading && !unavailable && actions.map((item) => (
           <div key={item.id} className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
-            <div className="flex items-start justify-between gap-3">
-              <div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
                 <p className="text-sm font-semibold text-slate-950">{labelById.get(item.action) || formatStateLabel(item.action)}</p>
                 <p className="text-xs text-slate-500">{formatDateTime(item.finishedAt || item.startedAt)}</p>
               </div>
-              <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${actionStatusBadgeClass(item.status)}`}>
+              <span className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${actionStatusBadgeClass(item.status)}`}>
                 {item.status || "unknown"}
               </span>
             </div>
@@ -2221,7 +2221,7 @@ function OperatorWorkflowPanel() {
             <p className="text-sm font-semibold text-slate-950" style={{ marginTop: "10px" }}>{step.title}</p>
             <div className="grid gap-1" style={{ marginTop: "10px" }}>
               {step.commands.map((command) => (
-                <code key={command} className="rounded-lg bg-white px-2 py-1 text-xs text-slate-700 ring-1 ring-slate-100">{command}</code>
+                <code key={command} className="break-all rounded-lg bg-white px-2 py-1 text-xs text-slate-700 ring-1 ring-slate-100">{command}</code>
               ))}
             </div>
             <p className="text-xs text-slate-500" style={{ marginTop: "10px" }}>{step.note}</p>
@@ -2760,7 +2760,7 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
                     >
                       {copiedItemId === item.id ? "Copied plan command" : "Copy plan command"}
                     </button>
-                    <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
+                    <code className="max-w-full break-all rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
                       npm run platform:roadmap:plan -- --item {item.id}
                     </code>
                     <button
@@ -2770,7 +2770,7 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
                     >
                       {copiedApprovalId === item.id ? "Copied approval command" : "Copy approval command"}
                     </button>
-                    <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
+                    <code className="max-w-full break-all rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
                       npm run platform:roadmap:approve -- --item {item.id}
                     </code>
                     <button
@@ -2780,7 +2780,7 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
                     >
                       {copiedBriefId === item.id ? "Copied brief command" : "Copy brief command"}
                     </button>
-                    <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
+                    <code className="max-w-full break-all rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
                       npm run platform:roadmap:brief -- --item {item.id}
                     </code>
                     <button
@@ -2790,7 +2790,7 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
                     >
                       {copiedPackageId === item.id ? "Copied package command" : "Copy package command"}
                     </button>
-                    <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
+                    <code className="max-w-full break-all rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
                       npm run platform:roadmap:package -- --item {item.id}
                     </code>
                     <button
@@ -2800,7 +2800,7 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
                     >
                       {copiedReviewId === item.id ? "Copied review command" : "Copy review command"}
                     </button>
-                    <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
+                    <code className="max-w-full break-all rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
                       npm run platform:roadmap:review -- --item {item.id}
                     </code>
                     <button
@@ -5167,7 +5167,7 @@ function AdminView({ onPreview }) {
       />
 
       <main className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-2xl)" }}>
-        <div className={`grid ${compactView ? "gap-lg" : "gap-xl"} ${sidebarCollapsed ? "lg:grid-cols-[170px_minmax(0,1fr)]" : "lg:grid-cols-[260px_minmax(0,1fr)]"}`}>
+        <div className={`grid ${compactView ? "gap-lg" : "gap-xl"} ${sidebarCollapsed ? "lg:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]" : "lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)]"}`}>
           <SentinelNavigationRail
             navItems={navItems}
             activeNav={activeNav}

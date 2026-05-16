@@ -133,19 +133,19 @@ export default function SeoProgress() {
               paddingBottom: "clamp(3rem, 6vw, 4rem)",
             }}
           >
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] lg:items-start">
+            <div className="grid gap-8">
               <div className="min-w-0">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-pink-600">
                   Internal progress view
                 </p>
-                <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 md:text-5xl lg:text-6xl">
+                <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 md:text-5xl xl:text-6xl">
                   SEO & Content Progress
                 </h1>
                 <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
                   This view summarises SEO and content progress for internal visibility. It is designed for business review, not technical administration.
                 </p>
               </div>
-              <div className="w-full rounded-3xl bg-slate-950 p-6 text-white shadow-sm ring-1 ring-slate-800/40 sm:p-7 lg:mt-2">
+              <div className="w-full max-w-xl rounded-3xl bg-slate-950 p-6 text-white shadow-sm ring-1 ring-slate-800/40 sm:p-7">
                 <div className="flex items-center gap-3">
                   <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-400/15 text-emerald-300">
                     <ShieldCheck size={20} />
