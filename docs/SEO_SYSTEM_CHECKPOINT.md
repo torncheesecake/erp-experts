@@ -410,8 +410,9 @@ Default cadence runs:
 - `platform:state`
 - `platform:daily`
 - `platform:stakeholder`
+- `platform:notify -- --all`
 
-It writes ignored output to `reports/sentinel-cadence-summary.json` and does not deploy, start services, install cron jobs or expose private data publicly. Use `--dry-run`, `--operator-only` or `--stakeholder-only` for narrower local scheduling. Cron and future Raspberry Pi examples are documented in `docs/SENTINEL_AUTOMATION_CADENCE.md`.
+It writes ignored output to `reports/sentinel-cadence-summary.json`, `reports/notifications/` and the existing report files. It does not send messages, deploy, start services, install cron jobs or expose private data publicly. Use `--dry-run`, `--operator-only` or `--stakeholder-only` for narrower local scheduling. Cron and future Raspberry Pi examples are documented in `docs/SENTINEL_AUTOMATION_CADENCE.md`.
 
 Inactive Raspberry Pi systemd timer templates are also present for later controlled deployment:
 
@@ -434,6 +435,6 @@ Modes:
 - `--json`
 - `--dry-run`
 
-Generated payloads are ignored under `reports/notifications/`. Operator payloads may include useful commands and workflow context. Stakeholder payloads are sanitised and blocked if forbidden internal terms are detected, including commands, Codex, Sentinel, SQLite, DB, API, approval, private route names, diagnostics, tenant wording or plan IDs.
+Generated payloads are ignored under `reports/notifications/`. Operator payloads may include useful commands and workflow context. Stakeholder payloads are sanitised and blocked if forbidden internal terms are detected, including commands, Codex, Sentinel, SQLite, DB, API, approval, private route names, diagnostics, tenant wording or plan IDs. Cadence now calls `platform:notify` for its selected mode, so notification payloads are prepared during scheduled/local refreshes while sending remains future work.
 
 Future integrations may send these payloads via email, Slack or dashboard alerts, but delivery is intentionally not implemented yet.

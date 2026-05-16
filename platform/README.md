@@ -126,7 +126,7 @@ npm run platform:cadence -- --operator-only
 npm run platform:cadence -- --stakeholder-only
 ```
 
-Default cadence runs `seo:monitor`, `platform:state`, `platform:daily` and `platform:stakeholder`, then writes `reports/sentinel-cadence-summary.json` as ignored local output. It does not deploy, start the API, install cron jobs or expose services. See `docs/SENTINEL_AUTOMATION_CADENCE.md`.
+Default cadence runs `seo:monitor`, `platform:state`, `platform:daily`, `platform:stakeholder` and `platform:notify -- --all`, then writes `reports/sentinel-cadence-summary.json` as ignored local output. It does not send messages, deploy, start the API, install cron jobs or expose services. See `docs/SENTINEL_AUTOMATION_CADENCE.md`.
 
 Raspberry Pi systemd timer templates are available but inactive:
 
@@ -147,7 +147,7 @@ npm run platform:notify -- --stakeholder
 npm run platform:notify -- --all
 ```
 
-Generated payloads are ignored under `reports/notifications/`. Operator payloads may include commands and private workflow context. Stakeholder payloads are sanitised and safety-scanned so they do not expose commands, prompts, approvals, database/API details, private route names or operator diagnostics. No email, Slack or external delivery integration exists yet.
+Generated payloads are ignored under `reports/notifications/`. Operator payloads may include commands and private workflow context. Stakeholder payloads are sanitised and safety-scanned so they do not expose commands, prompts, approvals, database/API details, private route names or operator diagnostics. No email, Slack or external delivery integration exists yet. Cadence now prepares these payloads automatically for its selected mode, but still sends nothing.
 
 ## Operational State Summary
 

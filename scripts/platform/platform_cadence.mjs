@@ -46,8 +46,8 @@ function taskPlan() {
 
   if (stakeholderOnly) {
     return [
-      { script: "platform:state", label: "Refresh Sentinel state" },
       { script: "platform:stakeholder", label: "Generate stakeholder weekly report" },
+      { script: "platform:notify", args: ["--", "--stakeholder"], label: "Generate stakeholder notification payload" },
     ];
   }
 
@@ -55,6 +55,7 @@ function taskPlan() {
     return [
       { script: "platform:state", label: "Refresh Sentinel state" },
       { script: "platform:daily", label: "Generate daily operator report" },
+      { script: "platform:notify", args: ["--", "--operator"], label: "Generate operator notification payload" },
     ];
   }
 
@@ -63,7 +64,12 @@ function taskPlan() {
     { script: "platform:state", label: "Refresh Sentinel state" },
     { script: "platform:daily", label: "Generate daily operator report" },
     { script: "platform:stakeholder", label: "Generate stakeholder weekly report" },
+    { script: "platform:notify", args: ["--", "--all"], label: "Generate notification payloads" },
   ];
+}
+
+function taskCommand(task) {
+  return [task.script, ...(task.args || [])].join(" ");
 }
 
 function generatedReportsFor(tasks) {
@@ -81,7 +87,21 @@ function generatedReportsFor(tasks) {
   return reports;
 }
 
-function writeSummary({ tasksRun, state, generatedReports }) {
+function notificationsFor(tasks) {
+  const hasNotifyAll = tasks.some((task) => task.script === "platform:notify" && task.args?.includes("--all"));
+  const hasOperator = hasNotifyAll || tasks.some((task) => task.script === "platform:notify" && task.args?.includes("--operator"));
+  const hasStakeholder = hasNotifyAll || tasks.some((task) => task.script === "platform:notify" && task.args?.includes("--stakeholder"));
+
+  return {
+    notificationsGenerated: hasOperator || hasStakeholder,
+    operatorNotificationPath: hasOperator ? "reports/notifications/operator-notification.md" : null,
+    stakeholderNotificationPath: hasStakeholder ? "reports/notifications/stakeholder-notification.md" : null,
+    notificationMode: hasOperator && hasStakeholder ? "all" : hasOperator ? "operator" : hasStakeholder ? "stakeholder" : "none",
+    stakeholderSafetyStatus: hasStakeholder ? "passed" : "not_applicable",
+  };
+}
+
+function writeSummary({ tasksRun, state, generatedReports, notificationSummary }) {
   const summary = {
     ranAt: new Date().toISOString(),
     tenantId: state.tenant.tenantId,
@@ -95,6 +115,7 @@ function writeSummary({ tasksRun, state, generatedReports }) {
     },
     workflow: state.workflow.state,
     generatedReports,
+    ...notificationSummary,
     nextStep: state.recommendation.nextStep,
   };
 
@@ -110,11 +131,19 @@ function printDryRun(tasks) {
   console.log("");
   console.log("Would run:");
   tasks.forEach((task, index) => {
-    console.log(`${index + 1}. ${task.script} - ${task.label}`);
+    console.log(`${index + 1}. ${taskCommand(task)} - ${task.label}`);
   });
   console.log("");
   console.log("Would generate:");
   generatedReportsFor(tasks).forEach((report) => console.log(`- ${report}`));
+  const notificationSummary = notificationsFor(tasks);
+  if (notificationSummary.notificationsGenerated) {
+    console.log("");
+    console.log("Notifications:");
+    if (notificationSummary.operatorNotificationPath) console.log("- operator payload would be generated");
+    if (notificationSummary.stakeholderNotificationPath) console.log("- stakeholder payload would be generated");
+    console.log("- No messages sent.");
+  }
   console.log("");
   console.log("No commands executed.");
 }
@@ -128,6 +157,12 @@ function printSummary(summary) {
   console.log("");
   console.log("Reports generated:");
   summary.generatedReports.forEach((report) => console.log(`- ${report}`));
+  console.log("");
+  console.log("Notifications:");
+  if (summary.operatorNotificationPath) console.log("operator payload generated");
+  if (summary.stakeholderNotificationPath) console.log("stakeholder payload generated");
+  if (!summary.notificationsGenerated) console.log("none");
+  console.log("No messages sent.");
   console.log("");
   console.log("Next focus:");
   console.log(summary.nextStep);
@@ -145,9 +180,9 @@ function main() {
 
   const tasksRun = [];
   for (const task of tasks) {
-    const result = runNpm(task.script);
+    const result = runNpm(task.script, task.args || []);
     tasksRun.push({
-      script: task.script,
+      script: taskCommand(task),
       label: task.label,
       status: result.ok ? "success" : "failed",
     });
@@ -162,7 +197,8 @@ function main() {
 
   const state = getOperationalSummary(tenantId);
   const generatedReports = generatedReportsFor(tasks);
-  const summary = writeSummary({ tasksRun, state, generatedReports });
+  const notificationSummary = notificationsFor(tasks);
+  const summary = writeSummary({ tasksRun, state, generatedReports, notificationSummary });
   printSummary(summary);
 }
 
