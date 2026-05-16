@@ -37,6 +37,7 @@ const sentinelReadinessModules = import.meta.glob("../../reports/sentinel-deploy
 const sentinelRoadmapModules = import.meta.glob("../../reports/sentinel-roadmap.json", { eager: true });
 const sentinelRoadmapPlanModules = import.meta.glob("../../reports/sentinel-roadmap-plan.json", { eager: true });
 const sentinelRoadmapApprovalModules = import.meta.glob("../../reports/sentinel-roadmap-approvals.json", { eager: true });
+const sentinelImplementationBriefModules = import.meta.glob("../../reports/sentinel-implementation-brief.json", { eager: true });
 const sentinelApiBaseUrl = String(import.meta.env.VITE_SENTINEL_API_BASE_URL || "").replace(/\/+$/, "");
 const sentinelActionApiBaseUrl = sentinelApiBaseUrl || "http://127.0.0.1:4317";
 const SENTINEL_OPERATOR_SESSION_KEY = "sentinel.operatorSession.v1";
@@ -153,6 +154,11 @@ function readRoadmapApprovals() {
   const approvalModule = Object.values(sentinelRoadmapApprovalModules)[0];
   const approvals = approvalModule?.default || approvalModule || [];
   return Array.isArray(approvals) ? approvals : [];
+}
+
+function readImplementationBrief() {
+  const briefModule = Object.values(sentinelImplementationBriefModules)[0];
+  return briefModule?.default || briefModule || null;
 }
 
 function getInitialSentinelState() {
@@ -2229,12 +2235,18 @@ function latestRoadmapApproval(approvals = [], itemId = "") {
   };
 }
 
-function RoadmapIntelligencePanel({ roadmap, approvals = [] }) {
+function implementationBriefState(brief, itemId = "") {
+  if (!brief || brief.approvedItemId !== itemId) return { state: "not_generated", brief: null };
+  return { state: "generated", brief };
+}
+
+function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief = null }) {
   const items = Array.isArray(roadmap?.items) ? roadmap.items : [];
   const categories = ["all", ...new Set(items.map((item) => item.category).filter(Boolean))];
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [copiedItemId, setCopiedItemId] = useState("");
   const [copiedApprovalId, setCopiedApprovalId] = useState("");
+  const [copiedBriefId, setCopiedBriefId] = useState("");
   const visibleItems = items
     .filter((item) => categoryFilter === "all" || item.category === categoryFilter)
     .slice(0, 3);
@@ -2255,6 +2267,15 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [] }) {
     if (ok) {
       setCopiedApprovalId(item.id);
       window.setTimeout(() => setCopiedApprovalId(""), 1800);
+    }
+  };
+
+  const copyBriefCommand = async (item) => {
+    const command = `npm run platform:roadmap:brief -- --item ${item.id}`;
+    const ok = await copyText(command, "roadmap brief command");
+    if (ok) {
+      setCopiedBriefId(item.id);
+      window.setTimeout(() => setCopiedBriefId(""), 1800);
     }
   };
 
@@ -2301,6 +2322,7 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [] }) {
           <div className="grid gap-3" style={{ marginTop: "16px" }}>
             {visibleItems.map((item) => {
               const approvalState = latestRoadmapApproval(approvals, item.id);
+              const briefState = implementationBriefState(implementationBrief, item.id);
 
               return (
                 <article key={item.id} className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100">
@@ -2332,6 +2354,7 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [] }) {
                     <span>Confidence: {item.confidence}</span>
                     <span>Approval: {formatStateLabel(approvalState.state)}</span>
                     {approvalState.approval?.expiresAt ? <span>Expires: {formatDateTime(approvalState.approval.expiresAt)}</span> : null}
+                    <span>Brief: {formatStateLabel(briefState.state)}</span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2" style={{ marginTop: "12px" }}>
                     <button
@@ -2353,6 +2376,16 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [] }) {
                     </button>
                     <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
                       npm run platform:roadmap:approve -- --item {item.id}
+                    </code>
+                    <button
+                      type="button"
+                      onClick={() => copyBriefCommand(item)}
+                      className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+                    >
+                      {copiedBriefId === item.id ? "Copied brief command" : "Copy brief command"}
+                    </button>
+                    <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
+                      npm run platform:roadmap:brief -- --item {item.id}
                     </code>
                   </div>
                 </article>
@@ -3648,6 +3681,7 @@ function AdminView({ onPreview }) {
   const [readinessSummary] = useState(readReadinessSummary);
   const [roadmapSummary] = useState(readRoadmapSummary);
   const [roadmapApprovals] = useState(readRoadmapApprovals);
+  const [implementationBrief] = useState(readImplementationBrief);
   const overviewRef = useRef(null);
   const stateRef = useRef(null);
   const inboxRef = useRef(null);
@@ -4577,7 +4611,7 @@ function AdminView({ onPreview }) {
                   onFeedbackAdded={loadOperatorFeedback}
                   onRefresh={loadOperatorFeedback}
                 />
-                <RoadmapIntelligencePanel roadmap={roadmapSummary} approvals={roadmapApprovals} />
+                <RoadmapIntelligencePanel roadmap={roadmapSummary} approvals={roadmapApprovals} implementationBrief={implementationBrief} />
 
                 <section className="grid gap-lg xl:grid-cols-2">
                   <div>

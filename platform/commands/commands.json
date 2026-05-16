@@ -93,6 +93,16 @@
       "recommendedUsage": "Use after reviewing a roadmap plan and before starting implementation."
     },
     {
+      "command": "npm run platform:roadmap:brief",
+      "category": "State",
+      "description": "Generates a Codex-ready implementation brief only when the selected roadmap item has active approval.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Use after approval to prepare a reviewable implementation brief without applying changes."
+    },
+    {
       "command": "npm run platform:cadence",
       "category": "Automation",
       "description": "Runs the safe local cadence: monitor, state, daily report, stakeholder report and notification payloads.",

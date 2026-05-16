@@ -61,6 +61,7 @@
     "platform:notify": "node scripts/platform/platform_notify.mjs",
     "platform:roadmap": "node scripts/platform/platform_roadmap.mjs",
     "platform:roadmap:approve": "node scripts/platform/platform_roadmap_approve.mjs",
+    "platform:roadmap:brief": "node scripts/platform/platform_roadmap_brief.mjs",
     "platform:roadmap:plan": "node scripts/platform/platform_roadmap_plan.mjs",
     "platform:stakeholder": "node scripts/platform/platform_stakeholder_report.mjs",
     "platform:start": "node scripts/platform/platform_bootstrap.mjs",
