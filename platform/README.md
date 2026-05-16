@@ -215,11 +215,14 @@ The Control Centre groups the operator experience into:
 
 - System Status: health, workflow, cadence, readiness and doctor state.
 - Current Focus: latest opportunity, latest plan, inbox item and recommended next step.
+- Activity Feed: a concise chronological narrative of recent monitor runs, operator actions, cadence runs, report generation and notification payload preparation.
 - Tenant: active client context, stakeholder route, operator route and default tenant scope.
 - Tenant Registry: read-only preview of registered tenants, including active and disabled fixture entries.
 - Operations: cadence, notification payloads, report generation and state refresh context.
 - Tools & Commands: searchable command discovery, copy buttons and low-risk Run buttons for allowlisted actions only.
 - Diagnostics: collapsed/secondary checks and future console direction.
+
+The Activity Feed is backed by `platform/activity/activity_feed.mjs` and the local `GET /activity` API endpoint. It is operator-only, deliberately concise and does not show raw command output, stack traces or secrets. If the local API is unavailable, the Control Centre shows a calm fallback rather than failing.
 
 The Tenant Registry panel uses the local `GET /tenants` API when available and falls back to the bundled `platform/tenants/tenant-registry.json` file. It is intentionally read-only. ERP Experts is the only active tenant, `demo-client` is shown as a disabled fixture, and the Control Centre does not provide tenant switching or disabled-tenant actions.
 
@@ -277,7 +280,7 @@ npm run platform:api:serve
 npm run platform:api:smoke
 ```
 
-The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state`, `GET /tenant`, `GET /tenants` and `GET /actions/history` endpoints, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
+The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state`, `GET /tenant`, `GET /tenants`, `GET /activity` and `GET /actions/history` endpoints, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
 
 The Raspberry Pi service scaffold is also present but inactive:
 

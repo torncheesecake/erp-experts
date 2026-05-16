@@ -270,6 +270,13 @@ function actionStatusBadgeClass(status = "") {
   return "bg-rose-50 text-rose-700 ring-rose-100";
 }
 
+function activitySeverityBadgeClass(severity = "") {
+  if (severity === "success") return "bg-emerald-50 text-emerald-700 ring-emerald-100";
+  if (severity === "warning") return "bg-amber-50 text-amber-800 ring-amber-100";
+  if (severity === "error") return "bg-rose-50 text-rose-700 ring-rose-100";
+  return "bg-blue-50 text-blue-700 ring-blue-100";
+}
+
 function buildMonitorInsights({ points, modeKey }) {
   const list = Array.isArray(points) ? points : [];
   const latest = list[list.length - 1] || null;
@@ -1766,6 +1773,104 @@ function OperatorWorkflowPanel() {
   );
 }
 
+function ActivityFeedPanel({ activityFeed, onRefresh }) {
+  const [activeType, setActiveType] = useState("all");
+  const activities = Array.isArray(activityFeed?.activities) ? activityFeed.activities : [];
+  const loading = activityFeed?.loading;
+  const unavailable = activityFeed?.status === "unavailable";
+  const filters = [
+    { key: "all", label: "All" },
+    { key: "system", label: "System" },
+    { key: "operator", label: "Operator" },
+    { key: "cadence", label: "Cadence" },
+    { key: "notifications", label: "Notifications" },
+    { key: "deploy", label: "Deploy" },
+  ];
+  const visibleActivities = activities
+    .filter((entry) => activeType === "all" || entry.type === activeType || (activeType === "system" && ["monitor", "autopilot", "reports", "system"].includes(entry.type)))
+    .slice(0, 8);
+
+  return (
+    <section className="rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-100/80 md:p-6">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Activity Feed</p>
+          <h2 className="text-xl font-semibold text-slate-950">Recent Activity</h2>
+          <p className="text-sm text-slate-600">Chronological operator narrative from runs, cadence, reports and notification payloads.</p>
+        </div>
+        <button
+          type="button"
+          onClick={onRefresh}
+          className="rounded-full bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+        >
+          Refresh
+        </button>
+      </div>
+
+      <div className="flex flex-wrap gap-2" style={{ marginTop: "14px" }}>
+        {filters.map((filter) => (
+          <button
+            type="button"
+            key={filter.key}
+            onClick={() => setActiveType(filter.key)}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ${
+              activeType === filter.key
+                ? "bg-pink-50 text-pink-700 ring-pink-100"
+                : "bg-slate-50 text-slate-600 ring-slate-100 hover:bg-slate-100"
+            }`}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid gap-2" style={{ marginTop: "16px" }}>
+        {loading ? (
+          <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 ring-1 ring-slate-100">
+            Loading activity feed…
+          </div>
+        ) : null}
+
+        {!loading && unavailable ? (
+          <div className="rounded-2xl bg-blue-50 p-4 text-sm text-blue-900 ring-1 ring-blue-100">
+            Activity feed available when local Sentinel API is running.
+          </div>
+        ) : null}
+
+        {!loading && !unavailable && !visibleActivities.length ? (
+          <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 ring-1 ring-slate-100">
+            No activity entries match this filter yet.
+          </div>
+        ) : null}
+
+        {!loading && !unavailable && visibleActivities.map((entry) => (
+          <article key={entry.id} className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="text-sm font-semibold text-slate-950">{entry.title}</p>
+                  <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-100">
+                    {formatStateLabel(entry.type)}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500" style={{ marginTop: "3px" }}>
+                  {formatDateTime(entry.timestamp)}
+                </p>
+              </div>
+              <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${activitySeverityBadgeClass(entry.severity)}`}>
+                {entry.severity || "info"}
+              </span>
+            </div>
+            {entry.summary ? (
+              <p className="text-xs text-slate-700" style={{ marginTop: "8px" }}>{entry.summary}</p>
+            ) : null}
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function FutureOperatorConsolePanel() {
   return (
     <section className="rounded-[28px] bg-slate-950 p-5 text-white shadow-sm md:p-6">
@@ -3035,6 +3140,11 @@ function AdminView({ onPreview }) {
     loading: true,
     status: "loading",
   });
+  const [activityFeedSnapshot, setActivityFeedSnapshot] = useState({
+    activities: [],
+    loading: true,
+    status: "loading",
+  });
   const [doctorSummary] = useState(readDoctorSummary);
   const [readinessSummary] = useState(readReadinessSummary);
   const overviewRef = useRef(null);
@@ -3100,8 +3210,35 @@ function AdminView({ onPreview }) {
     }
   };
 
+  const loadActivityFeed = async () => {
+    setActivityFeedSnapshot((current) => ({
+      ...current,
+      loading: true,
+    }));
+
+    try {
+      const res = await fetch(`${sentinelActionApiBaseUrl}/activity?limit=20`, {
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error(`Sentinel activity feed returned ${res.status}`);
+      const data = await res.json();
+      setActivityFeedSnapshot({
+        activities: Array.isArray(data?.activities) ? data.activities : [],
+        loading: false,
+        status: "ready",
+      });
+    } catch {
+      setActivityFeedSnapshot({
+        activities: [],
+        loading: false,
+        status: "unavailable",
+      });
+    }
+  };
+
   useEffect(() => {
     loadActionHistory();
+    loadActivityFeed();
   }, []);
 
   useEffect(() => {
@@ -3817,6 +3954,13 @@ function AdminView({ onPreview }) {
     });
   };
 
+  const refreshOperatorActivity = async () => {
+    await Promise.all([
+      loadActionHistory(),
+      loadActivityFeed(),
+    ]);
+  };
+
   const resetControlCentreState = () => {
     clearOperatorSessionState();
     setActiveNav(SENTINEL_OPERATOR_SESSION_DEFAULTS.activeSection);
@@ -3896,6 +4040,7 @@ function AdminView({ onPreview }) {
                   doctorSummary={doctorSummary}
                 />
                 <CurrentFocusPanel sentinelState={sentinelState} inboxReport={actionInboxReport} />
+                <ActivityFeedPanel activityFeed={activityFeedSnapshot} onRefresh={loadActivityFeed} />
 
                 <section className="grid gap-lg xl:grid-cols-2">
                   <div>
@@ -4007,7 +4152,7 @@ function AdminView({ onPreview }) {
                 <RecentOperatorActionsPanel
                   history={actionHistorySnapshot}
                   actionRegistry={sentinelActionRegistry}
-                  onRefresh={loadActionHistory}
+                  onRefresh={refreshOperatorActivity}
                 />
                 <SentinelCommandsPanel
                   commandRegistry={sentinelCommandRegistry}
@@ -4016,7 +4161,7 @@ function AdminView({ onPreview }) {
                   category={commandCategory}
                   onQueryChange={setCommandQuery}
                   onCategoryChange={setCommandCategory}
-                  onActionComplete={loadActionHistory}
+                  onActionComplete={refreshOperatorActivity}
                 />
                 <FutureOperatorConsolePanel />
               </section>

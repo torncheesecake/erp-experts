@@ -90,11 +90,14 @@ Current operator zones:
 
 - System Status: health, workflow, cadence state, deployment readiness and doctor state.
 - Current Focus: latest opportunity, latest plan, practical inbox item and recommended next step.
+- Activity Feed: chronological narrative of recent monitor runs, controlled operator actions, cadence runs, report generation and notification payload preparation.
 - Tenant: active client context for ERP Experts, including base URL, operator route, stakeholder route and future multi-tenant note.
 - Tenant Registry: read-only preview of registered tenants, showing ERP Experts as active and disabled fixtures as non-actionable.
 - Operations: cadence, notification payloads, report generation and state refresh context.
 - Tools & Commands: searchable command registry with copy buttons and allowlisted Run buttons.
 - Diagnostics: secondary checks, advanced details and the future console placeholder.
+
+The Activity Feed uses `platform/activity/activity_feed.mjs` and local `GET /activity` to aggregate persisted runs, action summaries and safe generated artefact timestamps into concise operator-only entries. It avoids raw command output, stack traces and secrets. `/seo-progress` does not expose this feed.
 
 The Tenant Registry preview uses `GET /tenants` when the local Sentinel API is running and falls back to the bundled registry. It does not enable switching, actions against disabled tenants or multi-tenant pipelines.
 
@@ -423,7 +426,7 @@ The private Sentinel operator dashboard at `/seo-roadmap` now reads `reports/sen
 
 The current dashboard remains report-compatible. The new API layer is the first step towards DB-backed services and dashboard reads without relying entirely on generated report files.
 
-The HTTP prototype defaults to `http://127.0.0.1:4317` and provides read-only `GET /health`, `GET /state`, `GET /state?tenant=erp-experts`, `GET /tenant`, `GET /tenants` and `GET /actions/history`, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication. Do not expose it publicly or run it as a Raspberry Pi service until auth, process supervision and deployment hardening exist.
+The HTTP prototype defaults to `http://127.0.0.1:4317` and provides read-only `GET /health`, `GET /state`, `GET /state?tenant=erp-experts`, `GET /tenant`, `GET /tenants`, `GET /activity` and `GET /actions/history`, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication. Do not expose it publicly or run it as a Raspberry Pi service until auth, process supervision and deployment hardening exist.
 
 For local operator testing, `/seo-roadmap` can try the HTTP API first when `VITE_SENTINEL_API_BASE_URL` is configured. It falls back quietly to `reports/sentinel-state.json` if the API is unavailable. `/seo-progress` remains stakeholder-safe and does not use Sentinel operator API state.
 

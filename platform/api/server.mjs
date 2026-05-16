@@ -4,6 +4,7 @@ import path from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { getOperationalSummary, getTenantState } from "./state_api.mjs";
+import { getActivityFeed } from "../activity/activity_feed.mjs";
 import { DEFAULT_DB_PATH, databaseExists, logRun, persistActionResult, queryRows, tableExists } from "../persistence/db.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -100,6 +101,12 @@ function actionHistoryLimit(url) {
   const parsed = Number(url.searchParams.get("limit") || 10);
   if (!Number.isFinite(parsed) || parsed <= 0) return 10;
   return Math.min(Math.floor(parsed), 50);
+}
+
+function activityLimit(url) {
+  const parsed = Number(url.searchParams.get("limit") || 20);
+  if (!Number.isFinite(parsed) || parsed <= 0) return 20;
+  return Math.min(Math.floor(parsed), 100);
 }
 
 function loadActionRegistry() {
@@ -465,6 +472,30 @@ function handleTenants(request, response) {
   sendJson(request, response, 200, loadTenantRegistry());
 }
 
+function handleActivity(request, response, url) {
+  if (!isLocalRequest(request)) {
+    sendJson(request, response, 403, {
+      error: "local_only",
+      message: "Sentinel activity feed is available only from localhost.",
+    });
+    return;
+  }
+
+  const tenantId = tenantFromUrl(url);
+  try {
+    getTenantState(tenantId);
+    sendJson(request, response, 200, {
+      tenantId,
+      activities: getActivityFeed({
+        tenantId,
+        limit: activityLimit(url),
+      }),
+    });
+  } catch (error) {
+    handleError(request, response, error);
+  }
+}
+
 const server = http.createServer(async (request, response) => {
   if (request.method === "OPTIONS") {
     sendOptions(request, response);
@@ -520,6 +551,11 @@ const server = http.createServer(async (request, response) => {
 
     if (url.pathname === "/actions/history") {
       handleActionHistory(request, response, url);
+      return;
+    }
+
+    if (url.pathname === "/activity") {
+      handleActivity(request, response, url);
       return;
     }
 
