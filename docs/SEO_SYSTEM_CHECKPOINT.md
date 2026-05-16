@@ -82,6 +82,8 @@ The route now uses a clearer app-shell structure:
 - Main Content Area: existing panels grouped by operator purpose.
 - Status Bar: readiness, latest cadence and state-source context.
 
+The private Control Centre also persists lightweight operator preferences in local browser storage. It restores the last selected section, command search/filter, sidebar collapsed state, compact view preference and selected collapsed panel states. This is local-only UI state: no command outputs, credentials, API payloads, reports, notifications or database state are stored. The reset option clears only this local Sentinel UI state and restores the default Overview layout.
+
 Current operator zones:
 
 - System Status: health, workflow, cadence state, deployment readiness and doctor state.

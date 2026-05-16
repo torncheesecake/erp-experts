@@ -199,6 +199,16 @@ The Control Centre is now moving toward an app-shell structure:
 - Main Content Area: the current operator panels grouped by purpose rather than stacked as one long dashboard.
 - Status Bar: lightweight readiness, cadence and state-source context.
 
+The app shell remembers lightweight operator preferences in local browser storage:
+
+- last selected section
+- command search text and category filter
+- collapsed sidebar state
+- compact or expanded view preference
+- selected collapsed panel states for supporting intelligence, the workbench and advanced diagnostics
+
+This is local UI state only. It does not sync remotely and does not store command outputs, API payloads, credentials, notification payloads, report data or database state. The header includes a reset option that clears only this Sentinel Control Centre browser state.
+
 The Control Centre groups the operator experience into:
 
 - System Status: health, workflow, cadence, readiness and doctor state.

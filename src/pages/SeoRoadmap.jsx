@@ -33,6 +33,19 @@ const sentinelDoctorModules = import.meta.glob("../../reports/sentinel-doctor.js
 const sentinelReadinessModules = import.meta.glob("../../reports/sentinel-deploy-readiness.json", { eager: true });
 const sentinelApiBaseUrl = String(import.meta.env.VITE_SENTINEL_API_BASE_URL || "").replace(/\/+$/, "");
 const sentinelActionApiBaseUrl = sentinelApiBaseUrl || "http://127.0.0.1:4317";
+const SENTINEL_OPERATOR_SESSION_KEY = "sentinel.operatorSession.v1";
+const SENTINEL_OPERATOR_SESSION_DEFAULTS = {
+  activeSection: "overview",
+  commandQuery: "",
+  commandCategory: "All",
+  sidebarCollapsed: false,
+  compactView: false,
+  panels: {
+    supportingIntelligence: false,
+    articleWorkbench: false,
+    advancedDiagnostics: false,
+  },
+};
 
 const seoSnapshotDate =
   reportData?.ga4Period?.seoInsights?.period?.split(" to ").at(-1) || reportData?.lastUpdated;
@@ -136,6 +149,58 @@ function getInitialTenantRegistry() {
     registry: sentinelTenantRegistry,
     source: "registry",
   };
+}
+
+function mergeOperatorSessionState(savedState = {}) {
+  return {
+    ...SENTINEL_OPERATOR_SESSION_DEFAULTS,
+    ...savedState,
+    panels: {
+      ...SENTINEL_OPERATOR_SESSION_DEFAULTS.panels,
+      ...(savedState?.panels || {}),
+    },
+  };
+}
+
+function readOperatorSessionState() {
+  if (typeof window === "undefined") return SENTINEL_OPERATOR_SESSION_DEFAULTS;
+
+  try {
+    const raw = window.localStorage.getItem(SENTINEL_OPERATOR_SESSION_KEY);
+    if (!raw) return SENTINEL_OPERATOR_SESSION_DEFAULTS;
+    return mergeOperatorSessionState(JSON.parse(raw));
+  } catch {
+    return SENTINEL_OPERATOR_SESSION_DEFAULTS;
+  }
+}
+
+function isDefaultOperatorSessionState(state) {
+  const merged = mergeOperatorSessionState(state);
+  return JSON.stringify(merged) === JSON.stringify(SENTINEL_OPERATOR_SESSION_DEFAULTS);
+}
+
+function writeOperatorSessionState(state) {
+  if (typeof window === "undefined") return;
+
+  try {
+    if (isDefaultOperatorSessionState(state)) {
+      window.localStorage.removeItem(SENTINEL_OPERATOR_SESSION_KEY);
+      return;
+    }
+    window.localStorage.setItem(SENTINEL_OPERATOR_SESSION_KEY, JSON.stringify(mergeOperatorSessionState(state)));
+  } catch {
+    // Local browser preference persistence is optional.
+  }
+}
+
+function clearOperatorSessionState() {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.removeItem(SENTINEL_OPERATOR_SESSION_KEY);
+  } catch {
+    // Local browser preference persistence is optional.
+  }
 }
 
 function resolveTenantRegistrySnapshot(tenantRegistrySnapshot) {
@@ -811,6 +876,9 @@ function SentinelAppHeader({
   readinessSummary,
   dashboardLoadedAt,
   onPreview,
+  compactView,
+  onCompactViewChange,
+  onResetWorkspace,
 }) {
   const workflowState = sentinelState?.workflow?.state || "unknown";
   const cadenceLabel = cadenceSummary?.ranAt ? formatDateTime(cadenceSummary.ranAt) : "Not recorded";
@@ -868,6 +936,18 @@ function SentinelAppHeader({
             </div>
             <div className="flex items-center justify-end gap-2">
               <button
+                onClick={() => onCompactViewChange(!compactView)}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                {compactView ? "Expanded view" : "Compact view"}
+              </button>
+              <button
+                onClick={onResetWorkspace}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                Reset workspace
+              </button>
+              <button
                 onClick={() => window.location.reload()}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
               >
@@ -889,13 +969,33 @@ function SentinelAppHeader({
   );
 }
 
-function SentinelNavigationRail({ navItems, activeNav, onNavigate, activeTenant, dashboardMode, summaryGate }) {
+function SentinelNavigationRail({
+  navItems,
+  activeNav,
+  onNavigate,
+  activeTenant,
+  dashboardMode,
+  summaryGate,
+  collapsed,
+  onCollapsedChange,
+}) {
   return (
     <aside className="rounded-[28px] bg-white/85 p-4 shadow-sm ring-1 ring-slate-100/80 h-fit lg:sticky lg:top-24">
       <div className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">App Shell</p>
-        <p className="text-lg font-semibold text-slate-950">Sentinel</p>
-        <p className="text-xs text-slate-500">{activeTenant?.name || "ERP Experts"}</p>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">App Shell</p>
+            <p className="text-lg font-semibold text-slate-950">Sentinel</p>
+            {collapsed ? null : <p className="text-xs text-slate-500">{activeTenant?.name || "ERP Experts"}</p>}
+          </div>
+          <button
+            type="button"
+            onClick={() => onCollapsedChange(!collapsed)}
+            className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100 hover:bg-slate-50"
+          >
+            {collapsed ? "Open" : "Fold"}
+          </button>
+        </div>
       </div>
 
       <nav className="grid gap-1.5" style={{ marginTop: "14px" }} aria-label="Sentinel operator sections">
@@ -910,7 +1010,7 @@ function SentinelNavigationRail({ navItems, activeNav, onNavigate, activeTenant,
             }`}
           >
             <span className="block text-sm font-semibold">{item.label}</span>
-            <span className="block text-xs text-slate-500" style={{ marginTop: "2px" }}>{item.description}</span>
+            {collapsed ? null : <span className="block text-xs text-slate-500" style={{ marginTop: "2px" }}>{item.description}</span>}
           </button>
         ))}
       </nav>
@@ -918,7 +1018,7 @@ function SentinelNavigationRail({ navItems, activeNav, onNavigate, activeTenant,
       <div className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100" style={{ marginTop: "16px" }}>
         <p className="text-xs text-slate-500">Health</p>
         <p className="text-sm font-semibold text-emerald-600">{dashboardMode.stateLabel}</p>
-        <p className="text-xs text-slate-600">pass {summaryGate.pass} · blocked {summaryGate.blocked}</p>
+        {collapsed ? null : <p className="text-xs text-slate-600">pass {summaryGate.pass} · blocked {summaryGate.blocked}</p>}
       </div>
     </aside>
   );
@@ -1246,9 +1346,15 @@ function CommandCategoryButton({ label, active, onClick }) {
   );
 }
 
-function SentinelCommandsPanel({ commandRegistry, actionRegistry, onActionComplete }) {
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("All");
+function SentinelCommandsPanel({
+  commandRegistry,
+  actionRegistry,
+  query,
+  category,
+  onQueryChange,
+  onCategoryChange,
+  onActionComplete,
+}) {
   const [copyTarget, setCopyTarget] = useState("");
   const [copyState, setCopyState] = useState("idle");
   const [runningAction, setRunningAction] = useState("");
@@ -1259,9 +1365,10 @@ function SentinelCommandsPanel({ commandRegistry, actionRegistry, onActionComple
   const tenantScopeNote = commandRegistry?.tenantScopeNote || "Commands currently use the default tenant.";
   const actionByCommand = new Map(actions.filter((action) => action.allowFromUI).map((action) => [action.command, action]));
   const categories = ["All", ...Array.from(new Set(commands.map((item) => item.category).filter(Boolean)))];
+  const activeCategory = categories.includes(category) ? category : "All";
   const normalisedQuery = query.trim().toLowerCase();
   const visibleCommands = commands.filter((item) => {
-    const categoryMatches = category === "All" || item.category === category;
+    const categoryMatches = activeCategory === "All" || item.category === activeCategory;
     const queryMatches = !normalisedQuery
       || `${item.command} ${item.description} ${item.recommendedUsage} ${item.category}`.toLowerCase().includes(normalisedQuery);
     return categoryMatches && queryMatches;
@@ -1345,7 +1452,7 @@ function SentinelCommandsPanel({ commandRegistry, actionRegistry, onActionComple
         <input
           type="search"
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={(event) => onQueryChange(event.target.value)}
           placeholder="Search health, cadence, deploy, API or reports"
           className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-pink-200 focus:bg-white focus:ring-4 focus:ring-pink-50"
         />
@@ -1354,8 +1461,8 @@ function SentinelCommandsPanel({ commandRegistry, actionRegistry, onActionComple
             <CommandCategoryButton
               key={item}
               label={item}
-              active={category === item}
-              onClick={() => setCategory(item)}
+              active={activeCategory === item}
+              onClick={() => onCategoryChange(item)}
             />
           ))}
         </div>
@@ -2808,7 +2915,20 @@ function AdminView({ onPreview }) {
   });
   const [copyState, setCopyState] = useState("idle");
   const [dashboardLoadedAt] = useState(() => new Date());
-  const [activeNav, setActiveNav] = useState("overview");
+  const operatorSessionInitialRef = useRef(null);
+  if (!operatorSessionInitialRef.current) {
+    operatorSessionInitialRef.current = readOperatorSessionState();
+  }
+  const initialOperatorSession = operatorSessionInitialRef.current;
+  const [activeNav, setActiveNav] = useState(() => initialOperatorSession.activeSection || "overview");
+  const [commandQuery, setCommandQuery] = useState(() => initialOperatorSession.commandQuery || "");
+  const [commandCategory, setCommandCategory] = useState(() => initialOperatorSession.commandCategory || "All");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => Boolean(initialOperatorSession.sidebarCollapsed));
+  const [compactView, setCompactView] = useState(() => Boolean(initialOperatorSession.compactView));
+  const [supportingIntelligenceOpen, setSupportingIntelligenceOpen] = useState(() => Boolean(initialOperatorSession.panels?.supportingIntelligence));
+  const [articleWorkbenchOpen, setArticleWorkbenchOpen] = useState(() => Boolean(initialOperatorSession.panels?.articleWorkbench));
+  const [advancedDiagnosticsOpen, setAdvancedDiagnosticsOpen] = useState(() => Boolean(initialOperatorSession.panels?.advancedDiagnostics));
+  const [sessionResetNotice, setSessionResetNotice] = useState("");
   const [sentinelStateSnapshot, setSentinelStateSnapshot] = useState(getInitialSentinelState);
   const [tenantRegistrySnapshot, setTenantRegistrySnapshot] = useState(getInitialTenantRegistry);
   const [cadenceSummary, setCadenceSummary] = useState(readCadenceSummary);
@@ -2827,6 +2947,30 @@ function AdminView({ onPreview }) {
   const cadenceRef = useRef(null);
   const tenantsRef = useRef(null);
   const diagnosticsRef = useRef(null);
+
+  useEffect(() => {
+    writeOperatorSessionState({
+      activeSection: activeNav,
+      commandQuery,
+      commandCategory,
+      sidebarCollapsed,
+      compactView,
+      panels: {
+        supportingIntelligence: supportingIntelligenceOpen,
+        articleWorkbench: articleWorkbenchOpen,
+        advancedDiagnostics: advancedDiagnosticsOpen,
+      },
+    });
+  }, [
+    activeNav,
+    commandQuery,
+    commandCategory,
+    sidebarCollapsed,
+    compactView,
+    supportingIntelligenceOpen,
+    articleWorkbenchOpen,
+    advancedDiagnosticsOpen,
+  ]);
 
   const loadActionHistory = async () => {
     setActionHistorySnapshot((current) => ({
@@ -3571,6 +3715,20 @@ function AdminView({ onPreview }) {
     });
   };
 
+  const resetControlCentreState = () => {
+    clearOperatorSessionState();
+    setActiveNav(SENTINEL_OPERATOR_SESSION_DEFAULTS.activeSection);
+    setCommandQuery(SENTINEL_OPERATOR_SESSION_DEFAULTS.commandQuery);
+    setCommandCategory(SENTINEL_OPERATOR_SESSION_DEFAULTS.commandCategory);
+    setSidebarCollapsed(SENTINEL_OPERATOR_SESSION_DEFAULTS.sidebarCollapsed);
+    setCompactView(SENTINEL_OPERATOR_SESSION_DEFAULTS.compactView);
+    setSupportingIntelligenceOpen(SENTINEL_OPERATOR_SESSION_DEFAULTS.panels.supportingIntelligence);
+    setArticleWorkbenchOpen(SENTINEL_OPERATOR_SESSION_DEFAULTS.panels.articleWorkbench);
+    setAdvancedDiagnosticsOpen(SENTINEL_OPERATOR_SESSION_DEFAULTS.panels.advancedDiagnostics);
+    setSessionResetNotice("Control Centre state reset locally.");
+    window.setTimeout(() => setSessionResetNotice(""), 1800);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       <SentinelAppHeader
@@ -3582,10 +3740,13 @@ function AdminView({ onPreview }) {
         readinessSummary={readinessSummary}
         dashboardLoadedAt={dashboardLoadedAt}
         onPreview={onPreview}
+        compactView={compactView}
+        onCompactViewChange={setCompactView}
+        onResetWorkspace={resetControlCentreState}
       />
 
       <main className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-2xl)" }}>
-        <div className="grid gap-xl lg:grid-cols-[260px_minmax(0,1fr)]">
+        <div className={`grid ${compactView ? "gap-lg" : "gap-xl"} ${sidebarCollapsed ? "lg:grid-cols-[170px_minmax(0,1fr)]" : "lg:grid-cols-[260px_minmax(0,1fr)]"}`}>
           <SentinelNavigationRail
             navItems={navItems}
             activeNav={activeNav}
@@ -3593,9 +3754,16 @@ function AdminView({ onPreview }) {
             activeTenant={activeTenant}
             dashboardMode={dashboardMode}
             summaryGate={summaryGate}
+            collapsed={sidebarCollapsed}
+            onCollapsedChange={setSidebarCollapsed}
           />
 
-          <div className="grid gap-lg">
+          <div className={`grid ${compactView ? "gap-md" : "gap-lg"}`}>
+            {sessionResetNotice ? (
+              <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 ring-1 ring-emerald-100">
+                {sessionResetNotice}
+              </div>
+            ) : null}
             {isMonitorMode && showOverviewTab ? (
               <section ref={overviewRef} className="grid gap-lg">
                 <SectionIntro
@@ -3696,7 +3864,12 @@ function AdminView({ onPreview }) {
                     planStatusReport={planStatusReport}
                   />
                 </section>
-                <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
+                <details
+                  open={supportingIntelligenceOpen}
+                  onToggle={(event) => setSupportingIntelligenceOpen(event.currentTarget.open)}
+                  className="rounded-xl border border-slate-200 bg-white/80"
+                  style={{ padding: "var(--space-md)" }}
+                >
                   <summary className="cursor-pointer text-sm font-semibold text-slate-700">View supporting opportunity intelligence</summary>
                   <div style={{ marginTop: "var(--space-sm)", display: "grid", gap: "var(--space-sm)" }}>
                     <GrowthOpportunitiesPanel growthReport={growthReport} loading={growthLoading} />
@@ -3723,6 +3896,10 @@ function AdminView({ onPreview }) {
                 <SentinelCommandsPanel
                   commandRegistry={sentinelCommandRegistry}
                   actionRegistry={sentinelActionRegistry}
+                  query={commandQuery}
+                  category={commandCategory}
+                  onQueryChange={setCommandQuery}
+                  onCategoryChange={setCommandCategory}
                   onActionComplete={loadActionHistory}
                 />
                 <FutureOperatorConsolePanel />
@@ -3825,7 +4002,12 @@ function AdminView({ onPreview }) {
       <section className="bg-slate-50 border-b border-slate-200">
         <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
           {isMonitorMode ? (
-            <details className="rounded-xl border border-slate-200 bg-white/85" style={{ padding: "var(--space-md)" }}>
+            <details
+              open={articleWorkbenchOpen}
+              onToggle={(event) => setArticleWorkbenchOpen(event.currentTarget.open)}
+              className="rounded-xl border border-slate-200 bg-white/85"
+              style={{ padding: "var(--space-md)" }}
+            >
               <summary className="cursor-pointer text-sm font-semibold text-slate-700">Article workbench and operator tools</summary>
               <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)", marginBottom: "var(--space-lg)" }}>
                 Expand when you need manual article-level control.
@@ -3882,7 +4064,12 @@ function AdminView({ onPreview }) {
       {(!isMonitorMode || showDiagnosticsTab) ? (
       <section className="bg-white border-b border-slate-200">
         <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
-          <details className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-md)" }}>
+          <details
+            open={advancedDiagnosticsOpen}
+            onToggle={(event) => setAdvancedDiagnosticsOpen(event.currentTarget.open)}
+            className="rounded-xl border border-slate-200 bg-slate-50"
+            style={{ padding: "var(--space-md)" }}
+          >
             <summary className="cursor-pointer text-sm font-semibold text-slate-700">Advanced diagnostics</summary>
             <div style={{ marginTop: "var(--space-md)" }}>
               <WeeklySummarySection summary={weeklySummary} loading={summaryLoading} />
