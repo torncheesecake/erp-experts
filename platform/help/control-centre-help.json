@@ -1,0 +1,116 @@
+{
+  "sections": {
+    "overview": {
+      "title": "Overview",
+      "shortDescription": "Your daily starting point for Sentinel. It shows health, workflow, current focus, inbox, digest and the top strategic work.",
+      "whenToUse": "Start here each morning or whenever you need the shortest view of what matters now.",
+      "keyActions": [
+        "Check health and workflow state.",
+        "Review the recommended next step.",
+        "Scan the Action Inbox and top opportunities before deeper work."
+      ],
+      "safeNotes": [
+        "This section is read-only unless you use a copied terminal command elsewhere.",
+        "No article content is edited from this view."
+      ]
+    },
+    "state": {
+      "title": "State",
+      "shortDescription": "Shows the persisted Sentinel operating picture, latest state report, cadence output and monitoring history.",
+      "whenToUse": "Use this when you want to understand what Sentinel currently knows without digging through report files.",
+      "keyActions": [
+        "Confirm the latest workflow state.",
+        "Review cadence and autopilot summaries.",
+        "Check recent health history."
+      ],
+      "safeNotes": [
+        "State panels summarise existing reports and SQLite-backed state.",
+        "This view does not run pipelines or mutate platform data."
+      ]
+    },
+    "inbox": {
+      "title": "Inbox",
+      "shortDescription": "The practical work queue for items needing Matthew's attention.",
+      "whenToUse": "Use this when you want to decide what to review, approve or brief next.",
+      "keyActions": [
+        "Read the next best action.",
+        "Review state-derived inbox items.",
+        "Use details only when you need more context."
+      ],
+      "safeNotes": [
+        "The inbox does not apply edits or approvals by itself.",
+        "Commands remain terminal-first unless exposed as allowlisted local actions."
+      ]
+    },
+    "opportunities": {
+      "title": "Opportunities",
+      "shortDescription": "Strategic SEO priorities, decision output and execution plans grouped together.",
+      "whenToUse": "Use this when choosing the next content or optimisation direction.",
+      "keyActions": [
+        "Review strategic decisions first.",
+        "Compare opportunity score, intent and plan readiness.",
+        "Open supporting intelligence only when needed."
+      ],
+      "safeNotes": [
+        "This section does not create, edit or publish articles.",
+        "Disabled or risky work should still go through review and approval steps."
+      ]
+    },
+    "actions": {
+      "title": "Actions",
+      "shortDescription": "Command discovery, controlled safe actions and recent action history.",
+      "whenToUse": "Use this when you need to find a Sentinel command or run a low-risk allowlisted local action.",
+      "keyActions": [
+        "Search commands by purpose.",
+        "Copy terminal commands when manual control is safer.",
+        "Use Run buttons only for safe local actions."
+      ],
+      "safeNotes": [
+        "There is no arbitrary browser terminal.",
+        "Deploy, cleanup, restore, FTP and destructive commands are intentionally excluded."
+      ]
+    },
+    "cadence": {
+      "title": "Cadence",
+      "shortDescription": "Automation rhythm, generated reports and notification payload preparation.",
+      "whenToUse": "Use this to confirm whether the scheduled/local operating rhythm has run and what it produced.",
+      "keyActions": [
+        "Check latest cadence summary.",
+        "Confirm notifications were prepared, not sent.",
+        "Use the operator workflow as a day-to-day checklist."
+      ],
+      "safeNotes": [
+        "No messages are sent from this section.",
+        "Cadence remains local and does not deploy anything."
+      ]
+    },
+    "tenants": {
+      "title": "Tenants",
+      "shortDescription": "Read-only tenant context and registry preview.",
+      "whenToUse": "Use this to confirm the active ERP Experts tenant and inspect disabled fixtures.",
+      "keyActions": [
+        "Check the current active tenant.",
+        "Confirm stakeholder and operator routes.",
+        "Verify disabled fixtures remain non-actionable."
+      ],
+      "safeNotes": [
+        "No tenant switching exists yet.",
+        "Disabled tenants cannot run actions or pipelines from the Control Centre."
+      ]
+    },
+    "diagnostics": {
+      "title": "Diagnostics",
+      "shortDescription": "Readiness, health checks, doctor state and advanced workbench access.",
+      "whenToUse": "Use this when something feels wrong, before deployment work, or when you need low-level report details.",
+      "keyActions": [
+        "Check readiness and doctor state.",
+        "Open the article workbench only for manual investigation.",
+        "Use advanced diagnostics after the main state view is not enough."
+      ],
+      "safeNotes": [
+        "Diagnostics are operator-only and not shown on stakeholder pages.",
+        "This section should remain secondary unless there is a real issue."
+      ]
+    }
+  }
+}

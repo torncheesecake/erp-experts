@@ -209,6 +209,8 @@ The app shell remembers lightweight operator preferences in local browser storag
 
 This is local UI state only. It does not sync remotely and does not store command outputs, API payloads, credentials, notification payloads, report data or database state. The header includes a reset option that clears only this Sentinel Control Centre browser state.
 
+Contextual operator help lives in `platform/help/control-centre-help.json`. The private Control Centre reads this metadata to explain the selected section, when to use it, safe notes and practical next actions. The help layer is operator-only, includes a subtle first-run hint, and is not shown on `/seo-progress`.
+
 The Control Centre groups the operator experience into:
 
 - System Status: health, workflow, cadence, readiness and doctor state.

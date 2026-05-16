@@ -26,6 +26,7 @@ import reportData from "../data/reports.json";
 import sentinelCommandRegistry from "../../platform/commands/commands.json";
 import sentinelActionRegistry from "../../platform/actions/actions.json";
 import sentinelTenantRegistry from "../../platform/tenants/tenant-registry.json";
+import sentinelControlCentreHelp from "../../platform/help/control-centre-help.json";
 const historyQaModules = import.meta.glob("../../reports/history/*/resource-qa-report.json", { eager: true });
 const sentinelStateModules = import.meta.glob("../../reports/sentinel-state.json", { eager: true });
 const sentinelCadenceModules = import.meta.glob("../../reports/sentinel-cadence-summary.json", { eager: true });
@@ -40,6 +41,8 @@ const SENTINEL_OPERATOR_SESSION_DEFAULTS = {
   commandCategory: "All",
   sidebarCollapsed: false,
   compactView: false,
+  helpOpen: true,
+  firstRunHintDismissed: false,
   panels: {
     supportingIntelligence: false,
     articleWorkbench: false,
@@ -171,6 +174,16 @@ function readOperatorSessionState() {
     return mergeOperatorSessionState(JSON.parse(raw));
   } catch {
     return SENTINEL_OPERATOR_SESSION_DEFAULTS;
+  }
+}
+
+function hasStoredOperatorSessionState() {
+  if (typeof window === "undefined") return false;
+
+  try {
+    return Boolean(window.localStorage.getItem(SENTINEL_OPERATOR_SESSION_KEY));
+  } catch {
+    return false;
   }
 }
 
@@ -1034,6 +1047,82 @@ function SectionIntro({ eyebrow, title, description }) {
   );
 }
 
+function ControlCentreHelpPanel({
+  activeNav,
+  helpRegistry,
+  helpOpen,
+  firstRunHintVisible,
+  onToggleHelp,
+  onDismissFirstRun,
+}) {
+  const sectionHelp = helpRegistry?.sections?.[activeNav] || helpRegistry?.sections?.overview || {};
+  const keyActions = Array.isArray(sectionHelp.keyActions) ? sectionHelp.keyActions : [];
+  const safeNotes = Array.isArray(sectionHelp.safeNotes) ? sectionHelp.safeNotes : [];
+
+  return (
+    <section className="rounded-[24px] bg-white/85 p-4 shadow-sm ring-1 ring-slate-100/80">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Operator Help</p>
+          <h2 className="text-lg font-semibold text-slate-950">{sectionHelp.title || "Control Centre"}</h2>
+          <p className="text-sm text-slate-600">{sectionHelp.shortDescription || "Contextual guidance for the selected Sentinel section."}</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => onToggleHelp(!helpOpen)}
+          className="shrink-0 rounded-full bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600 ring-1 ring-slate-100 hover:bg-slate-100"
+        >
+          {helpOpen ? "Hide help" : "Show help"}
+        </button>
+      </div>
+
+      {firstRunHintVisible ? (
+        <div className="rounded-2xl bg-pink-50 px-4 py-3 text-sm text-pink-900 ring-1 ring-pink-100" style={{ marginTop: "14px" }}>
+          <div className="flex items-start justify-between gap-4">
+            <p>
+              Start with Overview. Run <code className="rounded bg-white/70 px-1.5 py-0.5">npm run platform:start</code> when you begin the day.
+            </p>
+            <button
+              type="button"
+              onClick={onDismissFirstRun}
+              className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-pink-700 ring-1 ring-pink-100 hover:bg-white"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {helpOpen ? (
+        <div className="grid gap-3 md:grid-cols-[1fr_1fr]" style={{ marginTop: "14px" }}>
+          <div className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">When to use</p>
+            <p className="text-sm text-slate-700" style={{ marginTop: "6px" }}>{sectionHelp.whenToUse || "Use this section for operator context."}</p>
+          </div>
+          <div className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Safe notes</p>
+            <ul className="grid gap-1 text-sm text-slate-700" style={{ marginTop: "6px" }}>
+              {safeNotes.slice(0, 2).map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+          {keyActions.length ? (
+            <div className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100 md:col-span-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Key actions</p>
+              <ul className="grid gap-1 text-sm text-slate-700 sm:grid-cols-3" style={{ marginTop: "6px" }}>
+                {keyActions.slice(0, 3).map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
 function AppShellStatusBar({ readinessSummary, cadenceSummary, sentinelStateSource }) {
   const readinessStatus = readinessSummary?.overallStatus || "Not checked";
   const cadenceLabel = cadenceSummary?.ranAt ? formatDateTime(cadenceSummary.ranAt) : "No cadence recorded";
@@ -1439,6 +1528,9 @@ function SentinelCommandsPanel({
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Tools & Commands</p>
           <h2 className="text-xl font-semibold text-slate-950">Sentinel Commands</h2>
           <p className="text-sm text-slate-600">Discover commands and run only low-risk allowlisted actions through the local API.</p>
+          <p className="text-xs text-emerald-700" style={{ marginTop: "6px" }}>
+            Commands are allowlisted. Run buttons only appear for safe local actions.
+          </p>
           <p className="text-xs text-slate-500" style={{ marginTop: "6px" }}>
             Default tenant: <span className="font-semibold text-slate-700">{defaultTenant}</span>. {tenantScopeNote}
           </p>
@@ -2917,14 +3009,20 @@ function AdminView({ onPreview }) {
   const [dashboardLoadedAt] = useState(() => new Date());
   const operatorSessionInitialRef = useRef(null);
   if (!operatorSessionInitialRef.current) {
-    operatorSessionInitialRef.current = readOperatorSessionState();
+    operatorSessionInitialRef.current = {
+      state: readOperatorSessionState(),
+      exists: hasStoredOperatorSessionState(),
+    };
   }
-  const initialOperatorSession = operatorSessionInitialRef.current;
+  const initialOperatorSession = operatorSessionInitialRef.current.state;
   const [activeNav, setActiveNav] = useState(() => initialOperatorSession.activeSection || "overview");
   const [commandQuery, setCommandQuery] = useState(() => initialOperatorSession.commandQuery || "");
   const [commandCategory, setCommandCategory] = useState(() => initialOperatorSession.commandCategory || "All");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => Boolean(initialOperatorSession.sidebarCollapsed));
   const [compactView, setCompactView] = useState(() => Boolean(initialOperatorSession.compactView));
+  const [helpOpen, setHelpOpen] = useState(() => initialOperatorSession.helpOpen !== false);
+  const [firstRunHintDismissed, setFirstRunHintDismissed] = useState(() => Boolean(initialOperatorSession.firstRunHintDismissed));
+  const [isFirstRunSession, setIsFirstRunSession] = useState(() => !operatorSessionInitialRef.current.exists);
   const [supportingIntelligenceOpen, setSupportingIntelligenceOpen] = useState(() => Boolean(initialOperatorSession.panels?.supportingIntelligence));
   const [articleWorkbenchOpen, setArticleWorkbenchOpen] = useState(() => Boolean(initialOperatorSession.panels?.articleWorkbench));
   const [advancedDiagnosticsOpen, setAdvancedDiagnosticsOpen] = useState(() => Boolean(initialOperatorSession.panels?.advancedDiagnostics));
@@ -2955,6 +3053,8 @@ function AdminView({ onPreview }) {
       commandCategory,
       sidebarCollapsed,
       compactView,
+      helpOpen,
+      firstRunHintDismissed,
       panels: {
         supportingIntelligence: supportingIntelligenceOpen,
         articleWorkbench: articleWorkbenchOpen,
@@ -2967,6 +3067,8 @@ function AdminView({ onPreview }) {
     commandCategory,
     sidebarCollapsed,
     compactView,
+    helpOpen,
+    firstRunHintDismissed,
     supportingIntelligenceOpen,
     articleWorkbenchOpen,
     advancedDiagnosticsOpen,
@@ -3722,6 +3824,9 @@ function AdminView({ onPreview }) {
     setCommandCategory(SENTINEL_OPERATOR_SESSION_DEFAULTS.commandCategory);
     setSidebarCollapsed(SENTINEL_OPERATOR_SESSION_DEFAULTS.sidebarCollapsed);
     setCompactView(SENTINEL_OPERATOR_SESSION_DEFAULTS.compactView);
+    setHelpOpen(SENTINEL_OPERATOR_SESSION_DEFAULTS.helpOpen);
+    setFirstRunHintDismissed(SENTINEL_OPERATOR_SESSION_DEFAULTS.firstRunHintDismissed);
+    setIsFirstRunSession(true);
     setSupportingIntelligenceOpen(SENTINEL_OPERATOR_SESSION_DEFAULTS.panels.supportingIntelligence);
     setArticleWorkbenchOpen(SENTINEL_OPERATOR_SESSION_DEFAULTS.panels.articleWorkbench);
     setAdvancedDiagnosticsOpen(SENTINEL_OPERATOR_SESSION_DEFAULTS.panels.advancedDiagnostics);
@@ -3764,6 +3869,17 @@ function AdminView({ onPreview }) {
                 {sessionResetNotice}
               </div>
             ) : null}
+            <ControlCentreHelpPanel
+              activeNav={activeNav}
+              helpRegistry={sentinelControlCentreHelp}
+              helpOpen={helpOpen}
+              firstRunHintVisible={isFirstRunSession && !firstRunHintDismissed}
+              onToggleHelp={setHelpOpen}
+              onDismissFirstRun={() => {
+                setFirstRunHintDismissed(true);
+                setIsFirstRunSession(false);
+              }}
+            />
             {isMonitorMode && showOverviewTab ? (
               <section ref={overviewRef} className="grid gap-lg">
                 <SectionIntro

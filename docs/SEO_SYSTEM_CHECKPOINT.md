@@ -84,6 +84,8 @@ The route now uses a clearer app-shell structure:
 
 The private Control Centre also persists lightweight operator preferences in local browser storage. It restores the last selected section, command search/filter, sidebar collapsed state, compact view preference and selected collapsed panel states. This is local-only UI state: no command outputs, credentials, API payloads, reports, notifications or database state are stored. The reset option clears only this local Sentinel UI state and restores the default Overview layout.
 
+The Control Centre now includes contextual operator help backed by `platform/help/control-centre-help.json`. Help changes with the selected section, explains when to use each area, lists safe notes and shows a subtle first-run hint for new local sessions. This help is private/operator-only and is not exposed on `/seo-progress`.
+
 Current operator zones:
 
 - System Status: health, workflow, cadence state, deployment readiness and doctor state.
