@@ -28,6 +28,7 @@ import sentinelActionRegistry from "../../platform/actions/actions.json";
 import sentinelTenantRegistry from "../../platform/tenants/tenant-registry.json";
 import sentinelControlCentreHelp from "../../platform/help/control-centre-help.json";
 import sentinelActivityTaxonomy from "../../platform/activity/activity-taxonomy.json";
+import sentinelFeedbackOptions from "../../platform/feedback/feedback-categories.json";
 const historyQaModules = import.meta.glob("../../reports/history/*/resource-qa-report.json", { eager: true });
 const sentinelStateModules = import.meta.glob("../../reports/sentinel-state.json", { eager: true });
 const sentinelCadenceModules = import.meta.glob("../../reports/sentinel-cadence-summary.json", { eager: true });
@@ -1965,6 +1966,158 @@ function ActivityFeedPanel({ activityFeed, onRefresh }) {
   );
 }
 
+function OperatorFeedbackPanel({ activeSection, feedbackSnapshot, onFeedbackAdded, onRefresh }) {
+  const categories = Array.isArray(sentinelFeedbackOptions?.categories) ? sentinelFeedbackOptions.categories : [];
+  const sections = Array.isArray(sentinelFeedbackOptions?.sections) ? sentinelFeedbackOptions.sections : [];
+  const activeSectionValue = sections.includes(activeSection) ? activeSection : "general";
+  const [category, setCategory] = useState(categories[0]?.id || "ux");
+  const [section, setSection] = useState(activeSectionValue);
+  const [summary, setSummary] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const items = Array.isArray(feedbackSnapshot?.items) ? feedbackSnapshot.items.slice(0, 4) : [];
+  const unavailable = feedbackSnapshot?.status === "unavailable";
+  const loading = feedbackSnapshot?.loading;
+
+  useEffect(() => {
+    setSection(activeSectionValue);
+  }, [activeSectionValue]);
+
+  const submitFeedback = async (event) => {
+    event.preventDefault();
+    const cleanSummary = summary.trim();
+    if (!cleanSummary) {
+      setMessage("Add a short summary first.");
+      return;
+    }
+
+    setSubmitting(true);
+    setMessage("");
+    try {
+      const response = await fetch(`${sentinelActionApiBaseUrl}/feedback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category, section, summary: cleanSummary }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.message || `Feedback API returned ${response.status}`);
+      setSummary("");
+      setMessage("Feedback captured locally.");
+      if (typeof onFeedbackAdded === "function") await onFeedbackAdded();
+    } catch (error) {
+      setMessage(`Could not save via local API. Use: npm run platform:feedback -- --add --category ${category} --section ${section} --summary "${cleanSummary.replaceAll('"', "'")}"`);
+      if (import.meta.env.DEV) {
+        console.warn("Sentinel feedback capture failed:", error);
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <section className="rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-100/80 md:p-6">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Operator Feedback</p>
+          <h2 className="text-xl font-semibold text-slate-950">Capture friction while it is fresh</h2>
+          <p className="text-sm text-slate-600">Local-only notes for UX pain points, missing workflows, bugs and product ideas.</p>
+        </div>
+        <button
+          type="button"
+          onClick={onRefresh}
+          className="rounded-full bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+        >
+          Refresh
+        </button>
+      </div>
+
+      {unavailable ? (
+        <div className="rounded-2xl bg-blue-50 p-4 text-sm text-blue-900 ring-1 ring-blue-100" style={{ marginTop: "16px" }}>
+          Feedback capture is available when the local Sentinel API is running. You can still use <code className="rounded bg-white/70 px-1.5 py-0.5">npm run platform:feedback</code> from the terminal.
+        </div>
+      ) : null}
+
+      <form onSubmit={submitFeedback} className="grid gap-3 lg:grid-cols-[140px_150px_minmax(0,1fr)_auto]" style={{ marginTop: "16px" }}>
+        <label className="grid gap-1 text-xs font-semibold text-slate-600">
+          Category
+          <select
+            value={category}
+            onChange={(event) => setCategory(event.target.value)}
+            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-normal text-slate-900 outline-none focus:border-pink-200 focus:bg-white focus:ring-4 focus:ring-pink-50"
+          >
+            {categories.map((item) => (
+              <option key={item.id} value={item.id}>{item.label}</option>
+            ))}
+          </select>
+        </label>
+        <label className="grid gap-1 text-xs font-semibold text-slate-600">
+          Section
+          <select
+            value={section}
+            onChange={(event) => setSection(event.target.value)}
+            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-normal text-slate-900 outline-none focus:border-pink-200 focus:bg-white focus:ring-4 focus:ring-pink-50"
+          >
+            {sections.map((item) => (
+              <option key={item} value={item}>{formatStateLabel(item)}</option>
+            ))}
+          </select>
+        </label>
+        <label className="grid gap-1 text-xs font-semibold text-slate-600">
+          Summary
+          <input
+            type="text"
+            value={summary}
+            onChange={(event) => setSummary(event.target.value)}
+            maxLength={280}
+            placeholder="What felt slow, unclear or missing?"
+            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-normal text-slate-900 outline-none focus:border-pink-200 focus:bg-white focus:ring-4 focus:ring-pink-50"
+          />
+        </label>
+        <button
+          type="submit"
+          disabled={submitting}
+          className="self-end rounded-xl bg-pink-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-pink-700 disabled:cursor-wait disabled:bg-pink-300"
+        >
+          {submitting ? "Saving" : "Save note"}
+        </button>
+      </form>
+
+      {message ? (
+        <p className="text-xs text-slate-600" style={{ marginTop: "10px" }}>{message}</p>
+      ) : null}
+
+      <div className="grid gap-2" style={{ marginTop: "16px" }}>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Latest feedback</p>
+          {loading ? <span className="text-xs text-slate-500">Loading…</span> : null}
+        </div>
+        {!loading && !items.length ? (
+          <div className="rounded-2xl bg-slate-50 p-3 text-sm text-slate-600 ring-1 ring-slate-100">
+            No feedback captured yet.
+          </div>
+        ) : null}
+        {items.map((item) => (
+          <article key={item.id} className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-slate-950">{item.summary}</p>
+                <p className="text-xs text-slate-500" style={{ marginTop: "3px" }}>
+                  {formatDateTime(item.createdAt)}
+                </p>
+              </div>
+              <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
+                <span className="rounded-full bg-pink-50 px-2 py-0.5 text-[11px] font-semibold text-pink-700 ring-1 ring-pink-100">{item.category}</span>
+                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-200">{formatStateLabel(item.section)}</span>
+                <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 ring-1 ring-blue-100">{item.status}</span>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function FutureOperatorConsolePanel() {
   return (
     <section className="rounded-[28px] bg-slate-950 p-5 text-white shadow-sm md:p-6">
@@ -3239,6 +3392,11 @@ function AdminView({ onPreview }) {
     loading: true,
     status: "loading",
   });
+  const [feedbackSnapshot, setFeedbackSnapshot] = useState({
+    items: [],
+    loading: true,
+    status: "loading",
+  });
   const [doctorSummary] = useState(readDoctorSummary);
   const [readinessSummary] = useState(readReadinessSummary);
   const overviewRef = useRef(null);
@@ -3330,9 +3488,38 @@ function AdminView({ onPreview }) {
     }
   };
 
+  const loadOperatorFeedback = async () => {
+    setFeedbackSnapshot((current) => ({
+      ...current,
+      loading: true,
+    }));
+
+    try {
+      const res = await fetch(`${sentinelActionApiBaseUrl}/feedback?limit=8`, {
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error(`Sentinel feedback returned ${res.status}`);
+      const data = await res.json();
+      setFeedbackSnapshot({
+        items: Array.isArray(data?.items) ? data.items : [],
+        options: data?.options || sentinelFeedbackOptions,
+        loading: false,
+        status: "ready",
+      });
+    } catch {
+      setFeedbackSnapshot({
+        items: [],
+        options: sentinelFeedbackOptions,
+        loading: false,
+        status: "unavailable",
+      });
+    }
+  };
+
   useEffect(() => {
     loadActionHistory();
     loadActivityFeed();
+    loadOperatorFeedback();
   }, []);
 
   useEffect(() => {
@@ -4135,6 +4322,12 @@ function AdminView({ onPreview }) {
                   doctorSummary={doctorSummary}
                 />
                 <ActivityFeedPanel activityFeed={activityFeedSnapshot} onRefresh={loadActivityFeed} />
+                <OperatorFeedbackPanel
+                  activeSection={activeNav}
+                  feedbackSnapshot={feedbackSnapshot}
+                  onFeedbackAdded={loadOperatorFeedback}
+                  onRefresh={loadOperatorFeedback}
+                />
 
                 <section className="grid gap-lg xl:grid-cols-2">
                   <div>

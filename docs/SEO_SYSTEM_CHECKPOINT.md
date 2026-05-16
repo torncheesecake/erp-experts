@@ -88,6 +88,8 @@ The Control Centre now includes contextual operator help backed by `platform/hel
 
 The Control Centre has had a UX polish pass focused on daily operation rather than new behaviour. The Overview now prioritises current focus, recommended next step and primary safe actions; command groups are less dense; Activity Feed rows are quieter and taxonomy-labelled; stakeholder routes remain unchanged.
 
+The Control Centre now includes local operator feedback capture for Matthew's day-to-day friction points and ideas. Feedback can be entered from `/seo-roadmap` when the local Sentinel API is running, or from the terminal with `npm run platform:feedback`. Items are stored only in ignored `reports/operator-feedback.json` and are intended as a future roadmap prioritisation source. `/seo-progress` does not expose feedback capture or feedback history.
+
 Current operator zones:
 
 - System Status: health, workflow, cadence state, deployment readiness and doctor state.
@@ -430,7 +432,7 @@ The private Sentinel operator dashboard at `/seo-roadmap` now reads `reports/sen
 
 The current dashboard remains report-compatible. The new API layer is the first step towards DB-backed services and dashboard reads without relying entirely on generated report files.
 
-The HTTP prototype defaults to `http://127.0.0.1:4317` and provides read-only `GET /health`, `GET /state`, `GET /state?tenant=erp-experts`, `GET /tenant`, `GET /tenants`, `GET /activity` and `GET /actions/history`, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication. Do not expose it publicly or run it as a Raspberry Pi service until auth, process supervision and deployment hardening exist.
+The HTTP prototype defaults to `http://127.0.0.1:4317` and provides read-only `GET /health`, `GET /state`, `GET /state?tenant=erp-experts`, `GET /tenant`, `GET /tenants`, `GET /activity`, `GET /feedback` and `GET /actions/history`, plus controlled `POST /action` for allowlisted local operator actions and local-only `POST /feedback` for operator notes. It has no authentication. Do not expose it publicly or run it as a Raspberry Pi service until auth, process supervision and deployment hardening exist.
 
 For local operator testing, `/seo-roadmap` can try the HTTP API first when `VITE_SENTINEL_API_BASE_URL` is configured. It falls back quietly to `reports/sentinel-state.json` if the API is unavailable. `/seo-progress` remains stakeholder-safe and does not use Sentinel operator API state.
 

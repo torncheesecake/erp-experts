@@ -5,6 +5,7 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { getOperationalSummary, getTenantState } from "./state_api.mjs";
 import { getActivityFeed } from "../activity/activity_feed.mjs";
+import { addFeedbackItem, getFeedbackOptions, listFeedbackItems } from "../feedback/feedback_store.mjs";
 import { DEFAULT_DB_PATH, databaseExists, logRun, persistActionResult, queryRows, tableExists } from "../persistence/db.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -107,6 +108,12 @@ function activityLimit(url) {
   const parsed = Number(url.searchParams.get("limit") || 20);
   if (!Number.isFinite(parsed) || parsed <= 0) return 20;
   return Math.min(Math.floor(parsed), 100);
+}
+
+function feedbackLimit(url) {
+  const parsed = Number(url.searchParams.get("limit") || 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return 10;
+  return Math.min(Math.floor(parsed), 50);
 }
 
 function loadActionRegistry() {
@@ -496,6 +503,53 @@ function handleActivity(request, response, url) {
   }
 }
 
+function handleFeedbackList(request, response, url) {
+  if (!isLocalRequest(request)) {
+    sendJson(request, response, 403, {
+      error: "local_only",
+      message: "Operator feedback is available only from localhost.",
+    });
+    return;
+  }
+
+  sendJson(request, response, 200, {
+    items: listFeedbackItems({
+      category: url.searchParams.get("category") || "",
+      section: url.searchParams.get("section") || "",
+      status: url.searchParams.get("status") || "",
+      limit: feedbackLimit(url),
+    }),
+    options: getFeedbackOptions(),
+  });
+}
+
+async function handleFeedbackAdd(request, response) {
+  if (!isLocalRequest(request)) {
+    sendJson(request, response, 403, {
+      error: "local_only",
+      message: "Operator feedback can only be captured from localhost.",
+    });
+    return;
+  }
+
+  let body;
+  try {
+    body = await readJsonBody(request);
+    const item = addFeedbackItem({
+      category: body.category,
+      section: body.section,
+      summary: body.summary,
+      status: body.status || "new",
+    });
+    sendJson(request, response, 201, { item });
+  } catch (error) {
+    sendJson(request, response, error.code === "FEEDBACK_VALIDATION_ERROR" ? 400 : 500, {
+      error: error.code || "feedback_error",
+      message: error.message,
+    });
+  }
+}
+
 const server = http.createServer(async (request, response) => {
   if (request.method === "OPTIONS") {
     sendOptions(request, response);
@@ -515,6 +569,11 @@ const server = http.createServer(async (request, response) => {
   if (request.method === "POST") {
     if (url.pathname === "/action") {
       await handleAction(request, response, url);
+      return;
+    }
+
+    if (url.pathname === "/feedback") {
+      await handleFeedbackAdd(request, response);
       return;
     }
 
@@ -556,6 +615,11 @@ const server = http.createServer(async (request, response) => {
 
     if (url.pathname === "/activity") {
       handleActivity(request, response, url);
+      return;
+    }
+
+    if (url.pathname === "/feedback") {
+      handleFeedbackList(request, response, url);
       return;
     }
 

@@ -1,0 +1,24 @@
+{
+  "categories": [
+    { "id": "ux", "label": "UX", "description": "Interface friction, layout, wording or usability issues." },
+    { "id": "workflow", "label": "Workflow", "description": "Day-to-day operating sequence or missing process support." },
+    { "id": "automation", "label": "Automation", "description": "Cadence, orchestration, reporting or repeatable task ideas." },
+    { "id": "deployment", "label": "Deployment", "description": "Raspberry Pi, readiness, backup or release-flow friction." },
+    { "id": "api", "label": "API", "description": "Local API, state access or future service integration notes." },
+    { "id": "tenant", "label": "Tenant", "description": "Multi-client configuration, registry or tenant workflow ideas." },
+    { "id": "bug", "label": "Bug", "description": "Something broken, confusing or behaving unexpectedly." },
+    { "id": "idea", "label": "Idea", "description": "Potential enhancement or product direction worth considering." }
+  ],
+  "sections": [
+    "overview",
+    "state",
+    "inbox",
+    "opportunities",
+    "actions",
+    "cadence",
+    "tenants",
+    "diagnostics",
+    "general"
+  ],
+  "statuses": ["new", "reviewed", "planned", "done", "dismissed"]
+}

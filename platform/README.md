@@ -224,6 +224,15 @@ The Control Centre groups the operator experience into:
 
 The latest UX polish pass tightened the first-screen hierarchy around current focus, recommended next step and primary safe actions. Command groups are easier to scan, Activity Feed entries use calmer timeline styling and secondary details remain lower in the operator flow. This was a visual organisation pass only, with no SEO scoring or execution behaviour changes.
 
+Operator feedback capture is now available for local workflow discovery. The private Control Centre can save short notes for UX, workflow, automation, deployment, API, tenant, bug and idea categories through the local API. The terminal equivalent is:
+
+```bash
+npm run platform:feedback -- --add --category ux --section overview --summary "Short note"
+npm run platform:feedback -- --list
+```
+
+Feedback is stored locally in ignored `reports/operator-feedback.json`. It is not sent externally, not written to SQLite yet and not exposed on `/seo-progress`.
+
 The Activity Feed is backed by `platform/activity/activity_feed.mjs` and the local `GET /activity` API endpoint. It is operator-only, deliberately concise and does not show raw command output, stack traces or secrets. If the local API is unavailable, the Control Centre shows a calm fallback rather than failing.
 
 Activity categories and severities are standardised in `platform/activity/activity-taxonomy.json`. New activity sources should use the allowed types (`system`, `operator`, `cadence`, `notification`, `deploy`, `backup`, `tenant`, `health`, `api`) and severities (`info`, `success`, `warning`, `error`). Run `npm run platform:activity:validate` to check the taxonomy and locally generated feed entries.
@@ -284,7 +293,7 @@ npm run platform:api:serve
 npm run platform:api:smoke
 ```
 
-The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state`, `GET /tenant`, `GET /tenants`, `GET /activity` and `GET /actions/history` endpoints, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
+The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state`, `GET /tenant`, `GET /tenants`, `GET /activity`, `GET /feedback` and `GET /actions/history` endpoints, plus controlled `POST /action` for allowlisted local operator actions and local-only `POST /feedback` for operator notes. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
 
 The Raspberry Pi service scaffold is also present but inactive:
 
