@@ -1,0 +1,134 @@
+{
+  "commands": [
+    {
+      "command": "npm run platform:start",
+      "category": "Health",
+      "description": "Daily local operator startup. Checks health, monitor state and current Sentinel summary.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Run at the start of an operator session."
+    },
+    {
+      "command": "npm run platform:doctor",
+      "category": "Health",
+      "description": "Fast diagnostic for Git state, DB integrity, reports, API availability and route guard expectations.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Run when something feels off or before troubleshooting."
+    },
+    {
+      "command": "npm run platform:health",
+      "category": "Health",
+      "description": "Checks tenant config, SQLite readiness, reports, QA totals and runtime ignore policy.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Use before deployment planning or platform maintenance."
+    },
+    {
+      "command": "npm run platform:state",
+      "category": "State",
+      "description": "Generates the persisted operational summary that explains what Sentinel currently knows.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Refresh the operator state panel and current recommendation."
+    },
+    {
+      "command": "npm run platform:daily",
+      "category": "State",
+      "description": "Creates Matthew's private daily operator report from persisted Sentinel state.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Use for the daily operator handoff."
+    },
+    {
+      "command": "npm run platform:stakeholder",
+      "category": "State",
+      "description": "Creates a stakeholder-safe weekly SEO and content progress report.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Use when preparing a business-facing update."
+    },
+    {
+      "command": "npm run platform:cadence",
+      "category": "Automation",
+      "description": "Runs the safe local cadence: monitor, state, daily report, stakeholder report and notification payloads.",
+      "riskLevel": "medium",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Run for the scheduled local refresh workflow."
+    },
+    {
+      "command": "npm run seo:autopilot",
+      "category": "Automation",
+      "description": "Runs the SEO intelligence chain and recommends the next safe strategic action.",
+      "riskLevel": "medium",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Use when refreshing SEO intelligence and execution planning context."
+    },
+    {
+      "command": "npm run platform:deploy:ready",
+      "category": "Deployment",
+      "description": "Read-only gate that checks whether Sentinel is safe to promote towards Raspberry Pi deployment.",
+      "riskLevel": "medium",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Run before any deployment or service work."
+    },
+    {
+      "command": "npm run backup:verify",
+      "category": "Deployment",
+      "description": "Verifies the local SQLite DB and expected backup path without mutating data.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Run before trusting backup readiness."
+    },
+    {
+      "command": "npm run backup:restore:test",
+      "category": "Deployment",
+      "description": "Copies the DB to a temporary restore-test file and validates it without overwriting anything.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Run to prove recovery confidence before deployment work."
+    },
+    {
+      "command": "npm run platform:api",
+      "category": "API",
+      "description": "Previews the read-only Sentinel state API contract from SQLite.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Use when inspecting the future API payload without starting the HTTP server."
+    },
+    {
+      "command": "npm run platform:api:serve",
+      "category": "API",
+      "description": "Starts the local read-only Sentinel HTTP API on localhost for private experiments.",
+      "riskLevel": "medium",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Use only locally. Do not expose publicly until auth exists."
+    }
+  ]
+}

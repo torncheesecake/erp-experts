@@ -162,6 +162,20 @@ npm run platform:notify -- --all
 
 Generated payloads are ignored under `reports/notifications/`. Operator payloads may include commands and private workflow context. Stakeholder payloads are sanitised and safety-scanned so they do not expose commands, prompts, approvals, database/API details, private route names or operator diagnostics. No email, Slack or external delivery integration exists yet. Cadence now prepares these payloads automatically for its selected mode, but still sends nothing.
 
+## Sentinel Control Centre
+
+The private `/seo-roadmap` route is now framed as the Sentinel Control Centre. It remains operator-only in local/dev use and production builds still redirect it to `/seo-progress` until authentication exists.
+
+The Control Centre groups the operator experience into:
+
+- System Status: health, workflow, cadence, readiness and doctor state.
+- Current Focus: latest opportunity, latest plan, inbox item and recommended next step.
+- Operations: cadence, notification payloads, report generation and state refresh context.
+- Tools & Commands: searchable command discovery with copy buttons only.
+- Diagnostics: collapsed/secondary checks and future console direction.
+
+Command metadata lives in `platform/commands/commands.json`. The dashboard reads that registry to show safe descriptions, risk level, local-only notes and recommended usage. It does not execute shell commands. Future UI execution should only happen after authentication, audit logging and controlled command allow-lists exist.
+
 ## Operational State Summary
 
 Use the Sentinel state command when you want the current persisted operating picture:

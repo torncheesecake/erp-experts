@@ -38,6 +38,7 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 - `npm run platform:notify`
 - `npm run platform:stakeholder`
 - `npm run platform:state`
+- `npm run platform:doctor`
 
 ## Current architecture
 
@@ -69,6 +70,22 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 - `/seo-roadmap` is the Sentinel operator dashboard for local/internal use only.
 - Production builds redirect `/seo-roadmap` to `/seo-progress` until real authentication exists.
 - Do not expose operator commands, prompts, diagnostics, tenant state, approval gates or generated report internals on public ERP Experts pages.
+
+## Sentinel Control Centre
+
+The private `/seo-roadmap` route is being consolidated into the Sentinel Control Centre rather than a stack of separate operator panels.
+
+Current operator zones:
+
+- System Status: health, workflow, cadence state, deployment readiness and doctor state.
+- Current Focus: latest opportunity, latest plan, practical inbox item and recommended next step.
+- Operations: cadence, notification payloads, report generation and state refresh context.
+- Tools & Commands: searchable command registry with copy buttons only.
+- Diagnostics: secondary checks, advanced details and the future console placeholder.
+
+The command registry is stored at `platform/commands/commands.json`. It describes each known command, category, risk level, local-only expectation, API/deployment requirements and recommended usage. The dashboard uses it for discovery only. There is no browser-side shell execution, no backend terminal and no arbitrary command runner.
+
+The stakeholder route `/seo-progress` remains separate and must not expose command registry data, operator workflows, readiness state, doctor state or private diagnostics.
 
 ## Platform tenant layer
 
