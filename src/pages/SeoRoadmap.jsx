@@ -35,6 +35,7 @@ const sentinelCadenceModules = import.meta.glob("../../reports/sentinel-cadence-
 const sentinelDoctorModules = import.meta.glob("../../reports/sentinel-doctor.json", { eager: true });
 const sentinelReadinessModules = import.meta.glob("../../reports/sentinel-deploy-readiness.json", { eager: true });
 const sentinelRoadmapModules = import.meta.glob("../../reports/sentinel-roadmap.json", { eager: true });
+const sentinelRoadmapPlanModules = import.meta.glob("../../reports/sentinel-roadmap-plan.json", { eager: true });
 const sentinelApiBaseUrl = String(import.meta.env.VITE_SENTINEL_API_BASE_URL || "").replace(/\/+$/, "");
 const sentinelActionApiBaseUrl = sentinelApiBaseUrl || "http://127.0.0.1:4317";
 const SENTINEL_OPERATOR_SESSION_KEY = "sentinel.operatorSession.v1";
@@ -2211,10 +2212,20 @@ function RoadmapIntelligencePanel({ roadmap }) {
   const items = Array.isArray(roadmap?.items) ? roadmap.items : [];
   const categories = ["all", ...new Set(items.map((item) => item.category).filter(Boolean))];
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [copiedItemId, setCopiedItemId] = useState("");
   const visibleItems = items
     .filter((item) => categoryFilter === "all" || item.category === categoryFilter)
     .slice(0, 3);
   const recommended = roadmap?.recommendedNextImprovement || items[0] || null;
+  const planExists = Boolean(Object.values(sentinelRoadmapPlanModules).length);
+
+  const copyPlanCommand = async (item) => {
+    const ok = await copyText(`npm run platform:roadmap:plan -- --item ${item.id}`, "roadmap plan command");
+    if (ok) {
+      setCopiedItemId(item.id);
+      window.setTimeout(() => setCopiedItemId(""), 1800);
+    }
+  };
 
   return (
     <section className="rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-100/80 md:p-6">
@@ -2225,7 +2236,7 @@ function RoadmapIntelligencePanel({ roadmap }) {
           <p className="text-sm text-slate-600">Heuristic, operator-guided planning from feedback, activity and platform state. No autonomous implementation.</p>
         </div>
         <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">
-          {roadmap?.generatedAt ? formatDateTime(roadmap.generatedAt) : "No roadmap yet"}
+          {planExists ? "Plan report present" : roadmap?.generatedAt ? formatDateTime(roadmap.generatedAt) : "No roadmap yet"}
         </span>
       </div>
 
@@ -2285,6 +2296,18 @@ function RoadmapIntelligencePanel({ roadmap }) {
                   <span>{item.linkedFeedbackIds?.length || 0} linked feedback item{(item.linkedFeedbackIds?.length || 0) === 1 ? "" : "s"}</span>
                   <span>Source: {formatStateLabel(item.source)}</span>
                   <span>Confidence: {item.confidence}</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2" style={{ marginTop: "12px" }}>
+                  <button
+                    type="button"
+                    onClick={() => copyPlanCommand(item)}
+                    className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+                  >
+                    {copiedItemId === item.id ? "Copied plan command" : "Copy plan command"}
+                  </button>
+                  <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
+                    npm run platform:roadmap:plan -- --item {item.id}
+                  </code>
                 </div>
               </article>
             ))}

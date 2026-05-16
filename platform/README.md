@@ -239,9 +239,11 @@ Sentinel roadmap intelligence turns feedback triage, activity, cadence, readines
 
 ```bash
 npm run platform:roadmap
+npm run platform:roadmap:plan
+npm run platform:roadmap:plan -- --item roadmap-feedback-workflow-actions
 ```
 
-This generates ignored `reports/sentinel-roadmap.json` and `reports/sentinel-roadmap.md`. The scoring is heuristic and operator-guided: repeated or accepted feedback, low-effort/high-impact work, frequently used sections and deployment/readiness concerns rise in priority; deferred or rejected items drop down. It does not call external AI APIs, does not auto-code and does not expose roadmap intelligence on `/seo-progress`.
+This generates ignored `reports/sentinel-roadmap.json` and `reports/sentinel-roadmap.md`. `platform:roadmap:plan` turns the top or selected roadmap item into ignored `reports/sentinel-roadmap-plan.json` and `reports/sentinel-roadmap-plan.md` with problem statement, evidence, scope, out-of-scope, implementation steps, safety constraints and validation. The scoring is heuristic and operator-guided: repeated or accepted feedback, low-effort/high-impact work, frequently used sections and deployment/readiness concerns rise in priority; deferred or rejected items drop down. It does not call external AI APIs, does not auto-code and does not expose roadmap intelligence or roadmap plans on `/seo-progress`.
 
 The Activity Feed is backed by `platform/activity/activity_feed.mjs` and the local `GET /activity` API endpoint. It is operator-only, deliberately concise and does not show raw command output, stack traces or secrets. If the local API is unavailable, the Control Centre shows a calm fallback rather than failing.
 
