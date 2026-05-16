@@ -4,6 +4,7 @@ import path from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { getOperationalSummary, getTenantState } from "./state_api.mjs";
+import { DEFAULT_DB_PATH, databaseExists, queryRows, tableExists } from "../persistence/db.js";
 import { safeLogRun } from "../../scripts/platform/run_logger.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -88,6 +89,16 @@ function tenantSummary(tenant) {
 function isLocalRequest(request) {
   const remoteAddress = request.socket?.remoteAddress || "";
   return ["127.0.0.1", "::1", "::ffff:127.0.0.1"].includes(remoteAddress);
+}
+
+function quoteSql(value) {
+  return String(value ?? "").replaceAll("'", "''");
+}
+
+function actionHistoryLimit(url) {
+  const parsed = Number(url.searchParams.get("limit") || 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return 10;
+  return Math.min(Math.floor(parsed), 50);
 }
 
 function loadActionRegistry() {
@@ -304,6 +315,49 @@ async function handleAction(request, response, url) {
   }
 }
 
+function loadActionHistory({ tenantId, limit }) {
+  if (!databaseExists(DEFAULT_DB_PATH) || !tableExists("runs", DEFAULT_DB_PATH)) return [];
+
+  return queryRows(
+    `SELECT id, command, status, COALESCE(started_at, ''), COALESCE(finished_at, '')
+     FROM runs
+     WHERE tenant_id = '${quoteSql(tenantId)}'
+       AND command LIKE 'ui_action:%'
+     ORDER BY COALESCE(finished_at, started_at) DESC, id DESC
+     LIMIT ${Number(limit) || 10};`,
+    DEFAULT_DB_PATH,
+  ).map(([id, command, status, startedAt, finishedAt]) => ({
+    id: Number(id),
+    action: String(command || "").replace(/^ui_action:/, ""),
+    status,
+    startedAt,
+    finishedAt,
+  }));
+}
+
+function handleActionHistory(request, response, url) {
+  if (!isLocalRequest(request)) {
+    sendJson(request, response, 403, {
+      error: "local_only",
+      message: "Operator action history is available only from localhost.",
+    });
+    return;
+  }
+
+  const tenantId = tenantFromUrl(url);
+  try {
+    getTenantState(tenantId);
+    sendJson(request, response, 200, {
+      actions: loadActionHistory({
+        tenantId,
+        limit: actionHistoryLimit(url),
+      }),
+    });
+  } catch (error) {
+    handleError(request, response, error);
+  }
+}
+
 const server = http.createServer(async (request, response) => {
   if (request.method === "OPTIONS") {
     sendOptions(request, response);
@@ -349,6 +403,11 @@ const server = http.createServer(async (request, response) => {
 
     if (url.pathname === "/tenant") {
       sendJson(request, response, 200, tenantSummary(getTenantState(tenantFromUrl(url))));
+      return;
+    }
+
+    if (url.pathname === "/actions/history") {
+      handleActionHistory(request, response, url);
       return;
     }
 

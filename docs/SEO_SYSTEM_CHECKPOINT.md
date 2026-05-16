@@ -83,7 +83,7 @@ Current operator zones:
 - Tools & Commands: searchable command registry with copy buttons only.
 - Diagnostics: secondary checks, advanced details and the future console placeholder.
 
-The command registry is stored at `platform/commands/commands.json`. It describes each known command, category, risk level, local-only expectation, API/deployment requirements and recommended usage. The dashboard uses it for discovery only. There is no browser-side shell execution, no backend terminal and no arbitrary command runner.
+The command registry is stored at `platform/commands/commands.json`. It describes each known command, category, risk level, local-only expectation, API/deployment requirements and recommended usage. The dashboard uses it for discovery and only exposes Run buttons for commands present in the stricter action allowlist. There is no browser-side shell, backend terminal or arbitrary command runner.
 
 The stakeholder route `/seo-progress` remains separate and must not expose command registry data, operator workflows, readiness state, doctor state or private diagnostics.
 
@@ -91,7 +91,7 @@ The stakeholder route `/seo-progress` remains separate and must not expose comma
 
 Sentinel now has a strict allowlisted action layer for the private Control Centre.
 
-The action registry is stored at `platform/actions/actions.json`. The local HTTP API accepts `POST /action` for known action IDs only, rejects unknown or non-UI actions, runs fixed `npm run <script>` commands with `spawn` and no shell, enforces timeouts and caps captured output.
+The action registry is stored at `platform/actions/actions.json`. The local HTTP API accepts `POST /action` for known action IDs only, rejects unknown or non-UI actions, runs fixed `npm run <script>` commands with `spawn` and no shell, enforces timeouts and caps captured output. It also exposes read-only `GET /actions/history` for recent `ui_action:*` rows from the persisted `runs` table.
 
 Initial allowlisted UI actions:
 
@@ -105,7 +105,7 @@ Initial allowlisted UI actions:
 - `platform:api`
 - `seo:monitor`
 
-This is controlled local operator execution, not a terminal. There is no arbitrary command input, command chaining, deployment execution, cleanup execution, restore execution, FTP execution, notification sending or public exposure. The stakeholder route `/seo-progress` remains separate and does not expose action controls.
+This is controlled local operator execution, not a terminal. There is no arbitrary command input, command chaining, deployment execution, cleanup execution, restore execution, FTP execution, notification sending or public exposure. The private dashboard shows recent controlled action history when the local API is running. The stakeholder route `/seo-progress` remains separate and does not expose action controls or action history.
 
 See `docs/SENTINEL_OPERATOR_ACTIONS.md`.
 
@@ -397,7 +397,7 @@ The private Sentinel operator dashboard at `/seo-roadmap` now reads `reports/sen
 
 The current dashboard remains report-compatible. The new API layer is the first step towards DB-backed services and dashboard reads without relying entirely on generated report files.
 
-The HTTP prototype defaults to `http://127.0.0.1:4317` and provides read-only `GET /health`, `GET /state`, `GET /state?tenant=erp-experts` and `GET /tenant`, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication. Do not expose it publicly or run it as a Raspberry Pi service until auth, process supervision and deployment hardening exist.
+The HTTP prototype defaults to `http://127.0.0.1:4317` and provides read-only `GET /health`, `GET /state`, `GET /state?tenant=erp-experts`, `GET /tenant` and `GET /actions/history`, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication. Do not expose it publicly or run it as a Raspberry Pi service until auth, process supervision and deployment hardening exist.
 
 For local operator testing, `/seo-roadmap` can try the HTTP API first when `VITE_SENTINEL_API_BASE_URL` is configured. It falls back quietly to `reports/sentinel-state.json` if the API is unavailable. `/seo-progress` remains stakeholder-safe and does not use Sentinel operator API state.
 

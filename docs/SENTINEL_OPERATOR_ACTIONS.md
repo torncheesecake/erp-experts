@@ -38,6 +38,14 @@ The request body must provide a known action ID, for example:
 }
 ```
 
+Recent controlled action history is available through:
+
+```text
+GET /actions/history
+```
+
+The endpoint reads the persisted `runs` table and returns the latest `ui_action:*` rows. It is local-only, read-only and supports a bounded `?limit=20` style query.
+
 ## Allowed actions
 
 The initial allowlist intentionally contains low-risk local actions only:
@@ -85,9 +93,11 @@ The API action endpoint:
 
 Action execution summaries are appended to the existing SQLite `runs` table as `ui_action:<actionId>` where possible. DB logging failures should warn only and must not make the action endpoint unsafe.
 
+The history endpoint returns those rows back to the private dashboard so Matthew can see what ran, when it ran and whether it succeeded. It does not expose deployment, cleanup, restore or arbitrary shell history because those actions are not in the UI allowlist.
+
 ## Dashboard behaviour
 
-The private `/seo-roadmap` Control Centre shows Run buttons only for allowlisted actions. Output is shown as a compact preview. There is no free-text terminal input and no arbitrary command runner.
+The private `/seo-roadmap` Control Centre shows Run buttons only for allowlisted actions. Output is shown as a compact preview, and the Recent Operator Actions panel shows the latest logged UI actions when the local Sentinel API is running. There is no free-text terminal input and no arbitrary command runner.
 
 The stakeholder-safe `/seo-progress` route must never expose operator actions, command execution, diagnostics or private Sentinel state.
 
@@ -100,6 +110,5 @@ A fuller operator console should wait until Sentinel has:
 - audit logs
 - command approval policy
 - tighter process isolation
-- server-side action history
 
 Until then, browser-triggered execution remains deliberately narrow and allowlisted.

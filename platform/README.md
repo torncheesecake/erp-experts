@@ -171,7 +171,7 @@ The Control Centre groups the operator experience into:
 - System Status: health, workflow, cadence, readiness and doctor state.
 - Current Focus: latest opportunity, latest plan, inbox item and recommended next step.
 - Operations: cadence, notification payloads, report generation and state refresh context.
-- Tools & Commands: searchable command discovery with copy buttons only.
+- Tools & Commands: searchable command discovery, copy buttons and low-risk Run buttons for allowlisted actions only.
 - Diagnostics: collapsed/secondary checks and future console direction.
 
 Command metadata lives in `platform/commands/commands.json`. The dashboard reads that registry to show safe descriptions, risk level, local-only notes and recommended usage. Command discovery remains separate from execution. Any browser-triggered execution must go through the stricter action allowlist below, not through arbitrary command text.
@@ -186,7 +186,7 @@ Action metadata lives in:
 platform/actions/actions.json
 ```
 
-The local API exposes `POST /action` for allowlisted actions only. It rejects unknown action IDs, rejects actions not marked `allowFromUI`, runs fixed `npm run <script>` commands with `spawn` and no shell, applies timeouts and limits captured output.
+The local API exposes `POST /action` for allowlisted actions only. It rejects unknown action IDs, rejects actions not marked `allowFromUI`, runs fixed `npm run <script>` commands with `spawn` and no shell, applies timeouts and limits captured output. It also exposes read-only `GET /actions/history` so the private dashboard can show recent `ui_action:*` rows from the persisted `runs` table.
 
 Initial UI actions are limited to low-risk local commands:
 
@@ -200,7 +200,7 @@ Initial UI actions are limited to low-risk local commands:
 - `platform:api`
 - `seo:monitor`
 
-Deploy, cleanup, restore, FTP, service installation and arbitrary shell commands are intentionally excluded. The dashboard shows Run buttons only for allowlisted actions and keeps output as a compact preview. See `docs/SENTINEL_OPERATOR_ACTIONS.md`.
+Deploy, cleanup, restore, FTP, service installation and arbitrary shell commands are intentionally excluded. The dashboard shows Run buttons only for allowlisted actions, keeps output as a compact preview and shows recent operator action history when the local API is running. See `docs/SENTINEL_OPERATOR_ACTIONS.md`.
 
 ## Operational State Summary
 
@@ -228,7 +228,7 @@ npm run platform:api:serve
 npm run platform:api:smoke
 ```
 
-The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state` and `GET /tenant` endpoints, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
+The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state`, `GET /tenant` and `GET /actions/history` endpoints, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
 
 The Raspberry Pi service scaffold is also present but inactive:
 

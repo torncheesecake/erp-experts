@@ -160,6 +160,12 @@ function workflowBadgeClass(state = "") {
   return "bg-blue-50 text-blue-700 ring-blue-100";
 }
 
+function actionStatusBadgeClass(status = "") {
+  if (status === "success") return "bg-emerald-50 text-emerald-700 ring-emerald-100";
+  if (status === "running") return "bg-blue-50 text-blue-700 ring-blue-100";
+  return "bg-rose-50 text-rose-700 ring-rose-100";
+}
+
 function buildMonitorInsights({ points, modeKey }) {
   const list = Array.isArray(points) ? points : [];
   const latest = list[list.length - 1] || null;
@@ -912,7 +918,7 @@ function CommandCategoryButton({ label, active, onClick }) {
   );
 }
 
-function SentinelCommandsPanel({ commandRegistry, actionRegistry }) {
+function SentinelCommandsPanel({ commandRegistry, actionRegistry, onActionComplete }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [copyTarget, setCopyTarget] = useState("");
@@ -982,6 +988,9 @@ function SentinelCommandsPanel({ commandRegistry, actionRegistry }) {
         stderr: error.message,
       });
     } finally {
+      if (typeof onActionComplete === "function") {
+        await onActionComplete();
+      }
       setRunningAction("");
     }
   };
@@ -1095,6 +1104,65 @@ function SentinelCommandsPanel({ commandRegistry, actionRegistry }) {
             No registered command matches that filter.
           </div>
         ) : null}
+      </div>
+    </section>
+  );
+}
+
+function RecentOperatorActionsPanel({ history, actionRegistry, onRefresh }) {
+  const actions = Array.isArray(history?.actions) ? history.actions.slice(0, 5) : [];
+  const registry = Array.isArray(actionRegistry?.actions) ? actionRegistry.actions : [];
+  const labelById = new Map(registry.map((action) => [action.id, action.label || action.id]));
+  const loading = history?.loading;
+  const unavailable = history?.status === "unavailable";
+
+  return (
+    <section className="rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-100/80 md:p-6">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Operator Actions</p>
+          <h2 className="text-xl font-semibold text-slate-950">Recent Operator Actions</h2>
+          <p className="text-sm text-slate-600">Latest controlled UI actions logged through the local allowlist.</p>
+        </div>
+        <button
+          type="button"
+          onClick={onRefresh}
+          className="rounded-full bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+        >
+          Refresh
+        </button>
+      </div>
+
+      <div className="grid gap-2" style={{ marginTop: "16px" }}>
+        {loading ? (
+          <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 ring-1 ring-slate-100">
+            Loading action history…
+          </div>
+        ) : null}
+
+        {!loading && unavailable ? (
+          <div className="rounded-2xl bg-blue-50 p-4 text-sm text-blue-900 ring-1 ring-blue-100">
+            Action history is available when the local Sentinel API is running.
+          </div>
+        ) : null}
+
+        {!loading && !unavailable && !actions.length ? (
+          <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 ring-1 ring-slate-100">
+            No controlled operator actions have been recorded yet.
+          </div>
+        ) : null}
+
+        {!loading && !unavailable && actions.map((item) => (
+          <div key={item.id} className="flex items-start justify-between gap-3 rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
+            <div>
+              <p className="text-sm font-semibold text-slate-950">{labelById.get(item.action) || formatStateLabel(item.action)}</p>
+              <p className="text-xs text-slate-500">{formatDateTime(item.finishedAt || item.startedAt)}</p>
+            </div>
+            <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${actionStatusBadgeClass(item.status)}`}>
+              {item.status || "unknown"}
+            </span>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -2394,6 +2462,11 @@ function AdminView({ onPreview }) {
   const [activeNav, setActiveNav] = useState("overview");
   const [sentinelStateSnapshot, setSentinelStateSnapshot] = useState(getInitialSentinelState);
   const [cadenceSummary, setCadenceSummary] = useState(readCadenceSummary);
+  const [actionHistorySnapshot, setActionHistorySnapshot] = useState({
+    actions: [],
+    loading: true,
+    status: "loading",
+  });
   const [doctorSummary] = useState(readDoctorSummary);
   const [readinessSummary] = useState(readReadinessSummary);
   const overviewRef = useRef(null);
@@ -2404,6 +2477,36 @@ function AdminView({ onPreview }) {
   const commandsRef = useRef(null);
   const reportsRef = useRef(null);
   const settingsRef = useRef(null);
+
+  const loadActionHistory = async () => {
+    setActionHistorySnapshot((current) => ({
+      ...current,
+      loading: true,
+    }));
+
+    try {
+      const res = await fetch(`${sentinelActionApiBaseUrl}/actions/history?limit=10`, {
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error(`Sentinel action history returned ${res.status}`);
+      const data = await res.json();
+      setActionHistorySnapshot({
+        actions: Array.isArray(data?.actions) ? data.actions : [],
+        loading: false,
+        status: "ready",
+      });
+    } catch {
+      setActionHistorySnapshot({
+        actions: [],
+        loading: false,
+        status: "unavailable",
+      });
+    }
+  };
+
+  useEffect(() => {
+    loadActionHistory();
+  }, []);
 
   useEffect(() => {
     if (!sentinelApiBaseUrl) return undefined;
@@ -3200,6 +3303,11 @@ function AdminView({ onPreview }) {
                     doctorSummary={doctorSummary}
                   />
                   <CurrentFocusPanel sentinelState={sentinelState} inboxReport={actionInboxReport} />
+                  <RecentOperatorActionsPanel
+                    history={actionHistorySnapshot}
+                    actionRegistry={sentinelActionRegistry}
+                    onRefresh={loadActionHistory}
+                  />
                 </div>
 
                 <section className="grid gap-lg xl:grid-cols-2">
@@ -3224,7 +3332,11 @@ function AdminView({ onPreview }) {
                 </section>
 
                 <section ref={commandsRef} className="grid gap-lg">
-                  <SentinelCommandsPanel commandRegistry={sentinelCommandRegistry} actionRegistry={sentinelActionRegistry} />
+                  <SentinelCommandsPanel
+                    commandRegistry={sentinelCommandRegistry}
+                    actionRegistry={sentinelActionRegistry}
+                    onActionComplete={loadActionHistory}
+                  />
                   <FutureOperatorConsolePanel />
                 </section>
 
@@ -3286,7 +3398,16 @@ function AdminView({ onPreview }) {
 
             {isMonitorMode && showCommandsTab ? (
               <section ref={commandsRef} className="grid gap-lg">
-                <SentinelCommandsPanel commandRegistry={sentinelCommandRegistry} actionRegistry={sentinelActionRegistry} />
+                <RecentOperatorActionsPanel
+                  history={actionHistorySnapshot}
+                  actionRegistry={sentinelActionRegistry}
+                  onRefresh={loadActionHistory}
+                />
+                <SentinelCommandsPanel
+                  commandRegistry={sentinelCommandRegistry}
+                  actionRegistry={sentinelActionRegistry}
+                  onActionComplete={loadActionHistory}
+                />
                 <FutureOperatorConsolePanel />
               </section>
             ) : null}
