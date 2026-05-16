@@ -126,7 +126,7 @@ npm run platform:cadence -- --operator-only
 npm run platform:cadence -- --stakeholder-only
 ```
 
-Default cadence runs `seo:monitor`, `platform:state`, `platform:daily`, `platform:stakeholder` and `platform:notify -- --all`, then writes `reports/sentinel-cadence-summary.json` as ignored local output. It does not send messages, deploy, start the API, install cron jobs or expose services. See `docs/SENTINEL_AUTOMATION_CADENCE.md`.
+Default cadence runs `seo:monitor`, `platform:state`, `platform:daily`, `platform:stakeholder` and `platform:notify -- --all`, then writes `reports/sentinel-cadence-summary.json` as ignored local output. The private `/seo-roadmap` operator dashboard surfaces this latest cadence state in a compact panel. It does not send messages, deploy, start the API, install cron jobs or expose services. See `docs/SENTINEL_AUTOMATION_CADENCE.md`.
 
 Raspberry Pi systemd timer templates are available but inactive:
 

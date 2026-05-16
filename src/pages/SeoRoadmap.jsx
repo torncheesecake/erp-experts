@@ -25,6 +25,7 @@ import {
 import reportData from "../data/reports.json";
 const historyQaModules = import.meta.glob("../../reports/history/*/resource-qa-report.json", { eager: true });
 const sentinelStateModules = import.meta.glob("../../reports/sentinel-state.json", { eager: true });
+const sentinelCadenceModules = import.meta.glob("../../reports/sentinel-cadence-summary.json", { eager: true });
 const sentinelApiBaseUrl = String(import.meta.env.VITE_SENTINEL_API_BASE_URL || "").replace(/\/+$/, "");
 
 const seoSnapshotDate =
@@ -101,6 +102,11 @@ function readSentinelState() {
   return stateModule?.default || stateModule || null;
 }
 
+function readCadenceSummary() {
+  const cadenceModule = Object.values(sentinelCadenceModules)[0];
+  return cadenceModule?.default || cadenceModule || null;
+}
+
 function getInitialSentinelState() {
   const reportState = readSentinelState();
   return {
@@ -111,6 +117,19 @@ function getInitialSentinelState() {
 
 function formatStateLabel(value = "") {
   return String(value || "unknown").replaceAll("_", " ");
+}
+
+function formatDateTime(value) {
+  if (!value) return "Not recorded";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 function workflowBadgeClass(state = "") {
@@ -623,6 +642,88 @@ function SentinelStatePanel({ sentinelState, source = "fallback" }) {
           </p>
         </div>
       </div>
+    </section>
+  );
+}
+
+function CadenceSummaryPanel({ cadenceSummary }) {
+  if (!cadenceSummary) {
+    return (
+      <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100/80">
+        <div className="flex items-start justify-between gap-md flex-wrap">
+          <div>
+            <p className="text-sm font-semibold text-slate-900">Cadence Summary</p>
+            <p className="text-xs text-slate-600">No cadence run recorded yet.</p>
+          </div>
+          <span className="inline-flex rounded-full bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">
+            waiting
+          </span>
+        </div>
+        <p className="text-sm text-slate-600" style={{ marginTop: "10px" }}>
+          Run <code className="rounded bg-slate-50 px-1.5 py-0.5 text-xs text-slate-700">npm run platform:cadence</code> to generate the latest cadence summary.
+        </p>
+      </section>
+    );
+  }
+
+  const generatedReports = Array.isArray(cadenceSummary.generatedReports) ? cadenceSummary.generatedReports : [];
+  const notificationsGenerated = Boolean(cadenceSummary.notificationsGenerated);
+  const stakeholderSafety = cadenceSummary.stakeholderSafetyStatus || "not recorded";
+  const modeLabel = formatStateLabel(cadenceSummary.mode || "unknown");
+  const healthStatus = cadenceSummary.health?.status || "Unknown";
+  const workflow = cadenceSummary.workflow || "unknown";
+
+  return (
+    <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100/80">
+      <div className="flex items-start justify-between gap-md flex-wrap">
+        <div>
+          <p className="text-sm font-semibold text-slate-900">Cadence Summary</p>
+          <p className="text-xs text-slate-600">Last run {formatDateTime(cadenceSummary.ranAt)}</p>
+        </div>
+        <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${workflowBadgeClass(workflow)}`}>
+          {modeLabel}
+        </span>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2" style={{ marginTop: "14px" }}>
+        <div>
+          <p className="text-xs text-slate-500">Health</p>
+          <p className="text-sm font-semibold text-slate-900">{healthStatus}</p>
+        </div>
+        <div>
+          <p className="text-xs text-slate-500">Workflow</p>
+          <p className="text-sm font-semibold text-slate-900">{formatStateLabel(workflow)}</p>
+        </div>
+        <div>
+          <p className="text-xs text-slate-500">Reports generated</p>
+          <p className="text-sm font-semibold text-slate-900">{generatedReports.length}</p>
+        </div>
+        <div>
+          <p className="text-xs text-slate-500">Notifications</p>
+          <p className="text-sm font-semibold text-slate-900">{notificationsGenerated ? "prepared" : "not prepared"}</p>
+          <p className="text-xs text-slate-500" style={{ marginTop: "3px" }}>
+            Stakeholder safety: {formatStateLabel(stakeholderSafety)}
+          </p>
+        </div>
+      </div>
+
+      <div style={{ marginTop: "14px" }}>
+        <p className="text-xs text-slate-500">Next step</p>
+        <p className="text-sm font-semibold text-slate-900">{cadenceSummary.nextStep || "No cadence next step recorded."}</p>
+      </div>
+
+      {generatedReports.length ? (
+        <details className="text-xs text-slate-500" style={{ marginTop: "12px" }}>
+          <summary className="cursor-pointer font-semibold text-slate-600">View generated artefacts</summary>
+          <ul className="grid gap-1" style={{ marginTop: "8px" }}>
+            {generatedReports.map((report) => (
+              <li key={report}>{report}</li>
+            ))}
+            {cadenceSummary.operatorNotificationPath ? <li>{cadenceSummary.operatorNotificationPath}</li> : null}
+            {cadenceSummary.stakeholderNotificationPath ? <li>{cadenceSummary.stakeholderNotificationPath}</li> : null}
+          </ul>
+        </details>
+      ) : null}
     </section>
   );
 }
@@ -1850,6 +1951,7 @@ function AdminView({ onPreview }) {
   const [dashboardLoadedAt] = useState(() => new Date());
   const [activeNav, setActiveNav] = useState("overview");
   const [sentinelStateSnapshot, setSentinelStateSnapshot] = useState(getInitialSentinelState);
+  const [cadenceSummary, setCadenceSummary] = useState(readCadenceSummary);
   const overviewRef = useRef(null);
   const opportunitiesRef = useRef(null);
   const plansRef = useRef(null);
@@ -1888,6 +1990,35 @@ function AdminView({ onPreview }) {
 
     loadSentinelStateFromApi();
     return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadCadenceSummary() {
+      const paths = ["/reports/sentinel-cadence-summary.json", "/sentinel-cadence-summary.json"];
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (alive) {
+            setCadenceSummary(data);
+          }
+          return;
+        } catch {
+          // Try next path.
+        }
+      }
+      if (alive) {
+        setCadenceSummary(readCadenceSummary());
+      }
+    }
+
+    loadCadenceSummary();
+    return () => {
+      alive = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -2609,7 +2740,10 @@ function AdminView({ onPreview }) {
           <div className="grid gap-lg">
             {isMonitorMode && showOverviewTab ? (
               <>
-                <SentinelStatePanel sentinelState={sentinelState} source={sentinelStateSource} />
+                <section className="grid gap-lg xl:grid-cols-2">
+                  <SentinelStatePanel sentinelState={sentinelState} source={sentinelStateSource} />
+                  <CadenceSummaryPanel cadenceSummary={cadenceSummary} />
+                </section>
                 <AutopilotOrchestratorPanel autopilotReport={autopilotReport} loading={autopilotLoading} />
                 <StrategicDecisionsPanel decisionReport={decisionReport} loading={decisionLoading} />
 

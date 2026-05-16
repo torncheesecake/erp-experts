@@ -412,7 +412,7 @@ Default cadence runs:
 - `platform:stakeholder`
 - `platform:notify -- --all`
 
-It writes ignored output to `reports/sentinel-cadence-summary.json`, `reports/notifications/` and the existing report files. It does not send messages, deploy, start services, install cron jobs or expose private data publicly. Use `--dry-run`, `--operator-only` or `--stakeholder-only` for narrower local scheduling. Cron and future Raspberry Pi examples are documented in `docs/SENTINEL_AUTOMATION_CADENCE.md`.
+It writes ignored output to `reports/sentinel-cadence-summary.json`, `reports/notifications/` and the existing report files. The private `/seo-roadmap` dashboard shows the latest cadence run in a compact Cadence Summary panel. The stakeholder-safe `/seo-progress` route does not expose this operator cadence state. It does not send messages, deploy, start services, install cron jobs or expose private data publicly. Use `--dry-run`, `--operator-only` or `--stakeholder-only` for narrower local scheduling. Cron and future Raspberry Pi examples are documented in `docs/SENTINEL_AUTOMATION_CADENCE.md`.
 
 Inactive Raspberry Pi systemd timer templates are also present for later controlled deployment:
 

@@ -35,6 +35,8 @@ npm run platform:notify -- --all
 
 This generates ignored Markdown and JSON payloads under `reports/notifications/` but sends nothing. Stakeholder notification safety scanning remains enforced by `platform:notify`.
 
+The private `/seo-roadmap` operator dashboard reads `reports/sentinel-cadence-summary.json` and shows the latest cadence run, generated report count, notification status, stakeholder safety status and next step. The stakeholder-safe `/seo-progress` route does not consume this operator summary.
+
 ## Modes
 
 ```bash
