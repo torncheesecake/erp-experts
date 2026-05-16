@@ -83,6 +83,16 @@
       "recommendedUsage": "Use before implementing a Sentinel platform improvement."
     },
     {
+      "command": "npm run platform:roadmap:approve",
+      "category": "State",
+      "description": "Records local approval metadata for a selected roadmap plan before implementation work.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Use after reviewing a roadmap plan and before starting implementation."
+    },
+    {
       "command": "npm run platform:cadence",
       "category": "Automation",
       "description": "Runs the safe local cadence: monitor, state, daily report, stakeholder report and notification payloads.",

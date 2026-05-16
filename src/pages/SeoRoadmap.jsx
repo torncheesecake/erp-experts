@@ -36,6 +36,7 @@ const sentinelDoctorModules = import.meta.glob("../../reports/sentinel-doctor.js
 const sentinelReadinessModules = import.meta.glob("../../reports/sentinel-deploy-readiness.json", { eager: true });
 const sentinelRoadmapModules = import.meta.glob("../../reports/sentinel-roadmap.json", { eager: true });
 const sentinelRoadmapPlanModules = import.meta.glob("../../reports/sentinel-roadmap-plan.json", { eager: true });
+const sentinelRoadmapApprovalModules = import.meta.glob("../../reports/sentinel-roadmap-approvals.json", { eager: true });
 const sentinelApiBaseUrl = String(import.meta.env.VITE_SENTINEL_API_BASE_URL || "").replace(/\/+$/, "");
 const sentinelActionApiBaseUrl = sentinelApiBaseUrl || "http://127.0.0.1:4317";
 const SENTINEL_OPERATOR_SESSION_KEY = "sentinel.operatorSession.v1";
@@ -146,6 +147,12 @@ function readReadinessSummary() {
 function readRoadmapSummary() {
   const roadmapModule = Object.values(sentinelRoadmapModules)[0];
   return roadmapModule?.default || roadmapModule || null;
+}
+
+function readRoadmapApprovals() {
+  const approvalModule = Object.values(sentinelRoadmapApprovalModules)[0];
+  const approvals = approvalModule?.default || approvalModule || [];
+  return Array.isArray(approvals) ? approvals : [];
 }
 
 function getInitialSentinelState() {
@@ -2208,11 +2215,26 @@ function roadmapToneClass(value = "") {
   return "bg-slate-50 text-slate-700 ring-slate-100";
 }
 
-function RoadmapIntelligencePanel({ roadmap }) {
+function latestRoadmapApproval(approvals = [], itemId = "") {
+  const matches = approvals
+    .filter((approval) => approval.roadmapItemId === itemId)
+    .sort((a, b) => String(b.approvedAt || "").localeCompare(String(a.approvedAt || "")));
+  const approval = matches[0] || null;
+  if (!approval) return { state: "not_approved", approval: null };
+  const expiresAt = new Date(approval.expiresAt || "");
+  const expired = Number.isNaN(expiresAt.getTime()) ? false : expiresAt.getTime() < Date.now();
+  return {
+    state: expired ? "expired" : approval.status || "approved",
+    approval,
+  };
+}
+
+function RoadmapIntelligencePanel({ roadmap, approvals = [] }) {
   const items = Array.isArray(roadmap?.items) ? roadmap.items : [];
   const categories = ["all", ...new Set(items.map((item) => item.category).filter(Boolean))];
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [copiedItemId, setCopiedItemId] = useState("");
+  const [copiedApprovalId, setCopiedApprovalId] = useState("");
   const visibleItems = items
     .filter((item) => categoryFilter === "all" || item.category === categoryFilter)
     .slice(0, 3);
@@ -2224,6 +2246,15 @@ function RoadmapIntelligencePanel({ roadmap }) {
     if (ok) {
       setCopiedItemId(item.id);
       window.setTimeout(() => setCopiedItemId(""), 1800);
+    }
+  };
+
+  const copyApprovalCommand = async (item) => {
+    const command = `npm run platform:roadmap:approve -- --item ${item.id} --note "Approved for implementation planning"`;
+    const ok = await copyText(command, "roadmap approval command");
+    if (ok) {
+      setCopiedApprovalId(item.id);
+      window.setTimeout(() => setCopiedApprovalId(""), 1800);
     }
   };
 
@@ -2268,49 +2299,65 @@ function RoadmapIntelligencePanel({ roadmap }) {
           ) : null}
 
           <div className="grid gap-3" style={{ marginTop: "16px" }}>
-            {visibleItems.map((item) => (
-              <article key={item.id} className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100">
-                <div className="flex items-start justify-between gap-3 flex-wrap">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-sm font-semibold text-slate-950">{item.title}</h3>
-                      <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-200">
-                        {formatStateLabel(item.category)}
+            {visibleItems.map((item) => {
+              const approvalState = latestRoadmapApproval(approvals, item.id);
+
+              return (
+                <article key={item.id} className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100">
+                  <div className="flex items-start justify-between gap-3 flex-wrap">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="text-sm font-semibold text-slate-950">{item.title}</h3>
+                        <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-200">
+                          {formatStateLabel(item.category)}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-600" style={{ marginTop: "6px" }}>{item.rationale}</p>
+                    </div>
+                    <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
+                      <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${roadmapToneClass(item.impact)}`}>
+                        Impact {item.impact}
+                      </span>
+                      <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${roadmapToneClass(item.effort === "low" ? "low" : item.effort === "high" ? "high" : "medium")}`}>
+                        Effort {item.effort}
+                      </span>
+                      <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${roadmapToneClass(item.suggestedPriority)}`}>
+                        {formatStateLabel(item.suggestedPriority)} priority
                       </span>
                     </div>
-                    <p className="text-xs text-slate-600" style={{ marginTop: "6px" }}>{item.rationale}</p>
                   </div>
-                  <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
-                    <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${roadmapToneClass(item.impact)}`}>
-                      Impact {item.impact}
-                    </span>
-                    <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${roadmapToneClass(item.effort === "low" ? "low" : item.effort === "high" ? "high" : "medium")}`}>
-                      Effort {item.effort}
-                    </span>
-                    <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${roadmapToneClass(item.suggestedPriority)}`}>
-                      {formatStateLabel(item.suggestedPriority)} priority
-                    </span>
+                  <div className="flex flex-wrap gap-2 text-xs text-slate-500" style={{ marginTop: "10px" }}>
+                    <span>{item.linkedFeedbackIds?.length || 0} linked feedback item{(item.linkedFeedbackIds?.length || 0) === 1 ? "" : "s"}</span>
+                    <span>Source: {formatStateLabel(item.source)}</span>
+                    <span>Confidence: {item.confidence}</span>
+                    <span>Approval: {formatStateLabel(approvalState.state)}</span>
+                    {approvalState.approval?.expiresAt ? <span>Expires: {formatDateTime(approvalState.approval.expiresAt)}</span> : null}
                   </div>
-                </div>
-                <div className="flex flex-wrap gap-2 text-xs text-slate-500" style={{ marginTop: "10px" }}>
-                  <span>{item.linkedFeedbackIds?.length || 0} linked feedback item{(item.linkedFeedbackIds?.length || 0) === 1 ? "" : "s"}</span>
-                  <span>Source: {formatStateLabel(item.source)}</span>
-                  <span>Confidence: {item.confidence}</span>
-                </div>
-                <div className="flex flex-wrap items-center gap-2" style={{ marginTop: "12px" }}>
-                  <button
-                    type="button"
-                    onClick={() => copyPlanCommand(item)}
-                    className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
-                  >
-                    {copiedItemId === item.id ? "Copied plan command" : "Copy plan command"}
-                  </button>
-                  <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
-                    npm run platform:roadmap:plan -- --item {item.id}
-                  </code>
-                </div>
-              </article>
-            ))}
+                  <div className="flex flex-wrap items-center gap-2" style={{ marginTop: "12px" }}>
+                    <button
+                      type="button"
+                      onClick={() => copyPlanCommand(item)}
+                      className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+                    >
+                      {copiedItemId === item.id ? "Copied plan command" : "Copy plan command"}
+                    </button>
+                    <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
+                      npm run platform:roadmap:plan -- --item {item.id}
+                    </code>
+                    <button
+                      type="button"
+                      onClick={() => copyApprovalCommand(item)}
+                      className="rounded-full bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white ring-1 ring-slate-950 hover:bg-slate-800"
+                    >
+                      {copiedApprovalId === item.id ? "Copied approval command" : "Copy approval command"}
+                    </button>
+                    <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
+                      npm run platform:roadmap:approve -- --item {item.id}
+                    </code>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </>
       )}
@@ -3600,6 +3647,7 @@ function AdminView({ onPreview }) {
   const [doctorSummary] = useState(readDoctorSummary);
   const [readinessSummary] = useState(readReadinessSummary);
   const [roadmapSummary] = useState(readRoadmapSummary);
+  const [roadmapApprovals] = useState(readRoadmapApprovals);
   const overviewRef = useRef(null);
   const stateRef = useRef(null);
   const inboxRef = useRef(null);
@@ -4529,7 +4577,7 @@ function AdminView({ onPreview }) {
                   onFeedbackAdded={loadOperatorFeedback}
                   onRefresh={loadOperatorFeedback}
                 />
-                <RoadmapIntelligencePanel roadmap={roadmapSummary} />
+                <RoadmapIntelligencePanel roadmap={roadmapSummary} approvals={roadmapApprovals} />
 
                 <section className="grid gap-lg xl:grid-cols-2">
                   <div>
