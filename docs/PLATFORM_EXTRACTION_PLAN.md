@@ -693,6 +693,14 @@ Current behaviour:
 
 This is deliberately not live multi-tenant switching. It is a safe UI/API foundation so the platform feels tenant-aware before adding tenant switching, isolated dashboards or tenant-scoped authentication.
 
+Tenant creation is now scaffolded through:
+
+```bash
+npm run platform:tenant:scaffold -- --tenant-id demo-client --name "Demo Client" --domain demo.example.com --base-url https://demo.example.com
+```
+
+The scaffold is dry-run by default and creates only a proposed config shape. Written tenants start as `draft` unless explicitly changed, and `active` status is refused unless `--allow-active` is passed. Draft tenants do not generate live reports.
+
 ## 19. Persistence Foundation Step
 
 The platform now has its first SQLite persistence layer.

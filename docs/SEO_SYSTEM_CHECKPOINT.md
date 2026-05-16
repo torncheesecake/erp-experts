@@ -124,6 +124,8 @@ Current engines still use their existing ERP Experts paths. The tenant layer is 
 
 The private Control Centre now shows the active tenant context but does not implement live switching. Future work remains tenant switching, isolated tenant dashboards and tenant-scoped authentication.
 
+Future tenant creation is scaffolded by `npm run platform:tenant:scaffold`. It is dry-run by default, writes only when `--write` is passed, creates `draft` registry entries by default and refuses `active` status unless `--allow-active` is passed. It does not generate live reports for new tenants.
+
 `seo:autopilot`, `seo:pipeline`, `seo:monitor`, `seo:stats` and `seo:opportunities` are now tenant-aware. They still default to ERP Experts, so existing usage is unchanged. Explicit tenant usage is available with `npm run seo:autopilot -- --tenant erp-experts`, `npm run seo:pipeline -- --tenant erp-experts`, `npm run seo:monitor -- --tenant erp-experts`, `npm run seo:stats -- --tenant erp-experts` and `npm run seo:opportunities -- --tenant erp-experts`.
 
 ## Platform persistence layer

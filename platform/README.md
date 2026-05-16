@@ -40,6 +40,18 @@ npm run platform:tenant -- erp-experts
 
 The loader prints a summary and validates required fields. It does not mutate source files or generated reports.
 
+## Tenant Scaffold
+
+Use the scaffold command to propose a future tenant config without hand-editing JSON:
+
+```bash
+npm run platform:tenant:scaffold -- --tenant-id demo-client --name "Demo Client" --domain demo.example.com --base-url https://demo.example.com
+```
+
+The command is dry-run by default. It prints the proposed `platform/tenants/<tenant-id>.config.json` path and registry entry, but writes nothing unless `--write` is passed.
+
+Future tenants start as `draft` by default. The command refuses `--status active` unless `--allow-active` is also passed. Draft tenants do not generate reports and are not operational until content sources, service paths, CTA maps, scoring profile and approval settings are reviewed.
+
 ## Tenant-Aware Reporting Commands
 
 `seo:autopilot`, `seo:pipeline`, `seo:monitor`, `seo:stats` and `seo:opportunities` read the tenant config.
