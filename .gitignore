@@ -75,6 +75,7 @@ reports/sentinel-deploy-readiness.json
 reports/sentinel-daily-operator-report.md
 reports/sentinel-stakeholder-weekly-report.md
 reports/sentinel-cadence-summary.json
+reports/sentinel-doctor.json
 reports/notifications/
 reports/briefs/
 

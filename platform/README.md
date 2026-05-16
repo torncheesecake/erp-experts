@@ -77,6 +77,19 @@ npm run platform:health
 
 The command checks the ERP Experts tenant config, SQLite schema/readiness, report presence, latest QA totals, deployment documentation and ignore policy for local runtime files. It does not initialise, migrate, deploy or edit content.
 
+## Doctor Diagnostics
+
+Use the doctor command when something seems wrong and you need a concise troubleshooting view:
+
+```bash
+npm run platform:doctor
+npm run platform:doctor -- --full
+```
+
+Default mode reads Git state, package scripts, SQLite integrity, persisted Sentinel state, latest cadence output, notification payload presence, local API availability, deployment readiness output and route-guard expectations. It writes `reports/sentinel-doctor.json` as ignored local diagnostic output and exits non-zero only for critical failures.
+
+Full mode additionally runs `platform:health`, `backup:verify`, `platform:state` and `seo:monitor`. Use `platform:start` for daily operation. Use `platform:doctor` when the system needs diagnosing.
+
 ## Local Operator Startup
 
 Use the local bootstrap command as the normal Sentinel operator entry point:
@@ -210,6 +223,7 @@ Command distinction:
 - `platform:state` exports the operational summary to ignored JSON for the dashboard.
 - `platform:api` previews the same persisted state as a future API contract.
 - `platform:api:serve` exposes the same read-only state over a local-only HTTP prototype.
+- `platform:doctor` is the troubleshooting command for fast local diagnostics, with optional `--full` checks.
 
 ## Deployment Readiness Scaffold
 

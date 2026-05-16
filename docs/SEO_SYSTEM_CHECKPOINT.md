@@ -384,6 +384,16 @@ It does not change SEO scoring, edit content, approve plans, apply patches, publ
 
 It does not deploy, SSH, open browsers, start Vite or permanently start daemons. Optional `npm run platform:start -- --with-api` starts the local API server only as a foreground child process for that terminal session and stops it on `Ctrl+C`.
 
+## Doctor diagnostics
+
+`npm run platform:doctor` is the troubleshooting command for Sentinel.
+
+Default mode is fast and mostly read-only. It checks Git state, required package scripts, SQLite integrity, persisted operational state, latest cadence output, notification payload presence, local API availability if running, deployment readiness output and the production route-guard expectation for `/seo-roadmap`.
+
+It writes ignored local output to `reports/sentinel-doctor.json`. API absence and stale/missing optional reports are warnings, not failures. Critical failures, such as an unreadable DB or missing required scripts, return a non-zero exit code.
+
+Use `npm run platform:doctor -- --full` when a deeper check is needed. Full mode also runs `platform:health`, `backup:verify`, `platform:state` and `seo:monitor`, so it may update normal local run/snapshot history. Use `platform:start` for daily operation and `platform:doctor` when something seems wrong.
+
 ## Daily operator report
 
 `npm run platform:daily` creates a concise Markdown handoff at `reports/sentinel-daily-operator-report.md`.

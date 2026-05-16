@@ -52,6 +52,7 @@
     "platform:cadence": "node scripts/platform/platform_cadence.mjs",
     "platform:cleanup": "node scripts/platform/platform_cleanup.mjs",
     "platform:deploy:ready": "node scripts/platform/platform_deploy_readiness.mjs",
+    "platform:doctor": "node scripts/platform/platform_doctor.mjs",
     "platform:daily": "node scripts/platform/platform_daily_report.mjs",
     "platform:notify": "node scripts/platform/platform_notify.mjs",
     "platform:stakeholder": "node scripts/platform/platform_stakeholder_report.mjs",
