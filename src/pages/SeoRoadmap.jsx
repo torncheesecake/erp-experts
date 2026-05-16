@@ -289,6 +289,13 @@ function activityVisualHintBadgeClass(visualHint = "") {
   return "bg-slate-50 text-slate-700 ring-slate-100";
 }
 
+function activitySeverityDotClass(severity = "") {
+  if (severity === "success") return "bg-emerald-500";
+  if (severity === "warning") return "bg-amber-500";
+  if (severity === "error") return "bg-rose-500";
+  return "bg-blue-500";
+}
+
 function buildMonitorInsights({ points, modeKey }) {
   const list = Array.isArray(points) ? points : [];
   const latest = list[list.length - 1] || null;
@@ -917,9 +924,9 @@ function SentinelAppHeader({
   const readinessStatus = readinessSummary?.overallStatus || "Not checked";
 
   return (
-    <header className="border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="container" style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-lg)" }}>
-        <div className="flex items-start justify-between gap-lg flex-wrap">
+    <header className="border-b border-slate-200 bg-white/90 backdrop-blur">
+      <div className="container" style={{ paddingTop: "var(--space-md)", paddingBottom: "var(--space-md)" }}>
+        <div className="flex items-center justify-between gap-lg flex-wrap">
           <div className="min-w-0">
             <div className="flex items-center gap-3">
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-pink-50 text-pink-600 ring-1 ring-pink-100">
@@ -933,7 +940,7 @@ function SentinelAppHeader({
             <p className="text-sm text-slate-600" style={{ marginTop: "8px" }}>
               Private operator app shell for state, cadence, actions, tenants and diagnostics.
             </p>
-            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500" style={{ marginTop: "10px" }}>
+            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500" style={{ marginTop: "8px" }}>
               <span className="rounded-full bg-slate-50 px-2.5 py-1 ring-1 ring-slate-100">
                 Tenant: <strong className="text-slate-800">{activeTenant?.name || "ERP Experts"}</strong>
               </span>
@@ -943,30 +950,30 @@ function SentinelAppHeader({
             </div>
           </div>
 
-          <div className="grid gap-3 sm:min-w-[420px]">
-            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="rounded-2xl bg-slate-50/80 px-3 py-2 ring-1 ring-slate-100">
+          <div className="grid gap-2 sm:min-w-[420px]">
+            <div className="grid gap-2 sm:grid-cols-4">
+              <div className="rounded-xl bg-slate-50/70 px-3 py-2 ring-1 ring-slate-100">
                 <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Health</p>
                 <p className="text-sm font-semibold text-slate-950">{dashboardMode.stateLabel}</p>
                 <p className="text-[11px] text-slate-500">{summaryGate.pass} pass · {summaryGate.blocked} blocked</p>
               </div>
-              <div className="rounded-2xl bg-slate-50/80 px-3 py-2 ring-1 ring-slate-100">
+              <div className="rounded-xl bg-slate-50/70 px-3 py-2 ring-1 ring-slate-100">
                 <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Workflow</p>
                 <p className="text-sm font-semibold text-slate-950">{formatStateLabel(workflowState)}</p>
                 <p className="text-[11px] text-slate-500">{sentinelState?.workflow?.humanInputRequired ? "Review needed" : "No urgent review"}</p>
               </div>
-              <div className="rounded-2xl bg-slate-50/80 px-3 py-2 ring-1 ring-slate-100">
+              <div className="rounded-xl bg-slate-50/70 px-3 py-2 ring-1 ring-slate-100">
                 <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Cadence</p>
                 <p className="text-sm font-semibold text-slate-950">{cadenceSummary?.mode ? formatStateLabel(cadenceSummary.mode) : "Not recorded"}</p>
                 <p className="text-[11px] text-slate-500">{cadenceLabel}</p>
               </div>
-              <div className="rounded-2xl bg-slate-50/80 px-3 py-2 ring-1 ring-slate-100">
+              <div className="rounded-xl bg-slate-50/70 px-3 py-2 ring-1 ring-slate-100">
                 <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Readiness</p>
                 <p className="text-sm font-semibold text-slate-950">{formatStateLabel(readinessStatus)}</p>
                 <p className="text-[11px] text-slate-500">Local gate</p>
               </div>
             </div>
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex flex-wrap items-center justify-end gap-2">
               <button
                 onClick={() => onCompactViewChange(!compactView)}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
@@ -1215,45 +1222,74 @@ function SystemStatusZone({ dashboardMode, summaryGate, sentinelState, cadenceSu
 }
 
 function CurrentFocusPanel({ sentinelState, inboxReport }) {
+  const [copyTarget, setCopyTarget] = useState("");
   const latestOpportunity = sentinelState?.opportunities?.top;
   const latestPlan = sentinelState?.plans?.top;
   const inboxRecommendation = sentinelState?.inboxRecommendation || sentinelState?.inbox?.latestActionable;
   const recommendedNextStep = sentinelState?.recommendation?.nextStep || sentinelState?.workflow?.recommendedNextStep || "No maintenance action required.";
   const inboxItems = Array.isArray(inboxReport?.items) ? inboxReport.items : [];
   const stateInboxItem = inboxItems.find((item) => item.source === "sentinel_state") || inboxItems[0];
+  const primaryActions = [
+    { label: "Start day", command: "npm run platform:start" },
+    { label: "Refresh state", command: "npm run platform:state" },
+    { label: "Run autopilot", command: "npm run seo:autopilot" },
+  ];
+
+  const copyPrimaryAction = async (command) => {
+    await copyText(command, `primary action ${command}`);
+    setCopyTarget(command);
+    setTimeout(() => setCopyTarget(""), 1300);
+  };
 
   return (
-    <section className="rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-100/80 md:p-6">
+    <section className="overflow-hidden rounded-[32px] bg-gradient-to-br from-white via-pink-50/40 to-slate-50 p-5 shadow-sm ring-1 ring-pink-100/70 md:p-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Current Focus</p>
-          <h2 className="text-xl font-semibold text-slate-950">What needs attention now</h2>
-          <p className="text-sm text-slate-600">The active opportunity, plan and operator queue item.</p>
+          <h2 className="text-2xl font-semibold text-slate-950">What needs attention now</h2>
+          <p className="text-sm text-slate-600">The active recommendation, supporting context and safe next commands.</p>
         </div>
         <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ring-1 ${workflowBadgeClass(sentinelState?.workflow?.state)}`}>
           {formatStateLabel(sentinelState?.workflow?.state || "unknown")}
         </span>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1.25fr_0.9fr]" style={{ marginTop: "18px" }}>
-        <div className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100">
-          <p className="text-xs font-medium text-slate-500">Recommended next step</p>
-          <p className="text-lg font-semibold leading-snug text-slate-950" style={{ marginTop: "6px" }}>{recommendedNextStep}</p>
-          <p className="text-xs text-slate-500" style={{ marginTop: "10px" }}>
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.8fr)]" style={{ marginTop: "18px" }}>
+        <div className="rounded-[24px] bg-white/85 p-5 ring-1 ring-white/80">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Recommended next step</p>
+          <p className="text-xl font-semibold leading-snug text-slate-950 md:text-2xl" style={{ marginTop: "8px" }}>{recommendedNextStep}</p>
+          <p className="text-sm text-slate-600" style={{ marginTop: "10px" }}>
             Human input: {sentinelState?.workflow?.humanInputRequired ? "required before moving forward" : "not required for monitoring"}
           </p>
+
+          <div className="flex flex-wrap gap-2" style={{ marginTop: "18px" }}>
+            {primaryActions.map((action, index) => (
+              <button
+                key={action.command}
+                type="button"
+                onClick={() => copyPrimaryAction(action.command)}
+                className={`rounded-full px-3.5 py-2 text-xs font-semibold ring-1 transition-colors ${
+                  index === 0
+                    ? "bg-pink-600 text-white ring-pink-600 hover:bg-pink-700"
+                    : "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50"
+                }`}
+              >
+                {copyTarget === action.command ? "Copied" : `${action.label}: copy`}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="grid gap-3">
-          <div>
+        <div className="grid gap-3 content-start">
+          <div className="rounded-2xl bg-white/75 p-3 ring-1 ring-white/80">
             <p className="text-xs font-medium text-slate-500">Latest opportunity</p>
             <p className="text-sm font-semibold text-slate-950">{latestOpportunity?.title || "No opportunity recorded"}</p>
           </div>
-          <div>
+          <div className="rounded-2xl bg-white/75 p-3 ring-1 ring-white/80">
             <p className="text-xs font-medium text-slate-500">Latest plan</p>
             <p className="text-sm font-semibold text-slate-950">{latestPlan ? `${latestPlan.planId} · ${latestPlan.title}` : "No plan recorded"}</p>
           </div>
-          <div>
+          <div className="rounded-2xl bg-white/75 p-3 ring-1 ring-white/80">
             <p className="text-xs font-medium text-slate-500">Inbox item</p>
             <p className="text-sm font-semibold text-slate-950">{inboxRecommendation?.title || stateInboxItem?.title || "No active inbox item"}</p>
           </div>
@@ -1487,6 +1523,9 @@ function SentinelCommandsPanel({
     acc[key].push(item);
     return acc;
   }, {});
+  const primaryActions = actions
+    .filter((action) => action.allowFromUI)
+    .slice(0, 4);
 
   const copyCommand = async (command) => {
     const ok = await copyText(command, `sentinel command ${command}`);
@@ -1559,6 +1598,43 @@ function SentinelCommandsPanel({
         </span>
       </div>
 
+      {primaryActions.length ? (
+        <div className="rounded-[24px] bg-slate-50/80 p-4 ring-1 ring-slate-100" style={{ marginTop: "18px" }}>
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Primary safe actions</p>
+              <p className="text-sm text-slate-600">Low-risk local actions only. These are fixed allowlisted commands, not shell input.</p>
+            </div>
+            <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-100">
+              UI safe
+            </span>
+          </div>
+          <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4" style={{ marginTop: "12px" }}>
+            {primaryActions.map((action) => {
+              const isRunning = runningAction === action.id;
+              return (
+                <button
+                  key={action.id}
+                  type="button"
+                  onClick={() => runAction(action)}
+                  disabled={Boolean(isRunning)}
+                  className="rounded-2xl bg-white p-3 text-left ring-1 ring-slate-100 transition hover:bg-pink-50 hover:ring-pink-100 disabled:cursor-wait disabled:opacity-70"
+                >
+                  <span className="block text-sm font-semibold text-slate-950">{isRunning ? "Running…" : action.label}</span>
+                  <span className="block text-xs text-slate-500" style={{ marginTop: "4px" }}>{action.description}</span>
+                </button>
+              );
+            })}
+          </div>
+          {actionResult ? (
+            <div className={`rounded-2xl p-3 text-xs ring-1 ${actionResult.ok ? "bg-emerald-50 text-emerald-900 ring-emerald-100" : "bg-rose-50 text-rose-900 ring-rose-100"}`} style={{ marginTop: "12px" }}>
+              <p className="font-semibold">{actionResult.ok ? "Latest action completed" : "Latest action failed"}</p>
+              <p style={{ marginTop: "4px" }}>{actionResult.summary || actionResult.message || "No summary returned."}</p>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
       <div className="grid gap-3 md:grid-cols-[1fr_auto]" style={{ marginTop: "18px" }}>
         <input
           type="search"
@@ -1579,13 +1655,19 @@ function SentinelCommandsPanel({
         </div>
       </div>
 
-      <div className="grid gap-5" style={{ marginTop: "20px" }}>
+      <div className="grid gap-3" style={{ marginTop: "20px" }}>
         {Object.entries(grouped).map(([group, items]) => (
-          <div key={group}>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">{group}</p>
-            <div className="grid gap-2" style={{ marginTop: "8px" }}>
+          <details
+            key={group}
+            open={activeCategory !== "All" || Boolean(normalisedQuery) || group === "Health"}
+            className="rounded-[22px] bg-slate-50/70 p-3 ring-1 ring-slate-100"
+          >
+            <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+              {group} · {items.length}
+            </summary>
+            <div className="grid gap-2" style={{ marginTop: "10px" }}>
               {items.map((item) => (
-                <div key={item.command} className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
+                <div key={item.command} className="rounded-2xl bg-white p-3 ring-1 ring-slate-100">
                   {(() => {
                     const safeAction = actionByCommand.get(item.command);
                     const currentResult = safeAction && actionResult?.action === safeAction.id ? actionResult : null;
@@ -1612,7 +1694,7 @@ function SentinelCommandsPanel({
                       <button
                         type="button"
                         onClick={() => copyCommand(item.command)}
-                        className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+                        className="rounded-full bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
                       >
                         {copyLabel(item.command)}
                       </button>
@@ -1651,7 +1733,7 @@ function SentinelCommandsPanel({
                 </div>
               ))}
             </div>
-          </div>
+          </details>
         ))}
         {!visibleCommands.length ? (
           <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 ring-1 ring-slate-100">
@@ -1807,7 +1889,7 @@ function ActivityFeedPanel({ activityFeed, onRefresh }) {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Activity Feed</p>
           <h2 className="text-xl font-semibold text-slate-950">Recent Activity</h2>
-          <p className="text-sm text-slate-600">Chronological operator narrative from runs, cadence, reports and notification payloads.</p>
+          <p className="text-sm text-slate-600">A concise narrative of recent system and operator activity.</p>
         </div>
         <button
           type="button"
@@ -1818,13 +1900,13 @@ function ActivityFeedPanel({ activityFeed, onRefresh }) {
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-2" style={{ marginTop: "14px" }}>
+      <div className="flex flex-wrap gap-1.5" style={{ marginTop: "14px" }}>
         {filters.map((filter) => (
           <button
             type="button"
             key={filter.key}
             onClick={() => setActiveType(filter.key)}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ${
+            className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${
               activeType === filter.key
                 ? "bg-pink-50 text-pink-700 ring-pink-100"
                 : "bg-slate-50 text-slate-600 ring-slate-100 hover:bg-slate-100"
@@ -1835,7 +1917,7 @@ function ActivityFeedPanel({ activityFeed, onRefresh }) {
         ))}
       </div>
 
-      <div className="grid gap-2" style={{ marginTop: "16px" }}>
+      <div className="grid gap-1.5" style={{ marginTop: "16px" }}>
         {loading ? (
           <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 ring-1 ring-slate-100">
             Loading activity feed…
@@ -1855,26 +1937,27 @@ function ActivityFeedPanel({ activityFeed, onRefresh }) {
         ) : null}
 
         {!loading && !unavailable && visibleActivities.map((entry) => (
-          <article key={entry.id} className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
-            <div className="flex items-start justify-between gap-3">
-              <div>
+          <article key={entry.id} className="rounded-2xl bg-slate-50/70 p-3 ring-1 ring-slate-100">
+            <div className="flex items-start gap-3">
+              <span className={`mt-1.5 inline-flex h-2.5 w-2.5 shrink-0 rounded-full ${activitySeverityDotClass(entry.severity)}`} />
+              <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-sm font-semibold text-slate-950">{entry.title}</p>
                   <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${activityVisualHintBadgeClass(entry.visualHint)}`}>
                     {entry.displayLabel || taxonomyTypes?.[entry.type]?.label || formatStateLabel(entry.type)}
                   </span>
+                  <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${activitySeverityBadgeClass(entry.severity)}`}>
+                    {entry.severity || "info"}
+                  </span>
                 </div>
-                <p className="text-xs text-slate-500" style={{ marginTop: "3px" }}>
+                <p className="text-[11px] text-slate-500" style={{ marginTop: "3px" }}>
                   {formatDateTime(entry.timestamp)}
                 </p>
+                {entry.summary ? (
+                  <p className="text-xs text-slate-700" style={{ marginTop: "6px" }}>{entry.summary}</p>
+                ) : null}
               </div>
-              <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${activitySeverityBadgeClass(entry.severity)}`}>
-                {entry.severity || "info"}
-              </span>
             </div>
-            {entry.summary ? (
-              <p className="text-xs text-slate-700" style={{ marginTop: "8px" }}>{entry.summary}</p>
-            ) : null}
           </article>
         ))}
       </div>
@@ -4042,6 +4125,7 @@ function AdminView({ onPreview }) {
                   title="Current operating picture"
                   description="The shortest path to what matters now: health, workflow, focus, inbox and active priorities."
                 />
+                <CurrentFocusPanel sentinelState={sentinelState} inboxReport={actionInboxReport} />
                 <SystemStatusZone
                   dashboardMode={dashboardMode}
                   summaryGate={summaryGate}
@@ -4050,7 +4134,6 @@ function AdminView({ onPreview }) {
                   readinessSummary={readinessSummary}
                   doctorSummary={doctorSummary}
                 />
-                <CurrentFocusPanel sentinelState={sentinelState} inboxReport={actionInboxReport} />
                 <ActivityFeedPanel activityFeed={activityFeedSnapshot} onRefresh={loadActivityFeed} />
 
                 <section className="grid gap-lg xl:grid-cols-2">

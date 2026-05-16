@@ -86,6 +86,8 @@ The private Control Centre also persists lightweight operator preferences in loc
 
 The Control Centre now includes contextual operator help backed by `platform/help/control-centre-help.json`. Help changes with the selected section, explains when to use each area, lists safe notes and shows a subtle first-run hint for new local sessions. This help is private/operator-only and is not exposed on `/seo-progress`.
 
+The Control Centre has had a UX polish pass focused on daily operation rather than new behaviour. The Overview now prioritises current focus, recommended next step and primary safe actions; command groups are less dense; Activity Feed rows are quieter and taxonomy-labelled; stakeholder routes remain unchanged.
+
 Current operator zones:
 
 - System Status: health, workflow, cadence state, deployment readiness and doctor state.
