@@ -72,6 +72,7 @@ function validateRegistryEntry(entry, result) {
 
 function validateConfigShape({ file, config, registryById, result }) {
   const fileTenantId = file.replace(".config.json", "");
+  const registryEntry = config.tenantId ? registryById.get(config.tenantId) : null;
 
   requiredConfigFields.forEach((field) => {
     if (config[field] === undefined || config[field] === null || config[field] === "") {
@@ -85,6 +86,18 @@ function validateConfigShape({ file, config, registryById, result }) {
 
   if (config.tenantId && !registryById.has(config.tenantId)) {
     addFailure(result, `${file} is not listed in tenant-registry.json.`);
+  }
+
+  if (config.status && !allowedStatuses.has(config.status)) {
+    addFailure(result, `${file} has invalid status: ${config.status}.`);
+  }
+
+  if (registryEntry?.status === "example_disabled" && config.status !== "example_disabled") {
+    addFailure(result, `${file} must declare status example_disabled to match the disabled registry entry.`);
+  }
+
+  if (config.status && registryEntry?.status && config.status !== registryEntry.status) {
+    addFailure(result, `${file} status ${config.status} does not match registry status ${registryEntry.status}.`);
   }
 
   if (config.baseUrl && !/^https?:\/\//.test(config.baseUrl)) {

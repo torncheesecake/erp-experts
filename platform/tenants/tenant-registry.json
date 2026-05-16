@@ -12,6 +12,18 @@
         "First active Sentinel tenant.",
         "Single active tenant. Multi-tenant switching planned."
       ]
+    },
+    {
+      "tenantId": "demo-client",
+      "name": "Demo Client",
+      "status": "example_disabled",
+      "dashboardRoute": "/seo-roadmap",
+      "stakeholderRoute": "/seo-progress",
+      "baseUrl": "https://demo.example.com",
+      "notes": [
+        "Disabled demo fixture only. Not an active tenant.",
+        "Used only to prove Sentinel tenant registry/config validation."
+      ]
     }
   ]
 }

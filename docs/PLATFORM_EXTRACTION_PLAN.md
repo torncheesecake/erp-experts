@@ -709,6 +709,8 @@ npm run platform:tenant:validate
 
 It checks registry entries, tenant config files, required fields, allowed statuses, duplicate IDs, ERP Experts active status and placeholder domains on active tenants. Use the sequence `scaffold -> validate -> activate later` for future multi-client work.
 
+`demo-client` is present as an `example_disabled` fixture only. It proves multi-tenant registry/config validation while keeping ERP Experts as the only active tenant. No reports, pipelines or operational state should be generated for the demo fixture.
+
 ## 19. Persistence Foundation Step
 
 The platform now has its first SQLite persistence layer.

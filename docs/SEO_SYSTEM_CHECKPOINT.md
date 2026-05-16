@@ -128,6 +128,8 @@ Future tenant creation is scaffolded by `npm run platform:tenant:scaffold`. It i
 
 Tenant consistency is checked by `npm run platform:tenant:validate`. It is read-only and validates registry/config matches, required fields, allowed statuses, duplicate tenant IDs, ERP Experts active status and placeholder domains on active tenants. JSON output is available with `--json` for future automation.
 
+`demo-client` is included as an `example_disabled` fixture only. It is not active, does not generate reports, should not run SEO pipelines and exists solely to prove multi-tenant validation against a second registry/config entry.
+
 `seo:autopilot`, `seo:pipeline`, `seo:monitor`, `seo:stats` and `seo:opportunities` are now tenant-aware. They still default to ERP Experts, so existing usage is unchanged. Explicit tenant usage is available with `npm run seo:autopilot -- --tenant erp-experts`, `npm run seo:pipeline -- --tenant erp-experts`, `npm run seo:monitor -- --tenant erp-experts`, `npm run seo:stats -- --tenant erp-experts` and `npm run seo:opportunities -- --tenant erp-experts`.
 
 ## Platform persistence layer

@@ -61,6 +61,8 @@ npm run platform:tenant:validate -- --json
 
 Validation checks registry/config matches, required tenant fields, allowed statuses, duplicate IDs, active tenant rules, ERP Experts active status and placeholder domains on active tenants. The intended lifecycle is scaffold, validate, then later activate explicitly after review.
 
+`platform/tenants/demo-client.config.json` is a disabled fixture with registry status `example_disabled`. It proves Sentinel can validate more than one tenant entry without creating a second active client. It uses placeholder example paths and must not be used for live reporting, pipelines or automation.
+
 ## Tenant-Aware Reporting Commands
 
 `seo:autopilot`, `seo:pipeline`, `seo:monitor`, `seo:stats` and `seo:opportunities` read the tenant config.

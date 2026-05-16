@@ -1,0 +1,93 @@
+{
+  "tenantId": "demo-client",
+  "name": "Demo Client",
+  "brandName": "Demo Client",
+  "status": "example_disabled",
+  "domain": "demo.example.com",
+  "baseUrl": "https://demo.example.com",
+  "locale": "en-GB",
+  "market": "UK",
+  "industry": "Demo fixture only",
+  "primaryServices": [
+    "Demo service"
+  ],
+  "servicePaths": {
+    "primary": {
+      "path": "/services",
+      "label": "Demo services",
+      "intent": "Disabled fixture path for validation only"
+    },
+    "contact": {
+      "path": "/contact",
+      "label": "Demo contact",
+      "intent": "Disabled fixture contact path for validation only"
+    }
+  },
+  "contactPaths": {
+    "primary": {
+      "path": "/contact",
+      "label": "Contact Demo Client",
+      "intent": "Disabled fixture enquiry path"
+    }
+  },
+  "contentSources": [
+    {
+      "id": "resource-articles",
+      "type": "example-disabled-json",
+      "path": "examples/demo/articles.json",
+      "routeBase": "/resources",
+      "description": "Disabled demo article source placeholder. Not used for live reporting."
+    }
+  ],
+  "articleDataPath": "examples/demo/articles.json",
+  "reportOutputPath": "examples/demo/reports/",
+  "publicReportPaths": {
+    "dashboardRoute": "/seo-roadmap",
+    "stakeholderRoute": "/seo-progress"
+  },
+  "dashboardRoute": "/seo-roadmap",
+  "stakeholderRoute": "/seo-progress",
+  "scoringProfile": {
+    "commercialTopics": [],
+    "genericInformationalPenalty": true,
+    "requiresPublishedAt": true
+  },
+  "opportunityProfile": {
+    "preferredMarketTerms": ["UK"],
+    "priorityServices": [],
+    "avoidDuplicateIntent": true
+  },
+  "conversionProfile": {
+    "preferredCtaTargets": ["/contact"],
+    "highIntentTopics": [],
+    "awarenessTopicsNeedSoftCta": true
+  },
+  "freshnessProfile": {
+    "fastMovingTopics": [],
+    "reviewOlderThanMonths": 18,
+    "requiresPublishedAt": true
+  },
+  "internalLinkProfile": {
+    "resourceBasePath": "/resources",
+    "serviceTargets": ["/services", "/contact"],
+    "avoidOverLinking": true
+  },
+  "approvalProfile": {
+    "reviewFirst": true,
+    "allowAutoPublish": false,
+    "allowAutoCommit": false,
+    "requiresHumanReviewForHighRisk": true
+  },
+  "commands": {
+    "pipeline": "disabled fixture only",
+    "monitor": "disabled fixture only",
+    "autopilot": "disabled fixture only",
+    "opportunities": "disabled fixture only",
+    "dashboard": "/seo-roadmap"
+  },
+  "notes": [
+    "Disabled demo fixture only. Not an active tenant.",
+    "Do not run SEO pipelines, reports or automation against this tenant.",
+    "Used only to prove Sentinel tenant registry/config validation."
+  ]
+}
