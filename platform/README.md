@@ -235,6 +235,14 @@ npm run platform:feedback -- --backlog
 
 Feedback is stored locally in ignored `reports/operator-feedback.json`. It is not sent externally, not written to SQLite yet and not exposed on `/seo-progress`. The triage workflow adds priority, effort, triage status, optional ownership and notes so captured friction can become a lightweight improvement backlog. `npm run platform:feedback -- --backlog` generates ignored `reports/sentinel-feedback-backlog.md` with accepted items, new untriaged items, deferred items and a suggested next improvement.
 
+Sentinel roadmap intelligence turns feedback triage, activity, cadence, readiness and persisted operational state into a local improvement roadmap for Sentinel itself:
+
+```bash
+npm run platform:roadmap
+```
+
+This generates ignored `reports/sentinel-roadmap.json` and `reports/sentinel-roadmap.md`. The scoring is heuristic and operator-guided: repeated or accepted feedback, low-effort/high-impact work, frequently used sections and deployment/readiness concerns rise in priority; deferred or rejected items drop down. It does not call external AI APIs, does not auto-code and does not expose roadmap intelligence on `/seo-progress`.
+
 The Activity Feed is backed by `platform/activity/activity_feed.mjs` and the local `GET /activity` API endpoint. It is operator-only, deliberately concise and does not show raw command output, stack traces or secrets. If the local API is unavailable, the Control Centre shows a calm fallback rather than failing.
 
 Activity categories and severities are standardised in `platform/activity/activity-taxonomy.json`. New activity sources should use the allowed types (`system`, `operator`, `cadence`, `notification`, `deploy`, `backup`, `tenant`, `health`, `api`) and severities (`info`, `success`, `warning`, `error`). Run `npm run platform:activity:validate` to check the taxonomy and locally generated feed entries.

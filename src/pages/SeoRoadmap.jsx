@@ -34,6 +34,7 @@ const sentinelStateModules = import.meta.glob("../../reports/sentinel-state.json
 const sentinelCadenceModules = import.meta.glob("../../reports/sentinel-cadence-summary.json", { eager: true });
 const sentinelDoctorModules = import.meta.glob("../../reports/sentinel-doctor.json", { eager: true });
 const sentinelReadinessModules = import.meta.glob("../../reports/sentinel-deploy-readiness.json", { eager: true });
+const sentinelRoadmapModules = import.meta.glob("../../reports/sentinel-roadmap.json", { eager: true });
 const sentinelApiBaseUrl = String(import.meta.env.VITE_SENTINEL_API_BASE_URL || "").replace(/\/+$/, "");
 const sentinelActionApiBaseUrl = sentinelApiBaseUrl || "http://127.0.0.1:4317";
 const SENTINEL_OPERATOR_SESSION_KEY = "sentinel.operatorSession.v1";
@@ -139,6 +140,11 @@ function readDoctorSummary() {
 function readReadinessSummary() {
   const readinessModule = Object.values(sentinelReadinessModules)[0];
   return readinessModule?.default || readinessModule || null;
+}
+
+function readRoadmapSummary() {
+  const roadmapModule = Object.values(sentinelRoadmapModules)[0];
+  return roadmapModule?.default || roadmapModule || null;
 }
 
 function getInitialSentinelState() {
@@ -2193,6 +2199,102 @@ function OperatorFeedbackPanel({ activeSection, feedbackSnapshot, onFeedbackAdde
   );
 }
 
+function roadmapToneClass(value = "") {
+  const normalised = String(value || "").toLowerCase();
+  if (normalised === "high" || normalised === "critical") return "bg-rose-50 text-rose-700 ring-rose-100";
+  if (normalised === "medium") return "bg-amber-50 text-amber-800 ring-amber-100";
+  if (normalised === "low") return "bg-emerald-50 text-emerald-700 ring-emerald-100";
+  return "bg-slate-50 text-slate-700 ring-slate-100";
+}
+
+function RoadmapIntelligencePanel({ roadmap }) {
+  const items = Array.isArray(roadmap?.items) ? roadmap.items : [];
+  const categories = ["all", ...new Set(items.map((item) => item.category).filter(Boolean))];
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const visibleItems = items
+    .filter((item) => categoryFilter === "all" || item.category === categoryFilter)
+    .slice(0, 3);
+  const recommended = roadmap?.recommendedNextImprovement || items[0] || null;
+
+  return (
+    <section className="rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-100/80 md:p-6">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Roadmap Intelligence</p>
+          <h2 className="text-xl font-semibold text-slate-950">Prioritised Sentinel improvements</h2>
+          <p className="text-sm text-slate-600">Heuristic, operator-guided planning from feedback, activity and platform state. No autonomous implementation.</p>
+        </div>
+        <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">
+          {roadmap?.generatedAt ? formatDateTime(roadmap.generatedAt) : "No roadmap yet"}
+        </span>
+      </div>
+
+      {!items.length ? (
+        <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 ring-1 ring-slate-100" style={{ marginTop: "16px" }}>
+          Run <code className="rounded bg-white px-1.5 py-0.5">npm run platform:roadmap</code> to generate the latest local improvement roadmap.
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-wrap gap-2" style={{ marginTop: "16px" }}>
+            {categories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setCategoryFilter(category)}
+                className={`rounded-full px-3 py-1 text-xs font-semibold ring-1 ${categoryFilter === category ? "bg-slate-950 text-white ring-slate-950" : "bg-slate-50 text-slate-700 ring-slate-100 hover:bg-slate-100"}`}
+              >
+                {category === "all" ? "All" : formatStateLabel(category)}
+              </button>
+            ))}
+          </div>
+
+          {recommended ? (
+            <div className="rounded-2xl bg-pink-50 p-4 ring-1 ring-pink-100" style={{ marginTop: "16px" }}>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-pink-700">Recommended next improvement</p>
+              <p className="text-sm font-semibold text-slate-950" style={{ marginTop: "4px" }}>{recommended.title}</p>
+              <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>{recommended.suggestedNextStep}</p>
+            </div>
+          ) : null}
+
+          <div className="grid gap-3" style={{ marginTop: "16px" }}>
+            {visibleItems.map((item) => (
+              <article key={item.id} className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100">
+                <div className="flex items-start justify-between gap-3 flex-wrap">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-sm font-semibold text-slate-950">{item.title}</h3>
+                      <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-200">
+                        {formatStateLabel(item.category)}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-600" style={{ marginTop: "6px" }}>{item.rationale}</p>
+                  </div>
+                  <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
+                    <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${roadmapToneClass(item.impact)}`}>
+                      Impact {item.impact}
+                    </span>
+                    <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${roadmapToneClass(item.effort === "low" ? "low" : item.effort === "high" ? "high" : "medium")}`}>
+                      Effort {item.effort}
+                    </span>
+                    <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${roadmapToneClass(item.suggestedPriority)}`}>
+                      {formatStateLabel(item.suggestedPriority)} priority
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 text-xs text-slate-500" style={{ marginTop: "10px" }}>
+                  <span>{item.linkedFeedbackIds?.length || 0} linked feedback item{(item.linkedFeedbackIds?.length || 0) === 1 ? "" : "s"}</span>
+                  <span>Source: {formatStateLabel(item.source)}</span>
+                  <span>Confidence: {item.confidence}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
+
 function FutureOperatorConsolePanel() {
   return (
     <section className="rounded-[28px] bg-slate-950 p-5 text-white shadow-sm md:p-6">
@@ -3474,6 +3576,7 @@ function AdminView({ onPreview }) {
   });
   const [doctorSummary] = useState(readDoctorSummary);
   const [readinessSummary] = useState(readReadinessSummary);
+  const [roadmapSummary] = useState(readRoadmapSummary);
   const overviewRef = useRef(null);
   const stateRef = useRef(null);
   const inboxRef = useRef(null);
@@ -4403,6 +4506,7 @@ function AdminView({ onPreview }) {
                   onFeedbackAdded={loadOperatorFeedback}
                   onRefresh={loadOperatorFeedback}
                 />
+                <RoadmapIntelligencePanel roadmap={roadmapSummary} />
 
                 <section className="grid gap-lg xl:grid-cols-2">
                   <div>

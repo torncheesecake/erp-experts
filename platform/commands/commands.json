@@ -63,6 +63,16 @@
       "recommendedUsage": "Use when preparing a business-facing update."
     },
     {
+      "command": "npm run platform:roadmap",
+      "category": "State",
+      "description": "Generates the local Sentinel improvement roadmap from feedback, activity and operational state.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Use after feedback triage to decide the next Sentinel platform improvement."
+    },
+    {
       "command": "npm run platform:cadence",
       "category": "Automation",
       "description": "Runs the safe local cadence: monitor, state, daily report, stakeholder report and notification payloads.",
