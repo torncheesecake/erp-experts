@@ -13,6 +13,7 @@ const DEFAULT_TENANT = process.env.PLATFORM_TENANT || "erp-experts";
 const HOST = process.env.SENTINEL_API_HOST || "127.0.0.1";
 const PORT = Number(process.env.SENTINEL_API_PORT || 4317);
 const ACTIONS_PATH = path.join(repoRoot, "platform/actions/actions.json");
+const TENANT_REGISTRY_PATH = path.join(repoRoot, "platform/tenants/tenant-registry.json");
 const MAX_OUTPUT_BYTES = 24_000;
 const MAX_TIMEOUT_SECONDS = 120;
 const MAX_RESULT_EXCERPT_CHARS = 1_000;
@@ -104,6 +105,14 @@ function actionHistoryLimit(url) {
 function loadActionRegistry() {
   const registry = JSON.parse(fs.readFileSync(ACTIONS_PATH, "utf8"));
   return Array.isArray(registry.actions) ? registry.actions : [];
+}
+
+function loadTenantRegistry() {
+  const registry = JSON.parse(fs.readFileSync(TENANT_REGISTRY_PATH, "utf8"));
+  return {
+    defaultTenantId: registry.defaultTenantId || DEFAULT_TENANT,
+    tenants: Array.isArray(registry.tenants) ? registry.tenants : [],
+  };
 }
 
 function actionById(actionId) {
@@ -444,6 +453,18 @@ function handleActionHistory(request, response, url) {
   }
 }
 
+function handleTenants(request, response) {
+  if (!isLocalRequest(request)) {
+    sendJson(request, response, 403, {
+      error: "local_only",
+      message: "Tenant registry is available only from localhost.",
+    });
+    return;
+  }
+
+  sendJson(request, response, 200, loadTenantRegistry());
+}
+
 const server = http.createServer(async (request, response) => {
   if (request.method === "OPTIONS") {
     sendOptions(request, response);
@@ -489,6 +510,11 @@ const server = http.createServer(async (request, response) => {
 
     if (url.pathname === "/tenant") {
       sendJson(request, response, 200, tenantSummary(getTenantState(tenantFromUrl(url))));
+      return;
+    }
+
+    if (url.pathname === "/tenants") {
+      handleTenants(request, response);
       return;
     }
 

@@ -25,6 +25,7 @@ import {
 import reportData from "../data/reports.json";
 import sentinelCommandRegistry from "../../platform/commands/commands.json";
 import sentinelActionRegistry from "../../platform/actions/actions.json";
+import sentinelTenantRegistry from "../../platform/tenants/tenant-registry.json";
 const historyQaModules = import.meta.glob("../../reports/history/*/resource-qa-report.json", { eager: true });
 const sentinelStateModules = import.meta.glob("../../reports/sentinel-state.json", { eager: true });
 const sentinelCadenceModules = import.meta.glob("../../reports/sentinel-cadence-summary.json", { eager: true });
@@ -127,6 +128,13 @@ function getInitialSentinelState() {
   return {
     state: reportState,
     source: reportState ? "report" : "fallback",
+  };
+}
+
+function getInitialTenantRegistry() {
+  return {
+    registry: sentinelTenantRegistry,
+    source: "registry",
   };
 }
 
@@ -882,6 +890,66 @@ function CurrentFocusPanel({ sentinelState, inboxReport }) {
   );
 }
 
+function TenantContextPanel({ tenantRegistrySnapshot }) {
+  const registry = tenantRegistrySnapshot?.registry || sentinelTenantRegistry;
+  const tenants = Array.isArray(registry?.tenants) ? registry.tenants : [];
+  const defaultTenantId = registry?.defaultTenantId || "erp-experts";
+  const activeTenant = tenants.find((tenant) => tenant.status === "active")
+    || tenants.find((tenant) => tenant.tenantId === defaultTenantId)
+    || tenants[0]
+    || {};
+  const notes = Array.isArray(activeTenant.notes) ? activeTenant.notes : [];
+  const note = notes.find((item) => /multi-tenant/i.test(item))
+    || "Single active tenant. Multi-tenant switching planned.";
+
+  return (
+    <section className="rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-100/80 md:p-6">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Tenant</p>
+          <h2 className="text-xl font-semibold text-slate-950">{activeTenant.name || "ERP Experts"}</h2>
+          <p className="text-sm text-slate-600">{note}</p>
+        </div>
+        <div className="flex flex-wrap justify-end gap-2">
+          <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-100">
+            {activeTenant.status || "active"}
+          </span>
+          <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">
+            Source: {tenantRegistrySnapshot?.source || "registry"}
+          </span>
+        </div>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4" style={{ marginTop: "18px" }}>
+        <MiniStatusItem
+          label="Base URL"
+          value={activeTenant.baseUrl || "Not set"}
+          detail="Current tenant site"
+          tone="neutral"
+        />
+        <MiniStatusItem
+          label="Operator route"
+          value={activeTenant.dashboardRoute || "/seo-roadmap"}
+          detail="Private Control Centre"
+          tone="warning"
+        />
+        <MiniStatusItem
+          label="Stakeholder route"
+          value={activeTenant.stakeholderRoute || "/seo-progress"}
+          detail="Business-safe view"
+          tone="healthy"
+        />
+        <MiniStatusItem
+          label="Default tenant"
+          value={defaultTenantId}
+          detail="No live switching yet"
+          tone="neutral"
+        />
+      </div>
+    </section>
+  );
+}
+
 function OperationsPanel({ cadenceSummary, weeklyDigestText }) {
   const reportCount = Array.isArray(cadenceSummary?.generatedReports) ? cadenceSummary.generatedReports.length : 0;
   const notificationsReady = Boolean(cadenceSummary?.notificationsGenerated);
@@ -927,6 +995,8 @@ function SentinelCommandsPanel({ commandRegistry, actionRegistry, onActionComple
   const [actionResult, setActionResult] = useState(null);
   const commands = Array.isArray(commandRegistry?.commands) ? commandRegistry.commands : [];
   const actions = Array.isArray(actionRegistry?.actions) ? actionRegistry.actions : [];
+  const defaultTenant = commandRegistry?.defaultTenant || "erp-experts";
+  const tenantScopeNote = commandRegistry?.tenantScopeNote || "Commands currently use the default tenant.";
   const actionByCommand = new Map(actions.filter((action) => action.allowFromUI).map((action) => [action.command, action]));
   const categories = ["All", ...Array.from(new Set(commands.map((item) => item.category).filter(Boolean)))];
   const normalisedQuery = query.trim().toLowerCase();
@@ -1002,6 +1072,9 @@ function SentinelCommandsPanel({ commandRegistry, actionRegistry, onActionComple
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Tools & Commands</p>
           <h2 className="text-xl font-semibold text-slate-950">Sentinel Commands</h2>
           <p className="text-sm text-slate-600">Discover commands and run only low-risk allowlisted actions through the local API.</p>
+          <p className="text-xs text-slate-500" style={{ marginTop: "6px" }}>
+            Default tenant: <span className="font-semibold text-slate-700">{defaultTenant}</span>. {tenantScopeNote}
+          </p>
         </div>
         <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">
           {commands.length} registered
@@ -2477,6 +2550,7 @@ function AdminView({ onPreview }) {
   const [dashboardLoadedAt] = useState(() => new Date());
   const [activeNav, setActiveNav] = useState("overview");
   const [sentinelStateSnapshot, setSentinelStateSnapshot] = useState(getInitialSentinelState);
+  const [tenantRegistrySnapshot, setTenantRegistrySnapshot] = useState(getInitialTenantRegistry);
   const [cadenceSummary, setCadenceSummary] = useState(readCadenceSummary);
   const [actionHistorySnapshot, setActionHistorySnapshot] = useState({
     actions: [],
@@ -2522,6 +2596,33 @@ function AdminView({ onPreview }) {
 
   useEffect(() => {
     loadActionHistory();
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadTenantRegistryFromApi() {
+      try {
+        const res = await fetch(`${sentinelActionApiBaseUrl}/tenants`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        if (!res.ok) throw new Error(`Sentinel tenants API returned ${res.status}`);
+        const data = await res.json();
+        if (!Array.isArray(data?.tenants)) throw new Error("Sentinel tenants API returned an invalid registry payload");
+        if (!controller.signal.aborted) {
+          setTenantRegistrySnapshot({ registry: data, source: "api" });
+        }
+      } catch (error) {
+        if (error?.name === "AbortError") return;
+        if (!controller.signal.aborted) {
+          setTenantRegistrySnapshot(getInitialTenantRegistry());
+        }
+      }
+    }
+
+    loadTenantRegistryFromApi();
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {
@@ -3319,6 +3420,7 @@ function AdminView({ onPreview }) {
                     doctorSummary={doctorSummary}
                   />
                   <CurrentFocusPanel sentinelState={sentinelState} inboxReport={actionInboxReport} />
+                  <TenantContextPanel tenantRegistrySnapshot={tenantRegistrySnapshot} />
                   <RecentOperatorActionsPanel
                     history={actionHistorySnapshot}
                     actionRegistry={sentinelActionRegistry}

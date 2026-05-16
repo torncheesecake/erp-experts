@@ -12,6 +12,7 @@ platform/
     tenant.schema.json
   tenants/
     erp-experts.config.json
+    tenant-registry.json
 ```
 
 ## Current Tenant
@@ -26,6 +27,8 @@ It defines:
 - scoring, opportunity, conversion, freshness and internal-link profiles
 - approval safety settings
 - current SEO commands
+
+`platform/tenants/tenant-registry.json` is the lightweight active-tenant registry used by the Control Centre and local API. ERP Experts is currently the only active tenant. Multi-tenant switching, tenant-scoped auth and isolated dashboards are planned later.
 
 ## Loader
 
@@ -170,11 +173,12 @@ The Control Centre groups the operator experience into:
 
 - System Status: health, workflow, cadence, readiness and doctor state.
 - Current Focus: latest opportunity, latest plan, inbox item and recommended next step.
+- Tenant: active client context, stakeholder route, operator route and default tenant scope.
 - Operations: cadence, notification payloads, report generation and state refresh context.
 - Tools & Commands: searchable command discovery, copy buttons and low-risk Run buttons for allowlisted actions only.
 - Diagnostics: collapsed/secondary checks and future console direction.
 
-Command metadata lives in `platform/commands/commands.json`. The dashboard reads that registry to show safe descriptions, risk level, local-only notes and recommended usage. Command discovery remains separate from execution. Any browser-triggered execution must go through the stricter action allowlist below, not through arbitrary command text.
+Command metadata lives in `platform/commands/commands.json`. The registry also states the default tenant scope as `erp-experts`, so the dashboard can make clear that commands currently run against ERP Experts unless a command explicitly supports `--tenant`. Command discovery remains separate from execution. Any browser-triggered execution must go through the stricter action allowlist below, not through arbitrary command text.
 
 ## Controlled Operator Actions
 
@@ -228,7 +232,7 @@ npm run platform:api:serve
 npm run platform:api:smoke
 ```
 
-The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state`, `GET /tenant` and `GET /actions/history` endpoints, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
+The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state`, `GET /tenant`, `GET /tenants` and `GET /actions/history` endpoints, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
 
 The Raspberry Pi service scaffold is also present but inactive:
 

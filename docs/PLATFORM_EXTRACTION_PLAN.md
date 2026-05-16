@@ -680,7 +680,20 @@ Unchanged:
 - Dedupe rules.
 - Existing default command behaviour for ERP Experts.
 
-## 18. Persistence Foundation Step
+## 18. Tenant Registry and Control Centre Awareness
+
+Sentinel now has a lightweight visible tenant registry at `platform/tenants/tenant-registry.json`.
+
+Current behaviour:
+
+- ERP Experts is the only active tenant.
+- The local HTTP API exposes read-only `GET /tenants` for the registry.
+- The private `/seo-roadmap` Control Centre shows current tenant, active status, base URL, operator route and stakeholder route.
+- The command registry states the current default tenant scope as `erp-experts`.
+
+This is deliberately not live multi-tenant switching. It is a safe UI/API foundation so the platform feels tenant-aware before adding tenant switching, isolated dashboards or tenant-scoped authentication.
+
+## 19. Persistence Foundation Step
 
 The platform now has its first SQLite persistence layer.
 
@@ -725,7 +738,7 @@ Do not start with:
 
 Those are later phases once the tenant boundary is proven.
 
-## 19. Raspberry Pi Server Deployment Planning
+## 20. Raspberry Pi Server Deployment Planning
 
 The planned server home for the platform is documented in `docs/PINHOLE_SERVER_DEPLOYMENT_PLAN.md`.
 

@@ -1,4 +1,6 @@
 {
+  "defaultTenant": "erp-experts",
+  "tenantScopeNote": "Commands currently run against the default ERP Experts tenant unless a command explicitly supports --tenant.",
   "commands": [
     {
       "command": "npm run platform:start",

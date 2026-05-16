@@ -1,0 +1,17 @@
+{
+  "defaultTenantId": "erp-experts",
+  "tenants": [
+    {
+      "tenantId": "erp-experts",
+      "name": "ERP Experts",
+      "status": "active",
+      "dashboardRoute": "/seo-roadmap",
+      "stakeholderRoute": "/seo-progress",
+      "baseUrl": "https://erpexperts.co.uk",
+      "notes": [
+        "First active Sentinel tenant.",
+        "Single active tenant. Multi-tenant switching planned."
+      ]
+    }
+  ]
+}

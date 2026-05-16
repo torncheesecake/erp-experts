@@ -79,11 +79,12 @@ Current operator zones:
 
 - System Status: health, workflow, cadence state, deployment readiness and doctor state.
 - Current Focus: latest opportunity, latest plan, practical inbox item and recommended next step.
+- Tenant: active client context for ERP Experts, including base URL, operator route, stakeholder route and future multi-tenant note.
 - Operations: cadence, notification payloads, report generation and state refresh context.
-- Tools & Commands: searchable command registry with copy buttons only.
+- Tools & Commands: searchable command registry with copy buttons and allowlisted Run buttons.
 - Diagnostics: secondary checks, advanced details and the future console placeholder.
 
-The command registry is stored at `platform/commands/commands.json`. It describes each known command, category, risk level, local-only expectation, API/deployment requirements and recommended usage. The dashboard uses it for discovery and only exposes Run buttons for commands present in the stricter action allowlist. There is no browser-side shell, backend terminal or arbitrary command runner.
+The command registry is stored at `platform/commands/commands.json`. It describes each known command, category, risk level, local-only expectation, API/deployment requirements, default tenant scope and recommended usage. The dashboard uses it for discovery and only exposes Run buttons for commands present in the stricter action allowlist. There is no browser-side shell, backend terminal or arbitrary command runner.
 
 The stakeholder route `/seo-progress` remains separate and must not expose command registry data, operator workflows, readiness state, doctor state or private diagnostics.
 
@@ -115,10 +116,13 @@ The first platform extraction boundary is now present under `platform/`.
 
 - `platform/schema/tenant.schema.json` defines the generic tenant config shape.
 - `platform/tenants/erp-experts.config.json` describes ERP Experts as the first tenant.
+- `platform/tenants/tenant-registry.json` lists visible Sentinel tenants. ERP Experts is the only active tenant.
 - `platform/README.md` documents the read-only extraction boundary.
 - `npm run platform:tenant -- erp-experts` validates and prints the tenant summary.
 
 Current engines still use their existing ERP Experts paths. The tenant layer is a safe foundation for future extraction, not a behaviour change.
+
+The private Control Centre now shows the active tenant context but does not implement live switching. Future work remains tenant switching, isolated tenant dashboards and tenant-scoped authentication.
 
 `seo:autopilot`, `seo:pipeline`, `seo:monitor`, `seo:stats` and `seo:opportunities` are now tenant-aware. They still default to ERP Experts, so existing usage is unchanged. Explicit tenant usage is available with `npm run seo:autopilot -- --tenant erp-experts`, `npm run seo:pipeline -- --tenant erp-experts`, `npm run seo:monitor -- --tenant erp-experts`, `npm run seo:stats -- --tenant erp-experts` and `npm run seo:opportunities -- --tenant erp-experts`.
 
@@ -397,7 +401,7 @@ The private Sentinel operator dashboard at `/seo-roadmap` now reads `reports/sen
 
 The current dashboard remains report-compatible. The new API layer is the first step towards DB-backed services and dashboard reads without relying entirely on generated report files.
 
-The HTTP prototype defaults to `http://127.0.0.1:4317` and provides read-only `GET /health`, `GET /state`, `GET /state?tenant=erp-experts`, `GET /tenant` and `GET /actions/history`, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication. Do not expose it publicly or run it as a Raspberry Pi service until auth, process supervision and deployment hardening exist.
+The HTTP prototype defaults to `http://127.0.0.1:4317` and provides read-only `GET /health`, `GET /state`, `GET /state?tenant=erp-experts`, `GET /tenant`, `GET /tenants` and `GET /actions/history`, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication. Do not expose it publicly or run it as a Raspberry Pi service until auth, process supervision and deployment hardening exist.
 
 For local operator testing, `/seo-roadmap` can try the HTTP API first when `VITE_SENTINEL_API_BASE_URL` is configured. It falls back quietly to `reports/sentinel-state.json` if the API is unavailable. `/seo-progress` remains stakeholder-safe and does not use Sentinel operator API state.
 
