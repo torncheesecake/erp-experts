@@ -138,6 +138,24 @@ function getInitialTenantRegistry() {
   };
 }
 
+function resolveTenantRegistrySnapshot(tenantRegistrySnapshot) {
+  const registry = tenantRegistrySnapshot?.registry || sentinelTenantRegistry;
+  const tenants = Array.isArray(registry?.tenants) ? registry.tenants : [];
+  const defaultTenantId = registry?.defaultTenantId || "erp-experts";
+  const activeTenant = tenants.find((tenant) => tenant.status === "active")
+    || tenants.find((tenant) => tenant.tenantId === defaultTenantId)
+    || tenants[0]
+    || {};
+
+  return {
+    registry,
+    tenants,
+    defaultTenantId,
+    activeTenant,
+    source: tenantRegistrySnapshot?.source || "registry",
+  };
+}
+
 function formatStateLabel(value = "") {
   return String(value || "unknown").replaceAll("_", " ");
 }
@@ -784,6 +802,153 @@ function MiniStatusItem({ label, value, detail, tone = "neutral" }) {
   );
 }
 
+function SentinelAppHeader({
+  activeTenant,
+  dashboardMode,
+  summaryGate,
+  sentinelState,
+  cadenceSummary,
+  readinessSummary,
+  dashboardLoadedAt,
+  onPreview,
+}) {
+  const workflowState = sentinelState?.workflow?.state || "unknown";
+  const cadenceLabel = cadenceSummary?.ranAt ? formatDateTime(cadenceSummary.ranAt) : "Not recorded";
+  const readinessStatus = readinessSummary?.overallStatus || "Not checked";
+
+  return (
+    <header className="border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div className="container" style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-lg)" }}>
+        <div className="flex items-start justify-between gap-lg flex-wrap">
+          <div className="min-w-0">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-pink-50 text-pink-600 ring-1 ring-pink-100">
+                <Zap size={17} />
+              </span>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-pink-600">Sentinel</p>
+                <h1 className="font-heading text-slate-950" style={{ fontSize: "clamp(1.65rem, 3vw, 2.2rem)" }}>Control Centre</h1>
+              </div>
+            </div>
+            <p className="text-sm text-slate-600" style={{ marginTop: "8px" }}>
+              Private operator app shell for state, cadence, actions, tenants and diagnostics.
+            </p>
+            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500" style={{ marginTop: "10px" }}>
+              <span className="rounded-full bg-slate-50 px-2.5 py-1 ring-1 ring-slate-100">
+                Tenant: <strong className="text-slate-800">{activeTenant?.name || "ERP Experts"}</strong>
+              </span>
+              <span className="rounded-full bg-slate-50 px-2.5 py-1 ring-1 ring-slate-100">
+                Loaded {dashboardLoadedAt.toLocaleTimeString("en-GB")}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:min-w-[420px]">
+            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-2xl bg-slate-50/80 px-3 py-2 ring-1 ring-slate-100">
+                <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Health</p>
+                <p className="text-sm font-semibold text-slate-950">{dashboardMode.stateLabel}</p>
+                <p className="text-[11px] text-slate-500">{summaryGate.pass} pass · {summaryGate.blocked} blocked</p>
+              </div>
+              <div className="rounded-2xl bg-slate-50/80 px-3 py-2 ring-1 ring-slate-100">
+                <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Workflow</p>
+                <p className="text-sm font-semibold text-slate-950">{formatStateLabel(workflowState)}</p>
+                <p className="text-[11px] text-slate-500">{sentinelState?.workflow?.humanInputRequired ? "Review needed" : "No urgent review"}</p>
+              </div>
+              <div className="rounded-2xl bg-slate-50/80 px-3 py-2 ring-1 ring-slate-100">
+                <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Cadence</p>
+                <p className="text-sm font-semibold text-slate-950">{cadenceSummary?.mode ? formatStateLabel(cadenceSummary.mode) : "Not recorded"}</p>
+                <p className="text-[11px] text-slate-500">{cadenceLabel}</p>
+              </div>
+              <div className="rounded-2xl bg-slate-50/80 px-3 py-2 ring-1 ring-slate-100">
+                <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Readiness</p>
+                <p className="text-sm font-semibold text-slate-950">{formatStateLabel(readinessStatus)}</p>
+                <p className="text-[11px] text-slate-500">Local gate</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-2">
+              <button
+                onClick={() => window.location.reload()}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                <CheckCircle2 size={14} />
+                Refresh
+              </button>
+              <button
+                onClick={onPreview}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                <Eye size={14} />
+                Preview
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function SentinelNavigationRail({ navItems, activeNav, onNavigate, activeTenant, dashboardMode, summaryGate }) {
+  return (
+    <aside className="rounded-[28px] bg-white/85 p-4 shadow-sm ring-1 ring-slate-100/80 h-fit lg:sticky lg:top-24">
+      <div className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">App Shell</p>
+        <p className="text-lg font-semibold text-slate-950">Sentinel</p>
+        <p className="text-xs text-slate-500">{activeTenant?.name || "ERP Experts"}</p>
+      </div>
+
+      <nav className="grid gap-1.5" style={{ marginTop: "14px" }} aria-label="Sentinel operator sections">
+        {navItems.map((item) => (
+          <button
+            key={item.key}
+            onClick={() => onNavigate(item)}
+            className={`rounded-2xl px-3 py-3 text-left transition-colors cursor-pointer ${
+              activeNav === item.key
+                ? "bg-pink-50 text-pink-700 ring-1 ring-pink-100"
+                : "text-slate-700 hover:bg-slate-50"
+            }`}
+          >
+            <span className="block text-sm font-semibold">{item.label}</span>
+            <span className="block text-xs text-slate-500" style={{ marginTop: "2px" }}>{item.description}</span>
+          </button>
+        ))}
+      </nav>
+
+      <div className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100" style={{ marginTop: "16px" }}>
+        <p className="text-xs text-slate-500">Health</p>
+        <p className="text-sm font-semibold text-emerald-600">{dashboardMode.stateLabel}</p>
+        <p className="text-xs text-slate-600">pass {summaryGate.pass} · blocked {summaryGate.blocked}</p>
+      </div>
+    </aside>
+  );
+}
+
+function SectionIntro({ eyebrow, title, description }) {
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">{eyebrow}</p>
+      <h2 className="text-xl font-semibold text-slate-950">{title}</h2>
+      {description ? <p className="text-sm text-slate-600">{description}</p> : null}
+    </div>
+  );
+}
+
+function AppShellStatusBar({ readinessSummary, cadenceSummary, sentinelStateSource }) {
+  const readinessStatus = readinessSummary?.overallStatus || "Not checked";
+  const cadenceLabel = cadenceSummary?.ranAt ? formatDateTime(cadenceSummary.ranAt) : "No cadence recorded";
+
+  return (
+    <div className="rounded-[24px] bg-white/75 px-4 py-3 text-xs text-slate-600 ring-1 ring-slate-100">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <span>Readiness: <strong className="text-slate-900">{formatStateLabel(readinessStatus)}</strong></span>
+        <span>Last cadence: <strong className="text-slate-900">{cadenceLabel}</strong></span>
+        <span>State source: <strong className="text-slate-900">{sentinelStateSource}</strong></span>
+      </div>
+    </div>
+  );
+}
+
 function SystemStatusZone({ dashboardMode, summaryGate, sentinelState, cadenceSummary, readinessSummary, doctorSummary }) {
   const workflowState = sentinelState?.workflow?.state || "unknown";
   const readinessStatus = readinessSummary?.overallStatus || "Not checked";
@@ -891,13 +1056,7 @@ function CurrentFocusPanel({ sentinelState, inboxReport }) {
 }
 
 function TenantContextPanel({ tenantRegistrySnapshot }) {
-  const registry = tenantRegistrySnapshot?.registry || sentinelTenantRegistry;
-  const tenants = Array.isArray(registry?.tenants) ? registry.tenants : [];
-  const defaultTenantId = registry?.defaultTenantId || "erp-experts";
-  const activeTenant = tenants.find((tenant) => tenant.status === "active")
-    || tenants.find((tenant) => tenant.tenantId === defaultTenantId)
-    || tenants[0]
-    || {};
+  const { defaultTenantId, activeTenant } = resolveTenantRegistrySnapshot(tenantRegistrySnapshot);
   const notes = Array.isArray(activeTenant.notes) ? activeTenant.notes : [];
   const note = notes.find((item) => /multi-tenant/i.test(item))
     || "Single active tenant. Multi-tenant switching planned.";
@@ -966,11 +1125,9 @@ function tenantStatusBadgeClass(status = "") {
 }
 
 function TenantRegistryPanel({ tenantRegistrySnapshot }) {
-  const registry = tenantRegistrySnapshot?.registry || sentinelTenantRegistry;
-  const tenants = Array.isArray(registry?.tenants) ? registry.tenants : [];
+  const { tenants, source } = resolveTenantRegistrySnapshot(tenantRegistrySnapshot);
   const activeCount = tenants.filter((tenant) => tenant.status === "active").length;
   const disabledCount = tenants.filter((tenant) => tenant.status === "example_disabled").length;
-  const source = tenantRegistrySnapshot?.source || "registry";
 
   return (
     <section className="rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-100/80 md:p-6">
@@ -2663,13 +2820,13 @@ function AdminView({ onPreview }) {
   const [doctorSummary] = useState(readDoctorSummary);
   const [readinessSummary] = useState(readReadinessSummary);
   const overviewRef = useRef(null);
-  const opportunitiesRef = useRef(null);
-  const plansRef = useRef(null);
+  const stateRef = useRef(null);
   const inboxRef = useRef(null);
-  const operationsRef = useRef(null);
-  const commandsRef = useRef(null);
-  const reportsRef = useRef(null);
-  const settingsRef = useRef(null);
+  const opportunitiesRef = useRef(null);
+  const actionsRef = useRef(null);
+  const cadenceRef = useRef(null);
+  const tenantsRef = useRef(null);
+  const diagnosticsRef = useRef(null);
 
   const loadActionHistory = async () => {
     setActionHistorySnapshot((current) => ({
@@ -3376,6 +3533,7 @@ function AdminView({ onPreview }) {
   const monitorInsights = buildMonitorInsights({ points: historyPoints, modeKey: dashboardMode.key });
   const sentinelState = sentinelStateSnapshot.state;
   const sentinelStateSource = sentinelStateSnapshot.source;
+  const { activeTenant } = resolveTenantRegistrySnapshot(tenantRegistrySnapshot);
   const activeRow = selectedSlug ? selectedRow : (filteredRows[0] || articleRows[0] || null);
 
   if (!loaded) return (
@@ -3388,22 +3546,22 @@ function AdminView({ onPreview }) {
     ? buildPlannerPrompt(displayRow, plannerToggles)
     : "Select an article to generate a prompt preview.";
   const showOverviewTab = activeNav === "overview";
-  const showOpportunitiesTab = activeNav === "opportunities";
-  const showPlansTab = activeNav === "plans";
+  const showStateTab = activeNav === "state";
   const showInboxTab = activeNav === "inbox";
-  const showOperationsTab = activeNav === "operations";
-  const showCommandsTab = activeNav === "commands";
-  const showReportsTab = activeNav === "reports";
-  const showSettingsTab = activeNav === "settings";
+  const showOpportunitiesTab = activeNav === "opportunities";
+  const showActionsTab = activeNav === "actions";
+  const showCadenceTab = activeNav === "cadence";
+  const showTenantsTab = activeNav === "tenants";
+  const showDiagnosticsTab = activeNav === "diagnostics";
   const navItems = [
-    { key: "overview", label: "Control Centre", ref: overviewRef },
-    { key: "opportunities", label: "Opportunities", ref: opportunitiesRef },
-    { key: "plans", label: "Plans", ref: plansRef },
-    { key: "inbox", label: "Inbox", ref: inboxRef },
-    { key: "operations", label: "Operations", ref: operationsRef },
-    { key: "commands", label: "Commands", ref: commandsRef },
-    { key: "reports", label: "Reports", ref: reportsRef },
-    { key: "settings", label: "Diagnostics", ref: settingsRef },
+    { key: "overview", label: "Overview", description: "Focus and next action", ref: overviewRef },
+    { key: "state", label: "State", description: "Health and state reports", ref: stateRef },
+    { key: "inbox", label: "Inbox", description: "Attention queue", ref: inboxRef },
+    { key: "opportunities", label: "Opportunities", description: "Priorities and plans", ref: opportunitiesRef },
+    { key: "actions", label: "Actions", description: "Commands and history", ref: actionsRef },
+    { key: "cadence", label: "Cadence", description: "Automation rhythm", ref: cadenceRef },
+    { key: "tenants", label: "Tenants", description: "Registry preview", ref: tenantsRef },
+    { key: "diagnostics", label: "Diagnostics", description: "Checks and workbench", ref: diagnosticsRef },
   ];
 
   const handleSidebarNav = (item) => {
@@ -3415,122 +3573,56 @@ function AdminView({ onPreview }) {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="container" style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-lg)" }}>
-          <div className="flex items-start justify-between gap-md flex-wrap">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-pink-600">Sentinel Control Centre</p>
-              <h1 className="font-heading text-slate-900" style={{ fontSize: "clamp(1.6rem, 3vw, 2.1rem)" }}>Operator Overview</h1>
-              <p className="text-sm text-slate-600">Unified private control surface for state, cadence, commands and diagnostics.</p>
-              <p className="text-xs text-slate-500" style={{ marginTop: "6px" }}>
-                Last updated {dashboardLoadedAt.toLocaleTimeString("en-GB")}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => window.location.reload()}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
-              >
-                <CheckCircle2 size={14} />
-                Refresh
-              </button>
-              <button
-                onClick={onPreview}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
-              >
-                <Eye size={14} />
-                Preview
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <SentinelAppHeader
+        activeTenant={activeTenant}
+        dashboardMode={dashboardMode}
+        summaryGate={summaryGate}
+        sentinelState={sentinelState}
+        cadenceSummary={cadenceSummary}
+        readinessSummary={readinessSummary}
+        dashboardLoadedAt={dashboardLoadedAt}
+        onPreview={onPreview}
+      />
 
-      <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-lg)" }}>
-        <div className="grid gap-md md:grid-cols-4">
-          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100/70">
-            <p className="text-xs text-slate-500">System Status</p>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"><CheckCircle2 size={15} /></span>
-              <p className="text-lg font-semibold text-slate-900">{dashboardMode.stateLabel}</p>
-            </div>
-            <p className="text-xs text-slate-600">{dashboardMode.subtitle}</p>
-          </div>
-          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100/70">
-            <p className="text-xs text-slate-500">Pages</p>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-600"><BarChart3 size={15} /></span>
-              <p className="text-xl font-semibold text-slate-900">{summaryGate.pass}</p>
-            </div>
-            <p className="text-xs text-slate-600">{summaryGate.needs_review} review · {summaryGate.blocked} blocked</p>
-          </div>
-          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100/70">
-            <p className="text-xs text-slate-500">Top Priorities</p>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-blue-600"><TrendingUp size={15} /></span>
-              <p className="text-xl font-semibold text-slate-900">{Number(opportunityReport?.opportunityCount || 0)}</p>
-            </div>
-            <p className="text-xs text-slate-600">Strategic opportunities</p>
-          </div>
-          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100/70">
-            <p className="text-xs text-slate-500">Autopilot</p>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-pink-50 text-pink-600"><Clock size={15} /></span>
-              <p className="text-lg font-semibold text-slate-900">{isMonitorMode ? "Active" : "Monitoring"}</p>
-            </div>
-            <p className="text-xs text-slate-600">Next run: Weekly</p>
-          </div>
-        </div>
-      </div>
-
-      <main className="container" style={{ paddingBottom: "var(--space-2xl)" }}>
-        <div className="grid gap-xl lg:grid-cols-[220px_minmax(0,1fr)]">
-          <aside className="rounded-2xl bg-slate-50/65 p-5 shadow-sm ring-1 ring-slate-100/70 h-fit lg:sticky lg:top-24">
-            <p className="text-lg font-semibold text-slate-900">Sentinel</p>
-            <p className="text-xs text-slate-500">Control centre</p>
-            <nav className="grid gap-2" style={{ marginTop: "10px" }}>
-              {navItems.map((item) => (
-                <button
-                  key={item.key}
-                  onClick={() => handleSidebarNav(item)}
-                  className={`rounded-lg px-3 py-2 text-sm text-left transition-colors cursor-pointer ${
-                    activeNav === item.key
-                      ? "bg-white text-pink-600 font-semibold ring-1 ring-pink-100"
-                      : "text-slate-700 hover:bg-white/80"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-            <div className="rounded-lg bg-white/80 p-3 ring-1 ring-slate-100" style={{ marginTop: "16px" }}>
-              <p className="text-xs text-slate-500">Sentinel health</p>
-              <p className="text-sm font-semibold text-emerald-600">{dashboardMode.stateLabel}</p>
-              <p className="text-xs text-slate-600">pass {summaryGate.pass} · blocked {summaryGate.blocked}</p>
-            </div>
-          </aside>
+      <main className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-2xl)" }}>
+        <div className="grid gap-xl lg:grid-cols-[260px_minmax(0,1fr)]">
+          <SentinelNavigationRail
+            navItems={navItems}
+            activeNav={activeNav}
+            onNavigate={handleSidebarNav}
+            activeTenant={activeTenant}
+            dashboardMode={dashboardMode}
+            summaryGate={summaryGate}
+          />
 
           <div className="grid gap-lg">
             {isMonitorMode && showOverviewTab ? (
-              <>
-                <div ref={overviewRef} className="grid gap-lg">
-                  <SystemStatusZone
-                    dashboardMode={dashboardMode}
-                    summaryGate={summaryGate}
-                    sentinelState={sentinelState}
-                    cadenceSummary={cadenceSummary}
-                    readinessSummary={readinessSummary}
-                    doctorSummary={doctorSummary}
-                  />
-                  <CurrentFocusPanel sentinelState={sentinelState} inboxReport={actionInboxReport} />
-                  <TenantContextPanel tenantRegistrySnapshot={tenantRegistrySnapshot} />
-                  <TenantRegistryPanel tenantRegistrySnapshot={tenantRegistrySnapshot} />
-                  <RecentOperatorActionsPanel
-                    history={actionHistorySnapshot}
-                    actionRegistry={sentinelActionRegistry}
-                    onRefresh={loadActionHistory}
-                  />
-                </div>
+              <section ref={overviewRef} className="grid gap-lg">
+                <SectionIntro
+                  eyebrow="Overview"
+                  title="Current operating picture"
+                  description="The shortest path to what matters now: health, workflow, focus, inbox and active priorities."
+                />
+                <SystemStatusZone
+                  dashboardMode={dashboardMode}
+                  summaryGate={summaryGate}
+                  sentinelState={sentinelState}
+                  cadenceSummary={cadenceSummary}
+                  readinessSummary={readinessSummary}
+                  doctorSummary={doctorSummary}
+                />
+                <CurrentFocusPanel sentinelState={sentinelState} inboxReport={actionInboxReport} />
+
+                <section className="grid gap-lg xl:grid-cols-2">
+                  <div>
+                    <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "12px" }}>Action inbox</h2>
+                    <ActionInboxPanel inboxReport={actionInboxReport} loading={actionInboxLoading} />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "12px" }}>Weekly digest</h2>
+                    <WeeklyDigestPanel digestText={weeklyDigestText} loading={weeklyDigestLoading} />
+                  </div>
+                </section>
 
                 <section className="grid gap-lg xl:grid-cols-2">
                   <div>
@@ -3547,39 +3639,63 @@ function AdminView({ onPreview }) {
                     />
                   </div>
                 </section>
+              </section>
+            ) : null}
 
-                <section ref={operationsRef} className="grid gap-lg xl:grid-cols-[1fr_0.9fr]">
-                  <OperationsPanel cadenceSummary={cadenceSummary} weeklyDigestText={weeklyDigestText} />
-                  <OperatorWorkflowPanel />
-                </section>
-
-                <section ref={commandsRef} className="grid gap-lg">
-                  <SentinelCommandsPanel
-                    commandRegistry={sentinelCommandRegistry}
-                    actionRegistry={sentinelActionRegistry}
-                    onActionComplete={loadActionHistory}
-                  />
-                  <FutureOperatorConsolePanel />
-                </section>
-
+            {isMonitorMode && showStateTab ? (
+              <section ref={stateRef} className="grid gap-lg">
+                <SectionIntro
+                  eyebrow="State"
+                  title="Persisted Sentinel state"
+                  description="Operational state reports, cadence output and monitoring history without switching into diagnostics."
+                />
                 <section className="grid gap-lg xl:grid-cols-2">
-                  <div>
-                    <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "12px" }}>Action inbox</h2>
-                    <ActionInboxPanel inboxReport={actionInboxReport} loading={actionInboxLoading} />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-slate-900" style={{ marginBottom: "12px" }}>Weekly digest</h2>
-                    <WeeklyDigestPanel digestText={weeklyDigestText} loading={weeklyDigestLoading} />
-                  </div>
+                  <SentinelStatePanel sentinelState={sentinelState} source={sentinelStateSource} />
+                  <CadenceSummaryPanel cadenceSummary={cadenceSummary} />
                 </section>
-              </>
+                <AutopilotOrchestratorPanel autopilotReport={autopilotReport} loading={autopilotLoading} />
+                <AutopilotStatusPanel
+                  mode={dashboardMode}
+                  pipelineSummary={pipelineSummary}
+                  monitorInsights={monitorInsights}
+                />
+                <ProgressHistoryCard points={progressPoints} />
+              </section>
+            ) : null}
+
+            {isMonitorMode && showInboxTab ? (
+              <section ref={inboxRef} className="grid gap-lg">
+                <SectionIntro
+                  eyebrow="Inbox"
+                  title="Attention queue"
+                  description="The practical operator queue: review items, next best action and state-derived work."
+                />
+                <NextBestActionPanel
+                  action={nextBestAction}
+                  loading={summaryLoading || pipelineLoading || briefsLoading}
+                  headingLabel={dashboardMode.actionLabel}
+                />
+                <ActionInboxPanel inboxReport={actionInboxReport} loading={actionInboxLoading} />
+              </section>
             ) : null}
 
             {isMonitorMode && showOpportunitiesTab ? (
-              <section ref={opportunitiesRef} className="grid gap-md">
-                <h2 className="text-xl font-semibold text-slate-900">Opportunity Command Centre</h2>
+              <section ref={opportunitiesRef} className="grid gap-lg">
+                <SectionIntro
+                  eyebrow="Opportunities"
+                  title="Strategic priorities and plans"
+                  description="Decision layer, opportunity command centre and execution plans grouped together."
+                />
                 <StrategicDecisionsPanel decisionReport={decisionReport} loading={decisionLoading} />
-                <OpportunityCommandCentrePanel opportunityReport={opportunityReport} loading={opportunityLoading} />
+                <section className="grid gap-lg xl:grid-cols-2">
+                  <OpportunityCommandCentrePanel opportunityReport={opportunityReport} loading={opportunityLoading} />
+                  <ExecutionPlansPanel
+                    plansReport={plansReport}
+                    loading={plansLoading || planApprovalsLoading || planStatusLoading}
+                    planApprovalsReport={planApprovalsReport}
+                    planStatusReport={planStatusReport}
+                  />
+                </section>
                 <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
                   <summary className="cursor-pointer text-sm font-semibold text-slate-700">View supporting opportunity intelligence</summary>
                   <div style={{ marginTop: "var(--space-sm)", display: "grid", gap: "var(--space-sm)" }}>
@@ -3592,34 +3708,13 @@ function AdminView({ onPreview }) {
               </section>
             ) : null}
 
-            {isMonitorMode && showPlansTab ? (
-              <section ref={plansRef} className="grid gap-md">
-                <h2 className="text-xl font-semibold text-slate-900">Execution Plans</h2>
-                <ExecutionPlansPanel
-                  plansReport={plansReport}
-                  loading={plansLoading || planApprovalsLoading || planStatusLoading}
-                  planApprovalsReport={planApprovalsReport}
-                  planStatusReport={planStatusReport}
+            {isMonitorMode && showActionsTab ? (
+              <section ref={actionsRef} className="grid gap-lg">
+                <SectionIntro
+                  eyebrow="Actions"
+                  title="Controlled operator actions"
+                  description="Command discovery, allowlisted local actions and recent action history. No arbitrary shell access."
                 />
-              </section>
-            ) : null}
-
-            {isMonitorMode && showInboxTab ? (
-              <section ref={inboxRef} className="grid gap-md">
-                <h2 className="text-xl font-semibold text-slate-900">Action Inbox</h2>
-                <ActionInboxPanel inboxReport={actionInboxReport} loading={actionInboxLoading} />
-              </section>
-            ) : null}
-
-            {isMonitorMode && showOperationsTab ? (
-              <section ref={operationsRef} className="grid gap-lg">
-                <OperationsPanel cadenceSummary={cadenceSummary} weeklyDigestText={weeklyDigestText} />
-                <OperatorWorkflowPanel />
-              </section>
-            ) : null}
-
-            {isMonitorMode && showCommandsTab ? (
-              <section ref={commandsRef} className="grid gap-lg">
                 <RecentOperatorActionsPanel
                   history={actionHistorySnapshot}
                   actionRegistry={sentinelActionRegistry}
@@ -3634,15 +3729,46 @@ function AdminView({ onPreview }) {
               </section>
             ) : null}
 
-            {isMonitorMode && showReportsTab ? (
-              <section ref={reportsRef} className="grid gap-md">
-                <h2 className="text-xl font-semibold text-slate-900">Reports and Monitoring</h2>
-                <section className="grid gap-lg xl:grid-cols-2">
-                  <SentinelStatePanel sentinelState={sentinelState} source={sentinelStateSource} />
-                  <CadenceSummaryPanel cadenceSummary={cadenceSummary} />
-                </section>
+            {isMonitorMode && showCadenceTab ? (
+              <section ref={cadenceRef} className="grid gap-lg">
+                <SectionIntro
+                  eyebrow="Cadence"
+                  title="Automation rhythm"
+                  description="Cadence status, notification payloads, report generation and the recommended operator flow."
+                />
+                <OperationsPanel cadenceSummary={cadenceSummary} weeklyDigestText={weeklyDigestText} />
+                <OperatorWorkflowPanel />
                 <WeeklyDigestPanel digestText={weeklyDigestText} loading={weeklyDigestLoading} />
-                <AutopilotOrchestratorPanel autopilotReport={autopilotReport} loading={autopilotLoading} />
+              </section>
+            ) : null}
+
+            {isMonitorMode && showTenantsTab ? (
+              <section ref={tenantsRef} className="grid gap-lg">
+                <SectionIntro
+                  eyebrow="Tenants"
+                  title="Tenant context and registry"
+                  description="Read-only tenant awareness for ERP Experts and disabled fixtures. Switching is intentionally not enabled."
+                />
+                <TenantContextPanel tenantRegistrySnapshot={tenantRegistrySnapshot} />
+                <TenantRegistryPanel tenantRegistrySnapshot={tenantRegistrySnapshot} />
+              </section>
+            ) : null}
+
+            {isMonitorMode && showDiagnosticsTab ? (
+              <section ref={diagnosticsRef} className="grid gap-lg">
+                <SectionIntro
+                  eyebrow="Diagnostics"
+                  title="Checks and advanced tools"
+                  description="Readiness, doctor state, monitoring details and the collapsed article workbench."
+                />
+                <SystemStatusZone
+                  dashboardMode={dashboardMode}
+                  summaryGate={summaryGate}
+                  sentinelState={sentinelState}
+                  cadenceSummary={cadenceSummary}
+                  readinessSummary={readinessSummary}
+                  doctorSummary={doctorSummary}
+                />
                 <SystemStateRail mode={dashboardMode} />
                 <AutopilotStatusPanel
                   mode={dashboardMode}
@@ -3654,14 +3780,6 @@ function AdminView({ onPreview }) {
                   loading={summaryLoading || pipelineLoading || briefsLoading}
                   headingLabel={dashboardMode.actionLabel}
                 />
-                <ProgressHistoryCard points={progressPoints} />
-              </section>
-            ) : null}
-
-            {isMonitorMode && showSettingsTab ? (
-              <section ref={settingsRef} className="grid gap-md">
-                <h2 className="text-xl font-semibold text-slate-900">Settings and Diagnostics</h2>
-                <p className="text-sm text-slate-600">Advanced diagnostics and persistence checks are shown below.</p>
                 <FutureOperatorConsolePanel />
               </section>
             ) : null}
@@ -3693,19 +3811,17 @@ function AdminView({ onPreview }) {
             ) : null}
 
             {isMonitorMode ? (
-              <details className="rounded-xl border border-slate-200 bg-white/80" style={{ padding: "var(--space-md)" }}>
-                <summary className="cursor-pointer text-sm font-semibold text-slate-700">Advanced details</summary>
-                <div style={{ marginTop: "var(--space-sm)", display: "grid", gap: "var(--space-sm)" }}>
-                  <h2 className="text-lg font-semibold text-slate-900">Quick actions</h2>
-                  <p className="text-sm text-slate-600">Use the sidebar tabs to focus each operational section. Diagnostics and workbench remain below.</p>
-                </div>
-              </details>
+              <AppShellStatusBar
+                readinessSummary={readinessSummary}
+                cadenceSummary={cadenceSummary}
+                sentinelStateSource={sentinelStateSource}
+              />
             ) : null}
           </div>
         </div>
       </main>
 
-      {(!isMonitorMode || showPlansTab || showSettingsTab) ? (
+      {(!isMonitorMode || showDiagnosticsTab) ? (
       <section className="bg-slate-50 border-b border-slate-200">
         <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
           {isMonitorMode ? (
@@ -3763,7 +3879,7 @@ function AdminView({ onPreview }) {
       </section>
       ) : null}
 
-      {(!isMonitorMode || showReportsTab || showSettingsTab) ? (
+      {(!isMonitorMode || showDiagnosticsTab) ? (
       <section className="bg-white border-b border-slate-200">
         <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
           <details className="rounded-xl border border-slate-200 bg-slate-50" style={{ padding: "var(--space-md)" }}>

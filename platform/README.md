@@ -192,6 +192,13 @@ Generated payloads are ignored under `reports/notifications/`. Operator payloads
 
 The private `/seo-roadmap` route is now framed as the Sentinel Control Centre. It remains operator-only in local/dev use and production builds still redirect it to `/seo-progress` until authentication exists.
 
+The Control Centre is now moving toward an app-shell structure:
+
+- Top App Header: Sentinel branding, current tenant, health, workflow, cadence and readiness indicators.
+- Left Navigation Rail: section-level navigation for Overview, State, Inbox, Opportunities, Actions, Cadence, Tenants and Diagnostics.
+- Main Content Area: the current operator panels grouped by purpose rather than stacked as one long dashboard.
+- Status Bar: lightweight readiness, cadence and state-source context.
+
 The Control Centre groups the operator experience into:
 
 - System Status: health, workflow, cadence, readiness and doctor state.

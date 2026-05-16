@@ -75,6 +75,13 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 
 The private `/seo-roadmap` route is being consolidated into the Sentinel Control Centre rather than a stack of separate operator panels.
 
+The route now uses a clearer app-shell structure:
+
+- Top App Header: Sentinel branding, current tenant and lightweight health, workflow, cadence and readiness indicators.
+- Left Navigation Rail: Overview, State, Inbox, Opportunities, Actions, Cadence, Tenants and Diagnostics.
+- Main Content Area: existing panels grouped by operator purpose.
+- Status Bar: readiness, latest cadence and state-source context.
+
 Current operator zones:
 
 - System Status: health, workflow, cadence state, deployment readiness and doctor state.
