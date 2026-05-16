@@ -24,12 +24,14 @@ import {
 } from "lucide-react";
 import reportData from "../data/reports.json";
 import sentinelCommandRegistry from "../../platform/commands/commands.json";
+import sentinelActionRegistry from "../../platform/actions/actions.json";
 const historyQaModules = import.meta.glob("../../reports/history/*/resource-qa-report.json", { eager: true });
 const sentinelStateModules = import.meta.glob("../../reports/sentinel-state.json", { eager: true });
 const sentinelCadenceModules = import.meta.glob("../../reports/sentinel-cadence-summary.json", { eager: true });
 const sentinelDoctorModules = import.meta.glob("../../reports/sentinel-doctor.json", { eager: true });
 const sentinelReadinessModules = import.meta.glob("../../reports/sentinel-deploy-readiness.json", { eager: true });
 const sentinelApiBaseUrl = String(import.meta.env.VITE_SENTINEL_API_BASE_URL || "").replace(/\/+$/, "");
+const sentinelActionApiBaseUrl = sentinelApiBaseUrl || "http://127.0.0.1:4317";
 
 const seoSnapshotDate =
   reportData?.ga4Period?.seoInsights?.period?.split(" to ").at(-1) || reportData?.lastUpdated;
@@ -884,13 +886,13 @@ function OperationsPanel({ cadenceSummary, weeklyDigestText }) {
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Operations</p>
         <h2 className="text-xl font-semibold text-slate-950">Local operating rhythm</h2>
-        <p className="text-sm text-slate-600">Cadence, reports and notification payloads remain terminal-only and safe.</p>
+        <p className="text-sm text-slate-600">Cadence remains terminal-first. Low-risk state and report actions can run through the local allowlist.</p>
       </div>
       <div className="grid gap-3 md:grid-cols-4" style={{ marginTop: "18px" }}>
         <MiniStatusItem label="Cadence" value={cadenceSummary ? "Recorded" : "Waiting"} detail={cadenceSummary?.ranAt ? formatDateTime(cadenceSummary.ranAt) : "Run platform:cadence"} tone={cadenceSummary ? "healthy" : "warning"} />
         <MiniStatusItem label="Notifications" value={notificationsReady ? "Prepared" : "Not prepared"} detail={notificationsReady ? "Payloads only, no sending" : "Run platform:notify"} tone={notificationsReady ? "healthy" : "warning"} />
         <MiniStatusItem label="Reports" value={`${reportCount} generated`} detail={digestReady ? "Digest available" : "Digest not loaded"} tone={reportCount ? "healthy" : "warning"} />
-        <MiniStatusItem label="State refresh" value="Terminal only" detail="Run platform:state" tone="neutral" />
+        <MiniStatusItem label="State refresh" value="Allowlisted" detail="Run platform:state" tone="neutral" />
       </div>
     </section>
   );
@@ -910,12 +912,16 @@ function CommandCategoryButton({ label, active, onClick }) {
   );
 }
 
-function SentinelCommandsPanel({ commandRegistry }) {
+function SentinelCommandsPanel({ commandRegistry, actionRegistry }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [copyTarget, setCopyTarget] = useState("");
   const [copyState, setCopyState] = useState("idle");
+  const [runningAction, setRunningAction] = useState("");
+  const [actionResult, setActionResult] = useState(null);
   const commands = Array.isArray(commandRegistry?.commands) ? commandRegistry.commands : [];
+  const actions = Array.isArray(actionRegistry?.actions) ? actionRegistry.actions : [];
+  const actionByCommand = new Map(actions.filter((action) => action.allowFromUI).map((action) => [action.command, action]));
   const categories = ["All", ...Array.from(new Set(commands.map((item) => item.category).filter(Boolean)))];
   const normalisedQuery = query.trim().toLowerCase();
   const visibleCommands = commands.filter((item) => {
@@ -948,13 +954,45 @@ function SentinelCommandsPanel({ commandRegistry }) {
     return "Copy";
   };
 
+  const runAction = async (action) => {
+    setRunningAction(action.id);
+    setActionResult(null);
+    try {
+      const response = await fetch(`${sentinelActionApiBaseUrl}/action`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ actionId: action.id }),
+      });
+      const payload = await response.json().catch(() => ({
+        status: "failure",
+        error: "invalid_response",
+        message: "Action API returned a non-JSON response.",
+      }));
+      setActionResult({
+        ...payload,
+        action: payload.action || action.id,
+        ok: response.ok && payload.status === "success",
+      });
+    } catch (error) {
+      setActionResult({
+        action: action.id,
+        status: "failure",
+        ok: false,
+        message: `Could not reach local Sentinel API at ${sentinelActionApiBaseUrl}. Start npm run platform:api:serve first.`,
+        stderr: error.message,
+      });
+    } finally {
+      setRunningAction("");
+    }
+  };
+
   return (
     <section className="rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-100/80 md:p-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Tools & Commands</p>
           <h2 className="text-xl font-semibold text-slate-950">Sentinel Commands</h2>
-          <p className="text-sm text-slate-600">Discover and copy known commands. Execution stays in the terminal for safety.</p>
+          <p className="text-sm text-slate-600">Discover commands and run only low-risk allowlisted actions through the local API.</p>
         </div>
         <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">
           {commands.length} registered
@@ -988,28 +1026,65 @@ function SentinelCommandsPanel({ commandRegistry }) {
             <div className="grid gap-2" style={{ marginTop: "8px" }}>
               {items.map((item) => (
                 <div key={item.command} className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
+                  {(() => {
+                    const safeAction = actionByCommand.get(item.command);
+                    const currentResult = safeAction && actionResult?.action === safeAction.id ? actionResult : null;
+                    const isRunning = safeAction && runningAction === safeAction.id;
+                    return (
+                      <>
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <code className="text-sm font-semibold text-slate-950">{item.command}</code>
                       <p className="text-xs text-slate-600" style={{ marginTop: "4px" }}>{item.description}</p>
                       <p className="text-[11px] text-slate-500" style={{ marginTop: "4px" }}>{item.recommendedUsage}</p>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => copyCommand(item.command)}
-                      className="shrink-0 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
-                    >
-                      {copyLabel(item.command)}
-                    </button>
+                    <div className="flex shrink-0 items-center gap-2">
+                      {safeAction ? (
+                        <button
+                          type="button"
+                          onClick={() => runAction(safeAction)}
+                          disabled={Boolean(isRunning)}
+                          className="rounded-full bg-pink-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-pink-700 disabled:cursor-wait disabled:bg-pink-300"
+                        >
+                          {isRunning ? "Running" : "Run"}
+                        </button>
+                      ) : null}
+                      <button
+                        type="button"
+                        onClick={() => copyCommand(item.command)}
+                        className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+                      >
+                        {copyLabel(item.command)}
+                      </button>
+                    </div>
                   </div>
                   <div className="flex flex-wrap gap-1.5" style={{ marginTop: "9px" }}>
                     <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${item.riskLevel === "medium" ? "bg-amber-50 text-amber-800 ring-amber-100" : "bg-emerald-50 text-emerald-700 ring-emerald-100"}`}>
                       {item.riskLevel} risk
                     </span>
                     {item.localOnly ? <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 ring-1 ring-blue-100">local only</span> : null}
+                    {safeAction ? <span className="rounded-full bg-pink-50 px-2 py-0.5 text-[11px] font-semibold text-pink-700 ring-1 ring-pink-100">UI allowlisted</span> : null}
                     {item.requiresApi ? <span className="rounded-full bg-violet-50 px-2 py-0.5 text-[11px] font-semibold text-violet-700 ring-1 ring-violet-100">requires API</span> : null}
                     {item.requiresDeployment ? <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700 ring-1 ring-slate-200">deployment</span> : null}
                   </div>
+                  {currentResult ? (
+                    <div className={`rounded-xl p-3 text-xs ring-1 ${currentResult.ok ? "bg-emerald-50 text-emerald-900 ring-emerald-100" : "bg-rose-50 text-rose-900 ring-rose-100"}`} style={{ marginTop: "10px" }}>
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="font-semibold">{currentResult.ok ? "Action completed" : "Action failed"}</p>
+                        <span>{currentResult.exitCode !== undefined ? `exit ${currentResult.exitCode}` : currentResult.error || "local API"}</span>
+                      </div>
+                      <details style={{ marginTop: "8px" }}>
+                        <summary className="cursor-pointer font-semibold">Output preview</summary>
+                        <pre className="max-h-48 overflow-auto whitespace-pre-wrap rounded-lg bg-white/70 p-2 text-[11px] text-slate-800" style={{ marginTop: "6px" }}>
+                          {(currentResult.stdout || currentResult.stderr || currentResult.message || "No output returned.").slice(0, 1800)}
+                          {currentResult.outputTruncated ? "\n\n[Output truncated by Sentinel API]" : ""}
+                        </pre>
+                      </details>
+                    </div>
+                  ) : null}
+                      </>
+                    );
+                  })()}
                 </div>
               ))}
             </div>
@@ -1081,10 +1156,10 @@ function FutureOperatorConsolePanel() {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-300">Future Operator Console</p>
-          <h2 className="text-xl font-semibold">Terminal integration is not active</h2>
+          <h2 className="text-xl font-semibold">Arbitrary terminal access is not active</h2>
           <p className="max-w-2xl text-sm text-slate-300">
-            Command execution from the UI is planned later, after authentication, audit logging and safe execution controls exist.
-            For now, every command remains terminal-only.
+            The dashboard can run a narrow set of low-risk allowlisted actions only. There is no raw shell input,
+            command chaining, deployment execution or unrestricted terminal access.
           </p>
         </div>
         <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200 ring-1 ring-white/10">
@@ -3149,7 +3224,7 @@ function AdminView({ onPreview }) {
                 </section>
 
                 <section ref={commandsRef} className="grid gap-lg">
-                  <SentinelCommandsPanel commandRegistry={sentinelCommandRegistry} />
+                  <SentinelCommandsPanel commandRegistry={sentinelCommandRegistry} actionRegistry={sentinelActionRegistry} />
                   <FutureOperatorConsolePanel />
                 </section>
 
@@ -3211,7 +3286,7 @@ function AdminView({ onPreview }) {
 
             {isMonitorMode && showCommandsTab ? (
               <section ref={commandsRef} className="grid gap-lg">
-                <SentinelCommandsPanel commandRegistry={sentinelCommandRegistry} />
+                <SentinelCommandsPanel commandRegistry={sentinelCommandRegistry} actionRegistry={sentinelActionRegistry} />
                 <FutureOperatorConsolePanel />
               </section>
             ) : null}

@@ -1,0 +1,103 @@
+{
+  "actions": [
+    {
+      "id": "platform:start",
+      "label": "Start operator session",
+      "command": "npm run platform:start",
+      "category": "Health",
+      "riskLevel": "low",
+      "executionMode": "local_allowlisted",
+      "description": "Runs the local operator startup summary and health checks.",
+      "allowFromUI": true,
+      "timeoutSeconds": 90
+    },
+    {
+      "id": "platform:doctor",
+      "label": "Run doctor diagnostics",
+      "command": "npm run platform:doctor",
+      "category": "Health",
+      "riskLevel": "low",
+      "executionMode": "local_allowlisted",
+      "description": "Runs the Sentinel diagnostic summary without deploying or sending anything.",
+      "allowFromUI": true,
+      "timeoutSeconds": 45
+    },
+    {
+      "id": "platform:state",
+      "label": "Refresh Sentinel state",
+      "command": "npm run platform:state",
+      "category": "State",
+      "riskLevel": "low",
+      "executionMode": "local_allowlisted",
+      "description": "Generates the current persisted operational state summary.",
+      "allowFromUI": true,
+      "timeoutSeconds": 45
+    },
+    {
+      "id": "platform:daily",
+      "label": "Generate daily report",
+      "command": "npm run platform:daily",
+      "category": "State",
+      "riskLevel": "low",
+      "executionMode": "local_allowlisted",
+      "description": "Generates Matthew's private daily operator report.",
+      "allowFromUI": true,
+      "timeoutSeconds": 45
+    },
+    {
+      "id": "platform:stakeholder",
+      "label": "Generate stakeholder report",
+      "command": "npm run platform:stakeholder",
+      "category": "State",
+      "riskLevel": "low",
+      "executionMode": "local_allowlisted",
+      "description": "Generates the stakeholder-safe weekly progress report.",
+      "allowFromUI": true,
+      "timeoutSeconds": 45
+    },
+    {
+      "id": "platform:health",
+      "label": "Check platform health",
+      "command": "npm run platform:health",
+      "category": "Health",
+      "riskLevel": "low",
+      "executionMode": "local_allowlisted",
+      "description": "Checks tenant config, DB readiness, QA totals and runtime safety policy.",
+      "allowFromUI": true,
+      "timeoutSeconds": 45
+    },
+    {
+      "id": "platform:status",
+      "label": "Show DB status",
+      "command": "npm run platform:status",
+      "category": "State",
+      "riskLevel": "low",
+      "executionMode": "local_allowlisted",
+      "description": "Prints platform persistence counts and latest DB summaries.",
+      "allowFromUI": true,
+      "timeoutSeconds": 30
+    },
+    {
+      "id": "platform:api",
+      "label": "Preview state API",
+      "command": "npm run platform:api",
+      "category": "API",
+      "riskLevel": "low",
+      "executionMode": "local_allowlisted",
+      "description": "Prints a compact read-only API-style state preview from SQLite.",
+      "allowFromUI": true,
+      "timeoutSeconds": 30
+    },
+    {
+      "id": "seo:monitor",
+      "label": "Run SEO monitor",
+      "command": "npm run seo:monitor",
+      "category": "Health",
+      "riskLevel": "low",
+      "executionMode": "local_allowlisted",
+      "description": "Runs the SEO monitor and confirms current QA health.",
+      "allowFromUI": true,
+      "timeoutSeconds": 60
+    }
+  ]
+}

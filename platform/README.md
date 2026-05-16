@@ -2,7 +2,7 @@
 
 Sentinel is the working name for the SEO/content operations platform. This folder starts the extraction of the ERP Experts SEO automation system into a reusable multi-client platform.
 
-The current implementation is intentionally read-only. It does not move existing scripts, alter scoring logic, change article data, or change the `/seo-roadmap` dashboard.
+The current implementation is intentionally conservative. It does not move existing scripts, alter scoring logic or change article data. The private `/seo-roadmap` dashboard now has a narrow allowlisted action layer, but no arbitrary terminal access.
 
 ## Structure
 
@@ -174,7 +174,33 @@ The Control Centre groups the operator experience into:
 - Tools & Commands: searchable command discovery with copy buttons only.
 - Diagnostics: collapsed/secondary checks and future console direction.
 
-Command metadata lives in `platform/commands/commands.json`. The dashboard reads that registry to show safe descriptions, risk level, local-only notes and recommended usage. It does not execute shell commands. Future UI execution should only happen after authentication, audit logging and controlled command allow-lists exist.
+Command metadata lives in `platform/commands/commands.json`. The dashboard reads that registry to show safe descriptions, risk level, local-only notes and recommended usage. Command discovery remains separate from execution. Any browser-triggered execution must go through the stricter action allowlist below, not through arbitrary command text.
+
+## Controlled Operator Actions
+
+Sentinel now has a narrow local action layer for the private Control Centre.
+
+Action metadata lives in:
+
+```text
+platform/actions/actions.json
+```
+
+The local API exposes `POST /action` for allowlisted actions only. It rejects unknown action IDs, rejects actions not marked `allowFromUI`, runs fixed `npm run <script>` commands with `spawn` and no shell, applies timeouts and limits captured output.
+
+Initial UI actions are limited to low-risk local commands:
+
+- `platform:start`
+- `platform:doctor`
+- `platform:state`
+- `platform:daily`
+- `platform:stakeholder`
+- `platform:health`
+- `platform:status`
+- `platform:api`
+- `seo:monitor`
+
+Deploy, cleanup, restore, FTP, service installation and arbitrary shell commands are intentionally excluded. The dashboard shows Run buttons only for allowlisted actions and keeps output as a compact preview. See `docs/SENTINEL_OPERATOR_ACTIONS.md`.
 
 ## Operational State Summary
 
@@ -202,7 +228,7 @@ npm run platform:api:serve
 npm run platform:api:smoke
 ```
 
-The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes `GET /health`, `GET /state` and `GET /tenant`. It is read-only, has no authentication, and must not be exposed publicly. Keep it local until authentication and service hardening are added.
+The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state` and `GET /tenant` endpoints, plus controlled `POST /action` for allowlisted local operator actions. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
 
 The Raspberry Pi service scaffold is also present but inactive:
 
@@ -236,7 +262,7 @@ Command distinction:
 - `seo:autopilot` runs the orchestration workflow and regenerates reports.
 - `platform:state` exports the operational summary to ignored JSON for the dashboard.
 - `platform:api` previews the same persisted state as a future API contract.
-- `platform:api:serve` exposes the same read-only state over a local-only HTTP prototype.
+- `platform:api:serve` exposes read-only state plus controlled allowlisted actions over a local-only HTTP prototype.
 - `platform:doctor` is the troubleshooting command for fast local diagnostics, with optional `--full` checks.
 
 ## Deployment Readiness Scaffold
