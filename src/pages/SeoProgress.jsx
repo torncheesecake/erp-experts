@@ -72,9 +72,9 @@ function StatCard({ icon: Icon, label, value, note, tone = "slate" }) {
   };
 
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70">
+    <div className="flex h-full flex-col rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200/70 sm:p-6">
       <div className="flex items-start justify-between gap-4">
-        <div>
+        <div className="min-w-0">
           <p className="text-sm font-medium text-slate-500">{label}</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">{value}</p>
         </div>
@@ -89,7 +89,7 @@ function StatCard({ icon: Icon, label, value, note, tone = "slate" }) {
 
 function SimpleList({ title, description, items, renderItem, emptyText }) {
   return (
-    <section className="rounded-[2rem] bg-white p-7 shadow-sm ring-1 ring-slate-200/70">
+    <section className="rounded-[2rem] bg-white p-5 shadow-sm ring-1 ring-slate-200/70 sm:p-7">
       <div className="mb-6">
         <h2 className="text-xl font-semibold tracking-tight text-slate-950">{title}</h2>
         {description && <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>}
@@ -124,22 +124,28 @@ export default function SeoProgress() {
         noIndex
       />
 
-      <main className="min-h-screen bg-slate-50">
-        <section className="border-b border-slate-200 bg-white">
-          <div className="container py-12 md:py-16">
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
-              <div>
+      <main id="main-content" className="min-h-screen bg-slate-50">
+        <section className="border-b border-slate-200 bg-gradient-to-br from-white via-white to-slate-100">
+          <div
+            className="container"
+            style={{
+              paddingTop: "clamp(8rem, 12vw, 10rem)",
+              paddingBottom: "clamp(3rem, 6vw, 4rem)",
+            }}
+          >
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] lg:items-start">
+              <div className="min-w-0">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-pink-600">
                   Internal progress view
                 </p>
-                <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 md:text-5xl">
+                <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 md:text-5xl lg:text-6xl">
                   SEO & Content Progress
                 </h1>
                 <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
-                  This view summarises SEO and content progress for internal visibility. It is designed for business review, not operator diagnostics.
+                  This view summarises SEO and content progress for internal visibility. It is designed for business review, not technical administration.
                 </p>
               </div>
-              <div className="rounded-3xl bg-slate-950 p-6 text-white shadow-sm">
+              <div className="w-full rounded-3xl bg-slate-950 p-6 text-white shadow-sm ring-1 ring-slate-800/40 sm:p-7 lg:mt-2">
                 <div className="flex items-center gap-3">
                   <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-400/15 text-emerald-300">
                     <ShieldCheck size={20} />
@@ -157,8 +163,14 @@ export default function SeoProgress() {
           </div>
         </section>
 
-        <section className="container py-10 md:py-14">
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <section
+          className="container"
+          style={{
+            paddingTop: "clamp(2.5rem, 6vw, 4rem)",
+            paddingBottom: "clamp(2.75rem, 6vw, 4rem)",
+          }}
+        >
+          <div className="grid items-stretch gap-5 md:grid-cols-2 xl:grid-cols-4">
             <StatCard
               icon={CheckCircle2}
               label="Healthy resources"
@@ -189,23 +201,23 @@ export default function SeoProgress() {
             />
           </div>
 
-          <div className="mt-8 rounded-[2rem] bg-white p-7 shadow-sm ring-1 ring-slate-200/70">
+          <div className="mt-8 rounded-[2rem] bg-white p-5 shadow-sm ring-1 ring-slate-200/70 sm:p-7 md:mt-10">
             <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-              <div>
+              <div className="min-w-0">
                 <h2 className="text-2xl font-semibold tracking-tight text-slate-950">Plain-English summary</h2>
                 <p className="mt-3 max-w-4xl text-base leading-8 text-slate-600">{currentSummary}</p>
                 <p className="mt-3 max-w-4xl text-sm leading-6 text-slate-500">
                   A weekly stakeholder summary can be prepared from this same progress data for internal meetings.
                 </p>
               </div>
-              <div className="shrink-0 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
+              <div className="w-full rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600 md:w-auto md:shrink-0">
                 <Calendar className="mr-2 inline h-4 w-4 text-slate-400" />
                 Data through {formatDate(reportData?.dataThrough || reportData?.lastUpdated)}
               </div>
             </div>
           </div>
 
-          <div className="mt-8 grid gap-8 lg:grid-cols-2">
+          <div className="mt-8 grid gap-6 lg:grid-cols-2 lg:gap-8">
             <SimpleList
               title="Completed recently"
               description="Published or improved resources currently marked as complete in the content roadmap."
@@ -213,12 +225,12 @@ export default function SeoProgress() {
               emptyText="No completed roadmap items are available in the current report."
               renderItem={(item) => (
                 <div key={`${item.phase}-${item.priority}-${item.title}`} className="rounded-2xl bg-slate-50 p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
                       <p className="font-semibold text-slate-950">{item.title}</p>
                       <p className="mt-1 text-sm text-slate-600">{item.phase}</p>
                     </div>
-                    <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                    <span className="w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
                       {statusLabel(item.status)}
                     </span>
                   </div>
@@ -233,8 +245,8 @@ export default function SeoProgress() {
               emptyText="No active content plans are listed in the current report."
               renderItem={(brief) => (
                 <div key={`${brief.displayRank || brief.targetArticleTitle}-${brief.preferredTitle || brief.targetArticleTitle}`} className="rounded-2xl bg-slate-50 p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
                       <p className="font-semibold text-slate-950">{brief.preferredTitle || brief.targetArticleTitle}</p>
                       <p className="mt-1 text-sm leading-6 text-slate-600">
                         {brief.recommendationType === "improve_existing"
@@ -242,7 +254,7 @@ export default function SeoProgress() {
                           : "Scoping a new demand-led resource."}
                       </p>
                     </div>
-                    <span className="rounded-full bg-pink-100 px-3 py-1 text-xs font-semibold text-pink-700">
+                    <span className="w-fit rounded-full bg-pink-100 px-3 py-1 text-xs font-semibold text-pink-700">
                       {brief.conversionIntentLabel || "review"}
                     </span>
                   </div>
@@ -257,12 +269,12 @@ export default function SeoProgress() {
               emptyText="No planned roadmap items are currently listed."
               renderItem={(item) => (
                 <div key={`${item.phase}-${item.priority}-${item.title}`} className="rounded-2xl bg-slate-50 p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
                       <p className="font-semibold text-slate-950">{item.title}</p>
                       <p className="mt-1 text-sm leading-6 text-slate-600">{item.why}</p>
                     </div>
-                    <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+                    <span className="w-fit rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                       Planned
                     </span>
                   </div>
@@ -277,14 +289,14 @@ export default function SeoProgress() {
               emptyText="No strategic opportunities are available in the current report."
               renderItem={(opportunity) => (
                 <div key={opportunity.id || opportunity.groupTitle || opportunity.title} className="rounded-2xl bg-slate-50 p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
                       <p className="font-semibold text-slate-950">{opportunity.groupTitle || opportunity.title}</p>
                       <p className="mt-1 text-sm leading-6 text-slate-600">
                         {plainAction(opportunity.recommendedAction || opportunity.whyThisRanks)}
                       </p>
                     </div>
-                    <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+                    <span className="w-fit rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
                       {opportunity.priorityLabel || "tracked"}
                     </span>
                   </div>
@@ -293,9 +305,9 @@ export default function SeoProgress() {
             />
           </div>
 
-          <div className="mt-8 rounded-[2rem] bg-gradient-to-br from-slate-950 to-slate-800 p-7 text-white shadow-sm">
+          <div className="mt-8 rounded-[2rem] bg-gradient-to-br from-slate-950 to-slate-800 p-5 text-white shadow-sm sm:p-7 md:mt-10">
             <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
-              <div>
+              <div className="min-w-0">
                 <div className="flex items-center gap-3">
                   <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-pink-200">
                     <TrendingUp size={20} />
