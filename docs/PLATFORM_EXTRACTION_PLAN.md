@@ -701,6 +701,14 @@ npm run platform:tenant:scaffold -- --tenant-id demo-client --name "Demo Client"
 
 The scaffold is dry-run by default and creates only a proposed config shape. Written tenants start as `draft` unless explicitly changed, and `active` status is refused unless `--allow-active` is passed. Draft tenants do not generate live reports.
 
+Tenant validation is available through:
+
+```bash
+npm run platform:tenant:validate
+```
+
+It checks registry entries, tenant config files, required fields, allowed statuses, duplicate IDs, ERP Experts active status and placeholder domains on active tenants. Use the sequence `scaffold -> validate -> activate later` for future multi-client work.
+
 ## 19. Persistence Foundation Step
 
 The platform now has its first SQLite persistence layer.

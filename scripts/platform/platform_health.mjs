@@ -6,6 +6,7 @@ import { loadTenantConfig } from "./tenant_config.mjs";
 import { DEFAULT_DB_PATH, SCHEMA_PATH, databaseExists, getPersistenceSummary, queryValue } from "../../platform/persistence/db.js";
 import { safeFinishRun, safeStartRun } from "./run_logger.mjs";
 import { checkDbIntegrity } from "./platform_db_integrity.mjs";
+import { validateTenants } from "./platform_tenant_validate.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -98,6 +99,7 @@ function main() {
   const critical = [];
 
   const tenantResult = loadTenantConfig("erp-experts");
+  const tenantValidation = validateTenants();
   let tenant = null;
 
   if (!tenantResult.ok) {
@@ -108,6 +110,12 @@ function main() {
     if (missingFields.length) {
       critical.push(`Tenant config missing required fields: ${missingFields.join(", ")}`);
     }
+  }
+
+  if (tenantValidation.status === "fail") {
+    critical.push(`Tenant validation failed. Run npm run platform:tenant:validate. Failures: ${tenantValidation.failures.join("; ")}`);
+  } else if (tenantValidation.status === "warn") {
+    warnings.push("Tenant validation has warnings. Run npm run platform:tenant:validate.");
   }
 
   const sqliteAvailable = hasSqlite();
@@ -246,6 +254,7 @@ function main() {
 
   console.log("Platform Health");
   printCheck("Tenant", tenant?.name || "unknown", tenant?.tenantId || "not loaded");
+  printCheck("Tenant validation", tenantValidation.status, `${tenantValidation.tenantsChecked} tenant${tenantValidation.tenantsChecked === 1 ? "" : "s"} checked`);
   printCheck("DB", dbStatus, rel(DEFAULT_DB_PATH));
   printCheck("Snapshots", String(snapshotCount));
   printCheck("Opportunity summaries", String(opportunitySummaryCount));

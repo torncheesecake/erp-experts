@@ -43,6 +43,7 @@
     "seo:publish:preflight": "bash scripts/seo_publish_preflight.sh",
     "platform:tenant": "node scripts/platform/tenant_loader.mjs",
     "platform:tenant:scaffold": "node scripts/platform/platform_tenant_scaffold.mjs",
+    "platform:tenant:validate": "node scripts/platform/platform_tenant_validate.mjs",
     "platform:init": "node scripts/platform/platform_init_db.mjs",
     "platform:status": "node scripts/platform/platform_status.mjs",
     "platform:health": "node scripts/platform/platform_health.mjs",

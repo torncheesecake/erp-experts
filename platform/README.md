@@ -52,6 +52,15 @@ The command is dry-run by default. It prints the proposed `platform/tenants/<ten
 
 Future tenants start as `draft` by default. The command refuses `--status active` unless `--allow-active` is also passed. Draft tenants do not generate reports and are not operational until content sources, service paths, CTA maps, scoring profile and approval settings are reviewed.
 
+Validate tenant registry and config consistency before adding or activating future tenants:
+
+```bash
+npm run platform:tenant:validate
+npm run platform:tenant:validate -- --json
+```
+
+Validation checks registry/config matches, required tenant fields, allowed statuses, duplicate IDs, active tenant rules, ERP Experts active status and placeholder domains on active tenants. The intended lifecycle is scaffold, validate, then later activate explicitly after review.
+
 ## Tenant-Aware Reporting Commands
 
 `seo:autopilot`, `seo:pipeline`, `seo:monitor`, `seo:stats` and `seo:opportunities` read the tenant config.
