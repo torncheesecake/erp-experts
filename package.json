@@ -65,6 +65,7 @@
     "platform:roadmap:package": "node scripts/platform/platform_roadmap_package.mjs",
     "platform:roadmap:plan": "node scripts/platform/platform_roadmap_plan.mjs",
     "platform:roadmap:review": "node scripts/platform/platform_roadmap_review.mjs",
+    "platform:roadmap:status": "node scripts/platform/platform_roadmap_status.mjs",
     "platform:stakeholder": "node scripts/platform/platform_stakeholder_report.mjs",
     "platform:start": "node scripts/platform/platform_bootstrap.mjs",
     "deploy:dry-run": "bash deploy/scripts/deploy-dry-run.sh",

@@ -40,6 +40,7 @@ const sentinelRoadmapApprovalModules = import.meta.glob("../../reports/sentinel-
 const sentinelImplementationBriefModules = import.meta.glob("../../reports/sentinel-implementation-brief.json", { eager: true });
 const sentinelWorkPackageModules = import.meta.glob("../../reports/sentinel-work-package.json", { eager: true });
 const sentinelWorkPackageReviewModules = import.meta.glob("../../reports/sentinel-work-package-review.json", { eager: true });
+const sentinelImplementationStatusModules = import.meta.glob("../../reports/sentinel-implementation-status.json", { eager: true });
 const sentinelApiBaseUrl = String(import.meta.env.VITE_SENTINEL_API_BASE_URL || "").replace(/\/+$/, "");
 const sentinelActionApiBaseUrl = sentinelApiBaseUrl || "http://127.0.0.1:4317";
 const SENTINEL_OPERATOR_SESSION_KEY = "sentinel.operatorSession.v1";
@@ -171,6 +172,12 @@ function readWorkPackage() {
 function readWorkPackageReview() {
   const reviewModule = Object.values(sentinelWorkPackageReviewModules)[0];
   return reviewModule?.default || reviewModule || null;
+}
+
+function readImplementationStatuses() {
+  const statusModule = Object.values(sentinelImplementationStatusModules)[0];
+  const statuses = statusModule?.default || statusModule || [];
+  return Array.isArray(statuses) ? statuses : [];
 }
 
 function getInitialSentinelState() {
@@ -2262,7 +2269,13 @@ function workPackageReviewState(review, itemId = "") {
   return { state: review.status || "reviewed", review };
 }
 
-function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief = null, workPackage = null, workPackageReview = null }) {
+function implementationStatusState(statuses = [], itemId = "") {
+  const status = statuses.find((record) => record.roadmapItemId === itemId) || null;
+  if (!status) return { state: "not_started", status: null };
+  return { state: status.currentStatus || "unknown", status };
+}
+
+function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief = null, workPackage = null, workPackageReview = null, implementationStatuses = [] }) {
   const items = Array.isArray(roadmap?.items) ? roadmap.items : [];
   const categories = ["all", ...new Set(items.map((item) => item.category).filter(Boolean))];
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -2271,6 +2284,7 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
   const [copiedBriefId, setCopiedBriefId] = useState("");
   const [copiedPackageId, setCopiedPackageId] = useState("");
   const [copiedReviewId, setCopiedReviewId] = useState("");
+  const [copiedStatusId, setCopiedStatusId] = useState("");
   const visibleItems = items
     .filter((item) => categoryFilter === "all" || item.category === categoryFilter)
     .slice(0, 3);
@@ -2321,6 +2335,15 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
     }
   };
 
+  const copyStatusCommand = async (item, status, note) => {
+    const command = `npm run platform:roadmap:status -- --item ${item.id} --set ${status} --note "${note}"`;
+    const ok = await copyText(command, "roadmap implementation status command");
+    if (ok) {
+      setCopiedStatusId(`${item.id}:${status}`);
+      window.setTimeout(() => setCopiedStatusId(""), 1800);
+    }
+  };
+
   return (
     <section className="rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-100/80 md:p-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
@@ -2367,6 +2390,7 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
               const briefState = implementationBriefState(implementationBrief, item.id);
               const packageState = workPackageState(workPackage, item.id);
               const reviewState = workPackageReviewState(workPackageReview, item.id);
+              const implementationState = implementationStatusState(implementationStatuses, item.id);
 
               return (
                 <article key={item.id} className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100">
@@ -2401,6 +2425,7 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
                     <span>Brief: {formatStateLabel(briefState.state)}</span>
                     <span>Work package: {formatStateLabel(packageState.state)}</span>
                     <span>Review: {formatStateLabel(reviewState.state)}</span>
+                    <span>Implementation: {formatStateLabel(implementationState.state)}</span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2" style={{ marginTop: "12px" }}>
                     <button
@@ -2453,6 +2478,27 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
                     <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
                       npm run platform:roadmap:review -- --item {item.id}
                     </code>
+                    <button
+                      type="button"
+                      onClick={() => copyStatusCommand(item, "ready", "Reviewed package ready")}
+                      className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+                    >
+                      {copiedStatusId === `${item.id}:ready` ? "Copied ready status" : "Copy ready status"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => copyStatusCommand(item, "in_progress", "Implementation started")}
+                      className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+                    >
+                      {copiedStatusId === `${item.id}:in_progress` ? "Copied in progress status" : "Copy in progress status"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => copyStatusCommand(item, "implemented", "Implementation completed")}
+                      className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+                    >
+                      {copiedStatusId === `${item.id}:implemented` ? "Copied implemented status" : "Copy implemented status"}
+                    </button>
                   </div>
                 </article>
               );
@@ -3750,6 +3796,7 @@ function AdminView({ onPreview }) {
   const [implementationBrief] = useState(readImplementationBrief);
   const [workPackage] = useState(readWorkPackage);
   const [workPackageReview] = useState(readWorkPackageReview);
+  const [implementationStatuses] = useState(readImplementationStatuses);
   const overviewRef = useRef(null);
   const stateRef = useRef(null);
   const inboxRef = useRef(null);
@@ -4685,6 +4732,7 @@ function AdminView({ onPreview }) {
                   implementationBrief={implementationBrief}
                   workPackage={workPackage}
                   workPackageReview={workPackageReview}
+                  implementationStatuses={implementationStatuses}
                 />
 
                 <section className="grid gap-lg xl:grid-cols-2">

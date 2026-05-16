@@ -123,6 +123,16 @@
       "recommendedUsage": "Use immediately before handing a work package to Codex for implementation."
     },
     {
+      "command": "npm run platform:roadmap:status",
+      "category": "State",
+      "description": "Tracks implementation lifecycle state for an approved and reviewed Sentinel work package.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Use to mark handoff lifecycle states such as ready, in_progress, implemented or validated."
+    },
+    {
       "command": "npm run platform:cadence",
       "category": "Automation",
       "description": "Runs the safe local cadence: monitor, state, daily report, stakeholder report and notification payloads.",
