@@ -103,6 +103,16 @@
       "recommendedUsage": "Use after approval to prepare a reviewable implementation brief without applying changes."
     },
     {
+      "command": "npm run platform:roadmap:package",
+      "category": "State",
+      "description": "Exports one Codex-ready work package from an active approved implementation brief.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Use as the final operator-controlled handoff before a separate implementation task."
+    },
+    {
       "command": "npm run platform:cadence",
       "category": "Automation",
       "description": "Runs the safe local cadence: monitor, state, daily report, stakeholder report and notification payloads.",

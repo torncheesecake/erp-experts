@@ -38,6 +38,7 @@ const sentinelRoadmapModules = import.meta.glob("../../reports/sentinel-roadmap.
 const sentinelRoadmapPlanModules = import.meta.glob("../../reports/sentinel-roadmap-plan.json", { eager: true });
 const sentinelRoadmapApprovalModules = import.meta.glob("../../reports/sentinel-roadmap-approvals.json", { eager: true });
 const sentinelImplementationBriefModules = import.meta.glob("../../reports/sentinel-implementation-brief.json", { eager: true });
+const sentinelWorkPackageModules = import.meta.glob("../../reports/sentinel-work-package.json", { eager: true });
 const sentinelApiBaseUrl = String(import.meta.env.VITE_SENTINEL_API_BASE_URL || "").replace(/\/+$/, "");
 const sentinelActionApiBaseUrl = sentinelApiBaseUrl || "http://127.0.0.1:4317";
 const SENTINEL_OPERATOR_SESSION_KEY = "sentinel.operatorSession.v1";
@@ -159,6 +160,11 @@ function readRoadmapApprovals() {
 function readImplementationBrief() {
   const briefModule = Object.values(sentinelImplementationBriefModules)[0];
   return briefModule?.default || briefModule || null;
+}
+
+function readWorkPackage() {
+  const workPackageModule = Object.values(sentinelWorkPackageModules)[0];
+  return workPackageModule?.default || workPackageModule || null;
 }
 
 function getInitialSentinelState() {
@@ -2240,13 +2246,19 @@ function implementationBriefState(brief, itemId = "") {
   return { state: "generated", brief };
 }
 
-function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief = null }) {
+function workPackageState(workPackage, itemId = "") {
+  if (!workPackage || workPackage.approvedRoadmapItem?.id !== itemId) return { state: "not_generated", workPackage: null };
+  return { state: "generated", workPackage };
+}
+
+function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief = null, workPackage = null }) {
   const items = Array.isArray(roadmap?.items) ? roadmap.items : [];
   const categories = ["all", ...new Set(items.map((item) => item.category).filter(Boolean))];
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [copiedItemId, setCopiedItemId] = useState("");
   const [copiedApprovalId, setCopiedApprovalId] = useState("");
   const [copiedBriefId, setCopiedBriefId] = useState("");
+  const [copiedPackageId, setCopiedPackageId] = useState("");
   const visibleItems = items
     .filter((item) => categoryFilter === "all" || item.category === categoryFilter)
     .slice(0, 3);
@@ -2276,6 +2288,15 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
     if (ok) {
       setCopiedBriefId(item.id);
       window.setTimeout(() => setCopiedBriefId(""), 1800);
+    }
+  };
+
+  const copyPackageCommand = async (item) => {
+    const command = `npm run platform:roadmap:package -- --item ${item.id}`;
+    const ok = await copyText(command, "roadmap work package command");
+    if (ok) {
+      setCopiedPackageId(item.id);
+      window.setTimeout(() => setCopiedPackageId(""), 1800);
     }
   };
 
@@ -2323,6 +2344,7 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
             {visibleItems.map((item) => {
               const approvalState = latestRoadmapApproval(approvals, item.id);
               const briefState = implementationBriefState(implementationBrief, item.id);
+              const packageState = workPackageState(workPackage, item.id);
 
               return (
                 <article key={item.id} className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100">
@@ -2355,6 +2377,7 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
                     <span>Approval: {formatStateLabel(approvalState.state)}</span>
                     {approvalState.approval?.expiresAt ? <span>Expires: {formatDateTime(approvalState.approval.expiresAt)}</span> : null}
                     <span>Brief: {formatStateLabel(briefState.state)}</span>
+                    <span>Work package: {formatStateLabel(packageState.state)}</span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2" style={{ marginTop: "12px" }}>
                     <button
@@ -2386,6 +2409,16 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
                     </button>
                     <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
                       npm run platform:roadmap:brief -- --item {item.id}
+                    </code>
+                    <button
+                      type="button"
+                      onClick={() => copyPackageCommand(item)}
+                      className="rounded-full bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white ring-1 ring-slate-950 hover:bg-slate-800"
+                    >
+                      {copiedPackageId === item.id ? "Copied package command" : "Copy package command"}
+                    </button>
+                    <code className="rounded-full bg-white px-2.5 py-1 text-[11px] text-slate-500 ring-1 ring-slate-100">
+                      npm run platform:roadmap:package -- --item {item.id}
                     </code>
                   </div>
                 </article>
@@ -3682,6 +3715,7 @@ function AdminView({ onPreview }) {
   const [roadmapSummary] = useState(readRoadmapSummary);
   const [roadmapApprovals] = useState(readRoadmapApprovals);
   const [implementationBrief] = useState(readImplementationBrief);
+  const [workPackage] = useState(readWorkPackage);
   const overviewRef = useRef(null);
   const stateRef = useRef(null);
   const inboxRef = useRef(null);
@@ -4611,7 +4645,12 @@ function AdminView({ onPreview }) {
                   onFeedbackAdded={loadOperatorFeedback}
                   onRefresh={loadOperatorFeedback}
                 />
-                <RoadmapIntelligencePanel roadmap={roadmapSummary} approvals={roadmapApprovals} implementationBrief={implementationBrief} />
+                <RoadmapIntelligencePanel
+                  roadmap={roadmapSummary}
+                  approvals={roadmapApprovals}
+                  implementationBrief={implementationBrief}
+                  workPackage={workPackage}
+                />
 
                 <section className="grid gap-lg xl:grid-cols-2">
                   <div>
