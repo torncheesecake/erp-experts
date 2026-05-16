@@ -197,9 +197,12 @@ The Control Centre groups the operator experience into:
 - System Status: health, workflow, cadence, readiness and doctor state.
 - Current Focus: latest opportunity, latest plan, inbox item and recommended next step.
 - Tenant: active client context, stakeholder route, operator route and default tenant scope.
+- Tenant Registry: read-only preview of registered tenants, including active and disabled fixture entries.
 - Operations: cadence, notification payloads, report generation and state refresh context.
 - Tools & Commands: searchable command discovery, copy buttons and low-risk Run buttons for allowlisted actions only.
 - Diagnostics: collapsed/secondary checks and future console direction.
+
+The Tenant Registry panel uses the local `GET /tenants` API when available and falls back to the bundled `platform/tenants/tenant-registry.json` file. It is intentionally read-only. ERP Experts is the only active tenant, `demo-client` is shown as a disabled fixture, and the Control Centre does not provide tenant switching or disabled-tenant actions.
 
 Command metadata lives in `platform/commands/commands.json`. The registry also states the default tenant scope as `erp-experts`, so the dashboard can make clear that commands currently run against ERP Experts unless a command explicitly supports `--tenant`. Command discovery remains separate from execution. Any browser-triggered execution must go through the stricter action allowlist below, not through arbitrary command text.
 

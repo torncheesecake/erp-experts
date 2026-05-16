@@ -80,9 +80,12 @@ Current operator zones:
 - System Status: health, workflow, cadence state, deployment readiness and doctor state.
 - Current Focus: latest opportunity, latest plan, practical inbox item and recommended next step.
 - Tenant: active client context for ERP Experts, including base URL, operator route, stakeholder route and future multi-tenant note.
+- Tenant Registry: read-only preview of registered tenants, showing ERP Experts as active and disabled fixtures as non-actionable.
 - Operations: cadence, notification payloads, report generation and state refresh context.
 - Tools & Commands: searchable command registry with copy buttons and allowlisted Run buttons.
 - Diagnostics: secondary checks, advanced details and the future console placeholder.
+
+The Tenant Registry preview uses `GET /tenants` when the local Sentinel API is running and falls back to the bundled registry. It does not enable switching, actions against disabled tenants or multi-tenant pipelines.
 
 The command registry is stored at `platform/commands/commands.json`. It describes each known command, category, risk level, local-only expectation, API/deployment requirements, default tenant scope and recommended usage. The dashboard uses it for discovery and only exposes Run buttons for commands present in the stricter action allowlist. There is no browser-side shell, backend terminal or arbitrary command runner.
 
@@ -123,6 +126,8 @@ The first platform extraction boundary is now present under `platform/`.
 Current engines still use their existing ERP Experts paths. The tenant layer is a safe foundation for future extraction, not a behaviour change.
 
 The private Control Centre now shows the active tenant context but does not implement live switching. Future work remains tenant switching, isolated tenant dashboards and tenant-scoped authentication.
+
+The Control Centre now also previews the tenant registry read-only. ERP Experts remains the only active tenant, while `demo-client` is shown as an `example_disabled` fixture with no Run buttons, no switching and no pipeline access.
 
 Future tenant creation is scaffolded by `npm run platform:tenant:scaffold`. It is dry-run by default, writes only when `--write` is passed, creates `draft` registry entries by default and refuses `active` status unless `--allow-active` is passed. It does not generate live reports for new tenants.
 

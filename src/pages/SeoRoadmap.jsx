@@ -950,6 +950,109 @@ function TenantContextPanel({ tenantRegistrySnapshot }) {
   );
 }
 
+function tenantStatusLabel(status = "") {
+  if (status === "active") return "Active";
+  if (status === "example_disabled") return "Disabled fixture";
+  if (status === "draft") return "Draft";
+  if (status === "archived") return "Archived";
+  return formatStateLabel(status || "unknown");
+}
+
+function tenantStatusBadgeClass(status = "") {
+  if (status === "active") return "bg-emerald-50 text-emerald-700 ring-emerald-100";
+  if (status === "draft") return "bg-amber-50 text-amber-800 ring-amber-100";
+  if (status === "archived" || status === "example_disabled") return "bg-slate-100 text-slate-600 ring-slate-200";
+  return "bg-slate-50 text-slate-700 ring-slate-100";
+}
+
+function TenantRegistryPanel({ tenantRegistrySnapshot }) {
+  const registry = tenantRegistrySnapshot?.registry || sentinelTenantRegistry;
+  const tenants = Array.isArray(registry?.tenants) ? registry.tenants : [];
+  const activeCount = tenants.filter((tenant) => tenant.status === "active").length;
+  const disabledCount = tenants.filter((tenant) => tenant.status === "example_disabled").length;
+  const source = tenantRegistrySnapshot?.source || "registry";
+
+  return (
+    <section className="rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-100/80 md:p-6">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Tenant Registry</p>
+          <h2 className="text-xl font-semibold text-slate-950">Registered Sentinel tenants</h2>
+          <p className="text-sm text-slate-600">
+            Read-only preview. Tenant switching and disabled tenant actions are intentionally unavailable.
+          </p>
+          {source === "api" ? null : (
+            <p className="text-xs text-slate-500" style={{ marginTop: "6px" }}>
+              Showing bundled registry. Start the local Sentinel API for the live registry view.
+            </p>
+          )}
+        </div>
+        <div className="flex flex-wrap justify-end gap-2">
+          <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-100">
+            {activeCount} active
+          </span>
+          <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">
+            {disabledCount} disabled fixture
+          </span>
+          <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">
+            Source: {source}
+          </span>
+        </div>
+      </div>
+
+      {tenants.length ? (
+        <div className="grid gap-3 lg:grid-cols-2" style={{ marginTop: "18px" }}>
+          {tenants.map((tenant) => {
+            const isDisabledFixture = tenant.status === "example_disabled";
+            return (
+              <article key={tenant.tenantId} className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-950">{tenant.name || tenant.tenantId}</h3>
+                    <p className="text-xs text-slate-500" style={{ marginTop: "3px" }}>{tenant.tenantId}</p>
+                  </div>
+                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${tenantStatusBadgeClass(tenant.status)}`}>
+                    {tenantStatusLabel(tenant.status)}
+                  </span>
+                </div>
+
+                <div className="grid gap-3 text-xs text-slate-600 sm:grid-cols-2" style={{ marginTop: "14px" }}>
+                  <div>
+                    <p className="font-medium text-slate-500">Base URL</p>
+                    <p className="font-semibold text-slate-900">{tenant.baseUrl || "Not set"}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-500">Operator route</p>
+                    <p className="font-semibold text-slate-900">{tenant.dashboardRoute || "/seo-roadmap"}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-500">Stakeholder route</p>
+                    <p className="font-semibold text-slate-900">{tenant.stakeholderRoute || "/seo-progress"}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-500">Actions</p>
+                    <p className="font-semibold text-slate-900">{isDisabledFixture ? "Unavailable" : "Default tenant only"}</p>
+                  </div>
+                </div>
+
+                {isDisabledFixture ? (
+                  <p className="rounded-2xl bg-white/80 px-3 py-2 text-xs text-slate-500 ring-1 ring-slate-100" style={{ marginTop: "14px" }}>
+                    Disabled fixture only. No pipelines, actions or switching are available for this tenant.
+                  </p>
+                ) : null}
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600 ring-1 ring-slate-100" style={{ marginTop: "18px" }}>
+          Tenant registry available when the local Sentinel API is running.
+        </p>
+      )}
+    </section>
+  );
+}
+
 function OperationsPanel({ cadenceSummary, weeklyDigestText }) {
   const reportCount = Array.isArray(cadenceSummary?.generatedReports) ? cadenceSummary.generatedReports.length : 0;
   const notificationsReady = Boolean(cadenceSummary?.notificationsGenerated);
@@ -3421,6 +3524,7 @@ function AdminView({ onPreview }) {
                   />
                   <CurrentFocusPanel sentinelState={sentinelState} inboxReport={actionInboxReport} />
                   <TenantContextPanel tenantRegistrySnapshot={tenantRegistrySnapshot} />
+                  <TenantRegistryPanel tenantRegistrySnapshot={tenantRegistrySnapshot} />
                   <RecentOperatorActionsPanel
                     history={actionHistorySnapshot}
                     actionRegistry={sentinelActionRegistry}

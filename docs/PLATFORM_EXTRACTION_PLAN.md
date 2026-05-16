@@ -689,6 +689,7 @@ Current behaviour:
 - ERP Experts is the only active tenant.
 - The local HTTP API exposes read-only `GET /tenants` for the registry.
 - The private `/seo-roadmap` Control Centre shows current tenant, active status, base URL, operator route and stakeholder route.
+- The private Control Centre also shows a read-only Tenant Registry preview. It lists active and disabled fixture tenants, uses `GET /tenants` when the local API is running, and falls back to the bundled registry file.
 - The command registry states the current default tenant scope as `erp-experts`.
 
 This is deliberately not live multi-tenant switching. It is a safe UI/API foundation so the platform feels tenant-aware before adding tenant switching, isolated dashboards or tenant-scoped authentication.
@@ -710,6 +711,8 @@ npm run platform:tenant:validate
 It checks registry entries, tenant config files, required fields, allowed statuses, duplicate IDs, ERP Experts active status and placeholder domains on active tenants. Use the sequence `scaffold -> validate -> activate later` for future multi-client work.
 
 `demo-client` is present as an `example_disabled` fixture only. It proves multi-tenant registry/config validation while keeping ERP Experts as the only active tenant. No reports, pipelines or operational state should be generated for the demo fixture.
+
+The Tenant Registry preview must remain display-only until tenant-scoped auth, isolated dashboards and tenant-aware action execution exist. Disabled fixtures must not expose Run buttons, switching controls or pipeline actions.
 
 ## 19. Persistence Foundation Step
 
