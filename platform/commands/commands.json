@@ -113,6 +113,16 @@
       "recommendedUsage": "Use as the final operator-controlled handoff before a separate implementation task."
     },
     {
+      "command": "npm run platform:roadmap:review",
+      "category": "State",
+      "description": "Reviews an exported work package for approval, scope and safety before implementation handoff.",
+      "riskLevel": "low",
+      "localOnly": true,
+      "requiresApi": false,
+      "requiresDeployment": false,
+      "recommendedUsage": "Use immediately before handing a work package to Codex for implementation."
+    },
+    {
       "command": "npm run platform:cadence",
       "category": "Automation",
       "description": "Runs the safe local cadence: monitor, state, daily report, stakeholder report and notification payloads.",
