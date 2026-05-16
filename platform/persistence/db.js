@@ -444,7 +444,7 @@ export function finishRun(run, dbPath = DEFAULT_DB_PATH) {
 }
 
 export function logRun(run, dbPath = DEFAULT_DB_PATH) {
-  executeSql(
+  return Number(queryValue(
     `INSERT INTO runs (tenant_id, command, status, started_at, finished_at)
      VALUES (
        '${quoteSql(run.tenantId)}',
@@ -452,6 +452,35 @@ export function logRun(run, dbPath = DEFAULT_DB_PATH) {
        '${quoteSql(run.status)}',
        '${quoteSql(run.startedAt)}',
        '${quoteSql(run.finishedAt)}'
+     );
+     SELECT last_insert_rowid();`,
+    dbPath,
+  ));
+}
+
+export function persistActionResult(result, dbPath = DEFAULT_DB_PATH) {
+  if (!tableExists("action_results", dbPath)) {
+    applySchema(dbPath);
+  }
+
+  executeSql(
+    `INSERT INTO action_results (
+       run_id,
+       tenant_id,
+       action_id,
+       status,
+       summary,
+       output_excerpt,
+       created_at
+     )
+     VALUES (
+       ${result.runId ? Number(result.runId) : "NULL"},
+       '${quoteSql(result.tenantId)}',
+       '${quoteSql(result.actionId)}',
+       '${quoteSql(result.status)}',
+       '${quoteSql(result.summary || "")}',
+       '${quoteSql(result.outputExcerpt || "")}',
+       '${quoteSql(result.createdAt || new Date().toISOString())}'
      );`,
     dbPath,
   );

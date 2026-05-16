@@ -91,7 +91,7 @@ The stakeholder route `/seo-progress` remains separate and must not expose comma
 
 Sentinel now has a strict allowlisted action layer for the private Control Centre.
 
-The action registry is stored at `platform/actions/actions.json`. The local HTTP API accepts `POST /action` for known action IDs only, rejects unknown or non-UI actions, runs fixed `npm run <script>` commands with `spawn` and no shell, enforces timeouts and caps captured output. It also exposes read-only `GET /actions/history` for recent `ui_action:*` rows from the persisted `runs` table.
+The action registry is stored at `platform/actions/actions.json`. The local HTTP API accepts `POST /action` for known action IDs only, rejects unknown or non-UI actions, runs fixed `npm run <script>` commands with `spawn` and no shell, enforces timeouts and caps captured output. It records each action in `runs` as `ui_action:<id>`, stores concise redacted summaries in `action_results`, and exposes read-only `GET /actions/history` for recent actions.
 
 Initial allowlisted UI actions:
 
@@ -105,7 +105,7 @@ Initial allowlisted UI actions:
 - `platform:api`
 - `seo:monitor`
 
-This is controlled local operator execution, not a terminal. There is no arbitrary command input, command chaining, deployment execution, cleanup execution, restore execution, FTP execution, notification sending or public exposure. The private dashboard shows recent controlled action history when the local API is running. The stakeholder route `/seo-progress` remains separate and does not expose action controls or action history.
+This is controlled local operator execution, not a terminal. There is no arbitrary command input, command chaining, deployment execution, cleanup execution, restore execution, FTP execution, notification sending or public exposure. The private dashboard shows recent controlled action history with summaries when the local API is running, with output excerpts collapsed by default. The stakeholder route `/seo-progress` remains separate and does not expose action controls or action history.
 
 See `docs/SENTINEL_OPERATOR_ACTIONS.md`.
 

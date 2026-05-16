@@ -1082,10 +1082,13 @@ function SentinelCommandsPanel({ commandRegistry, actionRegistry, onActionComple
                         <p className="font-semibold">{currentResult.ok ? "Action completed" : "Action failed"}</p>
                         <span>{currentResult.exitCode !== undefined ? `exit ${currentResult.exitCode}` : currentResult.error || "local API"}</span>
                       </div>
+                      {currentResult.summary ? (
+                        <p style={{ marginTop: "6px" }}>{currentResult.summary}</p>
+                      ) : null}
                       <details style={{ marginTop: "8px" }}>
                         <summary className="cursor-pointer font-semibold">Output preview</summary>
                         <pre className="max-h-48 overflow-auto whitespace-pre-wrap rounded-lg bg-white/70 p-2 text-[11px] text-slate-800" style={{ marginTop: "6px" }}>
-                          {(currentResult.stdout || currentResult.stderr || currentResult.message || "No output returned.").slice(0, 1800)}
+                          {(currentResult.outputExcerpt || currentResult.stdout || currentResult.stderr || currentResult.message || "No output returned.").slice(0, 1800)}
                           {currentResult.outputTruncated ? "\n\n[Output truncated by Sentinel API]" : ""}
                         </pre>
                       </details>
@@ -1153,14 +1156,27 @@ function RecentOperatorActionsPanel({ history, actionRegistry, onRefresh }) {
         ) : null}
 
         {!loading && !unavailable && actions.map((item) => (
-          <div key={item.id} className="flex items-start justify-between gap-3 rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
-            <div>
-              <p className="text-sm font-semibold text-slate-950">{labelById.get(item.action) || formatStateLabel(item.action)}</p>
-              <p className="text-xs text-slate-500">{formatDateTime(item.finishedAt || item.startedAt)}</p>
+          <div key={item.id} className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-slate-950">{labelById.get(item.action) || formatStateLabel(item.action)}</p>
+                <p className="text-xs text-slate-500">{formatDateTime(item.finishedAt || item.startedAt)}</p>
+              </div>
+              <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${actionStatusBadgeClass(item.status)}`}>
+                {item.status || "unknown"}
+              </span>
             </div>
-            <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${actionStatusBadgeClass(item.status)}`}>
-              {item.status || "unknown"}
-            </span>
+            {item.summary ? (
+              <p className="text-xs text-slate-700" style={{ marginTop: "8px" }}>{item.summary}</p>
+            ) : null}
+            {item.outputExcerpt ? (
+              <details style={{ marginTop: "8px" }}>
+                <summary className="cursor-pointer text-xs font-semibold text-slate-600">Output excerpt</summary>
+                <pre className="max-h-36 overflow-auto whitespace-pre-wrap rounded-lg bg-white p-2 text-[11px] text-slate-700 ring-1 ring-slate-100" style={{ marginTop: "6px" }}>
+                  {item.outputExcerpt}
+                </pre>
+              </details>
+            ) : null}
           </div>
         ))}
       </div>

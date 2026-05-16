@@ -186,7 +186,7 @@ Action metadata lives in:
 platform/actions/actions.json
 ```
 
-The local API exposes `POST /action` for allowlisted actions only. It rejects unknown action IDs, rejects actions not marked `allowFromUI`, runs fixed `npm run <script>` commands with `spawn` and no shell, applies timeouts and limits captured output. It also exposes read-only `GET /actions/history` so the private dashboard can show recent `ui_action:*` rows from the persisted `runs` table.
+The local API exposes `POST /action` for allowlisted actions only. It rejects unknown action IDs, rejects actions not marked `allowFromUI`, runs fixed `npm run <script>` commands with `spawn` and no shell, applies timeouts and limits captured output. It records each action in `runs` as `ui_action:<id>` and stores a concise redacted result in `action_results`. It also exposes read-only `GET /actions/history` so the private dashboard can show recent actions, statuses and short summaries.
 
 Initial UI actions are limited to low-risk local commands:
 
@@ -200,7 +200,7 @@ Initial UI actions are limited to low-risk local commands:
 - `platform:api`
 - `seo:monitor`
 
-Deploy, cleanup, restore, FTP, service installation and arbitrary shell commands are intentionally excluded. The dashboard shows Run buttons only for allowlisted actions, keeps output as a compact preview and shows recent operator action history when the local API is running. See `docs/SENTINEL_OPERATOR_ACTIONS.md`.
+Deploy, cleanup, restore, FTP, service installation and arbitrary shell commands are intentionally excluded. The dashboard shows Run buttons only for allowlisted actions, keeps full output out of the default view, shows collapsed capped excerpts and shows recent operator action history when the local API is running. See `docs/SENTINEL_OPERATOR_ACTIONS.md`.
 
 ## Operational State Summary
 

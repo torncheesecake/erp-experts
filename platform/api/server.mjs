@@ -4,8 +4,7 @@ import path from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { getOperationalSummary, getTenantState } from "./state_api.mjs";
-import { DEFAULT_DB_PATH, databaseExists, queryRows, tableExists } from "../persistence/db.js";
-import { safeLogRun } from "../../scripts/platform/run_logger.mjs";
+import { DEFAULT_DB_PATH, databaseExists, logRun, persistActionResult, queryRows, tableExists } from "../persistence/db.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,6 +15,7 @@ const PORT = Number(process.env.SENTINEL_API_PORT || 4317);
 const ACTIONS_PATH = path.join(repoRoot, "platform/actions/actions.json");
 const MAX_OUTPUT_BYTES = 24_000;
 const MAX_TIMEOUT_SECONDS = 120;
+const MAX_RESULT_EXCERPT_CHARS = 1_000;
 
 function corsOrigin(request) {
   const origin = request.headers.origin;
@@ -149,6 +149,80 @@ function appendLimited(current, chunk) {
   };
 }
 
+function redactSensitiveOutput(value = "") {
+  return String(value)
+    .replace(/((?:password|passwd|token|secret|api[_-]?key|ftp[_-]?pass|basic_auth_password)\w*\s*[:=]\s*)[^\s'"]+/gi, "$1[redacted]")
+    .replace(/((?:PASSWORD|PASS|TOKEN|SECRET|API_KEY|FTP_PASS|BASIC_AUTH_PASSWORD)\w*\s*=\s*)[^\s'"]+/g, "$1[redacted]");
+}
+
+function meaningfulOutputLines(value = "") {
+  return redactSensitiveOutput(value)
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => !line.startsWith("> "))
+    .filter((line) => !line.startsWith("npm "))
+    .filter((line) => !line.includes("@0.0.0 "));
+}
+
+function summariseActionOutput({ status, exitCode, stdout = "", stderr = "" }) {
+  const stdoutLines = meaningfulOutputLines(stdout);
+  const stderrLines = meaningfulOutputLines(stderr);
+
+  if (status !== "success") {
+    return stderrLines[0] || stdoutLines.find((line) => /error|failed|warning/i.test(line)) || `Action failed with exit code ${exitCode}.`;
+  }
+
+  const healthLine = stdoutLines.find((line) => /^(Health|Status|SEO):/i.test(line));
+  const qaLine = stdoutLines.find((line) => /^QA:/i.test(line) || /^pass=\d+/i.test(line));
+  if (healthLine && qaLine) return `${healthLine}; ${qaLine}`;
+  if (healthLine) return healthLine;
+  if (qaLine) return qaLine;
+
+  const overallLine = stdoutLines.find((line) => /^Overall:/i.test(line));
+  if (overallLine) return overallLine;
+
+  const generatedLine = stdoutLines.find((line) => /^Generated:/i.test(line));
+  if (generatedLine) return generatedLine;
+
+  return stdoutLines[0] || "Action completed successfully.";
+}
+
+function actionOutputExcerpt({ stdout = "", stderr = "" }) {
+  const combined = redactSensitiveOutput([stdout, stderr].filter(Boolean).join("\n\n")).trim();
+  if (!combined) return "";
+  return combined.slice(0, MAX_RESULT_EXCERPT_CHARS);
+}
+
+function persistOperatorActionResult({ tenantId, action, status, startedAt, finishedAt, summary, outputExcerpt }) {
+  if (!databaseExists(DEFAULT_DB_PATH)) return null;
+
+  try {
+    const runId = logRun({
+      tenantId,
+      command: `ui_action:${action.id}`,
+      status,
+      startedAt,
+      finishedAt,
+    });
+
+    persistActionResult({
+      runId,
+      tenantId,
+      actionId: action.id,
+      status,
+      summary,
+      outputExcerpt,
+      createdAt: finishedAt,
+    });
+
+    return runId;
+  } catch (error) {
+    console.warn(`[sentinel-action] SQLite action result warning: ${error.message}`);
+    return null;
+  }
+}
+
 function runAllowedAction(action, tenantId) {
   const script = npmScriptFromAction(action);
   const timeoutSeconds = Math.min(Number(action.timeoutSeconds || 30), MAX_TIMEOUT_SECONDS);
@@ -176,7 +250,23 @@ function runAllowedAction(action, tenantId) {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
-      resolve(payload);
+      const summary = summariseActionOutput(payload);
+      const outputExcerpt = actionOutputExcerpt(payload);
+      const runId = persistOperatorActionResult({
+        tenantId,
+        action,
+        status: payload.status,
+        startedAt: payload.startedAt,
+        finishedAt: payload.finishedAt,
+        summary,
+        outputExcerpt,
+      });
+      resolve({
+        ...payload,
+        runId,
+        summary,
+        outputExcerpt,
+      });
     };
 
     timer = setTimeout(() => {
@@ -198,13 +288,6 @@ function runAllowedAction(action, tenantId) {
 
     child.on("error", (error) => {
       const finishedAt = new Date().toISOString();
-      safeLogRun({
-        tenantId,
-        command: `ui_action:${action.id}`,
-        status: "failure",
-        startedAt,
-        finishedAt,
-      });
       console.warn(`[sentinel-action] failed ${action.id}: ${error.message}`);
       finish({
         status: "failure",
@@ -224,13 +307,6 @@ function runAllowedAction(action, tenantId) {
     child.on("close", (code, signal) => {
       const finishedAt = new Date().toISOString();
       const status = code === 0 && !timedOut ? "success" : "failure";
-      safeLogRun({
-        tenantId,
-        command: `ui_action:${action.id}`,
-        status,
-        startedAt,
-        finishedAt,
-      });
       console.log(`[sentinel-action] finished ${action.id} ${status}`);
       finish({
         status,
@@ -317,21 +393,31 @@ async function handleAction(request, response, url) {
 
 function loadActionHistory({ tenantId, limit }) {
   if (!databaseExists(DEFAULT_DB_PATH) || !tableExists("runs", DEFAULT_DB_PATH)) return [];
+  const hasActionResults = tableExists("action_results", DEFAULT_DB_PATH);
+  const resultSelect = hasActionResults
+    ? "replace(COALESCE(ar.summary, ''), char(9), ' '), replace(replace(replace(COALESCE(ar.output_excerpt, ''), char(9), '  '), char(13), ''), char(10), '\\n')"
+    : "'', ''";
+  const resultJoin = hasActionResults
+    ? "LEFT JOIN action_results ar ON ar.run_id = r.id"
+    : "";
 
   return queryRows(
-    `SELECT id, command, status, COALESCE(started_at, ''), COALESCE(finished_at, '')
-     FROM runs
-     WHERE tenant_id = '${quoteSql(tenantId)}'
-       AND command LIKE 'ui_action:%'
-     ORDER BY COALESCE(finished_at, started_at) DESC, id DESC
+    `SELECT r.id, r.command, r.status, COALESCE(r.started_at, ''), COALESCE(r.finished_at, ''), ${resultSelect}
+     FROM runs r
+     ${resultJoin}
+     WHERE r.tenant_id = '${quoteSql(tenantId)}'
+       AND r.command LIKE 'ui_action:%'
+     ORDER BY COALESCE(r.finished_at, r.started_at) DESC, r.id DESC
      LIMIT ${Number(limit) || 10};`,
     DEFAULT_DB_PATH,
-  ).map(([id, command, status, startedAt, finishedAt]) => ({
+  ).map(([id, command, status, startedAt, finishedAt, summary, outputExcerpt]) => ({
     id: Number(id),
     action: String(command || "").replace(/^ui_action:/, ""),
     status,
     startedAt,
     finishedAt,
+    summary,
+    outputExcerpt: String(outputExcerpt || "").replaceAll("\\n", "\n"),
   }));
 }
 
