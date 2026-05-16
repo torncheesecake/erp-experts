@@ -1969,11 +1969,15 @@ function ActivityFeedPanel({ activityFeed, onRefresh }) {
 function OperatorFeedbackPanel({ activeSection, feedbackSnapshot, onFeedbackAdded, onRefresh }) {
   const categories = Array.isArray(sentinelFeedbackOptions?.categories) ? sentinelFeedbackOptions.categories : [];
   const sections = Array.isArray(sentinelFeedbackOptions?.sections) ? sentinelFeedbackOptions.sections : [];
+  const priorities = Array.isArray(sentinelFeedbackOptions?.priorities) ? sentinelFeedbackOptions.priorities : ["low", "medium", "high", "critical"];
+  const efforts = Array.isArray(sentinelFeedbackOptions?.efforts) ? sentinelFeedbackOptions.efforts : ["low", "medium", "high"];
+  const triageStatuses = Array.isArray(sentinelFeedbackOptions?.triageStatuses) ? sentinelFeedbackOptions.triageStatuses : ["new", "accepted", "deferred", "rejected", "done"];
   const activeSectionValue = sections.includes(activeSection) ? activeSection : "general";
   const [category, setCategory] = useState(categories[0]?.id || "ux");
   const [section, setSection] = useState(activeSectionValue);
   const [summary, setSummary] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [triagingId, setTriagingId] = useState("");
   const [message, setMessage] = useState("");
   const items = Array.isArray(feedbackSnapshot?.items) ? feedbackSnapshot.items.slice(0, 4) : [];
   const unavailable = feedbackSnapshot?.status === "unavailable";
@@ -1997,7 +2001,7 @@ function OperatorFeedbackPanel({ activeSection, feedbackSnapshot, onFeedbackAdde
       const response = await fetch(`${sentinelActionApiBaseUrl}/feedback`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ category, section, summary: cleanSummary }),
+        body: JSON.stringify({ category, section, summary: cleanSummary, priority: "medium", effort: "medium", triageStatus: "new" }),
       });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(payload.message || `Feedback API returned ${response.status}`);
@@ -2011,6 +2015,30 @@ function OperatorFeedbackPanel({ activeSection, feedbackSnapshot, onFeedbackAdde
       }
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const updateTriage = async (item, updates) => {
+    if (!item?.id) return;
+    setTriagingId(item.id);
+    setMessage("");
+    try {
+      const response = await fetch(`${sentinelActionApiBaseUrl}/feedback/triage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: item.id, ...updates }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.message || `Feedback triage returned ${response.status}`);
+      setMessage("Feedback triage updated locally.");
+      if (typeof onFeedbackAdded === "function") await onFeedbackAdded();
+    } catch (error) {
+      setMessage(`Could not update triage via local API. Use: npm run platform:feedback -- --triage ${item.id} --priority ${updates.priority || item.priority || "medium"} --effort ${updates.effort || item.effort || "medium"} --triage-status ${updates.triageStatus || item.triageStatus || "new"}`);
+      if (import.meta.env.DEV) {
+        console.warn("Sentinel feedback triage failed:", error);
+      }
+    } finally {
+      setTriagingId("");
     }
   };
 
@@ -2108,9 +2136,56 @@ function OperatorFeedbackPanel({ activeSection, feedbackSnapshot, onFeedbackAdde
               <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
                 <span className="rounded-full bg-pink-50 px-2 py-0.5 text-[11px] font-semibold text-pink-700 ring-1 ring-pink-100">{item.category}</span>
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-200">{formatStateLabel(item.section)}</span>
-                <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 ring-1 ring-blue-100">{item.status}</span>
+                <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 ring-1 ring-amber-100">{item.priority || "medium"}</span>
+                <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 ring-1 ring-blue-100">{item.triageStatus || item.status || "new"}</span>
               </div>
             </div>
+            <div className="grid gap-2 sm:grid-cols-3" style={{ marginTop: "10px" }}>
+              <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Priority
+                <select
+                  value={item.priority || "medium"}
+                  disabled={unavailable || triagingId === item.id}
+                  onChange={(event) => updateTriage(item, { priority: event.target.value })}
+                  className="rounded-xl border border-slate-200 bg-white px-2 py-1.5 text-xs font-normal normal-case tracking-normal text-slate-800 outline-none disabled:opacity-60"
+                >
+                  {priorities.map((priority) => (
+                    <option key={priority} value={priority}>{formatStateLabel(priority)}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Effort
+                <select
+                  value={item.effort || "medium"}
+                  disabled={unavailable || triagingId === item.id}
+                  onChange={(event) => updateTriage(item, { effort: event.target.value })}
+                  className="rounded-xl border border-slate-200 bg-white px-2 py-1.5 text-xs font-normal normal-case tracking-normal text-slate-800 outline-none disabled:opacity-60"
+                >
+                  {efforts.map((effort) => (
+                    <option key={effort} value={effort}>{formatStateLabel(effort)}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="grid gap-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Triage
+                <select
+                  value={item.triageStatus || "new"}
+                  disabled={unavailable || triagingId === item.id}
+                  onChange={(event) => updateTriage(item, { triageStatus: event.target.value })}
+                  className="rounded-xl border border-slate-200 bg-white px-2 py-1.5 text-xs font-normal normal-case tracking-normal text-slate-800 outline-none disabled:opacity-60"
+                >
+                  {triageStatuses.map((status) => (
+                    <option key={status} value={status}>{formatStateLabel(status)}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            {item.notes?.length ? (
+              <p className="text-xs text-slate-500" style={{ marginTop: "8px" }}>
+                Latest note: {item.notes[item.notes.length - 1].note}
+              </p>
+            ) : null}
           </article>
         ))}
       </div>

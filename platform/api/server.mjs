@@ -5,7 +5,7 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { getOperationalSummary, getTenantState } from "./state_api.mjs";
 import { getActivityFeed } from "../activity/activity_feed.mjs";
-import { addFeedbackItem, getFeedbackOptions, listFeedbackItems } from "../feedback/feedback_store.mjs";
+import { addFeedbackItem, getFeedbackOptions, listFeedbackItems, triageFeedbackItem } from "../feedback/feedback_store.mjs";
 import { DEFAULT_DB_PATH, databaseExists, logRun, persistActionResult, queryRows, tableExists } from "../persistence/db.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -517,6 +517,9 @@ function handleFeedbackList(request, response, url) {
       category: url.searchParams.get("category") || "",
       section: url.searchParams.get("section") || "",
       status: url.searchParams.get("status") || "",
+      priority: url.searchParams.get("priority") || "",
+      effort: url.searchParams.get("effort") || "",
+      triageStatus: url.searchParams.get("triageStatus") || "",
       limit: feedbackLimit(url),
     }),
     options: getFeedbackOptions(),
@@ -540,11 +543,48 @@ async function handleFeedbackAdd(request, response) {
       section: body.section,
       summary: body.summary,
       status: body.status || "new",
+      priority: body.priority || "medium",
+      effort: body.effort || "medium",
+      triageStatus: body.triageStatus || "new",
+      owner: body.owner || "",
+      linkedCommand: body.linkedCommand || "",
+      linkedSection: body.linkedSection || "",
     });
     sendJson(request, response, 201, { item });
   } catch (error) {
     sendJson(request, response, error.code === "FEEDBACK_VALIDATION_ERROR" ? 400 : 500, {
       error: error.code || "feedback_error",
+      message: error.message,
+    });
+  }
+}
+
+async function handleFeedbackTriage(request, response) {
+  if (!isLocalRequest(request)) {
+    sendJson(request, response, 403, {
+      error: "local_only",
+      message: "Operator feedback triage can only be captured from localhost.",
+    });
+    return;
+  }
+
+  try {
+    const body = await readJsonBody(request);
+    const item = triageFeedbackItem({
+      id: body.id,
+      priority: body.priority,
+      effort: body.effort,
+      triageStatus: body.triageStatus,
+      owner: body.owner,
+      linkedCommand: body.linkedCommand,
+      linkedSection: body.linkedSection,
+      note: body.note,
+    });
+    sendJson(request, response, 200, { item });
+  } catch (error) {
+    const status = error.code === "FEEDBACK_NOT_FOUND" ? 404 : error.code === "FEEDBACK_VALIDATION_ERROR" ? 400 : 500;
+    sendJson(request, response, status, {
+      error: error.code || "feedback_triage_error",
       message: error.message,
     });
   }
@@ -569,6 +609,11 @@ const server = http.createServer(async (request, response) => {
   if (request.method === "POST") {
     if (url.pathname === "/action") {
       await handleAction(request, response, url);
+      return;
+    }
+
+    if (url.pathname === "/feedback/triage") {
+      await handleFeedbackTriage(request, response);
       return;
     }
 

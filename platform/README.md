@@ -229,9 +229,11 @@ Operator feedback capture is now available for local workflow discovery. The pri
 ```bash
 npm run platform:feedback -- --add --category ux --section overview --summary "Short note"
 npm run platform:feedback -- --list
+npm run platform:feedback -- --triage fb-123 --priority high --effort low --triage-status accepted --note "Do this next"
+npm run platform:feedback -- --backlog
 ```
 
-Feedback is stored locally in ignored `reports/operator-feedback.json`. It is not sent externally, not written to SQLite yet and not exposed on `/seo-progress`.
+Feedback is stored locally in ignored `reports/operator-feedback.json`. It is not sent externally, not written to SQLite yet and not exposed on `/seo-progress`. The triage workflow adds priority, effort, triage status, optional ownership and notes so captured friction can become a lightweight improvement backlog. `npm run platform:feedback -- --backlog` generates ignored `reports/sentinel-feedback-backlog.md` with accepted items, new untriaged items, deferred items and a suggested next improvement.
 
 The Activity Feed is backed by `platform/activity/activity_feed.mjs` and the local `GET /activity` API endpoint. It is operator-only, deliberately concise and does not show raw command output, stack traces or secrets. If the local API is unavailable, the Control Centre shows a calm fallback rather than failing.
 
@@ -293,7 +295,7 @@ npm run platform:api:serve
 npm run platform:api:smoke
 ```
 
-The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state`, `GET /tenant`, `GET /tenants`, `GET /activity`, `GET /feedback` and `GET /actions/history` endpoints, plus controlled `POST /action` for allowlisted local operator actions and local-only `POST /feedback` for operator notes. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
+The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state`, `GET /tenant`, `GET /tenants`, `GET /activity`, `GET /feedback` and `GET /actions/history` endpoints, plus controlled `POST /action` for allowlisted local operator actions, local-only `POST /feedback` for operator notes and `POST /feedback/triage` for feedback backlog updates. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
 
 The Raspberry Pi service scaffold is also present but inactive:
 

@@ -20,5 +20,8 @@
     "diagnostics",
     "general"
   ],
-  "statuses": ["new", "reviewed", "planned", "done", "dismissed"]
+  "statuses": ["new", "reviewed", "planned", "done", "dismissed"],
+  "priorities": ["low", "medium", "high", "critical"],
+  "efforts": ["low", "medium", "high"],
+  "triageStatuses": ["new", "accepted", "deferred", "rejected", "done"]
 }
