@@ -1,0 +1,89 @@
+{
+  "types": {
+    "system": {
+      "label": "System",
+      "description": "General Sentinel platform activity that does not fit a narrower category.",
+      "visualHint": "slate",
+      "defaultSeverity": "info",
+      "showInDashboard": true
+    },
+    "operator": {
+      "label": "Operator",
+      "description": "Controlled local operator actions triggered from the Sentinel Control Centre.",
+      "visualHint": "pink",
+      "defaultSeverity": "info",
+      "showInDashboard": true
+    },
+    "cadence": {
+      "label": "Cadence",
+      "description": "Scheduled or manual Sentinel cadence activity, including report and notification preparation flows.",
+      "visualHint": "blue",
+      "defaultSeverity": "success",
+      "showInDashboard": true
+    },
+    "notification": {
+      "label": "Notification",
+      "description": "Notification payload preparation. This does not mean a message was sent.",
+      "visualHint": "violet",
+      "defaultSeverity": "success",
+      "showInDashboard": true
+    },
+    "deploy": {
+      "label": "Deploy",
+      "description": "Readiness and deployment-preparation activity. This does not imply deployment occurred.",
+      "visualHint": "amber",
+      "defaultSeverity": "warning",
+      "showInDashboard": true
+    },
+    "backup": {
+      "label": "Backup",
+      "description": "Backup verification, dry-run or restore simulation activity.",
+      "visualHint": "emerald",
+      "defaultSeverity": "info",
+      "showInDashboard": true
+    },
+    "tenant": {
+      "label": "Tenant",
+      "description": "Tenant registry, validation and configuration activity.",
+      "visualHint": "indigo",
+      "defaultSeverity": "info",
+      "showInDashboard": true
+    },
+    "health": {
+      "label": "Health",
+      "description": "SEO monitor, platform health and diagnostic status activity.",
+      "visualHint": "emerald",
+      "defaultSeverity": "success",
+      "showInDashboard": true
+    },
+    "api": {
+      "label": "API",
+      "description": "Local Sentinel API checks and read-only state API activity.",
+      "visualHint": "cyan",
+      "defaultSeverity": "info",
+      "showInDashboard": true
+    }
+  },
+  "severities": {
+    "info": {
+      "label": "Info",
+      "description": "Normal informational activity.",
+      "visualHint": "blue"
+    },
+    "success": {
+      "label": "Success",
+      "description": "Activity completed successfully.",
+      "visualHint": "emerald"
+    },
+    "warning": {
+      "label": "Warning",
+      "description": "Activity completed with a condition worth reviewing.",
+      "visualHint": "amber"
+    },
+    "error": {
+      "label": "Error",
+      "description": "Activity failed or indicates a blocking issue.",
+      "visualHint": "rose"
+    }
+  }
+}

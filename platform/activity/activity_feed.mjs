@@ -7,6 +7,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../..");
 const DEFAULT_TENANT = "erp-experts";
+const TAXONOMY_PATH = path.join(__dirname, "activity-taxonomy.json");
+
+export function getActivityTaxonomy() {
+  return JSON.parse(fs.readFileSync(TAXONOMY_PATH, "utf8"));
+}
 
 function quoteSql(value) {
   return String(value ?? "").replaceAll("'", "''");
@@ -56,6 +61,34 @@ function severityFromStatus(status = "") {
   return "info";
 }
 
+function normaliseActivityType(type = "", taxonomy = getActivityTaxonomy()) {
+  const normalised = String(type || "").trim().toLowerCase();
+  if (taxonomy.types?.[normalised]) return normalised;
+  if (normalised === "notifications") return "notification";
+  if (["monitor", "autopilot", "reports"].includes(normalised)) return "system";
+  return "system";
+}
+
+function normaliseActivitySeverity(severity = "", taxonomy = getActivityTaxonomy()) {
+  const normalised = String(severity || "").trim().toLowerCase();
+  return taxonomy.severities?.[normalised] ? normalised : "info";
+}
+
+export function normaliseActivityEntry(entry, taxonomy = getActivityTaxonomy()) {
+  const type = normaliseActivityType(entry?.type, taxonomy);
+  const severity = normaliseActivitySeverity(entry?.severity || taxonomy.types?.[type]?.defaultSeverity, taxonomy);
+  const typeMeta = taxonomy.types?.[type] || taxonomy.types.system;
+  const severityMeta = taxonomy.severities?.[severity] || taxonomy.severities.info;
+
+  return {
+    ...entry,
+    type,
+    severity,
+    displayLabel: typeMeta?.label || "System",
+    visualHint: typeMeta?.visualHint || severityMeta?.visualHint || "slate",
+  };
+}
+
 function statusWord(status = "") {
   if (status === "success") return "completed successfully";
   if (status === "running") return "is running";
@@ -66,11 +99,12 @@ function statusWord(status = "") {
 function commandType(command = "") {
   if (command.startsWith("ui_action:")) return "operator";
   if (command.includes("platform:cadence")) return "cadence";
-  if (command.includes("platform:notify")) return "notifications";
+  if (command.includes("platform:notify")) return "notification";
   if (command.includes("platform:deploy:ready") || command.includes("deploy:")) return "deploy";
-  if (command.includes("seo:monitor")) return "monitor";
-  if (command.includes("seo:autopilot")) return "autopilot";
-  if (command.includes("platform:daily") || command.includes("platform:stakeholder") || command.includes("platform:state")) return "reports";
+  if (command.includes("backup:")) return "backup";
+  if (command.includes("platform:tenant")) return "tenant";
+  if (command.includes("platform:api")) return "api";
+  if (command.includes("seo:monitor") || command.includes("platform:health") || command.includes("platform:doctor")) return "health";
   return "system";
 }
 
@@ -188,7 +222,7 @@ function notificationActivity() {
 
   return [{
     id: `notifications-${latest.mtime}`,
-    type: "notifications",
+    type: "notification",
     title: "Notification payloads generated",
     summary: `${operatorPresent ? "Operator" : "No operator"} and ${stakeholderPresent ? "stakeholder" : "no stakeholder"} payloads are present. No messages sent.`,
     severity: "success",
@@ -205,7 +239,7 @@ function reportActivities() {
   const reports = [
     {
       id: "daily-operator-report",
-      type: "reports",
+      type: "system",
       title: "Daily operator report generated",
       summary: "Private operator handoff report is available locally.",
       source: "operator_report",
@@ -213,7 +247,7 @@ function reportActivities() {
     },
     {
       id: "stakeholder-weekly-report",
-      type: "reports",
+      type: "system",
       title: "Stakeholder progress report generated",
       summary: "Stakeholder-safe SEO and content progress summary is available locally.",
       source: "stakeholder_report",
@@ -248,6 +282,7 @@ function reportActivities() {
 
 export function getActivityFeed({ tenantId = DEFAULT_TENANT, limit = 20, dbPath = DEFAULT_DB_PATH } = {}) {
   const requestedLimit = safeLimit(limit, 20);
+  const taxonomy = getActivityTaxonomy();
   const entries = [
     ...runActivities({ tenantId, limit: Math.max(requestedLimit * 4, 80), dbPath }),
     ...cadenceActivity(),
@@ -258,5 +293,6 @@ export function getActivityFeed({ tenantId = DEFAULT_TENANT, limit = 20, dbPath 
   return entries
     .filter((entry) => entry.timestamp)
     .sort((a, b) => parseTimestamp(b.timestamp) - parseTimestamp(a.timestamp))
+    .map((entry) => normaliseActivityEntry(entry, taxonomy))
     .slice(0, requestedLimit);
 }

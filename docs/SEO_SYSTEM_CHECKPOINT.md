@@ -99,6 +99,8 @@ Current operator zones:
 
 The Activity Feed uses `platform/activity/activity_feed.mjs` and local `GET /activity` to aggregate persisted runs, action summaries and safe generated artefact timestamps into concise operator-only entries. It avoids raw command output, stack traces and secrets. `/seo-progress` does not expose this feed.
 
+Activity taxonomy is now explicit in `platform/activity/activity-taxonomy.json`. Feed entries are normalised to the allowed types (`system`, `operator`, `cadence`, `notification`, `deploy`, `backup`, `tenant`, `health`, `api`) and severities (`info`, `success`, `warning`, `error`) before leaving the helper or API. `npm run platform:activity:validate` validates the taxonomy and locally generated entries.
+
 The Tenant Registry preview uses `GET /tenants` when the local Sentinel API is running and falls back to the bundled registry. It does not enable switching, actions against disabled tenants or multi-tenant pipelines.
 
 The command registry is stored at `platform/commands/commands.json`. It describes each known command, category, risk level, local-only expectation, API/deployment requirements, default tenant scope and recommended usage. The dashboard uses it for discovery and only exposes Run buttons for commands present in the stricter action allowlist. There is no browser-side shell, backend terminal or arbitrary command runner.

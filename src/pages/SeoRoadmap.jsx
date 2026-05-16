@@ -27,6 +27,7 @@ import sentinelCommandRegistry from "../../platform/commands/commands.json";
 import sentinelActionRegistry from "../../platform/actions/actions.json";
 import sentinelTenantRegistry from "../../platform/tenants/tenant-registry.json";
 import sentinelControlCentreHelp from "../../platform/help/control-centre-help.json";
+import sentinelActivityTaxonomy from "../../platform/activity/activity-taxonomy.json";
 const historyQaModules = import.meta.glob("../../reports/history/*/resource-qa-report.json", { eager: true });
 const sentinelStateModules = import.meta.glob("../../reports/sentinel-state.json", { eager: true });
 const sentinelCadenceModules = import.meta.glob("../../reports/sentinel-cadence-summary.json", { eager: true });
@@ -275,6 +276,17 @@ function activitySeverityBadgeClass(severity = "") {
   if (severity === "warning") return "bg-amber-50 text-amber-800 ring-amber-100";
   if (severity === "error") return "bg-rose-50 text-rose-700 ring-rose-100";
   return "bg-blue-50 text-blue-700 ring-blue-100";
+}
+
+function activityVisualHintBadgeClass(visualHint = "") {
+  if (visualHint === "pink") return "bg-pink-50 text-pink-700 ring-pink-100";
+  if (visualHint === "violet") return "bg-violet-50 text-violet-700 ring-violet-100";
+  if (visualHint === "amber") return "bg-amber-50 text-amber-800 ring-amber-100";
+  if (visualHint === "emerald") return "bg-emerald-50 text-emerald-700 ring-emerald-100";
+  if (visualHint === "indigo") return "bg-indigo-50 text-indigo-700 ring-indigo-100";
+  if (visualHint === "cyan") return "bg-cyan-50 text-cyan-700 ring-cyan-100";
+  if (visualHint === "blue") return "bg-blue-50 text-blue-700 ring-blue-100";
+  return "bg-slate-50 text-slate-700 ring-slate-100";
 }
 
 function buildMonitorInsights({ points, modeKey }) {
@@ -1778,16 +1790,15 @@ function ActivityFeedPanel({ activityFeed, onRefresh }) {
   const activities = Array.isArray(activityFeed?.activities) ? activityFeed.activities : [];
   const loading = activityFeed?.loading;
   const unavailable = activityFeed?.status === "unavailable";
+  const taxonomyTypes = sentinelActivityTaxonomy?.types || {};
   const filters = [
     { key: "all", label: "All" },
-    { key: "system", label: "System" },
-    { key: "operator", label: "Operator" },
-    { key: "cadence", label: "Cadence" },
-    { key: "notifications", label: "Notifications" },
-    { key: "deploy", label: "Deploy" },
+    ...Object.entries(taxonomyTypes)
+      .filter(([, meta]) => meta.showInDashboard)
+      .map(([key, meta]) => ({ key, label: meta.label || formatStateLabel(key) })),
   ];
   const visibleActivities = activities
-    .filter((entry) => activeType === "all" || entry.type === activeType || (activeType === "system" && ["monitor", "autopilot", "reports", "system"].includes(entry.type)))
+    .filter((entry) => activeType === "all" || entry.type === activeType)
     .slice(0, 8);
 
   return (
@@ -1849,8 +1860,8 @@ function ActivityFeedPanel({ activityFeed, onRefresh }) {
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-sm font-semibold text-slate-950">{entry.title}</p>
-                  <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-100">
-                    {formatStateLabel(entry.type)}
+                  <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${activityVisualHintBadgeClass(entry.visualHint)}`}>
+                    {entry.displayLabel || taxonomyTypes?.[entry.type]?.label || formatStateLabel(entry.type)}
                   </span>
                 </div>
                 <p className="text-xs text-slate-500" style={{ marginTop: "3px" }}>

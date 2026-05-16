@@ -224,6 +224,8 @@ The Control Centre groups the operator experience into:
 
 The Activity Feed is backed by `platform/activity/activity_feed.mjs` and the local `GET /activity` API endpoint. It is operator-only, deliberately concise and does not show raw command output, stack traces or secrets. If the local API is unavailable, the Control Centre shows a calm fallback rather than failing.
 
+Activity categories and severities are standardised in `platform/activity/activity-taxonomy.json`. New activity sources should use the allowed types (`system`, `operator`, `cadence`, `notification`, `deploy`, `backup`, `tenant`, `health`, `api`) and severities (`info`, `success`, `warning`, `error`). Run `npm run platform:activity:validate` to check the taxonomy and locally generated feed entries.
+
 The Tenant Registry panel uses the local `GET /tenants` API when available and falls back to the bundled `platform/tenants/tenant-registry.json` file. It is intentionally read-only. ERP Experts is the only active tenant, `demo-client` is shown as a disabled fixture, and the Control Centre does not provide tenant switching or disabled-tenant actions.
 
 Command metadata lives in `platform/commands/commands.json`. The registry also states the default tenant scope as `erp-experts`, so the dashboard can make clear that commands currently run against ERP Experts unless a command explicitly supports `--tenant`. Command discovery remains separate from execution. Any browser-triggered execution must go through the stricter action allowlist below, not through arbitrary command text.
