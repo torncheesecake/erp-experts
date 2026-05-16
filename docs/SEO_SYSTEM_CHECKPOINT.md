@@ -84,6 +84,8 @@ The route now uses a clearer app-shell structure:
 
 The private Control Centre also persists lightweight operator preferences in local browser storage. It restores the last selected section, command search/filter, sidebar collapsed state, compact view preference and selected collapsed panel states. This is local-only UI state: no command outputs, credentials, API payloads, reports, notifications or database state are stored. The reset option clears only this local Sentinel UI state and restores the default Overview layout.
 
+The Control Centre now supports saved local operator workspaces via `sentinel.operatorWorkspaces.v1`. Built-in presets cover Monitoring, Development, Deployment and Roadmap Review, while custom workspaces can be created from the current layout, overwritten, deleted and restored locally. Workspaces remember section, command filter/search, compact mode, sidebar state, visible focus panels and collapse state. They remain browser-local only and are not exposed on `/seo-progress`.
+
 The Control Centre now includes contextual operator help backed by `platform/help/control-centre-help.json`. Help changes with the selected section, explains when to use each area, lists safe notes and shows a subtle first-run hint for new local sessions. This help is private/operator-only and is not exposed on `/seo-progress`.
 
 The Control Centre has had a UX polish pass focused on daily operation rather than new behaviour. The Overview now prioritises current focus, recommended next step and primary safe actions; command groups are less dense; Activity Feed rows are quieter and taxonomy-labelled; stakeholder routes remain unchanged.

@@ -44,7 +44,11 @@ const sentinelImplementationStatusModules = import.meta.glob("../../reports/sent
 const sentinelApiBaseUrl = String(import.meta.env.VITE_SENTINEL_API_BASE_URL || "").replace(/\/+$/, "");
 const sentinelActionApiBaseUrl = sentinelApiBaseUrl || "http://127.0.0.1:4317";
 const SENTINEL_OPERATOR_SESSION_KEY = "sentinel.operatorSession.v1";
+const SENTINEL_OPERATOR_WORKSPACES_KEY = "sentinel.operatorWorkspaces.v1";
+const SENTINEL_DEFAULT_WORKSPACE_ID = "monitoring";
+const SENTINEL_WORKSPACE_PANEL_KEYS = ["supportingIntelligence", "articleWorkbench", "advancedDiagnostics"];
 const SENTINEL_OPERATOR_SESSION_DEFAULTS = {
+  activeWorkspaceId: SENTINEL_DEFAULT_WORKSPACE_ID,
   activeSection: "overview",
   commandQuery: "",
   commandCategory: "All",
@@ -58,6 +62,84 @@ const SENTINEL_OPERATOR_SESSION_DEFAULTS = {
     advancedDiagnostics: false,
   },
 };
+const SENTINEL_BUILT_IN_WORKSPACES = [
+  {
+    id: "monitoring",
+    name: "Monitoring",
+    createdAt: "built-in",
+    builtIn: true,
+    selectedSection: "overview",
+    commandFilter: "All",
+    commandSearch: "",
+    sidebarCollapsed: false,
+    collapsedPanels: {
+      supportingIntelligence: true,
+      articleWorkbench: true,
+      advancedDiagnostics: true,
+    },
+    compactMode: false,
+    visiblePanels: ["Overview", "Activity", "Cadence"],
+    preferredFocus: "monitoring",
+    notes: "Daily operating view focused on health, activity and cadence.",
+  },
+  {
+    id: "development",
+    name: "Development",
+    createdAt: "built-in",
+    builtIn: true,
+    selectedSection: "actions",
+    commandFilter: "All",
+    commandSearch: "",
+    sidebarCollapsed: false,
+    collapsedPanels: {
+      supportingIntelligence: false,
+      articleWorkbench: true,
+      advancedDiagnostics: true,
+    },
+    compactMode: false,
+    visiblePanels: ["Actions", "Roadmap", "Feedback"],
+    preferredFocus: "development",
+    notes: "Implementation preparation view for safe actions, roadmap and feedback.",
+  },
+  {
+    id: "deployment",
+    name: "Deployment",
+    createdAt: "built-in",
+    builtIn: true,
+    selectedSection: "diagnostics",
+    commandFilter: "Deployment",
+    commandSearch: "",
+    sidebarCollapsed: true,
+    collapsedPanels: {
+      supportingIntelligence: true,
+      articleWorkbench: true,
+      advancedDiagnostics: false,
+    },
+    compactMode: true,
+    visiblePanels: ["Diagnostics", "Readiness", "Activity"],
+    preferredFocus: "deployment",
+    notes: "Pre-deployment view focused on readiness, diagnostics and recent activity.",
+  },
+  {
+    id: "roadmap-review",
+    name: "Roadmap Review",
+    createdAt: "built-in",
+    builtIn: true,
+    selectedSection: "overview",
+    commandFilter: "State",
+    commandSearch: "roadmap",
+    sidebarCollapsed: false,
+    collapsedPanels: {
+      supportingIntelligence: false,
+      articleWorkbench: true,
+      advancedDiagnostics: true,
+    },
+    compactMode: false,
+    visiblePanels: ["Feedback", "Roadmap", "Packages"],
+    preferredFocus: "roadmap_review",
+    notes: "Planning view for feedback triage, roadmap intelligence and handoff packages.",
+  },
+];
 
 const seoSnapshotDate =
   reportData?.ga4Period?.seoInsights?.period?.split(" to ").at(-1) || reportData?.lastUpdated;
@@ -204,6 +286,115 @@ function mergeOperatorSessionState(savedState = {}) {
       ...(savedState?.panels || {}),
     },
   };
+}
+
+function normaliseWorkspacePanels(collapsedPanels = {}) {
+  return SENTINEL_WORKSPACE_PANEL_KEYS.reduce((acc, key) => ({
+    ...acc,
+    [key]: collapsedPanels?.[key] !== false,
+  }), {});
+}
+
+function normaliseOperatorWorkspace(workspace = {}) {
+  const builtInMatch = SENTINEL_BUILT_IN_WORKSPACES.find((item) => item.id === workspace.id);
+  const fallback = builtInMatch || SENTINEL_BUILT_IN_WORKSPACES[0];
+  const id = String(workspace.id || fallback.id || `workspace-${Date.now()}`).trim();
+
+  return {
+    id,
+    name: String(workspace.name || fallback.name || "Workspace").trim(),
+    createdAt: workspace.createdAt || new Date().toISOString(),
+    builtIn: Boolean(workspace.builtIn && builtInMatch),
+    selectedSection: workspace.selectedSection || fallback.selectedSection || "overview",
+    commandFilter: workspace.commandFilter || fallback.commandFilter || "All",
+    commandSearch: workspace.commandSearch || fallback.commandSearch || "",
+    sidebarCollapsed: Boolean(workspace.sidebarCollapsed ?? fallback.sidebarCollapsed),
+    collapsedPanels: normaliseWorkspacePanels(workspace.collapsedPanels || fallback.collapsedPanels),
+    compactMode: Boolean(workspace.compactMode ?? fallback.compactMode),
+    visiblePanels: Array.isArray(workspace.visiblePanels) && workspace.visiblePanels.length
+      ? workspace.visiblePanels.map((item) => String(item)).filter(Boolean)
+      : [...(fallback.visiblePanels || [])],
+    preferredFocus: workspace.preferredFocus || fallback.preferredFocus || "monitoring",
+    notes: workspace.notes || fallback.notes || "",
+    updatedAt: workspace.updatedAt || workspace.createdAt || null,
+  };
+}
+
+function readOperatorWorkspaces() {
+  if (typeof window === "undefined") return SENTINEL_BUILT_IN_WORKSPACES.map(normaliseOperatorWorkspace);
+
+  try {
+    const raw = window.localStorage.getItem(SENTINEL_OPERATOR_WORKSPACES_KEY);
+    const parsed = raw ? JSON.parse(raw) : {};
+    const storedWorkspaces = Array.isArray(parsed) ? parsed : parsed?.workspaces;
+    const customWorkspaces = Array.isArray(storedWorkspaces) ? storedWorkspaces : [];
+    const builtInIds = new Set(SENTINEL_BUILT_IN_WORKSPACES.map((workspace) => workspace.id));
+    const normalisedCustom = customWorkspaces
+      .map((workspace) => normaliseOperatorWorkspace({ ...workspace, builtIn: false }))
+      .filter((workspace) => workspace.id && !builtInIds.has(workspace.id));
+
+    return [
+      ...SENTINEL_BUILT_IN_WORKSPACES.map(normaliseOperatorWorkspace),
+      ...normalisedCustom,
+    ];
+  } catch {
+    return SENTINEL_BUILT_IN_WORKSPACES.map(normaliseOperatorWorkspace);
+  }
+}
+
+function writeOperatorWorkspaces(workspaces = []) {
+  if (typeof window === "undefined") return;
+
+  try {
+    const builtInIds = new Set(SENTINEL_BUILT_IN_WORKSPACES.map((workspace) => workspace.id));
+    const customWorkspaces = workspaces
+      .filter((workspace) => workspace?.id && !workspace.builtIn && !builtInIds.has(workspace.id))
+      .map((workspace) => normaliseOperatorWorkspace({ ...workspace, builtIn: false }));
+
+    if (!customWorkspaces.length) {
+      window.localStorage.removeItem(SENTINEL_OPERATOR_WORKSPACES_KEY);
+      return;
+    }
+
+    window.localStorage.setItem(SENTINEL_OPERATOR_WORKSPACES_KEY, JSON.stringify({
+      version: 1,
+      workspaces: customWorkspaces,
+    }));
+  } catch {
+    // Local workspace persistence is optional.
+  }
+}
+
+function buildWorkspaceSlug(name = "") {
+  const slug = String(name || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+  return slug || "workspace";
+}
+
+function openPanelsFromWorkspace(workspace = {}) {
+  const collapsedPanels = normaliseWorkspacePanels(workspace.collapsedPanels);
+  return SENTINEL_WORKSPACE_PANEL_KEYS.reduce((acc, key) => ({
+    ...acc,
+    [key]: !collapsedPanels[key],
+  }), {});
+}
+
+function collapsedPanelsFromOpenState(panels = {}) {
+  return SENTINEL_WORKSPACE_PANEL_KEYS.reduce((acc, key) => ({
+    ...acc,
+    [key]: panels[key] !== true,
+  }), {});
+}
+
+function buildVisiblePanelsFromState({ activeSection, panels }) {
+  const visiblePanels = [formatStateLabel(activeSection || "overview")];
+  if (panels.supportingIntelligence) visiblePanels.push("Supporting intelligence");
+  if (panels.articleWorkbench) visiblePanels.push("Article workbench");
+  if (panels.advancedDiagnostics) visiblePanels.push("Diagnostics");
+  return [...new Set(visiblePanels)];
 }
 
 function readOperatorSessionState() {
@@ -1183,6 +1374,140 @@ function ControlCentreHelpPanel({
               </ul>
             </div>
           ) : null}
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function OperatorWorkspaceSwitcher({
+  workspaces,
+  activeWorkspace,
+  activeWorkspaceId,
+  newWorkspaceName,
+  workspaceNotice,
+  onWorkspaceChange,
+  onNewWorkspaceNameChange,
+  onCreateWorkspace,
+  onSaveWorkspace,
+  onResetSelectedWorkspace,
+  onDeleteWorkspace,
+}) {
+  const visiblePanels = Array.isArray(activeWorkspace?.visiblePanels) ? activeWorkspace.visiblePanels : [];
+  const canDelete = activeWorkspace && !activeWorkspace.builtIn;
+  const saveLabel = activeWorkspace?.builtIn ? "Save as custom" : "Overwrite current";
+
+  return (
+    <section className="rounded-[24px] bg-white/85 p-4 shadow-sm ring-1 ring-slate-100/80">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Workspace</p>
+          <h2 className="text-lg font-semibold text-slate-950">{activeWorkspace?.name || "Monitoring"}</h2>
+          <p className="text-sm text-slate-600">
+            {activeWorkspace?.notes || "Browser-local layout preset for this operator session."}
+          </p>
+          <div className="flex flex-wrap gap-2 text-xs" style={{ marginTop: "8px" }}>
+            <span className={`rounded-full px-2.5 py-1 font-semibold ring-1 ${activeWorkspace?.builtIn ? "bg-slate-50 text-slate-600 ring-slate-100" : "bg-emerald-50 text-emerald-700 ring-emerald-100"}`}>
+              {activeWorkspace?.builtIn ? "Built-in" : "Custom"}
+            </span>
+            <span className="rounded-full bg-slate-50 px-2.5 py-1 font-semibold text-slate-600 ring-1 ring-slate-100">
+              Focus: {formatStateLabel(activeWorkspace?.preferredFocus || "monitoring")}
+            </span>
+            <span className="rounded-full bg-slate-50 px-2.5 py-1 font-semibold text-slate-600 ring-1 ring-slate-100">
+              Section: {formatStateLabel(activeWorkspace?.selectedSection || "overview")}
+            </span>
+          </div>
+        </div>
+
+        <div className="grid gap-2 sm:min-w-[300px]">
+          <label className="grid gap-1 text-xs font-semibold text-slate-600">
+            Switch workspace
+            <select
+              value={activeWorkspaceId}
+              onChange={(event) => onWorkspaceChange(event.target.value)}
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800"
+            >
+              {workspaces.map((workspace) => (
+                <option key={workspace.id} value={workspace.id}>
+                  {workspace.name}{workspace.builtIn ? " (built-in)" : ""}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(280px,360px)]" style={{ marginTop: "14px" }}>
+        <div className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Workspace restores</p>
+          <div className="flex flex-wrap gap-2" style={{ marginTop: "8px" }}>
+            {visiblePanels.length ? visiblePanels.map((panel) => (
+              <span key={panel} className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">
+                {panel}
+              </span>
+            )) : (
+              <span className="text-sm text-slate-600">Default Control Centre panels.</span>
+            )}
+          </div>
+          <p className="text-xs text-slate-500" style={{ marginTop: "10px" }}>
+            Saves section, command filter, search, compact mode, sidebar state and panel collapse state locally.
+          </p>
+        </div>
+
+        <div className="rounded-2xl bg-white p-3 ring-1 ring-slate-100">
+          <label className="grid gap-1 text-xs font-semibold text-slate-600">
+            New workspace name
+            <input
+              value={newWorkspaceName}
+              onChange={(event) => onNewWorkspaceNameChange(event.target.value)}
+              placeholder={`${activeWorkspace?.name || "Monitoring"} Custom`}
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800"
+            />
+          </label>
+          <div className="flex flex-wrap gap-2" style={{ marginTop: "10px" }}>
+            <button
+              type="button"
+              onClick={onCreateWorkspace}
+              className="rounded-lg bg-slate-950 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+            >
+              Create new
+            </button>
+            <button
+              type="button"
+              onClick={onSaveWorkspace}
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              {saveLabel}
+            </button>
+            <button
+              type="button"
+              onClick={onResetSelectedWorkspace}
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              Reset selected
+            </button>
+            <button
+              type="button"
+              onClick={onDeleteWorkspace}
+              disabled={!canDelete}
+              className={`rounded-lg border px-3 py-2 text-sm font-semibold ${
+                canDelete
+                  ? "border-rose-200 bg-white text-rose-700 hover:bg-rose-50"
+                  : "cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400"
+              }`}
+            >
+              Delete custom
+            </button>
+          </div>
+          <p className="text-xs text-slate-500" style={{ marginTop: "8px" }}>
+            Built-in workspaces stay available and cannot be deleted.
+          </p>
+        </div>
+      </div>
+
+      {workspaceNotice ? (
+        <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 ring-1 ring-emerald-100" style={{ marginTop: "12px" }}>
+          {workspaceNotice}
         </div>
       ) : null}
     </section>
@@ -3758,7 +4083,12 @@ function AdminView({ onPreview }) {
       exists: hasStoredOperatorSessionState(),
     };
   }
+  const operatorWorkspacesInitialRef = useRef(null);
+  if (!operatorWorkspacesInitialRef.current) {
+    operatorWorkspacesInitialRef.current = readOperatorWorkspaces();
+  }
   const initialOperatorSession = operatorSessionInitialRef.current.state;
+  const initialOperatorWorkspaces = operatorWorkspacesInitialRef.current;
   const [activeNav, setActiveNav] = useState(() => initialOperatorSession.activeSection || "overview");
   const [commandQuery, setCommandQuery] = useState(() => initialOperatorSession.commandQuery || "");
   const [commandCategory, setCommandCategory] = useState(() => initialOperatorSession.commandCategory || "All");
@@ -3771,6 +4101,15 @@ function AdminView({ onPreview }) {
   const [articleWorkbenchOpen, setArticleWorkbenchOpen] = useState(() => Boolean(initialOperatorSession.panels?.articleWorkbench));
   const [advancedDiagnosticsOpen, setAdvancedDiagnosticsOpen] = useState(() => Boolean(initialOperatorSession.panels?.advancedDiagnostics));
   const [sessionResetNotice, setSessionResetNotice] = useState("");
+  const [operatorWorkspaces, setOperatorWorkspaces] = useState(() => initialOperatorWorkspaces);
+  const [activeWorkspaceId, setActiveWorkspaceId] = useState(() => {
+    const preferredWorkspaceId = initialOperatorSession.activeWorkspaceId || SENTINEL_DEFAULT_WORKSPACE_ID;
+    return initialOperatorWorkspaces.some((workspace) => workspace.id === preferredWorkspaceId)
+      ? preferredWorkspaceId
+      : SENTINEL_DEFAULT_WORKSPACE_ID;
+  });
+  const [newWorkspaceName, setNewWorkspaceName] = useState("");
+  const [workspaceNotice, setWorkspaceNotice] = useState("");
   const [sentinelStateSnapshot, setSentinelStateSnapshot] = useState(getInitialSentinelState);
   const [tenantRegistrySnapshot, setTenantRegistrySnapshot] = useState(getInitialTenantRegistry);
   const [cadenceSummary, setCadenceSummary] = useState(readCadenceSummary);
@@ -3808,6 +4147,7 @@ function AdminView({ onPreview }) {
 
   useEffect(() => {
     writeOperatorSessionState({
+      activeWorkspaceId,
       activeSection: activeNav,
       commandQuery,
       commandCategory,
@@ -3822,6 +4162,7 @@ function AdminView({ onPreview }) {
       },
     });
   }, [
+    activeWorkspaceId,
     activeNav,
     commandQuery,
     commandCategory,
@@ -4625,6 +4966,14 @@ function AdminView({ onPreview }) {
     { key: "tenants", label: "Tenants", description: "Registry preview", ref: tenantsRef },
     { key: "diagnostics", label: "Diagnostics", description: "Checks and workbench", ref: diagnosticsRef },
   ];
+  const activeWorkspace = operatorWorkspaces.find((workspace) => workspace.id === activeWorkspaceId)
+    || operatorWorkspaces.find((workspace) => workspace.id === SENTINEL_DEFAULT_WORKSPACE_ID)
+    || operatorWorkspaces[0];
+  const currentWorkspacePanels = {
+    supportingIntelligence: supportingIntelligenceOpen,
+    articleWorkbench: articleWorkbenchOpen,
+    advancedDiagnostics: advancedDiagnosticsOpen,
+  };
 
   const handleSidebarNav = (item) => {
     setActiveNav(item.key);
@@ -4640,11 +4989,155 @@ function AdminView({ onPreview }) {
     ]);
   };
 
+  const showWorkspaceNotice = (message) => {
+    setWorkspaceNotice(message);
+    window.setTimeout(() => setWorkspaceNotice(""), 2200);
+  };
+
+  const applyOperatorWorkspace = (workspace) => {
+    const normalisedWorkspace = normaliseOperatorWorkspace(workspace);
+    const panelState = openPanelsFromWorkspace(normalisedWorkspace);
+
+    setActiveWorkspaceId(normalisedWorkspace.id);
+    setActiveNav(normalisedWorkspace.selectedSection || "overview");
+    setCommandQuery(normalisedWorkspace.commandSearch || "");
+    setCommandCategory(normalisedWorkspace.commandFilter || "All");
+    setSidebarCollapsed(Boolean(normalisedWorkspace.sidebarCollapsed));
+    setCompactView(Boolean(normalisedWorkspace.compactMode));
+    setSupportingIntelligenceOpen(Boolean(panelState.supportingIntelligence));
+    setArticleWorkbenchOpen(Boolean(panelState.articleWorkbench));
+    setAdvancedDiagnosticsOpen(Boolean(panelState.advancedDiagnostics));
+    setIsFirstRunSession(false);
+    showWorkspaceNotice(`${normalisedWorkspace.name} workspace loaded locally.`);
+  };
+
+  const persistWorkspaceList = (nextWorkspaces) => {
+    const builtInIds = new Set(SENTINEL_BUILT_IN_WORKSPACES.map((workspace) => workspace.id));
+    const nextCustomWorkspaces = nextWorkspaces.filter((workspace) => !workspace.builtIn && !builtInIds.has(workspace.id));
+    const mergedWorkspaces = [
+      ...SENTINEL_BUILT_IN_WORKSPACES.map(normaliseOperatorWorkspace),
+      ...nextCustomWorkspaces.map((workspace) => normaliseOperatorWorkspace({ ...workspace, builtIn: false })),
+    ];
+
+    setOperatorWorkspaces(mergedWorkspaces);
+    writeOperatorWorkspaces(mergedWorkspaces);
+    return mergedWorkspaces;
+  };
+
+  const buildWorkspaceFromCurrentState = ({ id, name, createdAt, notes, preferredFocus }) => normaliseOperatorWorkspace({
+    id,
+    name,
+    createdAt: createdAt || new Date().toISOString(),
+    builtIn: false,
+    selectedSection: activeNav,
+    commandFilter: commandCategory,
+    commandSearch: commandQuery,
+    sidebarCollapsed,
+    collapsedPanels: collapsedPanelsFromOpenState(currentWorkspacePanels),
+    compactMode: compactView,
+    visiblePanels: buildVisiblePanelsFromState({
+      activeSection: activeNav,
+      panels: currentWorkspacePanels,
+    }),
+    preferredFocus: preferredFocus || activeWorkspace?.preferredFocus || activeNav,
+    notes: notes || "Custom workspace saved from the current Control Centre layout.",
+    updatedAt: new Date().toISOString(),
+  });
+
+  const createWorkspaceFromCurrentState = () => {
+    const name = newWorkspaceName.trim();
+    if (!name) {
+      showWorkspaceNotice("Add a workspace name before creating a custom workspace.");
+      return;
+    }
+
+    const builtInIds = new Set(SENTINEL_BUILT_IN_WORKSPACES.map((workspace) => workspace.id));
+    const existingIds = new Set(operatorWorkspaces.map((workspace) => workspace.id));
+    let id = `custom-${buildWorkspaceSlug(name)}`;
+    let suffix = 2;
+    while (existingIds.has(id) || builtInIds.has(id)) {
+      id = `custom-${buildWorkspaceSlug(name)}-${suffix}`;
+      suffix += 1;
+    }
+
+    const workspace = buildWorkspaceFromCurrentState({
+      id,
+      name,
+      preferredFocus: activeWorkspace?.preferredFocus || activeNav,
+    });
+    const nextWorkspaces = persistWorkspaceList([...operatorWorkspaces, workspace]);
+    setActiveWorkspaceId(workspace.id);
+    setNewWorkspaceName("");
+    showWorkspaceNotice(`${workspace.name} workspace created locally.`);
+
+    if (!nextWorkspaces.some((item) => item.id === workspace.id)) {
+      showWorkspaceNotice("Workspace could not be saved in this browser.");
+    }
+  };
+
+  const saveActiveWorkspace = () => {
+    if (!activeWorkspace) return;
+
+    if (activeWorkspace.builtIn) {
+      const customName = newWorkspaceName.trim() || `${activeWorkspace.name} Custom`;
+      const builtInIds = new Set(SENTINEL_BUILT_IN_WORKSPACES.map((workspace) => workspace.id));
+      const existingIds = new Set(operatorWorkspaces.map((workspace) => workspace.id));
+      let id = `custom-${buildWorkspaceSlug(customName)}`;
+      let suffix = 2;
+      while (existingIds.has(id) || builtInIds.has(id)) {
+        id = `custom-${buildWorkspaceSlug(customName)}-${suffix}`;
+        suffix += 1;
+      }
+
+      const workspace = buildWorkspaceFromCurrentState({
+        id,
+        name: customName,
+        preferredFocus: activeWorkspace.preferredFocus,
+        notes: `Custom copy of ${activeWorkspace.name}.`,
+      });
+      persistWorkspaceList([...operatorWorkspaces, workspace]);
+      setActiveWorkspaceId(workspace.id);
+      setNewWorkspaceName("");
+      showWorkspaceNotice(`${workspace.name} workspace saved locally.`);
+      return;
+    }
+
+    const updatedWorkspace = buildWorkspaceFromCurrentState({
+      id: activeWorkspace.id,
+      name: activeWorkspace.name,
+      createdAt: activeWorkspace.createdAt,
+      preferredFocus: activeWorkspace.preferredFocus,
+      notes: activeWorkspace.notes,
+    });
+    persistWorkspaceList(operatorWorkspaces.map((workspace) => (
+      workspace.id === activeWorkspace.id ? updatedWorkspace : workspace
+    )));
+    showWorkspaceNotice(`${updatedWorkspace.name} workspace overwritten locally.`);
+  };
+
+  const resetSelectedWorkspace = () => {
+    if (!activeWorkspace) return;
+    applyOperatorWorkspace(activeWorkspace);
+  };
+
+  const deleteActiveWorkspace = () => {
+    if (!activeWorkspace || activeWorkspace.builtIn) {
+      showWorkspaceNotice("Built-in workspaces cannot be deleted.");
+      return;
+    }
+
+    const nextWorkspaces = persistWorkspaceList(operatorWorkspaces.filter((workspace) => workspace.id !== activeWorkspace.id));
+    const defaultWorkspace = nextWorkspaces.find((workspace) => workspace.id === SENTINEL_DEFAULT_WORKSPACE_ID) || nextWorkspaces[0];
+    if (defaultWorkspace) applyOperatorWorkspace(defaultWorkspace);
+    showWorkspaceNotice(`${activeWorkspace.name} workspace deleted locally.`);
+  };
+
   const resetControlCentreState = () => {
     clearOperatorSessionState();
     setActiveNav(SENTINEL_OPERATOR_SESSION_DEFAULTS.activeSection);
     setCommandQuery(SENTINEL_OPERATOR_SESSION_DEFAULTS.commandQuery);
     setCommandCategory(SENTINEL_OPERATOR_SESSION_DEFAULTS.commandCategory);
+    setActiveWorkspaceId(SENTINEL_OPERATOR_SESSION_DEFAULTS.activeWorkspaceId);
     setSidebarCollapsed(SENTINEL_OPERATOR_SESSION_DEFAULTS.sidebarCollapsed);
     setCompactView(SENTINEL_OPERATOR_SESSION_DEFAULTS.compactView);
     setHelpOpen(SENTINEL_OPERATOR_SESSION_DEFAULTS.helpOpen);
@@ -4702,6 +5195,22 @@ function AdminView({ onPreview }) {
                 setFirstRunHintDismissed(true);
                 setIsFirstRunSession(false);
               }}
+            />
+            <OperatorWorkspaceSwitcher
+              workspaces={operatorWorkspaces}
+              activeWorkspace={activeWorkspace}
+              activeWorkspaceId={activeWorkspaceId}
+              newWorkspaceName={newWorkspaceName}
+              workspaceNotice={workspaceNotice}
+              onWorkspaceChange={(workspaceId) => {
+                const workspace = operatorWorkspaces.find((item) => item.id === workspaceId);
+                if (workspace) applyOperatorWorkspace(workspace);
+              }}
+              onNewWorkspaceNameChange={setNewWorkspaceName}
+              onCreateWorkspace={createWorkspaceFromCurrentState}
+              onSaveWorkspace={saveActiveWorkspace}
+              onResetSelectedWorkspace={resetSelectedWorkspace}
+              onDeleteWorkspace={deleteActiveWorkspace}
             />
             {isMonitorMode && showOverviewTab ? (
               <section ref={overviewRef} className="grid gap-lg">

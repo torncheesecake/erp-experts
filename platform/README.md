@@ -209,6 +209,8 @@ The app shell remembers lightweight operator preferences in local browser storag
 
 This is local UI state only. It does not sync remotely and does not store command outputs, API payloads, credentials, notification payloads, report data or database state. The header includes a reset option that clears only this Sentinel Control Centre browser state.
 
+The Control Centre also supports saved local operator workspaces in `sentinel.operatorWorkspaces.v1`. Built-in presets cover Monitoring, Development, Deployment and Roadmap Review. Matthew can switch between them, create custom workspaces from the current layout, overwrite custom workspaces, delete custom workspaces and reset the selected workspace. These workspaces are browser-local only and store section, command filter, search, compact mode, sidebar state and panel collapse preferences. They do not sync remotely and do not store secrets, command output, reports or database state.
+
 Contextual operator help lives in `platform/help/control-centre-help.json`. The private Control Centre reads this metadata to explain the selected section, when to use it, safe notes and practical next actions. The help layer is operator-only, includes a subtle first-run hint, and is not shown on `/seo-progress`.
 
 The Control Centre groups the operator experience into:
