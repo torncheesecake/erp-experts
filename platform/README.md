@@ -222,7 +222,7 @@ The Control Centre groups the operator experience into:
 - Tenant Registry: read-only preview of registered tenants, including active and disabled fixture entries.
 - Operations: cadence, notification payloads, report generation and state refresh context.
 - Operator Console: controlled allowlisted execution with selected action, lifecycle state, prominent summary, duration, collapsed output preview and recent console history.
-- Execution Pipelines: registered multi-step workflows that run fixed allowlisted actions sequentially and stop safely on failure.
+- Execution Pipelines: registered multi-step workflows with approval, execution and scheduling metadata. They run fixed allowlisted actions sequentially and stop safely on failure.
 - Tools & Commands: searchable command discovery, copy buttons and low-risk Run buttons for allowlisted actions only.
 - Diagnostics: collapsed/secondary checks and the same controlled console surface when deeper checks are needed.
 
@@ -282,7 +282,17 @@ Pipeline metadata lives in:
 platform/pipelines/pipelines.json
 ```
 
-The local API exposes `GET /pipelines`, `POST /pipeline/run` and `GET /pipeline/execution/<id>`. Pipelines are registered workflows only: every step must reference an existing `allowFromUI` action, steps run sequentially, the pipeline stops on the first failed step and operators cannot edit steps or arguments in the browser. Completed pipeline summaries are recorded in `runs` as `ui_pipeline:<id>` where possible. See `docs/SENTINEL_EXECUTION_PIPELINES.md`.
+The local API exposes `GET /pipelines`, `POST /pipeline/run` and `GET /pipeline/execution/<id>`. Pipelines are registered workflows only: every step must reference an existing `allowFromUI` action, steps run sequentially, the pipeline stops on the first failed step and operators cannot edit steps or arguments in the browser. Completed pipeline summaries are recorded in `runs` as `ui_pipeline:<id>` where possible.
+
+Pipeline governance metadata now records approval mode, execution mode, schedule mode, review requirement, scheduling eligibility, max frequency, tags and safety notes. Validate pipeline definitions and preview future scheduling intent with:
+
+```bash
+npm run platform:pipeline:validate
+npm run platform:pipeline:validate -- --json
+npm run platform:pipeline:schedule
+```
+
+These commands are read-only. They do not install cron jobs, systemd timers or background schedules. See `docs/SENTINEL_EXECUTION_PIPELINES.md` and `docs/SENTINEL_PIPELINE_GOVERNANCE.md`.
 
 Initial UI actions are limited to low-risk local commands:
 
@@ -299,7 +309,7 @@ Initial UI actions are limited to low-risk local commands:
 - `platform:feedback:backlog`
 - `platform:notify:stakeholder`
 
-Deploy, cleanup, restore, FTP, service installation and arbitrary shell commands are intentionally excluded. The dashboard shows Run buttons only for allowlisted actions and pipelines, keeps full output out of the default view, shows capped excerpts and shows recent operator action history when the local API is running. The Operator Console is the structured execution surface for safe single actions: it has a selected action, run button, clear execution status, started/finished timestamps, duration, prominent summary, collapsed output preview, recent console history and a disabled cancellation placeholder for future work. Failed actions surface a clear failure state and suggest `platform:doctor`. Execution Pipelines are the structured workflow surface for safe multi-step operations. See `docs/SENTINEL_OPERATOR_ACTIONS.md`, `docs/SENTINEL_OPERATOR_CONSOLE.md` and `docs/SENTINEL_EXECUTION_PIPELINES.md`.
+Deploy, cleanup, restore, FTP, service installation and arbitrary shell commands are intentionally excluded. The dashboard shows Run buttons only for allowlisted actions and pipelines, keeps full output out of the default view, shows capped excerpts and shows recent operator action history when the local API is running. The Operator Console is the structured execution surface for safe single actions: it has a selected action, run button, clear execution status, started/finished timestamps, duration, prominent summary, collapsed output preview, recent console history and a disabled cancellation placeholder for future work. Failed actions surface a clear failure state and suggest `platform:doctor`. Execution Pipelines are the structured workflow surface for safe multi-step operations, with governance metadata visible before a workflow is run. See `docs/SENTINEL_OPERATOR_ACTIONS.md`, `docs/SENTINEL_OPERATOR_CONSOLE.md`, `docs/SENTINEL_EXECUTION_PIPELINES.md` and `docs/SENTINEL_PIPELINE_GOVERNANCE.md`.
 
 ## Operational State Summary
 

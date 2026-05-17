@@ -24,6 +24,10 @@ const MAX_RESULT_EXCERPT_CHARS = 1_000;
 const MAX_IN_MEMORY_EXECUTIONS = 50;
 const MAX_IN_MEMORY_PIPELINE_EXECUTIONS = 25;
 const TERMINAL_EXECUTION_STATES = new Set(["success", "failed", "cancelled"]);
+const PIPELINE_APPROVAL_MODES = new Set(["none", "operator_required", "review_required"]);
+const PIPELINE_EXECUTION_MODES = new Set(["manual", "scheduled", "hybrid"]);
+const PIPELINE_SCHEDULE_MODES = new Set(["disabled", "daily", "weekly", "custom_future"]);
+const PIPELINE_MAX_FREQUENCIES = new Set(["once_per_day", "once_per_hour", "manual_only"]);
 const actionExecutions = new Map();
 const pipelineExecutions = new Map();
 
@@ -508,6 +512,24 @@ function validatePipeline(pipeline) {
   if (!pipeline?.id) failures.push("Pipeline is missing id.");
   if (!pipeline?.allowFromUI) failures.push(`Pipeline ${pipeline?.id || "unknown"} is not allowed from UI.`);
   if (!steps.length) failures.push(`Pipeline ${pipeline?.id || "unknown"} has no steps.`);
+  if (!PIPELINE_APPROVAL_MODES.has(pipeline?.approvalMode)) {
+    failures.push(`Pipeline ${pipeline?.id || "unknown"} has invalid approvalMode.`);
+  }
+  if (!PIPELINE_EXECUTION_MODES.has(pipeline?.executionMode)) {
+    failures.push(`Pipeline ${pipeline?.id || "unknown"} has invalid executionMode.`);
+  }
+  if (!PIPELINE_SCHEDULE_MODES.has(pipeline?.scheduleMode)) {
+    failures.push(`Pipeline ${pipeline?.id || "unknown"} has invalid scheduleMode.`);
+  }
+  if (!PIPELINE_MAX_FREQUENCIES.has(pipeline?.maxFrequency)) {
+    failures.push(`Pipeline ${pipeline?.id || "unknown"} has invalid maxFrequency.`);
+  }
+  if (typeof pipeline?.requiresReview !== "boolean") {
+    failures.push(`Pipeline ${pipeline?.id || "unknown"} must define requiresReview.`);
+  }
+  if (typeof pipeline?.allowScheduling !== "boolean") {
+    failures.push(`Pipeline ${pipeline?.id || "unknown"} must define allowScheduling.`);
+  }
 
   const enrichedSteps = steps.map((step, index) => {
     const actionId = step.actionId || step.action || "";
@@ -547,6 +569,14 @@ function publicPipeline(pipeline) {
     description: pipeline.description,
     category: pipeline.category,
     riskLevel: pipeline.riskLevel,
+    approvalMode: pipeline.approvalMode,
+    executionMode: pipeline.executionMode,
+    scheduleMode: pipeline.scheduleMode,
+    requiresReview: Boolean(pipeline.requiresReview),
+    allowScheduling: Boolean(pipeline.allowScheduling),
+    maxFrequency: pipeline.maxFrequency,
+    tags: Array.isArray(pipeline.tags) ? pipeline.tags : [],
+    safetyNotes: pipeline.safetyNotes,
     allowFromUI: Boolean(pipeline.allowFromUI),
     estimatedDuration: pipeline.estimatedDuration,
     notes: pipeline.notes,

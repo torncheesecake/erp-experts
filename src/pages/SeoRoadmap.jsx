@@ -3392,10 +3392,39 @@ function ExecutionPipelinesPanel({ pipelineSnapshot, onRefresh, onPipelineComple
                 <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-100">
                   {pipeline.estimatedDuration}
                 </span>
+                <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-100">
+                  {formatStateLabel(pipeline.approvalMode || "operator_required")}
+                </span>
+                <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-100">
+                  {formatStateLabel(pipeline.executionMode || "manual")}
+                </span>
+                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-semibold text-blue-700 ring-1 ring-blue-100">
+                  schedule: {formatStateLabel(pipeline.scheduleMode || "disabled")}
+                </span>
+                {pipeline.allowScheduling ? (
+                  <span className="rounded-full bg-cyan-50 px-2.5 py-1 text-[11px] font-semibold text-cyan-700 ring-1 ring-cyan-100">
+                    schedulable
+                  </span>
+                ) : (
+                  <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-500 ring-1 ring-slate-200">
+                    manual only
+                  </span>
+                )}
+                {pipeline.requiresReview ? (
+                  <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-700 ring-1 ring-amber-100">
+                    review required
+                  </span>
+                ) : null}
                 <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-100">
                   allowlisted only
                 </span>
               </div>
+
+              {pipeline.safetyNotes ? (
+                <p className="text-xs text-slate-500" style={{ marginTop: "10px" }}>
+                  {pipeline.safetyNotes}
+                </p>
+              ) : null}
 
               <ol className="grid gap-1.5 text-xs text-slate-600" style={{ marginTop: "12px" }}>
                 {pipeline.steps.map((step, index) => {

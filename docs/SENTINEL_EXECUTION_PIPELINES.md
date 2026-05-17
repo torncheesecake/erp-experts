@@ -30,12 +30,37 @@ Each pipeline contains:
 - `description`
 - `category`
 - `riskLevel`
+- `approvalMode`
+- `executionMode`
+- `scheduleMode`
+- `requiresReview`
+- `allowScheduling`
+- `maxFrequency`
+- `tags`
+- `safetyNotes`
 - `allowFromUI`
 - `estimatedDuration`
 - `notes`
 - `steps[]`
 
 Each step references an existing action ID from `platform/actions/actions.json`.
+
+Governance metadata is descriptive at this stage. It tells the operator whether a workflow is manual, schedulable, review-required or scheduling-disabled. It does not install timers or enable unattended execution.
+
+Validate the registry with:
+
+```bash
+npm run platform:pipeline:validate
+npm run platform:pipeline:validate -- --json
+```
+
+Preview future scheduling intent with:
+
+```bash
+npm run platform:pipeline:schedule
+```
+
+The schedule preview is read-only. It does not create cron jobs, systemd timers or background daemons.
 
 ## Safety Boundary
 
@@ -103,6 +128,12 @@ Completed pipeline runs are recorded in SQLite through the existing `runs` table
 The private `/seo-roadmap` Control Centre shows an Execution Pipelines panel with:
 
 - available pipelines
+- approval mode
+- execution mode
+- schedule mode
+- schedulable or manual-only badge
+- review-required badge
+- safety notes
 - step count
 - estimated duration
 - risk level
@@ -115,3 +146,5 @@ The stakeholder-safe `/seo-progress` route must not expose pipelines, execution 
 ## Future Direction
 
 Higher-risk pipelines should require explicit approval gates before execution. Deployment, cleanup, restore and service-management workflows should remain excluded until Sentinel has authentication, roles, audit logs and approval policy enforcement.
+
+See also `docs/SENTINEL_PIPELINE_GOVERNANCE.md` for the approval and scheduling metadata model.

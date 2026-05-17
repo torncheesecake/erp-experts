@@ -39,6 +39,8 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 - `npm run platform:stakeholder`
 - `npm run platform:state`
 - `npm run platform:doctor`
+- `npm run platform:pipeline:validate`
+- `npm run platform:pipeline:schedule`
 
 ## Current architecture
 
@@ -105,7 +107,7 @@ Current operator zones:
 - Tenant Registry: read-only preview of registered tenants, showing ERP Experts as active and disabled fixtures as non-actionable.
 - Operations: cadence, notification payloads, report generation and state refresh context.
 - Operator Console: selected allowlisted action, lifecycle state, prominent summary, duration, collapsed output preview and recent console execution history.
-- Execution Pipelines: registered multi-step operator workflows that run fixed allowlisted actions sequentially.
+- Execution Pipelines: registered multi-step operator workflows with approval, execution and scheduling metadata. They run fixed allowlisted actions sequentially.
 - Tools & Commands: searchable command registry with copy buttons and allowlisted Run buttons.
 - Diagnostics: secondary checks, advanced details and controlled console access.
 
@@ -140,11 +142,12 @@ Initial allowlisted UI actions:
 - `platform:feedback:backlog`
 - `platform:notify:stakeholder`
 
-This is controlled local operator execution, not a terminal. There is no arbitrary command input, command chaining, deployment execution, cleanup execution, restore execution, FTP execution, notification sending or public exposure. The private dashboard includes an Operator Console with selected action, run state, started/finished timestamps, duration, prominent summary, collapsed output preview, recent console history and a disabled cancellation placeholder for future work. Failed actions show a clear failure state and suggest `platform:doctor`. The private dashboard also includes Execution Pipelines for safe multi-step workflows. Pipelines are registry-only, step through existing allowlisted actions, stop on failure and do not allow browser-side step editing or custom arguments. The stakeholder route `/seo-progress` remains separate and does not expose action controls, pipeline state, console state or action history.
+This is controlled local operator execution, not a terminal. There is no arbitrary command input, command chaining, deployment execution, cleanup execution, restore execution, FTP execution, notification sending or public exposure. The private dashboard includes an Operator Console with selected action, run state, started/finished timestamps, duration, prominent summary, collapsed output preview, recent console history and a disabled cancellation placeholder for future work. Failed actions show a clear failure state and suggest `platform:doctor`. The private dashboard also includes Execution Pipelines for safe multi-step workflows. Pipelines are registry-only, step through existing allowlisted actions, stop on failure and do not allow browser-side step editing or custom arguments. Pipeline governance metadata records approval mode, execution mode, schedule mode, review requirement, scheduling eligibility, max frequency, tags and safety notes. `npm run platform:pipeline:validate` checks the registry, and `npm run platform:pipeline:schedule` previews future scheduling without installing timers. The stakeholder route `/seo-progress` remains separate and does not expose action controls, pipeline state, console state or action history.
 
 See `docs/SENTINEL_OPERATOR_ACTIONS.md`.
 See also `docs/SENTINEL_OPERATOR_CONSOLE.md`.
 See also `docs/SENTINEL_EXECUTION_PIPELINES.md`.
+See also `docs/SENTINEL_PIPELINE_GOVERNANCE.md`.
 
 ## Platform tenant layer
 
