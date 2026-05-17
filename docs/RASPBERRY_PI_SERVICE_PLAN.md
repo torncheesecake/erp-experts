@@ -80,7 +80,7 @@ Local environment setup is documented in:
 docs/RASPBERRY_PI_LOCAL_ENV_SETUP.md
 ```
 
-The default target host is `192.168.4.26`. The command reads optional local environment variables only:
+The default target host is `192.168.4.22`. The command reads optional local environment variables only:
 
 ```text
 RASPBERRY_PI_HOST

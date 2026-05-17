@@ -4,7 +4,7 @@ This guide explains how to configure local environment variables for Sentinel Ra
 
 ## Purpose
 
-`npm run platform:pi:discover` can run without secrets and uses `192.168.4.26` as the default Raspberry Pi host. SSH discovery requires local SSH details, but those details must stay outside Git.
+`npm run platform:pi:discover` can run without secrets and uses `192.168.4.22` as the default Raspberry Pi host. SSH discovery requires local SSH details, but those details must stay outside Git.
 
 Use this guide when you want to prepare your own machine for read-only discovery.
 
@@ -23,7 +23,7 @@ cp .env.example .env
 Add or update these local values in `.env`:
 
 ```text
-RASPBERRY_PI_HOST=192.168.4.26
+RASPBERRY_PI_HOST=192.168.4.22
 RASPBERRY_PI_USER=<your-pi-user>
 RASPBERRY_PI_SSH_PORT=22
 RASPBERRY_PI_DEPLOY_ROOT=/srv/matthew-platform

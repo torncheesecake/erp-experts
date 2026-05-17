@@ -3,7 +3,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { repoRoot } from "./tenant_config.mjs";
 
-const DEFAULT_HOST = "192.168.4.26";
+const DEFAULT_HOST = "192.168.4.22";
 const DEFAULT_PORT = "22";
 const DEFAULT_DEPLOY_ROOT = "/srv/matthew-platform";
 const reportsDir = path.join(repoRoot, "reports");

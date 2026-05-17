@@ -205,7 +205,7 @@ npm run platform:pi:discover
 
 Local discovery environment setup is documented in `docs/RASPBERRY_PI_LOCAL_ENV_SETUP.md`. Keep `.env`, SSH keys and credentials outside Git.
 
-The known target host is `192.168.4.26`. Optional SSH checks require `RASPBERRY_PI_USER` to be configured outside the repo and must be explicitly requested with:
+The known target host is `192.168.4.22`. Optional SSH checks require `RASPBERRY_PI_USER` to be configured outside the repo and must be explicitly requested with:
 
 ```bash
 npm run platform:pi:discover -- --ssh
