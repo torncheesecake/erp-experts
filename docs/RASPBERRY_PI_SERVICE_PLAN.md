@@ -8,6 +8,8 @@ The API currently has no authentication. It exposes operational state from SQLit
 
 The service should bind to `127.0.0.1` until authentication and access controls exist. A reverse proxy should not expose it publicly during this phase.
 
+The Raspberry Pi is also the intended private authority node for future Sentinel operator access. In that model, `/seo-roadmap` only unlocks operator controls when it can authenticate against Matthew's Sentinel API. If the Pi or API is unavailable, the operator system should fail closed while `/seo-progress` remains stakeholder-safe.
+
 ## Proposed systemd approach
 
 Template:
@@ -47,6 +49,9 @@ PLATFORM_BACKUP_PATH=/srv/matthew-platform/data/seo-ops/backups
 PLATFORM_LOG_PATH=/srv/matthew-platform/logs/seo-ops
 SENTINEL_API_HOST=127.0.0.1
 SENTINEL_API_PORT=4317
+SENTINEL_REMOTE_AUTH_MODE=disabled
+SENTINEL_REMOTE_API_BASE_URL=
+SENTINEL_OPERATOR_TOKEN=
 ```
 
 The repo contains `platform/persistence/backups/.gitkeep` only so local readiness checks have a safe backup folder convention. Do not use that repo folder for production backups. Raspberry Pi backups should stay under `/srv/matthew-platform/data/seo-ops/backups` or another server data path outside Git.
@@ -89,6 +94,8 @@ VITE_SENTINEL_API_BASE_URL=http://127.0.0.1:4317
 
 For Raspberry Pi deployment, the dashboard should only use the API once auth, reverse proxy rules and service supervision are in place. Until then, keep report-based fallback behaviour.
 
+Future remote-authority mode should require a token handshake before operator controls are usable. The API should validate that token server-side, with the token stored in the server `.env` or another Matthew-controlled secret store outside Git. Client websites should receive stakeholder-safe outputs only.
+
 For daily local operator startup, use:
 
 ```bash
@@ -125,6 +132,8 @@ The dry-run prints planned install commands and expected schedules only. It does
 ## Reverse proxy rule
 
 Do not expose the Sentinel API through Nginx, Apache, Caddy or any public domain until auth exists. If a reverse proxy is later added, it should start behind basic auth or a stronger tenant-aware auth layer.
+
+Do not embed a fully functional operator Control Centre in a public ERP Experts site without Matthew-controlled API authority. The public site should continue to expose `/seo-progress` only unless the operator route is protected and authorised.
 
 The access-control scaffold is documented in:
 

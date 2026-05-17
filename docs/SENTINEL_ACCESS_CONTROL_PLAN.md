@@ -23,6 +23,20 @@ The safest short-term model is server-layer protection:
 
 This keeps the working local dashboard untouched while creating a clear deployment path.
 
+## Remote authority model
+
+Sentinel operator access should eventually depend on Matthew-controlled API authority, not just the presence of dashboard code in a public site build.
+
+Future behaviour:
+
+- `/seo-progress` remains stakeholder-safe and usable without the Sentinel API.
+- `/seo-roadmap` remains operator-only and should stay locked or read-only unless authorised by Matthew's Sentinel API.
+- The frontend should only unlock operator controls after a token handshake with the configured Sentinel API base URL.
+- The Sentinel API validates the operator token server-side, using secrets stored outside Git.
+- If the API is unavailable, the Raspberry Pi is offline or the token is invalid, operator controls stay unavailable.
+
+See `docs/SENTINEL_OWNERSHIP_AUTH_ARCHITECTURE.md` for the full ownership and remote-auth architecture.
+
 ## Medium-term access model
 
 Move from proxy-only protection to app-level authentication when Sentinel becomes a real multi-client product.
@@ -52,6 +66,7 @@ For a reusable platform, Sentinel should eventually support:
 - `/seo-roadmap`: operator-only.
 - Local API `/state`: private operator state.
 - API exposure through a public reverse proxy: blocked until auth exists.
+- Future remote authority: operator controls require Matthew-controlled Sentinel API authorisation before any production exposure.
 
 ## Recommended next step
 

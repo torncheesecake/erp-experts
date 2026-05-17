@@ -1778,6 +1778,39 @@ function TenantContextPanel({ tenantRegistrySnapshot }) {
   );
 }
 
+function RemoteAuthorityNote() {
+  return (
+    <section className="rounded-[28px] bg-slate-950 p-5 text-white shadow-sm ring-1 ring-slate-900/80 md:p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-200">Future Remote Authority</p>
+          <h2 className="text-xl font-semibold text-white">Matthew-controlled Sentinel API</h2>
+          <p className="max-w-3xl text-sm text-slate-300">
+            Future remote authority: operator controls should require Matthew's Sentinel API before production exposure.
+          </p>
+        </div>
+        <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200 ring-1 ring-white/15">
+          planning only
+        </span>
+      </div>
+      <div className="grid gap-3 md:grid-cols-3" style={{ marginTop: "16px" }}>
+        <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Current</p>
+          <p className="text-sm font-semibold text-white">Local development remains unlocked.</p>
+        </div>
+        <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Future</p>
+          <p className="text-sm font-semibold text-white">Operator controls unlock only after API authority.</p>
+        </div>
+        <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Stakeholder</p>
+          <p className="text-sm font-semibold text-white">/seo-progress remains safe without the API.</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function tenantStatusLabel(status = "") {
   if (status === "active") return "Active";
   if (status === "example_disabled") return "Disabled fixture";
@@ -6079,6 +6112,7 @@ function AdminView({ onPreview }) {
                   description="Read-only tenant awareness for ERP Experts and disabled fixtures. Switching is intentionally not enabled."
                 />
                 <TenantContextPanel tenantRegistrySnapshot={tenantRegistrySnapshot} />
+                <RemoteAuthorityNote />
                 <TenantRegistryPanel tenantRegistrySnapshot={tenantRegistrySnapshot} />
               </section>
             ) : null}

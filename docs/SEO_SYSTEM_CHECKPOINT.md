@@ -72,6 +72,7 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 - `/seo-roadmap` is the Sentinel operator dashboard for local/internal use only.
 - Production builds redirect `/seo-roadmap` to `/seo-progress` until real authentication exists.
 - Do not expose operator commands, prompts, diagnostics, tenant state, approval gates or generated report internals on public ERP Experts pages.
+- Future operator controls should depend on Matthew-controlled Sentinel API authority before any production exposure.
 
 ## Sentinel Control Centre
 
@@ -104,6 +105,7 @@ Current operator zones:
 - Current Focus: latest opportunity, latest plan, practical inbox item and recommended next step.
 - Activity Feed: chronological narrative of recent monitor runs, controlled operator actions, cadence runs, report generation and notification payload preparation.
 - Tenant: active client context for ERP Experts, including base URL, operator route, stakeholder route and future multi-tenant note.
+- Future Remote Authority: planning note that operator controls should require Matthew's Sentinel API before production exposure.
 - Tenant Registry: read-only preview of registered tenants, showing ERP Experts as active and disabled fixtures as non-actionable.
 - Operations: cadence, notification payloads, report generation and state refresh context.
 - Operator Console: selected allowlisted action, lifecycle state, prominent summary, duration, collapsed output preview and recent console execution history.
@@ -455,6 +457,8 @@ For local operator testing, `/seo-roadmap` can try the HTTP API first when `VITE
 The inactive Raspberry Pi service scaffold is now documented in `docs/RASPBERRY_PI_SERVICE_PLAN.md`. `deploy/systemd/sentinel-api.service.example` is a template only, and `npm run service:dry-run` prints the future systemd install/start commands without modifying system files.
 
 Access control planning is now scaffolded in `docs/SENTINEL_ACCESS_CONTROL_PLAN.md`, `docs/SENTINEL_BASIC_AUTH_SETUP.md` and `deploy/nginx/sentinel-basic-auth.example.conf`. These files document basic auth and reverse-proxy protection only. No runtime auth is enabled, no credentials are committed and the production `/seo-roadmap` redirect remains unchanged.
+
+Sentinel ownership and remote-auth architecture is documented in `docs/SENTINEL_OWNERSHIP_AUTH_ARCHITECTURE.md`. The intended future model is that Matthew's Sentinel API, likely on the Raspberry Pi or another Matthew-controlled server, becomes the private authority that unlocks operator controls. If the API is unavailable, the Pi is offline or the token is invalid, `/seo-roadmap` should stay locked or read-only while `/seo-progress` remains stakeholder-safe. This is planning only: no login, token validation or route blocking has been implemented yet.
 
 The Action Inbox now uses the same Sentinel operational state to create a top-level review item such as `Review approved planning work`. This makes the inbox the practical operator queue while preserving `reports/seo-action-inbox.json` and the existing opportunity, plan, link, freshness and conversion inputs. Inbox rows are also appended to SQLite as operator queue history.
 

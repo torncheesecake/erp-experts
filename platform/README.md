@@ -190,7 +190,7 @@ Generated payloads are ignored under `reports/notifications/`. Operator payloads
 
 ## Sentinel Control Centre
 
-The private `/seo-roadmap` route is now framed as the Sentinel Control Centre. It remains operator-only in local/dev use and production builds still redirect it to `/seo-progress` until authentication exists.
+The private `/seo-roadmap` route is now framed as the Sentinel Control Centre. It remains operator-only in local/dev use and production builds still redirect it to `/seo-progress` until authentication exists. The future ownership model is that operator controls should only unlock when authorised by Matthew's Sentinel API, likely running on the Raspberry Pi or another Matthew-controlled server.
 
 The Control Centre is now moving toward an app-shell structure:
 
@@ -219,6 +219,7 @@ The Control Centre groups the operator experience into:
 - Current Focus: latest opportunity, latest plan, inbox item and recommended next step.
 - Activity Feed: a concise chronological narrative of recent monitor runs, operator actions, cadence runs, report generation and notification payload preparation.
 - Tenant: active client context, stakeholder route, operator route and default tenant scope.
+- Future Remote Authority: a planning note that operator controls should require Matthew-controlled Sentinel API authority before production exposure.
 - Tenant Registry: read-only preview of registered tenants, including active and disabled fixture entries.
 - Operations: cadence, notification payloads, report generation and state refresh context.
 - Operator Console: controlled allowlisted execution with selected action, lifecycle state, prominent summary, duration, collapsed output preview and recent console history.
@@ -351,9 +352,10 @@ Access-control planning is also scaffolded but inactive:
 
 - `docs/SENTINEL_ACCESS_CONTROL_PLAN.md`
 - `docs/SENTINEL_BASIC_AUTH_SETUP.md`
+- `docs/SENTINEL_OWNERSHIP_AUTH_ARCHITECTURE.md`
 - `deploy/nginx/sentinel-basic-auth.example.conf`
 
-The short-term recommendation is reverse-proxy basic auth for operator routes, while the API remains bound to `127.0.0.1`. No auth code is active in the app yet, and no credentials belong in the repo.
+The short-term recommendation is reverse-proxy basic auth for operator routes, while the API remains bound to `127.0.0.1`. The longer-term model is a Matthew-controlled Sentinel API authority: the operator dashboard checks the configured API, sends an operator token and unlocks controls only if the API authorises the session. No auth code is active in the app yet, and no credentials belong in the repo.
 
 The private `/seo-roadmap` operator dashboard consumes `reports/sentinel-state.json` for its compact Current Sentinel State panel by default. For local API experiments, set:
 
@@ -362,6 +364,8 @@ VITE_SENTINEL_API_BASE_URL=http://127.0.0.1:4317
 ```
 
 When that Vite variable is present, `/seo-roadmap` tries the local API first and falls back quietly to the report JSON if the API is unavailable. Stakeholder routes such as `/seo-progress` do not show this operational state and do not use the operator API state.
+
+Future remote-auth placeholders exist in `.env.example` as blank values. Real operator tokens must stay outside Git and should live on Matthew-controlled infrastructure.
 
 `seo:inbox` also reads this state and places the current Sentinel recommendation at the top of the operator queue. This keeps the inbox focused on the practical next review action while the existing JSON report sources remain as fallback context.
 
