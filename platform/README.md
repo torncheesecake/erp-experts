@@ -347,7 +347,7 @@ npm run platform:pi:discover
 npm run service:dry-run
 ```
 
-`platform:pi:discover` targets the known Raspberry Pi host `192.168.4.22` by default and writes ignored local discovery reports. It is read-only. It uses optional local environment variables for user, port and deploy root, and only attempts SSH when `--ssh` is explicitly passed. SSH mode uses non-interactive read-only checks and never prompts for passwords.
+`platform:pi:discover` targets the known Raspberry Pi host `192.168.4.22` by default and writes ignored local discovery reports. It is read-only. It uses optional local environment variables for user, port and deploy root, and only attempts SSH when `--ssh` is explicitly passed. If DHCP changes the address, `npm run platform:pi:discover -- --scan` checks the local range for SSH port `22` and Sentinel API port `4317` without authenticating; use `--subnet <prefix-or-cidr>` for a known alternative LAN range. SSH mode uses non-interactive read-only checks and never prompts for passwords.
 
 Local Raspberry Pi discovery environment setup is documented in `docs/RASPBERRY_PI_LOCAL_ENV_SETUP.md`. Keep `.env`, SSH keys, passwords and tokens outside Git.
 

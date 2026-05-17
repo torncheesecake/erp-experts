@@ -92,6 +92,14 @@ RASPBERRY_PI_APP_PATH
 
 If the user is missing, the command exits with a warning rather than failing. It writes ignored local reports to `reports/sentinel-pi-discovery.json` and `reports/sentinel-pi-discovery.md`.
 
+If DHCP changes the Pi address, use the port-only local network fallback:
+
+```bash
+npm run platform:pi:discover -- --scan
+```
+
+The scan checks `192.168.4.1-254` by default for SSH port `22` and Sentinel API port `4317`. It does not authenticate, prompt for passwords, copy files, create directories, install packages or deploy. Use `--subnet <prefix-or-cidr>` only for a known local range. The preferred long-term fix is a DHCP reservation or static lease for the Pi.
+
 Read-only SSH discovery is available only when explicitly requested:
 
 ```bash

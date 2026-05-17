@@ -57,7 +57,32 @@ reports/sentinel-pi-discovery.json
 reports/sentinel-pi-discovery.md
 ```
 
-## 5. Run read-only SSH discovery only when ready
+## 5. Locate the Pi if DHCP changes the IP
+
+If the Pi moves away from the configured host, run the safe local-network scan:
+
+```bash
+npm run platform:pi:discover -- --scan
+```
+
+By default this checks `192.168.4.1-254` for open SSH port `22` and the Sentinel API prototype port `4317`. It does not authenticate, prompt for passwords, deploy, copy files or mutate hosts.
+
+Use a different local prefix or CIDR only when you know the LAN range:
+
+```bash
+npm run platform:pi:discover -- --scan --subnet 192.168.4
+npm run platform:pi:discover -- --scan --subnet 192.168.4.0/24
+```
+
+If a candidate is found, confirm it is the Raspberry Pi before updating local `.env`:
+
+```text
+RASPBERRY_PI_HOST=<candidate-ip>
+```
+
+The long-term fix is a DHCP reservation or static lease for the Pi so Sentinel discovery does not depend on changing addresses.
+
+## 6. Run read-only SSH discovery only when ready
 
 Only after local SSH access is already configured, run:
 
