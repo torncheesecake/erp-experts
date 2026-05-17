@@ -157,6 +157,23 @@ npm run platform:pi:post-prep:verify
 
 The post-prep verifier is read-only. It checks Node/npm presence, the `/srv/sentinel` directory structure, ownership metadata and permission bits. It does not install packages, create directories, clone the repo, write test files, start services or use sudo.
 
+## Repo deployment planning
+
+Repo deployment is separated from service installation:
+
+```bash
+npm run platform:pi:repo:plan
+npm run platform:pi:repo:deploy
+```
+
+`platform:pi:repo:plan` is dry-run/read-only and writes ignored reports showing the target host, `/srv/sentinel/apps/seo-ops`, the local Git remote, branch, latest commit, Pi app path state and proposed clone or pull strategy.
+
+`platform:pi:repo:deploy` refuses to mutate without `--confirm`. Confirmed mode is scoped to clone or pull, dependency install, build, `platform:init` and `platform:health`. It does not start the API, install the service, enable timers or expose anything publicly.
+
+Confirm the Pi can read the Git remote before any confirmed clone or pull. If authentication is required, configure it outside Git and do not commit credentials.
+
+Review DB placement before the Pi becomes canonical. Current `platform:init` uses the repo-local SQLite default unless persistence path handling is changed.
+
 ## Future install sequence
 
 These commands are documented only. Do not run them until a controlled deployment is approved:

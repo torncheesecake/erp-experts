@@ -394,6 +394,17 @@ The verifier is read-only and checks Node, npm, `/srv/sentinel`, child directori
 
 `/srv/sentinel` is now the canonical Raspberry Pi runtime root. `/srv/matthew-platform` was an early internal namespace; new deployment scripts, service templates and verification commands should not target it.
 
+Plan the first repo deployment separately:
+
+```bash
+npm run platform:pi:repo:plan
+npm run platform:pi:repo:deploy
+```
+
+`platform:pi:repo:plan` is dry-run/read-only. It checks the local Git remote, branch, latest commit, tracked worktree state and `/srv/sentinel/apps/seo-ops` over SSH, then writes ignored plan reports.
+
+`platform:pi:repo:deploy` refuses to mutate without `--confirm`. Confirmed mode is limited to clone or fast-forward pull, `npm ci`, `npm run build`, `npm run platform:init` and `npm run platform:health`. It does not start the API, install services, enable timers or expose anything publicly. Confirm Pi Git remote access outside the repo if authentication is required. Review the SQLite path model before making the Pi DB canonical, because `platform:init` currently uses the repo-local persistence default.
+
 `service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
 Access-control planning is also scaffolded but inactive:

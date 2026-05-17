@@ -84,6 +84,10 @@ reports/sentinel-pi-install-prep.json
 reports/sentinel-pi-install-prep.md
 reports/sentinel-pi-post-prep-verify.json
 reports/sentinel-pi-post-prep-verify.md
+reports/sentinel-pi-repo-deploy-plan.json
+reports/sentinel-pi-repo-deploy-plan.md
+reports/sentinel-pi-repo-deploy.json
+reports/sentinel-pi-repo-deploy.md
 reports/sentinel-daily-operator-report.md
 reports/sentinel-stakeholder-weekly-report.md
 reports/sentinel-cadence-summary.json

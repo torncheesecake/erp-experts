@@ -189,6 +189,29 @@ npm run platform:pi:post-prep:verify
 
 The verifier is read-only. It checks Node, npm, `/srv/sentinel`, required child directories, ownership metadata and permission bits. It does not install packages, create directories, clone the repo, write test files, start services or use sudo.
 
+## 7.1 Repo Deployment Planning Gate
+
+The first repo deployment step is now planned separately from runtime preparation:
+
+```bash
+npm run platform:pi:repo:plan
+npm run platform:pi:repo:deploy
+```
+
+`platform:pi:repo:plan` is read-only. It reads the local Git origin, branch and latest commit, checks tracked worktree cleanliness, inspects `/srv/sentinel/apps/seo-ops` over read-only SSH and writes ignored planning reports. It chooses one of three strategies:
+
+- clone if the app path is missing or empty
+- pull with fast-forward only if the app path is already a Git repo
+- refuse if the app path is non-empty and not a Git repo
+
+`platform:pi:repo:deploy` is mutation-capable only when `--confirm` is supplied. Without `--confirm`, it refuses to deploy and writes an ignored dry-run report. Confirmed mode is limited to clone or pull, `npm ci`, `npm run build`, `npm run platform:init` and `npm run platform:health`.
+
+It must not start the API, install systemd services, enable cadence timers, expose reverse proxies or commit `.env`.
+
+Confirm the Pi can read the configured Git remote before any confirmed clone or pull. If the repo requires authentication, configure that outside this repository.
+
+Important persistence caveat: the current `platform:init` script initialises the repo-local SQLite default unless persistence path support is extended. Before treating the Pi as canonical state, confirm whether the server DB should live under `/srv/sentinel/data/seo-ops/platform.db` and update runtime configuration accordingly.
+
 1. Confirm SSH key-based access still works:
 
 ```bash
