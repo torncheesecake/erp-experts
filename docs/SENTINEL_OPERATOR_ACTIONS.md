@@ -71,8 +71,11 @@ The initial allowlist intentionally contains low-risk local actions only:
 - `platform:status`
 - `platform:api`
 - `seo:monitor`
+- `platform:roadmap`
+- `platform:feedback:backlog`
+- `platform:notify:stakeholder`
 
-These commands may read state, run health checks or generate ignored local reports. They do not deploy, publish, restore, clean up, upload, send notifications or edit article content.
+These commands may read state, run health checks or generate ignored local reports and notification payloads. They do not deploy, publish, restore, clean up, upload, send external notifications or edit article content.
 
 ## Explicitly excluded
 

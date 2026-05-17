@@ -1,0 +1,62 @@
+{
+  "pipelines": [
+    {
+      "id": "daily-startup",
+      "label": "Daily Operator Startup",
+      "description": "Refreshes the operator picture for the day using health, state and private daily report generation.",
+      "category": "Operations",
+      "riskLevel": "low",
+      "allowFromUI": true,
+      "estimatedDuration": "2 minutes",
+      "notes": "Safe local startup workflow. No deployment, cleanup, restore or external sending.",
+      "steps": [
+        { "actionId": "platform:start" },
+        { "actionId": "platform:state" },
+        { "actionId": "platform:daily" }
+      ]
+    },
+    {
+      "id": "health-audit",
+      "label": "Health Audit",
+      "description": "Runs the core diagnostic and monitor checks used before operator work continues.",
+      "category": "Health",
+      "riskLevel": "low",
+      "allowFromUI": true,
+      "estimatedDuration": "2 minutes",
+      "notes": "Stops on the first failed health check so failures remain obvious.",
+      "steps": [
+        { "actionId": "platform:doctor" },
+        { "actionId": "platform:health" },
+        { "actionId": "seo:monitor" }
+      ]
+    },
+    {
+      "id": "roadmap-review",
+      "label": "Roadmap Review",
+      "description": "Refreshes Sentinel improvement priorities and the local feedback backlog.",
+      "category": "Roadmap",
+      "riskLevel": "low",
+      "allowFromUI": true,
+      "estimatedDuration": "90 seconds",
+      "notes": "Planning output only. No code is generated or applied.",
+      "steps": [
+        { "actionId": "platform:roadmap" },
+        { "actionId": "platform:feedback:backlog" }
+      ]
+    },
+    {
+      "id": "stakeholder-update",
+      "label": "Stakeholder Update",
+      "description": "Generates the stakeholder-safe progress report and notification payload without sending messages.",
+      "category": "Stakeholder",
+      "riskLevel": "low",
+      "allowFromUI": true,
+      "estimatedDuration": "90 seconds",
+      "notes": "Payload preparation only. No email, Slack or external delivery is performed.",
+      "steps": [
+        { "actionId": "platform:stakeholder" },
+        { "actionId": "platform:notify:stakeholder" }
+      ]
+    }
+  ]
+}

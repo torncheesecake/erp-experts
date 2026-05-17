@@ -16,13 +16,16 @@ const DEFAULT_TENANT = process.env.PLATFORM_TENANT || "erp-experts";
 const HOST = process.env.SENTINEL_API_HOST || "127.0.0.1";
 const PORT = Number(process.env.SENTINEL_API_PORT || 4317);
 const ACTIONS_PATH = path.join(repoRoot, "platform/actions/actions.json");
+const PIPELINES_PATH = path.join(repoRoot, "platform/pipelines/pipelines.json");
 const TENANT_REGISTRY_PATH = path.join(repoRoot, "platform/tenants/tenant-registry.json");
 const MAX_OUTPUT_BYTES = 24_000;
 const MAX_TIMEOUT_SECONDS = 120;
 const MAX_RESULT_EXCERPT_CHARS = 1_000;
 const MAX_IN_MEMORY_EXECUTIONS = 50;
+const MAX_IN_MEMORY_PIPELINE_EXECUTIONS = 25;
 const TERMINAL_EXECUTION_STATES = new Set(["success", "failed", "cancelled"]);
 const actionExecutions = new Map();
+const pipelineExecutions = new Map();
 
 function corsOrigin(request) {
   const origin = request.headers.origin;
@@ -142,6 +145,12 @@ function loadActionRegistry() {
   return Array.isArray(registry.actions) ? registry.actions : [];
 }
 
+function loadPipelineRegistry() {
+  if (!fs.existsSync(PIPELINES_PATH)) return [];
+  const registry = JSON.parse(fs.readFileSync(PIPELINES_PATH, "utf8"));
+  return Array.isArray(registry.pipelines) ? registry.pipelines : [];
+}
+
 function loadTenantRegistry() {
   const registry = JSON.parse(fs.readFileSync(TENANT_REGISTRY_PATH, "utf8"));
   return {
@@ -154,12 +163,27 @@ function actionById(actionId) {
   return loadActionRegistry().find((action) => action.id === actionId) || null;
 }
 
-function npmScriptFromAction(action) {
-  const match = String(action.command || "").match(/^npm run ([a-z0-9:_-]+)$/i);
+function pipelineById(pipelineId) {
+  return loadPipelineRegistry().find((pipeline) => pipeline.id === pipelineId) || null;
+}
+
+function npmCommandFromAction(action) {
+  const match = String(action.command || "").match(/^npm run ([a-z0-9:_-]+)(?: -- ([a-z0-9:_=./ -]+))?$/i);
   if (!match) {
     throw new Error(`Action ${action.id} does not use a supported npm script command.`);
   }
-  return match[1];
+  const args = match[2] ? match[2].trim().split(/\s+/).filter(Boolean) : [];
+  return {
+    script: match[1],
+    args,
+  };
+}
+
+function actionSpawnArgs(action) {
+  const command = npmCommandFromAction(action);
+  return command.args.length
+    ? ["run", command.script, "--", ...command.args]
+    : ["run", command.script];
 }
 
 function readJsonBody(request, maxBytes = 4096) {
@@ -376,7 +400,7 @@ function startQueuedActionExecution(executionId) {
 
   let settled = false;
   let timer;
-  const child = spawn("npm", ["run", execution.script], {
+  const child = spawn("npm", execution.spawnArgs, {
     cwd: repoRoot,
     shell: false,
     env: {
@@ -445,7 +469,7 @@ function startQueuedActionExecution(executionId) {
 }
 
 function enqueueActionExecution(action, tenantId) {
-  const script = npmScriptFromAction(action);
+  const command = npmCommandFromAction(action);
   const queuedAt = new Date().toISOString();
   const execution = {
     executionId: randomUUID(),
@@ -453,7 +477,9 @@ function enqueueActionExecution(action, tenantId) {
     label: action.label,
     command: action.command,
     tenantId,
-    script,
+    script: command.script,
+    args: command.args,
+    spawnArgs: actionSpawnArgs(action),
     timeoutSeconds: action.timeoutSeconds,
     status: "queued",
     summary: "Action queued.",
@@ -474,6 +500,382 @@ function enqueueActionExecution(action, tenantId) {
   rememberExecution(execution);
   setImmediate(() => startQueuedActionExecution(execution.executionId));
   return execution;
+}
+
+function validatePipeline(pipeline) {
+  const failures = [];
+  const steps = Array.isArray(pipeline?.steps) ? pipeline.steps : [];
+  if (!pipeline?.id) failures.push("Pipeline is missing id.");
+  if (!pipeline?.allowFromUI) failures.push(`Pipeline ${pipeline?.id || "unknown"} is not allowed from UI.`);
+  if (!steps.length) failures.push(`Pipeline ${pipeline?.id || "unknown"} has no steps.`);
+
+  const enrichedSteps = steps.map((step, index) => {
+    const actionId = step.actionId || step.action || "";
+    const action = actionById(actionId);
+    if (!action) failures.push(`Step ${index + 1} references unknown action ${actionId}.`);
+    if (action && !action.allowFromUI) failures.push(`Step ${index + 1} references non-UI action ${actionId}.`);
+    if (action) {
+      try {
+        npmCommandFromAction(action);
+      } catch (error) {
+        failures.push(`Step ${index + 1} action ${actionId} is not executable: ${error.message}`);
+      }
+    }
+    return {
+      index,
+      actionId,
+      label: action?.label || actionId,
+      command: action?.command || "",
+      description: action?.description || "",
+      timeoutSeconds: action?.timeoutSeconds || 30,
+      action,
+    };
+  });
+
+  return {
+    ok: failures.length === 0,
+    failures,
+    steps: enrichedSteps,
+  };
+}
+
+function publicPipeline(pipeline) {
+  const validation = validatePipeline(pipeline);
+  return {
+    id: pipeline.id,
+    label: pipeline.label,
+    description: pipeline.description,
+    category: pipeline.category,
+    riskLevel: pipeline.riskLevel,
+    allowFromUI: Boolean(pipeline.allowFromUI),
+    estimatedDuration: pipeline.estimatedDuration,
+    notes: pipeline.notes,
+    stepCount: validation.steps.length,
+    valid: validation.ok,
+    validationFailures: validation.failures,
+    steps: validation.steps.map((step) => ({
+      actionId: step.actionId,
+      label: step.label,
+      command: step.command,
+      description: step.description,
+    })),
+  };
+}
+
+function persistPipelineResult(execution) {
+  if (!databaseExists(DEFAULT_DB_PATH)) return null;
+
+  try {
+    const finishedAt = execution.finishedAt || new Date().toISOString();
+    const runId = logRun({
+      tenantId: execution.tenantId,
+      command: `ui_pipeline:${execution.pipeline}`,
+      status: execution.status,
+      startedAt: execution.startedAt,
+      finishedAt,
+    });
+
+    persistActionResult({
+      runId,
+      tenantId: execution.tenantId,
+      actionId: `pipeline:${execution.pipeline}`,
+      status: execution.status,
+      summary: execution.summary,
+      outputExcerpt: JSON.stringify({
+        completedStepCount: execution.steps.filter((step) => step.status === "success").length,
+        stepCount: execution.steps.length,
+        failedStep: execution.failedStep,
+      }),
+      createdAt: finishedAt,
+    });
+
+    return runId;
+  } catch (error) {
+    console.warn(`[sentinel-pipeline] SQLite pipeline warning: ${error.message}`);
+    return null;
+  }
+}
+
+function rememberPipelineExecution(execution) {
+  pipelineExecutions.set(execution.executionId, execution);
+  if (pipelineExecutions.size <= MAX_IN_MEMORY_PIPELINE_EXECUTIONS) return;
+
+  const removable = [...pipelineExecutions.values()]
+    .filter((item) => TERMINAL_EXECUTION_STATES.has(item.status))
+    .sort((a, b) => String(a.updatedAt || a.queuedAt).localeCompare(String(b.updatedAt || b.queuedAt)));
+
+  const [oldest] = removable;
+  if (oldest) pipelineExecutions.delete(oldest.executionId);
+}
+
+function pipelineDurationMs(execution) {
+  const start = execution.startedAt ? new Date(execution.startedAt).getTime() : 0;
+  const end = execution.finishedAt ? new Date(execution.finishedAt).getTime() : Date.now();
+  if (!start || Number.isNaN(start) || Number.isNaN(end)) return null;
+  return Math.max(0, end - start);
+}
+
+function publicPipelineExecution(execution) {
+  const durationMs = pipelineDurationMs(execution);
+  return {
+    executionId: execution.executionId,
+    pipeline: execution.pipeline,
+    label: execution.label,
+    tenantId: execution.tenantId,
+    status: execution.status,
+    summary: execution.summary || "",
+    queuedAt: execution.queuedAt,
+    startedAt: execution.startedAt || "",
+    finishedAt: execution.finishedAt || "",
+    updatedAt: execution.updatedAt || execution.queuedAt,
+    durationMs,
+    durationLabel: durationLabel(durationMs),
+    completedStepCount: execution.steps.filter((step) => step.status === "success").length,
+    failedStep: execution.failedStep || null,
+    runId: execution.runId || null,
+    steps: execution.steps.map((step) => ({
+      index: step.index,
+      actionId: step.actionId,
+      label: step.label,
+      command: step.command,
+      status: step.status,
+      summary: step.summary || "",
+      startedAt: step.startedAt || "",
+      finishedAt: step.finishedAt || "",
+      durationMs: durationMsBetween(step.startedAt, step.finishedAt),
+      durationLabel: durationLabel(durationMsBetween(step.startedAt, step.finishedAt)),
+      outputExcerpt: step.outputExcerpt || "",
+      outputTruncated: Boolean(step.outputTruncated),
+      exitCode: step.exitCode,
+    })),
+  };
+}
+
+function runActionForPipeline({ action, tenantId, timeoutSeconds }) {
+  return new Promise((resolve) => {
+    const startedAt = new Date().toISOString();
+    const safeTimeoutSeconds = Math.min(Number(timeoutSeconds || action.timeoutSeconds || 30), MAX_TIMEOUT_SECONDS);
+    let stdout = "";
+    let stderr = "";
+    let outputTruncated = false;
+    let timedOut = false;
+    let settled = false;
+    let timer;
+
+    const finish = (payload) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve({
+        ...payload,
+        summary: summariseActionOutput(payload),
+        outputExcerpt: actionOutputExcerpt(payload),
+      });
+    };
+
+    const child = spawn("npm", actionSpawnArgs(action), {
+      cwd: repoRoot,
+      shell: false,
+      env: {
+        ...process.env,
+        PLATFORM_TENANT: tenantId,
+      },
+    });
+
+    timer = setTimeout(() => {
+      timedOut = true;
+      child.kill("SIGTERM");
+    }, safeTimeoutSeconds * 1000);
+
+    child.stdout.on("data", (chunk) => {
+      const result = appendLimited(stdout, chunk.toString());
+      stdout = result.value;
+      outputTruncated = outputTruncated || result.truncated;
+    });
+
+    child.stderr.on("data", (chunk) => {
+      const result = appendLimited(stderr, chunk.toString());
+      stderr = result.value;
+      outputTruncated = outputTruncated || result.truncated;
+    });
+
+    child.on("error", (error) => {
+      finish({
+        status: "failed",
+        exitCode: 1,
+        stdout,
+        stderr: stderr || error.message,
+        timedOut,
+        outputTruncated,
+        startedAt,
+        finishedAt: new Date().toISOString(),
+      });
+    });
+
+    child.on("close", (code, signal) => {
+      const status = code === 0 && !timedOut ? "success" : "failed";
+      finish({
+        status,
+        exitCode: timedOut ? 124 : code ?? 1,
+        signal,
+        stdout,
+        stderr: timedOut ? `${stderr}\nAction timed out after ${safeTimeoutSeconds}s.`.trim() : stderr,
+        timedOut,
+        outputTruncated,
+        startedAt,
+        finishedAt: new Date().toISOString(),
+      });
+    });
+  });
+}
+
+async function startQueuedPipelineExecution(executionId) {
+  const execution = pipelineExecutions.get(executionId);
+  if (!execution || execution.status !== "queued") return;
+
+  execution.status = "running";
+  execution.startedAt = new Date().toISOString();
+  execution.updatedAt = execution.startedAt;
+  execution.summary = "Pipeline is running.";
+  rememberPipelineExecution(execution);
+
+  console.log(`[sentinel-pipeline] starting ${execution.pipeline} execution=${execution.executionId}`);
+
+  for (const step of execution.steps) {
+    step.status = "running";
+    step.startedAt = new Date().toISOString();
+    execution.updatedAt = step.startedAt;
+    execution.summary = `Running ${step.label}.`;
+    rememberPipelineExecution(execution);
+
+    const result = await runActionForPipeline({
+      action: step.action,
+      tenantId: execution.tenantId,
+      timeoutSeconds: step.timeoutSeconds,
+    });
+
+    Object.assign(step, {
+      status: result.status,
+      summary: result.summary,
+      outputExcerpt: result.outputExcerpt,
+      outputTruncated: result.outputTruncated,
+      exitCode: result.exitCode,
+      startedAt: result.startedAt,
+      finishedAt: result.finishedAt,
+    });
+    execution.updatedAt = result.finishedAt;
+
+    if (result.status !== "success") {
+      execution.status = "failed";
+      execution.failedStep = {
+        index: step.index,
+        actionId: step.actionId,
+        label: step.label,
+        summary: result.summary,
+      };
+      execution.finishedAt = result.finishedAt;
+      execution.summary = `${execution.label} failed at ${step.label}.`;
+      execution.runId = persistPipelineResult(execution);
+      rememberPipelineExecution(execution);
+      console.log(`[sentinel-pipeline] failed ${execution.pipeline} at ${step.actionId} execution=${execution.executionId}`);
+      return;
+    }
+  }
+
+  execution.status = "success";
+  execution.finishedAt = new Date().toISOString();
+  execution.updatedAt = execution.finishedAt;
+  execution.summary = `${execution.label} completed successfully.`;
+  execution.runId = persistPipelineResult(execution);
+  rememberPipelineExecution(execution);
+  console.log(`[sentinel-pipeline] finished ${execution.pipeline} success execution=${execution.executionId}`);
+}
+
+function enqueuePipelineExecution(pipeline, tenantId) {
+  const validation = validatePipeline(pipeline);
+  if (!validation.ok) {
+    const error = new Error(validation.failures.join("; "));
+    error.code = "PIPELINE_VALIDATION_ERROR";
+    throw error;
+  }
+
+  const queuedAt = new Date().toISOString();
+  const execution = {
+    executionId: randomUUID(),
+    pipeline: pipeline.id,
+    label: pipeline.label,
+    tenantId,
+    status: "queued",
+    summary: "Pipeline queued.",
+    queuedAt,
+    startedAt: "",
+    finishedAt: "",
+    updatedAt: queuedAt,
+    failedStep: null,
+    runId: null,
+    steps: validation.steps.map((step) => ({
+      index: step.index,
+      actionId: step.actionId,
+      label: step.label,
+      command: step.command,
+      action: step.action,
+      timeoutSeconds: step.timeoutSeconds,
+      status: "queued",
+      summary: "",
+      outputExcerpt: "",
+      outputTruncated: false,
+      startedAt: "",
+      finishedAt: "",
+      exitCode: null,
+    })),
+  };
+
+  rememberPipelineExecution(execution);
+  setImmediate(() => startQueuedPipelineExecution(execution.executionId));
+  return execution;
+}
+
+function loadPipelineHistory({ tenantId, limit }) {
+  if (!databaseExists(DEFAULT_DB_PATH) || !tableExists("runs", DEFAULT_DB_PATH)) return [];
+  const hasActionResults = tableExists("action_results", DEFAULT_DB_PATH);
+  const resultSelect = hasActionResults
+    ? "replace(COALESCE(ar.summary, ''), char(9), ' '), replace(replace(replace(COALESCE(ar.output_excerpt, ''), char(9), '  '), char(13), ''), char(10), '\\n')"
+    : "'', ''";
+  const resultJoin = hasActionResults
+    ? "LEFT JOIN action_results ar ON ar.run_id = r.id"
+    : "";
+
+  return queryRows(
+    `SELECT r.id, r.command, r.status, COALESCE(r.started_at, ''), COALESCE(r.finished_at, ''), ${resultSelect}
+     FROM runs r
+     ${resultJoin}
+     WHERE r.tenant_id = '${quoteSql(tenantId)}'
+       AND r.command LIKE 'ui_pipeline:%'
+     ORDER BY COALESCE(r.finished_at, r.started_at) DESC, r.id DESC
+     LIMIT ${Number(limit) || 10};`,
+    DEFAULT_DB_PATH,
+  ).map(([id, command, status, startedAt, finishedAt, summary, outputExcerpt]) => {
+    const durationMs = durationMsBetween(startedAt, finishedAt);
+    let metadata = {};
+    try {
+      metadata = outputExcerpt ? JSON.parse(String(outputExcerpt).replaceAll("\\n", "\n")) : {};
+    } catch {
+      metadata = {};
+    }
+    return {
+      id: Number(id),
+      pipeline: String(command || "").replace(/^ui_pipeline:/, ""),
+      status,
+      startedAt,
+      finishedAt,
+      durationMs,
+      durationLabel: durationLabel(durationMs),
+      summary,
+      completedStepCount: metadata.completedStepCount ?? null,
+      stepCount: metadata.stepCount ?? null,
+      failedStep: metadata.failedStep || null,
+    };
+  });
 }
 
 function handleError(request, response, error) {
@@ -622,6 +1024,107 @@ function handleActionHistory(request, response, url) {
   }
 }
 
+function handlePipelines(request, response, url) {
+  if (!isLocalRequest(request)) {
+    sendJson(request, response, 403, {
+      error: "local_only",
+      message: "Operator pipelines are available only from localhost.",
+    });
+    return;
+  }
+
+  const tenantId = tenantFromUrl(url);
+  try {
+    getTenantState(tenantId);
+    sendJson(request, response, 200, {
+      pipelines: loadPipelineRegistry().map(publicPipeline),
+      history: loadPipelineHistory({
+        tenantId,
+        limit: actionHistoryLimit(url),
+      }),
+    });
+  } catch (error) {
+    handleError(request, response, error);
+  }
+}
+
+async function handlePipelineRun(request, response, url) {
+  if (!isLocalRequest(request)) {
+    sendJson(request, response, 403, {
+      error: "local_only",
+      message: "Operator pipelines are available only from localhost.",
+    });
+    return;
+  }
+
+  let body;
+  try {
+    body = await readJsonBody(request);
+  } catch (error) {
+    sendJson(request, response, 400, {
+      error: "invalid_request",
+      message: error.message,
+    });
+    return;
+  }
+
+  const pipelineId = body.pipelineId || body.pipeline || body.id || "";
+  const tenantId = body.tenant || tenantFromUrl(url);
+  const pipeline = pipelineById(pipelineId);
+
+  if (!pipeline) {
+    sendJson(request, response, 404, {
+      error: "unknown_pipeline",
+      message: `Unknown operator pipeline: ${pipelineId}`,
+    });
+    return;
+  }
+
+  if (!pipeline.allowFromUI) {
+    sendJson(request, response, 403, {
+      error: "pipeline_not_allowed",
+      message: `Pipeline ${pipelineId} is not allowed from the operator UI.`,
+    });
+    return;
+  }
+
+  try {
+    getTenantState(tenantId);
+    const execution = enqueuePipelineExecution(pipeline, tenantId);
+    sendJson(request, response, 202, publicPipelineExecution(execution));
+  } catch (error) {
+    if (error.code === "PIPELINE_VALIDATION_ERROR") {
+      sendJson(request, response, 400, {
+        error: "pipeline_validation_error",
+        message: error.message,
+      });
+      return;
+    }
+    handleError(request, response, error);
+  }
+}
+
+function handlePipelineExecution(request, response, executionId) {
+  if (!isLocalRequest(request)) {
+    sendJson(request, response, 403, {
+      error: "local_only",
+      message: "Operator pipeline execution state is available only from localhost.",
+    });
+    return;
+  }
+
+  const execution = pipelineExecutions.get(executionId);
+  if (!execution) {
+    sendJson(request, response, 404, {
+      error: "unknown_pipeline_execution",
+      message: `Unknown operator pipeline execution: ${executionId}`,
+    });
+    return;
+  }
+
+  sendJson(request, response, 200, publicPipelineExecution(execution));
+}
+
 function handleTenants(request, response) {
   if (!isLocalRequest(request)) {
     sendJson(request, response, 403, {
@@ -767,6 +1270,11 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
+    if (url.pathname === "/pipeline/run") {
+      await handlePipelineRun(request, response, url);
+      return;
+    }
+
     if (url.pathname === "/feedback/triage") {
       await handleFeedbackTriage(request, response);
       return;
@@ -813,9 +1321,20 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
+    if (url.pathname === "/pipelines") {
+      handlePipelines(request, response, url);
+      return;
+    }
+
     if (url.pathname.startsWith("/actions/execution/")) {
       const executionId = decodeURIComponent(url.pathname.replace("/actions/execution/", ""));
       handleActionExecution(request, response, executionId);
+      return;
+    }
+
+    if (url.pathname.startsWith("/pipeline/execution/")) {
+      const executionId = decodeURIComponent(url.pathname.replace("/pipeline/execution/", ""));
+      handlePipelineExecution(request, response, executionId);
       return;
     }
 
@@ -845,6 +1364,7 @@ server.listen(PORT, HOST, () => {
   console.log("- Local-only API prototype.");
   console.log("- /action uses a strict allowlist and fixed npm scripts only.");
   console.log("- /actions/execution/<id> exposes lifecycle polling for started executions.");
+  console.log("- /pipeline/run uses registered allowlisted pipelines and sequential fixed steps only.");
   console.log("- No arbitrary shell input, deploy commands or destructive actions are exposed.");
   console.log("- No authentication is implemented yet.");
   console.log("- Do not expose this API publicly.");

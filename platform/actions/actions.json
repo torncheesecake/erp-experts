@@ -98,6 +98,39 @@
       "description": "Runs the SEO monitor and confirms current QA health.",
       "allowFromUI": true,
       "timeoutSeconds": 60
+    },
+    {
+      "id": "platform:roadmap",
+      "label": "Generate roadmap intelligence",
+      "command": "npm run platform:roadmap",
+      "category": "State",
+      "riskLevel": "low",
+      "executionMode": "local_allowlisted",
+      "description": "Generates Sentinel's local improvement roadmap from feedback and operational state.",
+      "allowFromUI": true,
+      "timeoutSeconds": 45
+    },
+    {
+      "id": "platform:feedback:backlog",
+      "label": "Generate feedback backlog",
+      "command": "npm run platform:feedback -- --backlog",
+      "category": "State",
+      "riskLevel": "low",
+      "executionMode": "local_allowlisted",
+      "description": "Generates the local operator feedback backlog report.",
+      "allowFromUI": true,
+      "timeoutSeconds": 45
+    },
+    {
+      "id": "platform:notify:stakeholder",
+      "label": "Prepare stakeholder notification",
+      "command": "npm run platform:notify -- --stakeholder",
+      "category": "Automation",
+      "riskLevel": "low",
+      "executionMode": "local_allowlisted",
+      "description": "Generates stakeholder-safe notification payloads without sending messages.",
+      "allowFromUI": true,
+      "timeoutSeconds": 45
     }
   ]
 }

@@ -547,6 +547,21 @@ async function pollSentinelActionExecution(executionId, { onUpdate, pollInterval
   return latest;
 }
 
+async function pollSentinelPipelineExecution(executionId, { onUpdate, pollIntervalMs = 1000, maxPolls = 240 } = {}) {
+  let latest = null;
+  for (let attempt = 0; attempt < maxPolls; attempt += 1) {
+    const response = await fetch(`${sentinelActionApiBaseUrl}/pipeline/execution/${encodeURIComponent(executionId)}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) throw new Error(`Pipeline polling returned ${response.status}`);
+    latest = await response.json();
+    if (typeof onUpdate === "function") onUpdate(latest);
+    if (SENTINEL_TERMINAL_EXECUTION_STATES.has(normaliseExecutionStatus(latest.status))) return latest;
+    await waitForConsolePoll(pollIntervalMs);
+  }
+  return latest;
+}
+
 function activitySeverityBadgeClass(severity = "") {
   if (severity === "success") return "bg-emerald-50 text-emerald-700 ring-emerald-100";
   if (severity === "warning") return "bg-amber-50 text-amber-800 ring-amber-100";
@@ -3225,6 +3240,236 @@ function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
   );
 }
 
+function ExecutionPipelinesPanel({ pipelineSnapshot, onRefresh, onPipelineComplete }) {
+  const pipelines = Array.isArray(pipelineSnapshot?.pipelines) ? pipelineSnapshot.pipelines : [];
+  const history = Array.isArray(pipelineSnapshot?.history) ? pipelineSnapshot.history.slice(0, 5) : [];
+  const loading = pipelineSnapshot?.loading;
+  const unavailable = pipelineSnapshot?.status === "unavailable";
+  const [executions, setExecutions] = useState([]);
+  const [runningPipelineId, setRunningPipelineId] = useState("");
+
+  const upsertExecution = (execution) => {
+    setExecutions((current) => {
+      const withoutCurrent = current.filter((item) => item.executionId !== execution.executionId);
+      return [execution, ...withoutCurrent].slice(0, 5);
+    });
+  };
+
+  const runPipeline = async (pipeline) => {
+    if (!pipeline?.id || runningPipelineId) return;
+    setRunningPipelineId(pipeline.id);
+
+    try {
+      const response = await fetch(`${sentinelActionApiBaseUrl}/pipeline/run`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pipelineId: pipeline.id }),
+      });
+      const payload = await response.json().catch(() => ({
+        status: "failed",
+        message: "Pipeline API returned a non-JSON response.",
+      }));
+
+      if (!response.ok || !payload.executionId) {
+        upsertExecution({
+          executionId: `pipeline-failed-${Date.now()}`,
+          pipeline: pipeline.id,
+          label: pipeline.label,
+          status: "failed",
+          summary: payload.message || "Pipeline could not be started.",
+          steps: [],
+          startedAt: new Date().toISOString(),
+          finishedAt: new Date().toISOString(),
+          durationMs: 0,
+        });
+        return;
+      }
+
+      upsertExecution(payload);
+      const finalExecution = await pollSentinelPipelineExecution(payload.executionId, {
+        onUpdate: upsertExecution,
+      });
+      if (finalExecution) upsertExecution(finalExecution);
+      if (typeof onPipelineComplete === "function") await onPipelineComplete();
+    } catch (error) {
+      upsertExecution({
+        executionId: `pipeline-failed-${Date.now()}`,
+        pipeline: pipeline.id,
+        label: pipeline.label,
+        status: "failed",
+        summary: `Could not reach local Sentinel API at ${sentinelActionApiBaseUrl}.`,
+        outputExcerpt: error.message,
+        steps: [],
+        startedAt: new Date().toISOString(),
+        finishedAt: new Date().toISOString(),
+        durationMs: 0,
+      });
+    } finally {
+      setRunningPipelineId("");
+    }
+  };
+
+  const combinedHistory = [
+    ...executions.map((execution) => ({
+      ...execution,
+      timestamp: execution.finishedAt || execution.startedAt || execution.queuedAt,
+    })),
+    ...history.map((item) => ({
+      executionId: `pipeline-history-${item.id}`,
+      pipeline: item.pipeline,
+      label: pipelines.find((pipeline) => pipeline.id === item.pipeline)?.label || formatStateLabel(item.pipeline),
+      status: item.status,
+      summary: item.summary,
+      startedAt: item.startedAt,
+      finishedAt: item.finishedAt,
+      durationMs: item.durationMs,
+      durationLabel: item.durationLabel,
+      completedStepCount: item.completedStepCount,
+      stepCount: item.stepCount,
+      failedStep: item.failedStep,
+      timestamp: item.finishedAt || item.startedAt,
+    })),
+  ]
+    .reduce((items, execution) => {
+      const key = execution.runId ? `run-${execution.runId}` : execution.executionId;
+      if (items.some((item) => (item.runId ? `run-${item.runId}` : item.executionId) === key)) return items;
+      return [...items, execution];
+    }, [])
+    .sort((a, b) => new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime())
+    .slice(0, 5);
+
+  return (
+    <section aria-label="Sentinel Execution Pipelines" className="rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-100/80 md:p-6">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Execution Pipelines</p>
+          <h2 className="text-xl font-semibold text-slate-950">Structured safe workflows</h2>
+          <p className="max-w-2xl text-sm text-slate-600">
+            Run registered multi-step workflows only. Steps are fixed allowlisted actions, executed sequentially with no custom editing.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onRefresh}
+          className="rounded-full bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+        >
+          Refresh
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 ring-1 ring-slate-100" style={{ marginTop: "16px" }}>
+          Loading pipeline registry…
+        </div>
+      ) : null}
+
+      {!loading && unavailable ? (
+        <div className="rounded-2xl bg-blue-50 p-4 text-sm text-blue-900 ring-1 ring-blue-100" style={{ marginTop: "16px" }}>
+          Pipeline registry is available when the local Sentinel API is running.
+        </div>
+      ) : null}
+
+      <div className="grid gap-3 xl:grid-cols-2" style={{ marginTop: "16px" }}>
+        {!unavailable && pipelines.map((pipeline) => {
+          const running = runningPipelineId === pipeline.id;
+          const latestExecution = executions.find((execution) => execution.pipeline === pipeline.id);
+          return (
+            <article key={pipeline.id} className="rounded-[24px] bg-slate-50 p-4 ring-1 ring-slate-100">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-slate-950">{pipeline.label}</p>
+                  <p className="text-xs text-slate-600">{pipeline.description}</p>
+                </div>
+                <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${actionStatusBadgeClass(latestExecution?.status || "queued")}`}>
+                  {latestExecution ? formatStateLabel(normaliseExecutionStatus(latestExecution.status)) : `${pipeline.riskLevel || "low"} risk`}
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-2" style={{ marginTop: "10px" }}>
+                <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-100">
+                  {pipeline.stepCount} steps
+                </span>
+                <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-100">
+                  {pipeline.estimatedDuration}
+                </span>
+                <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-100">
+                  allowlisted only
+                </span>
+              </div>
+
+              <ol className="grid gap-1.5 text-xs text-slate-600" style={{ marginTop: "12px" }}>
+                {pipeline.steps.map((step, index) => {
+                  const executionStep = latestExecution?.steps?.find((item) => item.actionId === step.actionId);
+                  return (
+                    <li key={step.actionId} className="flex items-start justify-between gap-2 rounded-xl bg-white px-3 py-2 ring-1 ring-slate-100">
+                      <span>{index + 1}. {step.label}</span>
+                      <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${actionStatusBadgeClass(executionStep?.status || "queued")}`}>
+                        {executionStep ? formatStateLabel(normaliseExecutionStatus(executionStep.status)) : "queued"}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ol>
+
+              {latestExecution?.summary ? (
+                <p className="text-xs font-semibold text-slate-700" style={{ marginTop: "10px" }}>{latestExecution.summary}</p>
+              ) : null}
+              {latestExecution?.failedStep ? (
+                <p className="text-xs text-rose-700" style={{ marginTop: "6px" }}>
+                  Failed step: {latestExecution.failedStep.label}
+                </p>
+              ) : null}
+
+              <button
+                type="button"
+                onClick={() => runPipeline(pipeline)}
+                disabled={Boolean(runningPipelineId) || !pipeline.valid}
+                className="rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 disabled:cursor-wait disabled:bg-slate-400"
+                style={{ marginTop: "12px" }}
+              >
+                {running ? "Pipeline running" : "Run pipeline"}
+              </button>
+            </article>
+          );
+        })}
+      </div>
+
+      <div className="rounded-[24px] bg-slate-950 p-4 text-white" style={{ marginTop: "16px" }}>
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-pink-200">Pipeline history</p>
+        <div className="grid gap-2" style={{ marginTop: "12px" }}>
+          {combinedHistory.length ? combinedHistory.map((execution) => (
+            <div key={execution.executionId} className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-white">{execution.label || formatStateLabel(execution.pipeline)}</p>
+                  <p className="text-xs text-slate-400">
+                    {formatDateTime(execution.timestamp)} · {formatExecutionDuration(execution)}
+                  </p>
+                </div>
+                <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${actionStatusBadgeClass(execution.status)}`}>
+                  {formatStateLabel(normaliseExecutionStatus(execution.status))}
+                </span>
+              </div>
+              <p className="text-xs text-slate-300" style={{ marginTop: "8px" }}>
+                {execution.summary || `${execution.completedStepCount ?? "Recorded"}${execution.stepCount ? `/${execution.stepCount}` : ""} steps completed.`}
+              </p>
+              {execution.failedStep ? (
+                <p className="text-xs text-rose-200" style={{ marginTop: "6px" }}>
+                  Failed step: {execution.failedStep.label || execution.failedStep.actionId}
+                </p>
+              ) : null}
+            </div>
+          )) : (
+            <div className="rounded-2xl bg-white/8 p-3 text-sm text-slate-300 ring-1 ring-white/10">
+              No pipeline executions recorded yet.
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function AutopilotOrchestratorPanel({ autopilotReport, loading }) {
   const [copyState, setCopyState] = useState("idle");
   const [copyTarget, setCopyTarget] = useState("");
@@ -4488,6 +4733,12 @@ function AdminView({ onPreview }) {
     loading: true,
     status: "loading",
   });
+  const [pipelineSnapshot, setPipelineSnapshot] = useState({
+    pipelines: [],
+    history: [],
+    loading: true,
+    status: "loading",
+  });
   const [activityFeedSnapshot, setActivityFeedSnapshot] = useState({
     activities: [],
     loading: true,
@@ -4571,6 +4822,34 @@ function AdminView({ onPreview }) {
     }
   };
 
+  const loadPipelines = async () => {
+    setPipelineSnapshot((current) => ({
+      ...current,
+      loading: true,
+    }));
+
+    try {
+      const res = await fetch(`${sentinelActionApiBaseUrl}/pipelines?limit=10`, {
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error(`Sentinel pipelines returned ${res.status}`);
+      const data = await res.json();
+      setPipelineSnapshot({
+        pipelines: Array.isArray(data?.pipelines) ? data.pipelines : [],
+        history: Array.isArray(data?.history) ? data.history : [],
+        loading: false,
+        status: "ready",
+      });
+    } catch {
+      setPipelineSnapshot({
+        pipelines: [],
+        history: [],
+        loading: false,
+        status: "unavailable",
+      });
+    }
+  };
+
   const loadActivityFeed = async () => {
     setActivityFeedSnapshot((current) => ({
       ...current,
@@ -4627,6 +4906,7 @@ function AdminView({ onPreview }) {
 
   useEffect(() => {
     loadActionHistory();
+    loadPipelines();
     loadActivityFeed();
     loadOperatorFeedback();
   }, []);
@@ -5355,6 +5635,7 @@ function AdminView({ onPreview }) {
   const refreshOperatorActivity = async () => {
     await Promise.all([
       loadActionHistory(),
+      loadPipelines(),
       loadActivityFeed(),
     ]);
   };
@@ -5725,6 +6006,11 @@ function AdminView({ onPreview }) {
                   actionRegistry={sentinelActionRegistry}
                   history={actionHistorySnapshot}
                   onActionComplete={refreshOperatorActivity}
+                />
+                <ExecutionPipelinesPanel
+                  pipelineSnapshot={pipelineSnapshot}
+                  onRefresh={loadPipelines}
+                  onPipelineComplete={refreshOperatorActivity}
                 />
                 <RecentOperatorActionsPanel
                   history={actionHistorySnapshot}
