@@ -45,15 +45,15 @@ Node and npm should be installed only during an approved preparation task, not d
 
 Recommended target:
 
-- Prefer Node.js `24` LTS for a fresh Raspberry Pi deployment.
-- Node.js `22` LTS is an acceptable compatibility fallback if project constraints require it.
+- Use Node.js `22` LTS as the safer first Raspberry Pi target unless local validation proves the project is ready for Node.js `24` LTS.
+- Node.js `24` LTS remains the preferred future target after dependency and build validation.
 - Do not target Node.js `20`, because its maintenance window ended in 2026 according to the official Node.js release schedule.
 
 Recommended installation approach for Debian Bookworm `aarch64`:
 
 1. Confirm the current official Node.js LTS status before installation.
 2. Use either the official Node.js Linux binary route or NodeSource LTS packages for Debian Bookworm `aarch64`.
-3. Pin the chosen major version in the deployment notes, for example `nodejs 24.x`.
+3. Pin the chosen major version in the deployment notes, for example `nodejs 22.x` for the first install or `nodejs 24.x` after validation.
 4. Verify after installation with:
 
 ```bash
@@ -141,6 +141,14 @@ Rules:
 ## 7. Deployment Sequence Proposal
 
 This is a proposed sequence only. Do not run it until deployment preparation is explicitly approved.
+
+Before running anything on the Pi, generate the exact dry-run command plan:
+
+```bash
+npm run platform:pi:install:dry-run
+```
+
+The dry-run writes `reports/sentinel-pi-install-dry-run.md` and `.json`, both ignored. It does not SSH, install packages, create directories, clone repositories, copy files, start services or expose the API.
 
 1. Confirm SSH key-based access still works:
 

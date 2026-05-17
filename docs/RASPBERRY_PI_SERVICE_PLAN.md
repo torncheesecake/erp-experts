@@ -124,6 +124,14 @@ npm run platform:pi:prepare:plan
 
 This command reads `reports/sentinel-pi-discovery.json`, prints current blockers and writes `reports/sentinel-pi-preparation-plan.md` plus `.json`. It does not SSH, install Node, create directories, copy files, start services or deploy.
 
+Generate the exact install dry-run sequence with:
+
+```bash
+npm run platform:pi:install:dry-run
+```
+
+This writes `reports/sentinel-pi-install-dry-run.md` plus `.json`. It prints proposed preflight, Node/npm, directory, repo, API smoke, service and post-install commands for review only. It does not SSH or mutate the Pi.
+
 ## Future install sequence
 
 These commands are documented only. Do not run them until a controlled deployment is approved:

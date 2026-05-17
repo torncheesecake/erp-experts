@@ -76,6 +76,8 @@ reports/sentinel-pi-discovery.json
 reports/sentinel-pi-discovery.md
 reports/sentinel-pi-preparation-plan.json
 reports/sentinel-pi-preparation-plan.md
+reports/sentinel-pi-install-dry-run.json
+reports/sentinel-pi-install-dry-run.md
 reports/sentinel-daily-operator-report.md
 reports/sentinel-stakeholder-weekly-report.md
 reports/sentinel-cadence-summary.json

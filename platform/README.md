@@ -359,6 +359,14 @@ npm run platform:pi:prepare:plan
 
 The committed plan is `docs/RASPBERRY_PI_DEPLOYMENT_PREPARATION_PLAN.md`. The command writes ignored preparation reports from the latest discovery report and does not SSH, install Node, create directories, copy files, start services or deploy.
 
+Generate the proposed command sequence without running it:
+
+```bash
+npm run platform:pi:install:dry-run
+```
+
+This writes ignored install dry-run reports and prints preflight, Node/npm, directory, repo, API smoke, service and post-install check sections. It is dry-run only and does not SSH or mutate the Pi.
+
 `service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
 Access-control planning is also scaffolded but inactive:
