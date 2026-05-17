@@ -231,16 +231,14 @@ function classify({ host, user, sshResult, remote }) {
   }
 
   if (remote.api_port === "open") {
-    warnings.push(`Sentinel API port ${apiPort} is open. Confirm this is expected before service work continues.`);
-    checks.push(makeCheck("api_port", `API port ${apiPort}`, "warning", "Open."));
+    checks.push(makeCheck("api_port", `API port ${apiPort}`, "pass", "Open. Run platform:pi:service:verify for service health."));
   } else {
     warnings.push(`Sentinel API port ${apiPort} is not running. This is expected before foreground smoke testing.`);
     checks.push(makeCheck("api_port", `API port ${apiPort}`, "warning", "Closed."));
   }
 
   if (remote.service_file) {
-    warnings.push("sentinel-api.service is installed. Confirm service state before making further changes.");
-    checks.push(makeCheck("service", "sentinel-api.service", "warning", remote.service_file));
+    checks.push(makeCheck("service", "sentinel-api.service", "pass", `${remote.service_file}. Run platform:pi:service:verify for service state.`));
   } else {
     warnings.push("sentinel-api.service is not installed yet. This is expected before the service installation task.");
     checks.push(makeCheck("service", "sentinel-api.service", "warning", "Not installed."));
@@ -291,7 +289,9 @@ function buildReport() {
     blockers: classification.blockers,
     recommendedNextStep: classification.blockers.length
       ? "Resolve repo deployment blockers, then rerun npm run platform:pi:repo:verify."
-      : "Repo deployment is verified for the next phase. Plan a foreground API smoke test before installing systemd service files.",
+      : remote.service_file
+        ? "Repo deployment is verified. Run npm run platform:pi:service:verify for installed service health."
+        : "Repo deployment is verified for the next phase. Plan a foreground API smoke test before installing systemd service files.",
   };
 }
 

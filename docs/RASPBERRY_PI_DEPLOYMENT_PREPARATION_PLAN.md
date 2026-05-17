@@ -255,6 +255,14 @@ npm run platform:pi:service:plan
 
 The service planner is read-only. It checks the deployed app, the `platform:api:serve` script, systemd availability, current service state, the passing smoke report and the local systemd template. The Pi currently resolves npm at `/usr/local/bin/npm`, so the template and plan use that absolute path. The planner prints the future `sudo systemctl` sequence but does not copy files, reload systemd, start the API or expose it publicly.
 
+After service installation, verify service health with:
+
+```bash
+npm run platform:pi:service:verify
+```
+
+This is the post-service gate. It checks installed systemd state, localhost-only binding, API endpoint health, Git cleanliness and that no Sentinel cadence timers are enabled. It is separate from `platform:pi:repo:verify`, which only checks the deployed checkout and build artefacts.
+
 1. Confirm SSH key-based access still works:
 
 ```bash
@@ -305,7 +313,13 @@ npm run platform:pi:service:plan
 ```
 
 12. Install the systemd service only after the foreground smoke test and service plan pass, in a separate explicitly approved task.
-13. Enable cadence timers only in a later task after the API service is stable and backups are verified.
+13. Verify the installed service:
+
+```bash
+npm run platform:pi:service:verify
+```
+
+14. Enable cadence timers only in a later task after the API service is stable, remote auth is planned and backups are verified.
 
 ## 8. Rollback and Safety Plan
 

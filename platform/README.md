@@ -433,6 +433,14 @@ npm run platform:pi:service:plan
 
 This read-only planner verifies the deployed app, `platform:api:serve`, the passing foreground smoke report, systemd availability, current service state, `deploy/systemd/sentinel-api.service.example` and the Pi npm path. The current Pi runtime resolves npm at `/usr/local/bin/npm`, so the inactive template uses that absolute path plus an explicit `PATH`. The planner writes ignored service-plan reports and prints future `sudo systemctl` commands only.
 
+Verify the installed service as a separate post-install phase:
+
+```bash
+npm run platform:pi:service:verify
+```
+
+This read-only verifier checks that `sentinel-api.service` exists, is enabled, is active, uses `/usr/local/bin/npm run platform:api:serve`, points at `/srv/sentinel/apps/seo-ops`, reads `/srv/sentinel/apps/seo-ops/.env`, listens on `127.0.0.1:4317` only, responds on `/health`, `/tenant` and `/state`, and has no Sentinel cadence timers enabled. It writes ignored service verification reports and does not restart or mutate the Pi.
+
 `service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
 Access-control planning is also scaffolded but inactive:

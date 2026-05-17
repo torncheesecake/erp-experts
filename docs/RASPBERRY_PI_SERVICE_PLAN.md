@@ -201,6 +201,14 @@ npm run platform:pi:service:plan
 
 This read-only command checks the deployed app, the `platform:api:serve` script, the foreground smoke report, systemd availability, current service state, the local service template and the Pi npm path. It writes ignored reports to `reports/sentinel-pi-service-plan.md` and `.json`, prints the exact future install commands and performs no installation.
 
+After a controlled service installation, verify the installed service separately:
+
+```bash
+npm run platform:pi:service:verify
+```
+
+This read-only verifier checks that `sentinel-api.service` is installed, enabled and active. It also checks `ExecStart`, `WorkingDirectory`, `EnvironmentFile`, the localhost-only listener on `127.0.0.1:4317`, `/health`, `/tenant`, `/state`, Git cleanliness and the absence of Sentinel cadence timers. It writes ignored reports to `reports/sentinel-pi-service-verify.md` and `.json`. It does not restart services, reload systemd, change timers or expose the API publicly.
+
 ## Future install sequence
 
 These commands are documented only. Do not run them until a controlled deployment is approved:
