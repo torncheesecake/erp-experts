@@ -147,6 +147,7 @@ Before running anything on the Pi, generate the exact dry-run command plan:
 ```bash
 npm run platform:pi:install:preflight
 npm run platform:pi:install:dry-run
+npm run platform:pi:install:prep
 ```
 
 The preflight writes `reports/sentinel-pi-install-preflight.md` and `.json`, both ignored. It uses read-only non-interactive SSH checks and a local port probe. It does not install packages, create directories, clone repositories, copy files, start services or expose the API.
@@ -154,6 +155,14 @@ The preflight writes `reports/sentinel-pi-install-preflight.md` and `.json`, bot
 `READY_WITH_WARNINGS` is acceptable before the first install preparation if the warnings are expected install targets, such as missing Node/npm, missing `/srv/matthew-platform` or closed API port `4317`.
 
 The dry-run writes `reports/sentinel-pi-install-dry-run.md` and `.json`, both ignored. It does not SSH, install packages, create directories, clone repositories, copy files, start services or expose the API.
+
+`platform:pi:install:prep` is also dry-run by default. It can perform the first controlled mutation only when `--confirm` is explicitly provided. Confirmed mode is limited to installing Node/npm and creating the Sentinel directory structure. It must not clone the app, start the API, install systemd services, enable timers or expose anything publicly.
+
+Confirmed prep command, only after explicit approval:
+
+```bash
+npm run platform:pi:install:prep -- --confirm --node-version 22
+```
 
 1. Confirm SSH key-based access still works:
 

@@ -80,6 +80,8 @@ reports/sentinel-pi-install-dry-run.json
 reports/sentinel-pi-install-dry-run.md
 reports/sentinel-pi-install-preflight.json
 reports/sentinel-pi-install-preflight.md
+reports/sentinel-pi-install-prep.json
+reports/sentinel-pi-install-prep.md
 reports/sentinel-daily-operator-report.md
 reports/sentinel-stakeholder-weekly-report.md
 reports/sentinel-cadence-summary.json

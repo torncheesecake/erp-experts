@@ -135,6 +135,14 @@ The preflight command requires `RASPBERRY_PI_HOST` and `RASPBERRY_PI_USER` in th
 
 This writes `reports/sentinel-pi-install-dry-run.md` plus `.json`. It prints proposed preflight, Node/npm, directory, repo, API smoke, service and post-install commands for review only. It does not SSH or mutate the Pi.
 
+The first mutation-capable prep command is:
+
+```bash
+npm run platform:pi:install:prep
+```
+
+It is dry-run by default. It refuses to mutate the Pi unless `--confirm` is supplied. Confirmed mode is limited to Node/npm installation, Sentinel directory creation, ownership assignment to the SSH user and post-checks. It does not clone the repo, start the API, install systemd services, enable timers or expose the API.
+
 ## Future install sequence
 
 These commands are documented only. Do not run them until a controlled deployment is approved:

@@ -370,6 +370,14 @@ npm run platform:pi:install:dry-run
 
 This writes ignored install dry-run reports and prints preflight, Node/npm, directory, repo, API smoke, service and post-install check sections. It is dry-run only and does not SSH or mutate the Pi.
 
+The first mutation-capable command is still dry-run by default:
+
+```bash
+npm run platform:pi:install:prep
+```
+
+It refuses to mutate without `--confirm`. Confirmed mode only installs Node/npm, creates the `/srv/matthew-platform` directory layout, assigns ownership to the SSH user and runs post-checks. It does not clone the repo, start the API, install systemd services, enable timers or expose anything publicly.
+
 `service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
 Access-control planning is also scaffolded but inactive:
