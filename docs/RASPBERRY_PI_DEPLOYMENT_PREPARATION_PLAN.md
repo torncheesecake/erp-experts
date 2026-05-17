@@ -239,6 +239,14 @@ npm run platform:pi:repo:verify
 
 `platform:pi:repo:verify` checks the deployed application state under `/srv/sentinel/apps/seo-ops`: Git checkout, clean branch, package files, `node_modules`, `dist`, repo-local platform DB and required npm scripts. API port `4317` and `sentinel-api.service` are warnings at this stage, not blockers. The next phase after a passing repo verification is foreground API smoke testing.
 
+Run the foreground Pi API smoke only after repo verification:
+
+```bash
+npm run platform:pi:api:smoke
+```
+
+The smoke command starts the API over SSH in a temporary session bound to `127.0.0.1:4317`, calls `/health`, `/state` and `/tenant` from the Pi itself, stops only the process it started and verifies the port closes afterwards. It writes ignored smoke reports and does not install a service, enable timers, add a reverse proxy or expose the API publicly.
+
 1. Confirm SSH key-based access still works:
 
 ```bash
@@ -276,11 +284,10 @@ npm run backup:restore:test
 npm run seo:monitor
 ```
 
-10. Smoke test the local API in foreground only:
+10. Smoke test the Pi API in foreground only:
 
 ```bash
-npm run platform:api:serve
-npm run platform:api:smoke
+npm run platform:pi:api:smoke
 ```
 
 11. Install the systemd service only after the foreground smoke test passes.

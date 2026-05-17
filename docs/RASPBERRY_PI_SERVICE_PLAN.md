@@ -182,6 +182,16 @@ npm run platform:pi:repo:verify
 
 This read-only command checks the Git checkout, clean branch, package files, installed dependencies, `dist`, repo-local platform DB and required npm scripts. It does not start the API or install the service. A closed API port and missing `sentinel-api.service` are expected warnings before foreground smoke testing and service installation.
 
+## Foreground API smoke
+
+Before installing the systemd service, prove the API can run in the deployed repo with a temporary foreground smoke:
+
+```bash
+npm run platform:pi:api:smoke
+```
+
+The command starts the Pi API through SSH with `SENTINEL_API_HOST=127.0.0.1` and `SENTINEL_API_PORT=4317`, tests `/health`, `/state` and `/tenant` from the Pi itself, then stops the temporary process and confirms port `4317` closes. It writes ignored reports to `reports/sentinel-pi-api-smoke.md` and `.json`. It does not install systemd files, enable services, enable timers, add a reverse proxy or expose the API publicly.
+
 ## Future install sequence
 
 These commands are documented only. Do not run them until a controlled deployment is approved:

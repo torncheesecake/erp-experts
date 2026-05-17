@@ -417,6 +417,14 @@ npm run platform:pi:repo:verify
 
 This read-only verifier checks `/srv/sentinel/apps/seo-ops` for a clean Git checkout, package files, `node_modules`, `dist`, repo-local platform DB and the required npm scripts. It reports closed API port `4317` and missing `sentinel-api.service` as warnings because the next phase is foreground API smoke testing, not service installation.
 
+Smoke test the Pi API in a temporary foreground session before any service installation:
+
+```bash
+npm run platform:pi:api:smoke
+```
+
+This SSH-based smoke starts `npm run platform:api:serve` on the Pi with `SENTINEL_API_HOST=127.0.0.1` and `SENTINEL_API_PORT=4317`, curls `/health`, `/state` and `/tenant` from the Pi itself, then stops only the process it started and confirms port `4317` closes. It writes ignored smoke reports and does not install systemd, enable timers, reverse proxy the API or expose it publicly.
+
 `service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
 Access-control planning is also scaffolded but inactive:
