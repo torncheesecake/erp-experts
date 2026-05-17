@@ -66,6 +66,33 @@ npm run service:dry-run
 
 It checks the service template and package script, then prints the commands that would be used later. It does not copy files, reload systemd, enable services, start services or modify the server.
 
+## Read-only Pi discovery
+
+Use the discovery command before planning any real Raspberry Pi deployment:
+
+```bash
+npm run platform:pi:discover
+```
+
+The default target host is `192.168.4.26`. The command reads optional local environment variables only:
+
+```text
+RASPBERRY_PI_HOST
+RASPBERRY_PI_USER
+RASPBERRY_PI_SSH_PORT
+RASPBERRY_PI_DEPLOY_ROOT
+```
+
+If the user is missing, the command exits with a warning rather than failing. It writes ignored local reports to `reports/sentinel-pi-discovery.json` and `reports/sentinel-pi-discovery.md`.
+
+Read-only SSH discovery is available only when explicitly requested:
+
+```bash
+npm run platform:pi:discover -- --ssh
+```
+
+SSH mode uses `BatchMode=yes`, does not prompt for a password and runs read-only checks only: host name, kernel, Node, npm, Git, disk, memory, `/srv` path visibility and systemd version. It does not install packages, create directories, copy files, start services or expose the API.
+
 ## Future install sequence
 
 These commands are documented only. Do not run them until a controlled deployment is approved:

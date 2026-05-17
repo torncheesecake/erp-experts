@@ -197,6 +197,20 @@ npm run platform:status
 npm run seo:monitor
 ```
 
+Before any SSH-based planning or deployment task, run the read-only Raspberry Pi discovery scaffold:
+
+```bash
+npm run platform:pi:discover
+```
+
+The known target host is `192.168.4.26`. Optional SSH checks require `RASPBERRY_PI_USER` to be configured outside the repo and must be explicitly requested with:
+
+```bash
+npm run platform:pi:discover -- --ssh
+```
+
+This discovery step writes ignored local reports only. It does not deploy, install packages, create directories, copy files, start services or expose the Sentinel API. Credentials and SSH keys must remain outside Git.
+
 ## 9. First deployment milestone
 
 Smallest safe first implementation:

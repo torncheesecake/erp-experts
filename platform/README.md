@@ -343,10 +343,13 @@ The HTTP prototype uses Node's built-in `http` module and defaults to `http://12
 The Raspberry Pi service scaffold is also present but inactive:
 
 ```bash
+npm run platform:pi:discover
 npm run service:dry-run
 ```
 
-It validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
+`platform:pi:discover` targets the known Raspberry Pi host `192.168.4.26` by default and writes ignored local discovery reports. It is read-only. It uses optional local environment variables for user, port and deploy root, and only attempts SSH when `--ssh` is explicitly passed. SSH mode uses non-interactive read-only checks and never prompts for passwords.
+
+`service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
 Access-control planning is also scaffolded but inactive:
 

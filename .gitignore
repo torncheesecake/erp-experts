@@ -72,6 +72,8 @@ reports/seo-autopilot-report.json
 reports/seo-decision-engine.json
 reports/sentinel-state.json
 reports/sentinel-deploy-readiness.json
+reports/sentinel-pi-discovery.json
+reports/sentinel-pi-discovery.md
 reports/sentinel-daily-operator-report.md
 reports/sentinel-stakeholder-weekly-report.md
 reports/sentinel-cadence-summary.json

@@ -456,6 +456,8 @@ For local operator testing, `/seo-roadmap` can try the HTTP API first when `VITE
 
 The inactive Raspberry Pi service scaffold is now documented in `docs/RASPBERRY_PI_SERVICE_PLAN.md`. `deploy/systemd/sentinel-api.service.example` is a template only, and `npm run service:dry-run` prints the future systemd install/start commands without modifying system files.
 
+Raspberry Pi readiness discovery is available with `npm run platform:pi:discover`. The default target host is `192.168.4.26`. The command writes ignored local reports, warns rather than failing when SSH user details are missing and performs no deployment work. Optional SSH mode requires `--ssh` plus user configuration outside the repo, uses non-interactive read-only checks and must not prompt for passwords or print secrets.
+
 Access control planning is now scaffolded in `docs/SENTINEL_ACCESS_CONTROL_PLAN.md`, `docs/SENTINEL_BASIC_AUTH_SETUP.md` and `deploy/nginx/sentinel-basic-auth.example.conf`. These files document basic auth and reverse-proxy protection only. No runtime auth is enabled, no credentials are committed and the production `/seo-roadmap` redirect remains unchanged.
 
 Sentinel ownership and remote-auth architecture is documented in `docs/SENTINEL_OWNERSHIP_AUTH_ARCHITECTURE.md`. The intended future model is that Matthew's Sentinel API, likely on the Raspberry Pi or another Matthew-controlled server, becomes the private authority that unlocks operator controls. If the API is unavailable, the Pi is offline or the token is invalid, `/seo-roadmap` should stay locked or read-only while `/seo-progress` remains stakeholder-safe. This is planning only: no login, token validation or route blocking has been implemented yet.
