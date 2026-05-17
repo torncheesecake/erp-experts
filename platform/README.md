@@ -407,6 +407,8 @@ npm run platform:pi:repo:deploy
 
 The first Pi repo deploy cloned successfully but exposed a normal `npm ci` blocker: `react-helmet-async@2.0.5` did not declare React 19 peer support. The main app now uses React 19 native document metadata through `src/components/ui/SEO.jsx`, so deployment can stay on strict `npm ci` instead of a `--legacy-peer-deps` workaround.
 
+The stakeholder `/seo-progress` page is also build-safe without generated report artefacts. It uses committed fallback data in `src/data/seoProgressSnapshot.js`; ignored `reports/*.json` files can enhance future runtime flows but are not required for the Pi build.
+
 `service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
 Access-control planning is also scaffolded but inactive:

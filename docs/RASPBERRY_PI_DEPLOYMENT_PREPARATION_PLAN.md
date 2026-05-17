@@ -220,6 +220,12 @@ The chosen resolution is to remove `react-helmet-async` from the main app and us
 
 This is safer than adding `--legacy-peer-deps` to the Pi deploy path because the server install should remain a normal `npm ci` using the committed lockfile. `--legacy-peer-deps` should remain an emergency compatibility escape hatch only, not the default deployment policy.
 
+## 7.3 Stakeholder Progress Build Safety
+
+The next Pi-side build failure came from `/seo-progress` importing ignored generated report JSON files directly from `reports/`. Those files exist locally during operation but are not committed, so they are absent from a clean Raspberry Pi Git checkout.
+
+The stakeholder progress page now uses committed fallback data in `src/data/seoProgressSnapshot.js`. This keeps the page business-facing and build-safe while avoiding commands, diagnostics, API details, database internals and operator-only state. Generated reports may be layered in later as optional runtime enhancement, but they are no longer required for `npm run build`.
+
 1. Confirm SSH key-based access still works:
 
 ```bash

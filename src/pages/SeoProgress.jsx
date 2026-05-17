@@ -11,10 +11,7 @@ import {
 } from "lucide-react";
 import SEO from "../components/ui/SEO";
 import reportData from "../data/reports.json";
-import qaReport from "../../reports/resource-qa-report.json";
-import weeklySummary from "../../reports/seo-weekly-summary.json";
-import actionBriefs from "../../reports/seo-action-briefs.json";
-import opportunityReport from "../../reports/seo-opportunity-centre.json";
+import seoProgressSnapshot from "../data/seoProgressSnapshot";
 
 function formatDate(value) {
   if (!value) return "Latest update";
@@ -29,11 +26,8 @@ function formatDate(value) {
   });
 }
 
-function plainAction(text = "") {
+function plainText(text = "") {
   return String(text)
-    .replace(/npm run [^\s.]+/gi, "the next internal review")
-    .replace(/Codex/gi, "the content team")
-    .replace(/brief/gi, "plan")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -54,12 +48,9 @@ const completedItems = allCompletedItems.slice(0, 6);
 const allPlannedItems = roadmapItems.filter((item) => item.status !== "done");
 const plannedItems = allPlannedItems.slice(0, 5);
 
-const stakeholderBriefs = [
-  ...(actionBriefs?.briefs || []),
-  ...(actionBriefs?.sprintBacklogBriefs || []),
-].slice(0, 4);
+const stakeholderBriefs = (seoProgressSnapshot?.activePlans || []).slice(0, 4);
 
-const topOpportunities = (opportunityReport?.topOpportunities || opportunityReport?.opportunities || [])
+const topOpportunities = (seoProgressSnapshot?.strategicOpportunities || [])
   .slice(0, 4);
 
 function StatCard({ icon: Icon, label, value, note, tone = "slate" }) {
@@ -106,12 +97,12 @@ function SimpleList({ title, description, items, renderItem, emptyText }) {
 }
 
 export default function SeoProgress() {
-  const gate = qaReport?.gateSummary || {};
-  const passCount = Number(gate.pass || 0);
-  const reviewCount = Number(gate.needs_review || 0);
-  const blockedCount = Number(gate.blocked || 0);
-  const lastUpdated = weeklySummary?.generatedAt || qaReport?.generatedAt || reportData?.lastUpdated;
-  const currentSummary = weeklySummary?.headlineSummary
+  const health = seoProgressSnapshot?.health || {};
+  const passCount = Number(health.pass || 0);
+  const reviewCount = Number(health.needsReview || 0);
+  const blockedCount = Number(health.blocked || 0);
+  const lastUpdated = seoProgressSnapshot?.lastUpdated || reportData?.lastUpdated;
+  const currentSummary = seoProgressSnapshot?.headlineSummary
     || "SEO and content work is healthy. Current focus is strategic growth rather than maintenance.";
   const plannedCount = allPlannedItems.length || topOpportunities.length;
 
@@ -293,7 +284,7 @@ export default function SeoProgress() {
                     <div className="min-w-0">
                       <p className="font-semibold text-slate-950">{opportunity.groupTitle || opportunity.title}</p>
                       <p className="mt-1 text-sm leading-6 text-slate-600">
-                        {plainAction(opportunity.recommendedAction || opportunity.whyThisRanks)}
+                        {plainText(opportunity.recommendedAction || opportunity.whyThisRanks)}
                       </p>
                     </div>
                     <span className="w-fit rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
