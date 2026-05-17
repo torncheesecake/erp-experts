@@ -350,3 +350,15 @@ PLATFORM_LOG_PATH=/srv/sentinel/logs/seo-ops
 Local defaults remain unchanged: SQLite uses `platform/persistence/platform.db`, platform report output uses `reports/`, backups use `platform/persistence/backups` and logs default to `logs/` when no environment override is supplied.
 
 Use `npm run platform:runtime:paths` to inspect the active paths and whether each path came from the environment or the local fallback. This command is read-only. It validates parent directories and does not migrate data, edit `.env`, restart `sentinel-api.service` or expose the API.
+
+## Runtime Data Path Migration Command
+
+`npm run platform:pi:data:path:migrate` is the dry-run for moving the active Pi runtime paths from the repo-local DB to `/srv/sentinel/data/seo-ops`. It is safe by default and mutates nothing.
+
+Confirmed mode requires:
+
+```bash
+npm run platform:pi:data:path:migrate -- --confirm
+```
+
+It stops only `sentinel-api.service`, backs up the repo-local DB, copies it to the canonical data path, updates the Pi service `.env`, runs `platform:health` with the Pi env loaded, restarts the service and verifies the local API endpoints. It does not expose the API, add a reverse proxy, alter firewall rules, enable timers or delete the repo-local rollback DB.

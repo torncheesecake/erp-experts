@@ -653,3 +653,21 @@ npm run platform:runtime:paths -- --json
 ```
 
 `platform:init` can initialise an overridden `PLATFORM_DB_PATH` and create its parent directory. Read-only commands report missing path parents rather than mutating them. The Raspberry Pi migration to `/srv/sentinel/data/seo-ops/platform.db` remains a separate approved task.
+
+## Pi Runtime Data Path Migration
+
+Use this command to preview the Pi runtime data-path migration:
+
+```bash
+npm run platform:pi:data:path:migrate
+```
+
+The default mode is dry-run only. It validates the repo-local source DB, canonical `/srv/sentinel/data/seo-ops` paths, Pi `.env`, service state and current API health without changing the Pi.
+
+Confirmed mode is explicit:
+
+```bash
+npm run platform:pi:data:path:migrate -- --confirm
+```
+
+It backs up the repo-local DB, copies it to `/srv/sentinel/data/seo-ops/platform.db`, updates the Pi `.env` with `PLATFORM_DB_PATH`, `PLATFORM_REPORT_OUTPUT_PATH`, `PLATFORM_BACKUP_PATH` and `PLATFORM_LOG_PATH`, runs `platform:health`, restarts `sentinel-api.service` and verifies `/health`, `/state` and `/tenant`. It does not expose the API or enable timers, and it leaves the repo-local DB as the rollback copy.

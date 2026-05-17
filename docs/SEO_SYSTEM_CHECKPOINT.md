@@ -581,3 +581,7 @@ Sentinel now resolves runtime paths from environment variables while preserving 
 - `PLATFORM_LOG_PATH`, default `logs/`
 
 `npm run platform:runtime:paths` prints the active paths, source of each path and parent-directory status. `platform:health`, `platform:status` and `platform:doctor` now surface the active runtime path configuration. This prepares the Pi migration to `/srv/sentinel/data/seo-ops` without migrating the DB, editing the Pi `.env` or restarting the service.
+
+## Pi Runtime Data Path Migration Command
+
+`npm run platform:pi:data:path:migrate` now provides the dry-run and confirmed command for the future Pi data-path migration. Default mode is read-only. Confirmed mode requires `--confirm`, backs up the repo-local DB before copying, updates only the Pi service `.env` runtime path variables, restarts only `sentinel-api.service` and verifies the localhost API endpoints. The repo-local DB is left in place for rollback.

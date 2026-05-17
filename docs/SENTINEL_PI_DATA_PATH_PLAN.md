@@ -126,3 +126,18 @@ If the service fails after migration:
 - Do not enable cadence timers.
 - Do not expose the API through a reverse proxy.
 - Do not delete the repo-local DB until rollback confidence exists.
+
+## Confirmed Migration Command
+
+The controlled migration command is:
+
+```bash
+npm run platform:pi:data:path:migrate
+npm run platform:pi:data:path:migrate -- --confirm
+```
+
+Default mode is dry-run only. It performs read-only SSH checks, prints the planned steps and writes ignored local reports. It does not stop the service, copy the DB, edit `.env` or restart anything.
+
+Confirmed mode requires `--confirm`. It refuses to run if the repo-local DB is missing, the canonical DB already exists, the service is missing or inactive, canonical directories are missing, Pi `.env` is missing, or SSH fails. If `--allow-existing-target` is supplied, an existing canonical DB is not overwritten.
+
+The confirmed sequence backs up the repo-local DB to `/srv/sentinel/data/seo-ops/backups`, copies the DB to `/srv/sentinel/data/seo-ops/platform.db`, updates Pi `.env` with canonical runtime paths, runs `platform:health` with that env loaded, restarts `sentinel-api.service`, verifies `/health`, `/state` and `/tenant`, and leaves the repo-local DB untouched as the rollback copy.
