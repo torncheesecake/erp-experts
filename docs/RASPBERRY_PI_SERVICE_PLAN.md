@@ -174,6 +174,14 @@ Confirm the Pi can read the Git remote before any confirmed clone or pull. If au
 
 Review DB placement before the Pi becomes canonical. Current `platform:init` uses the repo-local SQLite default unless persistence path handling is changed.
 
+Verify the deployed repo phase separately from runtime preparation:
+
+```bash
+npm run platform:pi:repo:verify
+```
+
+This read-only command checks the Git checkout, clean branch, package files, installed dependencies, `dist`, repo-local platform DB and required npm scripts. It does not start the API or install the service. A closed API port and missing `sentinel-api.service` are expected warnings before foreground smoke testing and service installation.
+
 ## Future install sequence
 
 These commands are documented only. Do not run them until a controlled deployment is approved:

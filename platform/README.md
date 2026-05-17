@@ -409,6 +409,14 @@ The first Pi repo deploy cloned successfully but exposed a normal `npm ci` block
 
 The stakeholder `/seo-progress` page is also build-safe without generated report artefacts. It uses committed fallback data in `src/data/seoProgressSnapshot.js`; ignored `reports/*.json` files can enhance future runtime flows but are not required for the Pi build.
 
+Verify the repo-deployed phase separately from runtime prep:
+
+```bash
+npm run platform:pi:repo:verify
+```
+
+This read-only verifier checks `/srv/sentinel/apps/seo-ops` for a clean Git checkout, package files, `node_modules`, `dist`, repo-local platform DB and the required npm scripts. It reports closed API port `4317` and missing `sentinel-api.service` as warnings because the next phase is foreground API smoke testing, not service installation.
+
 `service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
 Access-control planning is also scaffolded but inactive:

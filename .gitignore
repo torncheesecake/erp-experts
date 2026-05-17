@@ -88,6 +88,8 @@ reports/sentinel-pi-repo-deploy-plan.json
 reports/sentinel-pi-repo-deploy-plan.md
 reports/sentinel-pi-repo-deploy.json
 reports/sentinel-pi-repo-deploy.md
+reports/sentinel-pi-repo-verify.json
+reports/sentinel-pi-repo-verify.md
 reports/sentinel-daily-operator-report.md
 reports/sentinel-stakeholder-weekly-report.md
 reports/sentinel-cadence-summary.json

@@ -226,6 +226,19 @@ The next Pi-side build failure came from `/seo-progress` importing ignored gener
 
 The stakeholder progress page now uses committed fallback data in `src/data/seoProgressSnapshot.js`. This keeps the page business-facing and build-safe while avoiding commands, diagnostics, API details, database internals and operator-only state. Generated reports may be layered in later as optional runtime enhancement, but they are no longer required for `npm run build`.
 
+## 7.4 Repo Deployment Verification
+
+Runtime preparation and repo deployment are now verified separately:
+
+```bash
+npm run platform:pi:post-prep:verify
+npm run platform:pi:repo:verify
+```
+
+`platform:pi:post-prep:verify` checks the base runtime and `/srv/sentinel` directory structure. It can warn that a repo exists because repo deployment is outside its scope.
+
+`platform:pi:repo:verify` checks the deployed application state under `/srv/sentinel/apps/seo-ops`: Git checkout, clean branch, package files, `node_modules`, `dist`, repo-local platform DB and required npm scripts. API port `4317` and `sentinel-api.service` are warnings at this stage, not blockers. The next phase after a passing repo verification is foreground API smoke testing.
+
 1. Confirm SSH key-based access still works:
 
 ```bash
