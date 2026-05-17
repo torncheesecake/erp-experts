@@ -73,6 +73,7 @@
     "platform:pi:api:smoke": "node scripts/platform/platform_pi_api_smoke.mjs",
     "platform:pi:service:plan": "node scripts/platform/platform_pi_service_plan.mjs",
     "platform:pi:service:verify": "node scripts/platform/platform_pi_service_verify.mjs",
+    "platform:pi:data:path:plan": "node scripts/platform/platform_pi_data_path_plan.mjs",
     "platform:roadmap": "node scripts/platform/platform_roadmap.mjs",
     "platform:roadmap:approve": "node scripts/platform/platform_roadmap_approve.mjs",
     "platform:roadmap:brief": "node scripts/platform/platform_roadmap_brief.mjs",

@@ -209,6 +209,25 @@ npm run platform:pi:service:verify
 
 This read-only verifier checks that `sentinel-api.service` is installed, enabled and active. It also checks `ExecStart`, `WorkingDirectory`, `EnvironmentFile`, the localhost-only listener on `127.0.0.1:4317`, `/health`, `/tenant`, `/state`, Git cleanliness and the absence of Sentinel cadence timers. It writes ignored reports to `reports/sentinel-pi-service-verify.md` and `.json`. It does not restart services, reload systemd, change timers or expose the API publicly.
 
+## Canonical data path migration planning
+
+The API currently works with the repo-local DB at `/srv/sentinel/apps/seo-ops/platform/persistence/platform.db`. That was acceptable for smoke testing, but long-term runtime state should live outside the Git checkout.
+
+The canonical target paths are documented in `docs/SENTINEL_PI_DATA_PATH_PLAN.md`:
+
+- DB: `/srv/sentinel/data/seo-ops/platform.db`
+- Reports: `/srv/sentinel/data/seo-ops/reports`
+- Backups: `/srv/sentinel/data/seo-ops/backups`
+- Logs: `/srv/sentinel/logs/seo-ops`
+
+Plan the migration with:
+
+```bash
+npm run platform:pi:data:path:plan
+```
+
+This command is read-only. It checks the source DB, canonical directories, existing canonical DB state, Pi `.env` state and persistence support for `PLATFORM_DB_PATH`. It does not copy the DB, edit `.env`, stop or restart the service.
+
 ## Future install sequence
 
 These commands are documented only. Do not run them until a controlled deployment is approved:

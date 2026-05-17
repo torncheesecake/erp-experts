@@ -263,6 +263,28 @@ npm run platform:pi:service:verify
 
 This is the post-service gate. It checks installed systemd state, localhost-only binding, API endpoint health, Git cleanliness and that no Sentinel cadence timers are enabled. It is separate from `platform:pi:repo:verify`, which only checks the deployed checkout and build artefacts.
 
+## 7.5 Canonical Pi Data Path Planning
+
+The active service still uses the repo-local SQLite DB:
+
+```text
+/srv/sentinel/apps/seo-ops/platform/persistence/platform.db
+```
+
+The intended canonical runtime DB path is:
+
+```text
+/srv/sentinel/data/seo-ops/platform.db
+```
+
+The full migration plan is documented in `docs/SENTINEL_PI_DATA_PATH_PLAN.md`. Generate the read-only migration dry-run with:
+
+```bash
+npm run platform:pi:data:path:plan
+```
+
+The command verifies the source DB, canonical data directories, canonical DB presence, service `.env` values and whether code currently honours `PLATFORM_DB_PATH`. It does not stop the service, copy the DB, edit `.env`, restart systemd or expose the API. The future migration sequence must keep the repo-local DB as a rollback copy until canonical DB health and backup verification pass.
+
 1. Confirm SSH key-based access still works:
 
 ```bash

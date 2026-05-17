@@ -441,6 +441,14 @@ npm run platform:pi:service:verify
 
 This read-only verifier checks that `sentinel-api.service` exists, is enabled, is active, uses `/usr/local/bin/npm run platform:api:serve`, points at `/srv/sentinel/apps/seo-ops`, reads `/srv/sentinel/apps/seo-ops/.env`, listens on `127.0.0.1:4317` only, responds on `/health`, `/tenant` and `/state`, and has no Sentinel cadence timers enabled. It writes ignored service verification reports and does not restart or mutate the Pi.
 
+Plan the migration from repo-local SQLite to the canonical Pi runtime data path:
+
+```bash
+npm run platform:pi:data:path:plan
+```
+
+This read-only planner checks the current repo-local DB at `/srv/sentinel/apps/seo-ops/platform/persistence/platform.db`, the canonical runtime paths under `/srv/sentinel/data/seo-ops`, the Pi service `.env` and whether the persistence layer already honours `PLATFORM_DB_PATH`. The canonical target is `/srv/sentinel/data/seo-ops/platform.db`, with reports in `/srv/sentinel/data/seo-ops/reports`, backups in `/srv/sentinel/data/seo-ops/backups` and logs in `/srv/sentinel/logs/seo-ops`. It writes ignored data-path reports and does not stop the service, copy the DB, edit `.env` or restart anything.
+
 `service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
 Access-control planning is also scaffolded but inactive:
