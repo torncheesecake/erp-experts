@@ -221,8 +221,9 @@ The Control Centre groups the operator experience into:
 - Tenant: active client context, stakeholder route, operator route and default tenant scope.
 - Tenant Registry: read-only preview of registered tenants, including active and disabled fixture entries.
 - Operations: cadence, notification payloads, report generation and state refresh context.
+- Operator Console: controlled allowlisted execution with selected action, lifecycle state, output preview and recent console history.
 - Tools & Commands: searchable command discovery, copy buttons and low-risk Run buttons for allowlisted actions only.
-- Diagnostics: collapsed/secondary checks and future console direction.
+- Diagnostics: collapsed/secondary checks and the same controlled console surface when deeper checks are needed.
 
 The latest UX polish pass tightened the first-screen hierarchy around current focus, recommended next step and primary safe actions. Command groups are easier to scan, Activity Feed entries use calmer timeline styling and secondary details remain lower in the operator flow. This was a visual organisation pass only, with no SEO scoring or execution behaviour changes.
 
@@ -272,7 +273,7 @@ Action metadata lives in:
 platform/actions/actions.json
 ```
 
-The local API exposes `POST /action` for allowlisted actions only. It rejects unknown action IDs, rejects actions not marked `allowFromUI`, runs fixed `npm run <script>` commands with `spawn` and no shell, applies timeouts and limits captured output. It records each action in `runs` as `ui_action:<id>` and stores a concise redacted result in `action_results`. It also exposes read-only `GET /actions/history` so the private dashboard can show recent actions, statuses and short summaries.
+The local API exposes `POST /action` for allowlisted actions only. It rejects unknown action IDs, rejects actions not marked `allowFromUI`, starts fixed `npm run <script>` commands with `spawn` and no shell, applies timeouts and limits captured output. It now returns an execution ID immediately so the private dashboard can poll `GET /actions/execution/<id>` for `queued`, `running`, `success` or `failed` state. Completed actions are recorded in `runs` as `ui_action:<id>` with concise redacted results in `action_results`. It also exposes read-only `GET /actions/history` so the private dashboard can show recent actions, statuses and short summaries.
 
 Initial UI actions are limited to low-risk local commands:
 
@@ -286,7 +287,7 @@ Initial UI actions are limited to low-risk local commands:
 - `platform:api`
 - `seo:monitor`
 
-Deploy, cleanup, restore, FTP, service installation and arbitrary shell commands are intentionally excluded. The dashboard shows Run buttons only for allowlisted actions, keeps full output out of the default view, shows collapsed capped excerpts and shows recent operator action history when the local API is running. See `docs/SENTINEL_OPERATOR_ACTIONS.md`.
+Deploy, cleanup, restore, FTP, service installation and arbitrary shell commands are intentionally excluded. The dashboard shows Run buttons only for allowlisted actions, keeps full output out of the default view, shows capped excerpts and shows recent operator action history when the local API is running. The Operator Console is the structured execution surface for these safe actions: it has a selected action, run button, running state, output preview, recent console history and a disabled cancellation placeholder for future work. See `docs/SENTINEL_OPERATOR_ACTIONS.md` and `docs/SENTINEL_OPERATOR_CONSOLE.md`.
 
 ## Operational State Summary
 
@@ -314,7 +315,7 @@ npm run platform:api:serve
 npm run platform:api:smoke
 ```
 
-The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state`, `GET /tenant`, `GET /tenants`, `GET /activity`, `GET /feedback` and `GET /actions/history` endpoints, plus controlled `POST /action` for allowlisted local operator actions, local-only `POST /feedback` for operator notes and `POST /feedback/triage` for feedback backlog updates. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
+The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state`, `GET /tenant`, `GET /tenants`, `GET /activity`, `GET /feedback`, `GET /actions/history` and `GET /actions/execution/<id>` endpoints, plus controlled `POST /action` for allowlisted local operator actions, local-only `POST /feedback` for operator notes and `POST /feedback/triage` for feedback backlog updates. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
 
 The Raspberry Pi service scaffold is also present but inactive:
 

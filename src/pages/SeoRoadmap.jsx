@@ -6,7 +6,7 @@
  * Client bundles must not include hardcoded secrets/passwords.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CheckCircle2,
   Circle,
@@ -47,6 +47,7 @@ const SENTINEL_OPERATOR_SESSION_KEY = "sentinel.operatorSession.v1";
 const SENTINEL_OPERATOR_WORKSPACES_KEY = "sentinel.operatorWorkspaces.v1";
 const SENTINEL_DEFAULT_WORKSPACE_ID = "monitoring";
 const SENTINEL_WORKSPACE_PANEL_KEYS = ["supportingIntelligence", "articleWorkbench", "advancedDiagnostics"];
+const SENTINEL_TERMINAL_EXECUTION_STATES = new Set(["success", "failed", "failure", "cancelled"]);
 const SENTINEL_OPERATOR_SESSION_DEFAULTS = {
   activeWorkspaceId: SENTINEL_DEFAULT_WORKSPACE_ID,
   activeSection: "overview",
@@ -483,6 +484,21 @@ function formatDateTime(value) {
   });
 }
 
+function formatDurationMs(value) {
+  const duration = Number(value || 0);
+  if (!Number.isFinite(duration) || duration <= 0) return "Not recorded";
+  if (duration < 1000) return `${Math.round(duration)}ms`;
+  if (duration < 60_000) return `${Math.round(duration / 1000)}s`;
+  const minutes = Math.floor(duration / 60_000);
+  const seconds = Math.round((duration % 60_000) / 1000);
+  return `${minutes}m ${seconds}s`;
+}
+
+function normaliseExecutionStatus(status = "") {
+  if (status === "failure") return "failed";
+  return status || "queued";
+}
+
 function workflowBadgeClass(state = "") {
   if (state === "blocked" || state === "human_review_required") {
     return "bg-rose-50 text-rose-700 ring-rose-100";
@@ -497,9 +513,33 @@ function workflowBadgeClass(state = "") {
 }
 
 function actionStatusBadgeClass(status = "") {
-  if (status === "success") return "bg-emerald-50 text-emerald-700 ring-emerald-100";
-  if (status === "running") return "bg-blue-50 text-blue-700 ring-blue-100";
+  const normalisedStatus = normaliseExecutionStatus(status);
+  if (normalisedStatus === "success") return "bg-emerald-50 text-emerald-700 ring-emerald-100";
+  if (normalisedStatus === "running") return "bg-blue-50 text-blue-700 ring-blue-100";
+  if (normalisedStatus === "queued") return "bg-slate-50 text-slate-700 ring-slate-100";
+  if (normalisedStatus === "cancelled") return "bg-amber-50 text-amber-800 ring-amber-100";
   return "bg-rose-50 text-rose-700 ring-rose-100";
+}
+
+function waitForConsolePoll(ms) {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
+}
+
+async function pollSentinelActionExecution(executionId, { onUpdate, pollIntervalMs = 900, maxPolls = 160 } = {}) {
+  let latest = null;
+  for (let attempt = 0; attempt < maxPolls; attempt += 1) {
+    const response = await fetch(`${sentinelActionApiBaseUrl}/actions/execution/${encodeURIComponent(executionId)}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) throw new Error(`Execution polling returned ${response.status}`);
+    latest = await response.json();
+    if (typeof onUpdate === "function") onUpdate(latest);
+    if (SENTINEL_TERMINAL_EXECUTION_STATES.has(normaliseExecutionStatus(latest.status))) return latest;
+    await waitForConsolePoll(pollIntervalMs);
+  }
+  return latest;
 }
 
 function activitySeverityBadgeClass(severity = "") {
@@ -1921,17 +1961,35 @@ function SentinelCommandsPanel({
       const payload = await response.json().catch(() => ({
         status: "failure",
         error: "invalid_response",
-        message: "Action API returned a non-JSON response.",
+          message: "Action API returned a non-JSON response.",
       }));
-      setActionResult({
+      const initialResult = {
         ...payload,
         action: payload.action || action.id,
         ok: response.ok && payload.status === "success",
-      });
+      };
+      setActionResult(initialResult);
+
+      if (response.ok && payload.executionId) {
+        const finalResult = await pollSentinelActionExecution(payload.executionId, {
+          onUpdate: (nextExecution) => {
+            setActionResult({
+              ...nextExecution,
+              action: nextExecution.action || action.id,
+              ok: nextExecution.status === "success",
+            });
+          },
+        });
+        setActionResult({
+          ...finalResult,
+          action: finalResult?.action || action.id,
+          ok: finalResult?.status === "success",
+        });
+      }
     } catch (error) {
       setActionResult({
         action: action.id,
-        status: "failure",
+        status: "failed",
         ok: false,
         message: `Could not reach local Sentinel API at ${sentinelActionApiBaseUrl}. Start npm run platform:api:serve first.`,
         stderr: error.message,
@@ -1992,8 +2050,8 @@ function SentinelCommandsPanel({
             })}
           </div>
           {actionResult ? (
-            <div className={`rounded-2xl p-3 text-xs ring-1 ${actionResult.ok ? "bg-emerald-50 text-emerald-900 ring-emerald-100" : "bg-rose-50 text-rose-900 ring-rose-100"}`} style={{ marginTop: "12px" }}>
-              <p className="font-semibold">{actionResult.ok ? "Latest action completed" : "Latest action failed"}</p>
+            <div className={`rounded-2xl p-3 text-xs ring-1 ${actionStatusBadgeClass(actionResult.status)}`} style={{ marginTop: "12px" }}>
+              <p className="font-semibold">Latest action: {formatStateLabel(normaliseExecutionStatus(actionResult.status))}</p>
               <p style={{ marginTop: "4px" }}>{actionResult.summary || actionResult.message || "No summary returned."}</p>
             </div>
           ) : null}
@@ -2075,10 +2133,10 @@ function SentinelCommandsPanel({
                     {item.requiresDeployment ? <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700 ring-1 ring-slate-200">deployment</span> : null}
                   </div>
                   {currentResult ? (
-                    <div className={`rounded-xl p-3 text-xs ring-1 ${currentResult.ok ? "bg-emerald-50 text-emerald-900 ring-emerald-100" : "bg-rose-50 text-rose-900 ring-rose-100"}`} style={{ marginTop: "10px" }}>
+                    <div className={`rounded-xl p-3 text-xs ring-1 ${actionStatusBadgeClass(currentResult.status)}`} style={{ marginTop: "10px" }}>
                       <div className="flex items-center justify-between gap-2">
-                        <p className="font-semibold">{currentResult.ok ? "Action completed" : "Action failed"}</p>
-                        <span>{currentResult.exitCode !== undefined ? `exit ${currentResult.exitCode}` : currentResult.error || "local API"}</span>
+                        <p className="font-semibold">Action {formatStateLabel(normaliseExecutionStatus(currentResult.status))}</p>
+                        <span>{currentResult.exitCode !== undefined && currentResult.exitCode !== null ? `exit ${currentResult.exitCode}` : currentResult.executionId || currentResult.error || "local API"}</span>
                       </div>
                       {currentResult.summary ? (
                         <p style={{ marginTop: "6px" }}>{currentResult.summary}</p>
@@ -2835,21 +2893,247 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
   );
 }
 
-function FutureOperatorConsolePanel() {
+function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
+  const actions = useMemo(() => (
+    Array.isArray(actionRegistry?.actions)
+      ? actionRegistry.actions.filter((action) => action.allowFromUI)
+      : []
+  ), [actionRegistry]);
+  const localExecutionCounterRef = useRef(0);
+  const [selectedActionId, setSelectedActionId] = useState(actions[0]?.id || "");
+  const [executions, setExecutions] = useState([]);
+  const [activeExecutionId, setActiveExecutionId] = useState("");
+  const [consoleMessage, setConsoleMessage] = useState("");
+  const selectedAction = actions.find((action) => action.id === selectedActionId) || actions[0] || null;
+  const activeExecution = executions.find((execution) => execution.executionId === activeExecutionId) || null;
+  const isRunning = Boolean(activeExecution) && ["queued", "running"].includes(normaliseExecutionStatus(activeExecution.status));
+  const persistedHistory = Array.isArray(history?.actions) ? history.actions.slice(0, 5) : [];
+  const latestExecutions = executions.length
+    ? executions.slice(0, 5)
+    : persistedHistory.map((item) => ({
+      executionId: `history-${item.id}`,
+      action: item.action,
+      label: item.action,
+      command: `ui_action:${item.action}`,
+      status: item.status,
+      summary: item.summary,
+      outputExcerpt: item.outputExcerpt,
+      startedAt: item.startedAt,
+      finishedAt: item.finishedAt,
+      durationMs: null,
+    }));
+
+  const upsertExecution = (execution) => {
+    setExecutions((current) => {
+      const withoutCurrent = current.filter((item) => item.executionId !== execution.executionId);
+      return [execution, ...withoutCurrent].slice(0, 8);
+    });
+    setActiveExecutionId(execution.executionId);
+  };
+
+  const nextLocalExecutionId = () => {
+    localExecutionCounterRef.current += 1;
+    return `failed-local-${localExecutionCounterRef.current}`;
+  };
+
+  const runSelectedAction = async () => {
+    if (!selectedAction) return;
+
+    setConsoleMessage("");
+    try {
+      const response = await fetch(`${sentinelActionApiBaseUrl}/action`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ actionId: selectedAction.id }),
+      });
+      const payload = await response.json().catch(() => ({
+        status: "failed",
+        message: "Action API returned a non-JSON response.",
+      }));
+
+      if (!response.ok || !payload.executionId) {
+        upsertExecution({
+          executionId: nextLocalExecutionId(),
+          action: selectedAction.id,
+          label: selectedAction.label,
+          command: selectedAction.command,
+          status: "failed",
+          summary: payload.message || "Action could not be started.",
+          outputExcerpt: payload.message || "",
+          startedAt: new Date().toISOString(),
+          finishedAt: new Date().toISOString(),
+          durationMs: 0,
+        });
+        return;
+      }
+
+      upsertExecution(payload);
+      const finalExecution = await pollSentinelActionExecution(payload.executionId, {
+        onUpdate: upsertExecution,
+      });
+      if (finalExecution) upsertExecution(finalExecution);
+      if (typeof onActionComplete === "function") await onActionComplete();
+    } catch (error) {
+      upsertExecution({
+        executionId: nextLocalExecutionId(),
+        action: selectedAction.id,
+        label: selectedAction.label,
+        command: selectedAction.command,
+        status: "failed",
+        summary: `Could not reach local Sentinel API at ${sentinelActionApiBaseUrl}.`,
+        outputExcerpt: error.message,
+        startedAt: new Date().toISOString(),
+        finishedAt: new Date().toISOString(),
+        durationMs: 0,
+      });
+    }
+  };
+
   return (
     <section className="rounded-[28px] bg-slate-950 p-5 text-white shadow-sm md:p-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-300">Future Operator Console</p>
-          <h2 className="text-xl font-semibold">Arbitrary terminal access is not active</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-300">Operator Console</p>
+          <h2 className="text-xl font-semibold">Controlled allowlisted execution</h2>
           <p className="max-w-2xl text-sm text-slate-300">
-            The dashboard can run a narrow set of low-risk allowlisted actions only. There is no raw shell input,
-            command chaining, deployment execution or unrestricted terminal access.
+            Select one safe local action, run it through the Sentinel API, then poll the execution state. There is no raw command box,
+            no custom arguments and no unrestricted shell.
           </p>
         </div>
         <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200 ring-1 ring-white/10">
           no shell access
         </span>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]" style={{ marginTop: "18px" }}>
+        <div className="rounded-[24px] bg-white/8 p-4 ring-1 ring-white/10">
+          <label className="grid gap-2 text-sm font-semibold text-slate-100">
+            Selected action
+            <select
+              value={selectedAction?.id || ""}
+              onChange={(event) => setSelectedActionId(event.target.value)}
+              className="min-h-11 w-full rounded-2xl border border-white/10 bg-slate-900 px-3 py-2 text-sm text-white outline-none focus:border-pink-300 focus:ring-4 focus:ring-pink-400/10"
+            >
+              {actions.map((action) => (
+                <option key={action.id} value={action.id}>
+                  {action.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {selectedAction ? (
+            <div className="rounded-2xl bg-slate-900/80 p-3 text-sm ring-1 ring-white/10" style={{ marginTop: "12px" }}>
+              <p className="font-semibold text-white">{selectedAction.command}</p>
+              <p className="text-slate-300" style={{ marginTop: "6px" }}>{selectedAction.description}</p>
+              <div className="flex flex-wrap gap-2" style={{ marginTop: "10px" }}>
+                <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-xs font-semibold text-emerald-200 ring-1 ring-emerald-300/20">
+                  {selectedAction.riskLevel} risk
+                </span>
+                <span className="rounded-full bg-blue-400/10 px-2.5 py-1 text-xs font-semibold text-blue-200 ring-1 ring-blue-300/20">
+                  {selectedAction.executionMode}
+                </span>
+              </div>
+            </div>
+          ) : null}
+
+          <div className="flex flex-wrap gap-2" style={{ marginTop: "14px" }}>
+            <button
+              type="button"
+              onClick={runSelectedAction}
+              disabled={!selectedAction || isRunning}
+              className="rounded-full bg-pink-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-pink-400 disabled:cursor-wait disabled:bg-pink-300/50"
+            >
+              {isRunning ? "Execution running" : "Run selected action"}
+            </button>
+            <button
+              type="button"
+              disabled
+              title="Cancellation is planned later. Current executions rely on strict timeouts."
+              className="rounded-full bg-white/5 px-4 py-2 text-sm font-semibold text-slate-400 ring-1 ring-white/10"
+            >
+              Cancel placeholder
+            </button>
+          </div>
+          {consoleMessage ? (
+            <p className="text-xs text-slate-300" style={{ marginTop: "10px" }}>{consoleMessage}</p>
+          ) : null}
+        </div>
+
+        <div className="rounded-[24px] bg-white p-4 text-slate-950 ring-1 ring-white/10">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Execution state</p>
+              <h3 className="text-lg font-semibold">{activeExecution?.label || selectedAction?.label || "No execution yet"}</h3>
+            </div>
+            <span className={`rounded-full px-3 py-1 text-xs font-semibold ring-1 ${actionStatusBadgeClass(activeExecution?.status || "queued")}`}>
+              {activeExecution ? formatStateLabel(normaliseExecutionStatus(activeExecution.status)) : "waiting"}
+            </span>
+          </div>
+
+          <div className="grid gap-2 sm:grid-cols-3" style={{ marginTop: "12px" }}>
+            <div className="rounded-2xl bg-slate-50 p-3 ring-1 ring-slate-100">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Started</p>
+              <p className="text-xs text-slate-700">{formatDateTime(activeExecution?.startedAt)}</p>
+            </div>
+            <div className="rounded-2xl bg-slate-50 p-3 ring-1 ring-slate-100">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Finished</p>
+              <p className="text-xs text-slate-700">{formatDateTime(activeExecution?.finishedAt)}</p>
+            </div>
+            <div className="rounded-2xl bg-slate-50 p-3 ring-1 ring-slate-100">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Duration</p>
+              <p className="text-xs text-slate-700">{formatDurationMs(activeExecution?.durationMs)}</p>
+            </div>
+          </div>
+
+          <p className="text-sm text-slate-700" style={{ marginTop: "12px" }}>
+            {activeExecution?.summary || "Choose an allowlisted action and run it from the console."}
+          </p>
+          <details open={Boolean(activeExecution?.outputExcerpt)} style={{ marginTop: "12px" }}>
+            <summary className="cursor-pointer text-xs font-semibold text-slate-600">Output preview</summary>
+            <pre className="max-h-52 overflow-auto whitespace-pre-wrap rounded-2xl bg-slate-950 p-3 text-[11px] leading-5 text-slate-100" style={{ marginTop: "8px" }}>
+              {activeExecution?.outputExcerpt || "No output captured yet."}
+            </pre>
+          </details>
+        </div>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.7fr)]" style={{ marginTop: "18px" }}>
+        <div className="rounded-[24px] bg-white/8 p-4 ring-1 ring-white/10">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-pink-200">Console history</p>
+          <div className="grid gap-2" style={{ marginTop: "12px" }}>
+            {latestExecutions.length ? latestExecutions.map((execution) => (
+              <div key={execution.executionId} className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="break-all text-sm font-semibold text-white">{execution.label || execution.action}</p>
+                    <p className="text-xs text-slate-400">{formatDateTime(execution.finishedAt || execution.startedAt)}</p>
+                  </div>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${actionStatusBadgeClass(execution.status)}`}>
+                    {formatStateLabel(normaliseExecutionStatus(execution.status))}
+                  </span>
+                </div>
+                {execution.summary ? (
+                  <p className="text-xs text-slate-300" style={{ marginTop: "8px" }}>{execution.summary}</p>
+                ) : null}
+              </div>
+            )) : (
+              <div className="rounded-2xl bg-white/8 p-3 text-sm text-slate-300 ring-1 ring-white/10">
+                No console executions recorded in this browser session yet.
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-[24px] bg-amber-300/10 p-4 text-amber-50 ring-1 ring-amber-200/20">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-100">Intentionally excluded</p>
+          <ul className="grid gap-2 text-sm text-amber-50" style={{ marginTop: "10px" }}>
+            <li>Deployment, FTP and service commands are not available here.</li>
+            <li>Cleanup, restore and backup mutation commands are excluded.</li>
+            <li>There is no arbitrary shell input or command chaining.</li>
+            <li>Future expansion should be approval-gated before execution.</li>
+          </ul>
+        </div>
       </div>
     </section>
   );
@@ -5348,8 +5632,13 @@ function AdminView({ onPreview }) {
               <section ref={actionsRef} className="grid gap-lg">
                 <SectionIntro
                   eyebrow="Actions"
-                  title="Controlled operator actions"
-                  description="Command discovery, allowlisted local actions and recent action history. No arbitrary shell access."
+                  title="Safe operator console"
+                  description="Controlled allowlisted execution, command discovery and recent action history. No arbitrary shell access."
+                />
+                <OperatorConsolePanel
+                  actionRegistry={sentinelActionRegistry}
+                  history={actionHistorySnapshot}
+                  onActionComplete={refreshOperatorActivity}
                 />
                 <RecentOperatorActionsPanel
                   history={actionHistorySnapshot}
@@ -5365,7 +5654,6 @@ function AdminView({ onPreview }) {
                   onCategoryChange={setCommandCategory}
                   onActionComplete={refreshOperatorActivity}
                 />
-                <FutureOperatorConsolePanel />
               </section>
             ) : null}
 
@@ -5420,7 +5708,11 @@ function AdminView({ onPreview }) {
                   loading={summaryLoading || pipelineLoading || briefsLoading}
                   headingLabel={dashboardMode.actionLabel}
                 />
-                <FutureOperatorConsolePanel />
+                <OperatorConsolePanel
+                  actionRegistry={sentinelActionRegistry}
+                  history={actionHistorySnapshot}
+                  onActionComplete={refreshOperatorActivity}
+                />
               </section>
             ) : null}
 

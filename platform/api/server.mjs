@@ -1,6 +1,7 @@
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
+import { randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { getOperationalSummary, getTenantState } from "./state_api.mjs";
@@ -19,6 +20,9 @@ const TENANT_REGISTRY_PATH = path.join(repoRoot, "platform/tenants/tenant-regist
 const MAX_OUTPUT_BYTES = 24_000;
 const MAX_TIMEOUT_SECONDS = 120;
 const MAX_RESULT_EXCERPT_CHARS = 1_000;
+const MAX_IN_MEMORY_EXECUTIONS = 50;
+const TERMINAL_EXECUTION_STATES = new Set(["success", "failed", "cancelled"]);
+const actionExecutions = new Map();
 
 function corsOrigin(request) {
   const origin = request.headers.origin;
@@ -246,107 +250,202 @@ function persistOperatorActionResult({ tenantId, action, status, startedAt, fini
   }
 }
 
-function runAllowedAction(action, tenantId) {
-  const script = npmScriptFromAction(action);
-  const timeoutSeconds = Math.min(Number(action.timeoutSeconds || 30), MAX_TIMEOUT_SECONDS);
-  const startedAt = new Date().toISOString();
+function executionDurationMs(execution) {
+  const start = execution.startedAt ? new Date(execution.startedAt).getTime() : 0;
+  const end = execution.finishedAt ? new Date(execution.finishedAt).getTime() : Date.now();
+  if (!start || Number.isNaN(start) || Number.isNaN(end)) return null;
+  return Math.max(0, end - start);
+}
 
-  console.log(`[sentinel-action] starting ${action.id} (${action.command})`);
+function publicExecution(execution) {
+  return {
+    executionId: execution.executionId,
+    status: execution.status,
+    action: execution.actionId,
+    label: execution.label,
+    command: execution.command,
+    tenantId: execution.tenantId,
+    summary: execution.summary || "",
+    outputExcerpt: execution.outputExcerpt || "",
+    outputTruncated: Boolean(execution.outputTruncated),
+    queuedAt: execution.queuedAt,
+    startedAt: execution.startedAt || "",
+    finishedAt: execution.finishedAt || "",
+    updatedAt: execution.updatedAt || execution.queuedAt,
+    durationMs: executionDurationMs(execution),
+    exitCode: execution.exitCode,
+    signal: execution.signal || "",
+    timedOut: Boolean(execution.timedOut),
+    runId: execution.runId || null,
+  };
+}
 
-  return new Promise((resolve) => {
-    let stdout = "";
-    let stderr = "";
-    let outputTruncated = false;
-    let timedOut = false;
-    let settled = false;
-    let timer;
-    const child = spawn("npm", ["run", script], {
-      cwd: repoRoot,
-      shell: false,
-      env: {
-        ...process.env,
-        PLATFORM_TENANT: tenantId,
-      },
-    });
+function rememberExecution(execution) {
+  actionExecutions.set(execution.executionId, execution);
+  if (actionExecutions.size <= MAX_IN_MEMORY_EXECUTIONS) return;
 
-    const finish = (payload) => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timer);
-      const summary = summariseActionOutput(payload);
-      const outputExcerpt = actionOutputExcerpt(payload);
-      const runId = persistOperatorActionResult({
-        tenantId,
-        action,
-        status: payload.status,
-        startedAt: payload.startedAt,
-        finishedAt: payload.finishedAt,
-        summary,
-        outputExcerpt,
-      });
-      resolve({
-        ...payload,
-        runId,
-        summary,
-        outputExcerpt,
-      });
-    };
+  const removable = [...actionExecutions.values()]
+    .filter((item) => TERMINAL_EXECUTION_STATES.has(item.status))
+    .sort((a, b) => String(a.updatedAt || a.queuedAt).localeCompare(String(b.updatedAt || b.queuedAt)));
 
-    timer = setTimeout(() => {
-      timedOut = true;
-      child.kill("SIGTERM");
-    }, timeoutSeconds * 1000);
+  const [oldest] = removable;
+  if (oldest) actionExecutions.delete(oldest.executionId);
+}
 
-    child.stdout.on("data", (chunk) => {
-      const result = appendLimited(stdout, chunk.toString());
-      stdout = result.value;
-      outputTruncated = outputTruncated || result.truncated;
-    });
+function updateExecutionOutput(execution) {
+  execution.outputExcerpt = actionOutputExcerpt({
+    stdout: execution.stdout,
+    stderr: execution.stderr,
+  });
+  execution.updatedAt = new Date().toISOString();
+}
 
-    child.stderr.on("data", (chunk) => {
-      const result = appendLimited(stderr, chunk.toString());
-      stderr = result.value;
-      outputTruncated = outputTruncated || result.truncated;
-    });
+function finishExecution(execution, payload) {
+  if (TERMINAL_EXECUTION_STATES.has(execution.status)) return;
 
-    child.on("error", (error) => {
-      const finishedAt = new Date().toISOString();
-      console.warn(`[sentinel-action] failed ${action.id}: ${error.message}`);
-      finish({
-        status: "failure",
-        action: action.id,
-        label: action.label,
-        command: action.command,
-        exitCode: 1,
-        stdout,
-        stderr: stderr || error.message,
-        timedOut,
-        outputTruncated,
-        startedAt,
-        finishedAt,
-      });
-    });
+  const finishedAt = payload.finishedAt || new Date().toISOString();
+  const summary = summariseActionOutput(payload);
+  const outputExcerpt = actionOutputExcerpt(payload);
+  const runId = persistOperatorActionResult({
+    tenantId: execution.tenantId,
+    action: {
+      id: execution.actionId,
+      label: execution.label,
+      command: execution.command,
+    },
+    status: payload.status,
+    startedAt: execution.startedAt,
+    finishedAt,
+    summary,
+    outputExcerpt,
+  });
 
-    child.on("close", (code, signal) => {
-      const finishedAt = new Date().toISOString();
-      const status = code === 0 && !timedOut ? "success" : "failure";
-      console.log(`[sentinel-action] finished ${action.id} ${status}`);
-      finish({
-        status,
-        action: action.id,
-        label: action.label,
-        command: action.command,
-        exitCode: timedOut ? 124 : code ?? 1,
-        signal,
-        stdout,
-        stderr: timedOut ? `${stderr}\nAction timed out after ${timeoutSeconds}s.`.trim() : stderr,
-        timedOut,
-        outputTruncated,
-        startedAt,
-        finishedAt,
-      });
+  Object.assign(execution, {
+    ...payload,
+    status: payload.status,
+    summary,
+    outputExcerpt,
+    runId,
+    finishedAt,
+    updatedAt: finishedAt,
+  });
+
+  rememberExecution(execution);
+}
+
+function startQueuedActionExecution(executionId) {
+  const execution = actionExecutions.get(executionId);
+  if (!execution || execution.status !== "queued") return;
+
+  const timeoutSeconds = Math.min(Number(execution.timeoutSeconds || 30), MAX_TIMEOUT_SECONDS);
+  execution.status = "running";
+  execution.startedAt = new Date().toISOString();
+  execution.updatedAt = execution.startedAt;
+  execution.summary = "Action is running.";
+  rememberExecution(execution);
+
+  console.log(`[sentinel-action] starting ${execution.actionId} (${execution.command}) execution=${execution.executionId}`);
+
+  let settled = false;
+  let timer;
+  const child = spawn("npm", ["run", execution.script], {
+    cwd: repoRoot,
+    shell: false,
+    env: {
+      ...process.env,
+      PLATFORM_TENANT: execution.tenantId,
+    },
+  });
+
+  const finish = (payload) => {
+    if (settled) return;
+    settled = true;
+    clearTimeout(timer);
+    finishExecution(execution, payload);
+  };
+
+  timer = setTimeout(() => {
+    execution.timedOut = true;
+    child.kill("SIGTERM");
+  }, timeoutSeconds * 1000);
+
+  child.stdout.on("data", (chunk) => {
+    const result = appendLimited(execution.stdout, chunk.toString());
+    execution.stdout = result.value;
+    execution.outputTruncated = execution.outputTruncated || result.truncated;
+    updateExecutionOutput(execution);
+  });
+
+  child.stderr.on("data", (chunk) => {
+    const result = appendLimited(execution.stderr, chunk.toString());
+    execution.stderr = result.value;
+    execution.outputTruncated = execution.outputTruncated || result.truncated;
+    updateExecutionOutput(execution);
+  });
+
+  child.on("error", (error) => {
+    const finishedAt = new Date().toISOString();
+    console.warn(`[sentinel-action] failed ${execution.actionId}: ${error.message}`);
+    finish({
+      status: "failed",
+      exitCode: 1,
+      stdout: execution.stdout,
+      stderr: execution.stderr || error.message,
+      timedOut: Boolean(execution.timedOut),
+      outputTruncated: Boolean(execution.outputTruncated),
+      startedAt: execution.startedAt,
+      finishedAt,
     });
   });
+
+  child.on("close", (code, signal) => {
+    const finishedAt = new Date().toISOString();
+    const status = code === 0 && !execution.timedOut ? "success" : "failed";
+    console.log(`[sentinel-action] finished ${execution.actionId} ${status} execution=${execution.executionId}`);
+    finish({
+      status,
+      exitCode: execution.timedOut ? 124 : code ?? 1,
+      signal,
+      stdout: execution.stdout,
+      stderr: execution.timedOut ? `${execution.stderr}\nAction timed out after ${timeoutSeconds}s.`.trim() : execution.stderr,
+      timedOut: Boolean(execution.timedOut),
+      outputTruncated: Boolean(execution.outputTruncated),
+      startedAt: execution.startedAt,
+      finishedAt,
+    });
+  });
+}
+
+function enqueueActionExecution(action, tenantId) {
+  const script = npmScriptFromAction(action);
+  const queuedAt = new Date().toISOString();
+  const execution = {
+    executionId: randomUUID(),
+    actionId: action.id,
+    label: action.label,
+    command: action.command,
+    tenantId,
+    script,
+    timeoutSeconds: action.timeoutSeconds,
+    status: "queued",
+    summary: "Action queued.",
+    stdout: "",
+    stderr: "",
+    outputExcerpt: "",
+    outputTruncated: false,
+    queuedAt,
+    startedAt: "",
+    finishedAt: "",
+    updatedAt: queuedAt,
+    exitCode: null,
+    signal: "",
+    timedOut: false,
+    runId: null,
+  };
+
+  rememberExecution(execution);
+  setImmediate(() => startQueuedActionExecution(execution.executionId));
+  return execution;
 }
 
 function handleError(request, response, error) {
@@ -407,11 +506,32 @@ async function handleAction(request, response, url) {
 
   try {
     getTenantState(tenantId);
-    const result = await runAllowedAction(action, tenantId);
-    sendJson(request, response, result.status === "success" ? 200 : 500, result);
+    const execution = enqueueActionExecution(action, tenantId);
+    sendJson(request, response, 202, publicExecution(execution));
   } catch (error) {
     handleError(request, response, error);
   }
+}
+
+function handleActionExecution(request, response, executionId) {
+  if (!isLocalRequest(request)) {
+    sendJson(request, response, 403, {
+      error: "local_only",
+      message: "Operator action execution state is available only from localhost.",
+    });
+    return;
+  }
+
+  const execution = actionExecutions.get(executionId);
+  if (!execution) {
+    sendJson(request, response, 404, {
+      error: "unknown_execution",
+      message: `Unknown operator action execution: ${executionId}`,
+    });
+    return;
+  }
+
+  sendJson(request, response, 200, publicExecution(execution));
 }
 
 function loadActionHistory({ tenantId, limit }) {
@@ -658,6 +778,12 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
+    if (url.pathname.startsWith("/actions/execution/")) {
+      const executionId = decodeURIComponent(url.pathname.replace("/actions/execution/", ""));
+      handleActionExecution(request, response, executionId);
+      return;
+    }
+
     if (url.pathname === "/activity") {
       handleActivity(request, response, url);
       return;
@@ -683,6 +809,7 @@ server.listen(PORT, HOST, () => {
   console.log("Safety:");
   console.log("- Local-only API prototype.");
   console.log("- /action uses a strict allowlist and fixed npm scripts only.");
+  console.log("- /actions/execution/<id> exposes lifecycle polling for started executions.");
   console.log("- No arbitrary shell input, deploy commands or destructive actions are exposed.");
   console.log("- No authentication is implemented yet.");
   console.log("- Do not expose this API publicly.");

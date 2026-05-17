@@ -101,22 +101,22 @@ The API action endpoint:
 - applies per-action timeouts
 - limits captured output
 - redacts obvious password, token, secret and API key patterns before storing result excerpts
-- returns structured JSON
+- returns structured execution JSON with an execution ID
 - logs action starts and finishes to the API console
 
 Action executions are appended to the existing SQLite `runs` table as `ui_action:<actionId>` where possible. Concise result summaries are stored in `action_results`. DB logging failures should warn only and must not make the action endpoint unsafe.
 
-The history endpoint returns those rows back to the private dashboard so Matthew can see what ran, when it ran, whether it succeeded and a short result summary. It does not expose deployment, cleanup, restore or arbitrary shell history because those actions are not in the UI allowlist.
+`POST /action` returns quickly with a `queued` or `running` execution record. The private dashboard polls `GET /actions/execution/<executionId>` for the current lifecycle state and output excerpt. The history endpoint returns completed rows back to the private dashboard so Matthew can see what ran, when it ran, whether it succeeded and a short result summary. It does not expose deployment, cleanup, restore or arbitrary shell history because those actions are not in the UI allowlist.
 
 ## Dashboard behaviour
 
-The private `/seo-roadmap` Control Centre shows Run buttons only for allowlisted actions. Output is shown as a compact preview, and the Recent Operator Actions panel shows the latest logged UI actions with summaries when the local Sentinel API is running. Output excerpts are collapsed by default. There is no free-text terminal input and no arbitrary command runner.
+The private `/seo-roadmap` Control Centre shows Run buttons only for allowlisted actions. The Operator Console provides selected action execution, lifecycle state, capped output preview and recent console history when the local Sentinel API is running. There is no free-text terminal input and no arbitrary command runner.
 
 The stakeholder-safe `/seo-progress` route must never expose operator actions, command execution, diagnostics or private Sentinel state.
 
 ## Future direction
 
-A fuller operator console should wait until Sentinel has:
+Higher-risk console expansion should wait until Sentinel has:
 
 - authentication
 - operator roles
