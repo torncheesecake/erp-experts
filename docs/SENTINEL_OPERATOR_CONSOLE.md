@@ -42,7 +42,9 @@ GET /actions/execution/<executionId>
 GET /actions/history
 ```
 
-`GET /actions/execution/<executionId>` returns the latest execution state, timestamps, duration, summary and capped output excerpt. There is no streaming yet.
+`GET /actions/execution/<executionId>` returns the latest execution state, timestamps, `durationMs`, `durationLabel`, summary, stderr excerpt when available and a capped output excerpt. There is no streaming yet.
+
+`GET /actions/history` returns the latest completed UI actions from SQLite with the same duration fields where timestamps are available. The dashboard uses this as the console history source when the local API is running.
 
 ## Safety Boundary
 
@@ -66,6 +68,10 @@ The API remains bound to localhost by default and has no authentication. Do not 
 ## Output Handling
 
 Sentinel captures a capped stdout/stderr excerpt for operator visibility. It also redacts obvious password, token, secret and API key patterns before showing or storing summaries.
+
+The Control Centre keeps output excerpts collapsed by default. The active execution view promotes the concise summary, status, started time, finished time and duration first. Failed actions show a clear failure state and suggest checking `platform:doctor` before deeper troubleshooting.
+
+The local console history shows the last five executions with action label, status, duration, timestamp, summary and a collapsed output preview.
 
 Long-running process state is not persisted yet. Completed controlled UI actions are still logged to SQLite as `ui_action:<id>` with concise action result summaries.
 

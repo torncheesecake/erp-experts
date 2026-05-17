@@ -104,7 +104,7 @@ Current operator zones:
 - Tenant: active client context for ERP Experts, including base URL, operator route, stakeholder route and future multi-tenant note.
 - Tenant Registry: read-only preview of registered tenants, showing ERP Experts as active and disabled fixtures as non-actionable.
 - Operations: cadence, notification payloads, report generation and state refresh context.
-- Operator Console: selected allowlisted action, lifecycle state, output preview and recent console execution history.
+- Operator Console: selected allowlisted action, lifecycle state, prominent summary, duration, collapsed output preview and recent console execution history.
 - Tools & Commands: searchable command registry with copy buttons and allowlisted Run buttons.
 - Diagnostics: secondary checks, advanced details and controlled console access.
 
@@ -122,7 +122,7 @@ The stakeholder route `/seo-progress` remains separate and must not expose comma
 
 Sentinel now has a strict allowlisted action layer for the private Control Centre.
 
-The action registry is stored at `platform/actions/actions.json`. The local HTTP API accepts `POST /action` for known action IDs only, rejects unknown or non-UI actions, runs fixed `npm run <script>` commands with `spawn` and no shell, enforces timeouts and caps captured output. `POST /action` now returns an execution ID immediately, and `GET /actions/execution/<id>` exposes the current `queued`, `running`, `success` or `failed` state with timestamps, summary and capped output excerpt. Completed actions are recorded in `runs` as `ui_action:<id>`, concise redacted summaries are stored in `action_results`, and read-only `GET /actions/history` returns recent actions.
+The action registry is stored at `platform/actions/actions.json`. The local HTTP API accepts `POST /action` for known action IDs only, rejects unknown or non-UI actions, runs fixed `npm run <script>` commands with `spawn` and no shell, enforces timeouts and caps captured output. `POST /action` returns an execution ID immediately, and `GET /actions/execution/<id>` exposes the current `queued`, `running`, `success` or `failed` state with timestamps, `durationMs`, `durationLabel`, summary, stderr excerpt when available and capped output excerpt. Completed actions are recorded in `runs` as `ui_action:<id>`, concise redacted summaries are stored in `action_results`, and read-only `GET /actions/history` returns recent actions with durations where timestamps are available.
 
 Initial allowlisted UI actions:
 
@@ -136,7 +136,7 @@ Initial allowlisted UI actions:
 - `platform:api`
 - `seo:monitor`
 
-This is controlled local operator execution, not a terminal. There is no arbitrary command input, command chaining, deployment execution, cleanup execution, restore execution, FTP execution, notification sending or public exposure. The private dashboard now includes an Operator Console with selected action, run state, output preview, recent console history and a disabled cancellation placeholder for future work. The stakeholder route `/seo-progress` remains separate and does not expose action controls, console state or action history.
+This is controlled local operator execution, not a terminal. There is no arbitrary command input, command chaining, deployment execution, cleanup execution, restore execution, FTP execution, notification sending or public exposure. The private dashboard includes an Operator Console with selected action, run state, started/finished timestamps, duration, prominent summary, collapsed output preview, recent console history and a disabled cancellation placeholder for future work. Failed actions show a clear failure state and suggest `platform:doctor`. The stakeholder route `/seo-progress` remains separate and does not expose action controls, console state or action history.
 
 See `docs/SENTINEL_OPERATOR_ACTIONS.md`.
 See also `docs/SENTINEL_OPERATOR_CONSOLE.md`.

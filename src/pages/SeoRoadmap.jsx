@@ -494,6 +494,11 @@ function formatDurationMs(value) {
   return `${minutes}m ${seconds}s`;
 }
 
+function formatExecutionDuration(execution) {
+  if (!execution) return "Not recorded";
+  return execution.durationLabel || formatDurationMs(execution.durationMs);
+}
+
 function normaliseExecutionStatus(status = "") {
   if (status === "failure") return "failed";
   return status || "queued";
@@ -2216,7 +2221,9 @@ function RecentOperatorActionsPanel({ history, actionRegistry, onRefresh }) {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-slate-950">{labelById.get(item.action) || formatStateLabel(item.action)}</p>
-                <p className="text-xs text-slate-500">{formatDateTime(item.finishedAt || item.startedAt)}</p>
+                <p className="text-xs text-slate-500">
+                  {formatDateTime(item.finishedAt || item.startedAt)} · {formatExecutionDuration(item)}
+                </p>
               </div>
               <span className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${actionStatusBadgeClass(item.status)}`}>
                 {item.status || "unknown"}
@@ -2224,6 +2231,11 @@ function RecentOperatorActionsPanel({ history, actionRegistry, onRefresh }) {
             </div>
             {item.summary ? (
               <p className="text-xs text-slate-700" style={{ marginTop: "8px" }}>{item.summary}</p>
+            ) : null}
+            {normaliseExecutionStatus(item.status) === "failed" ? (
+              <p className="text-xs text-rose-700" style={{ marginTop: "6px" }}>
+                {item.failureSuggestion || "Check platform:doctor, then review the output excerpt."}
+              </p>
             ) : null}
             {item.outputExcerpt ? (
               <details style={{ marginTop: "8px" }}>
@@ -2899,6 +2911,7 @@ function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
       ? actionRegistry.actions.filter((action) => action.allowFromUI)
       : []
   ), [actionRegistry]);
+  const actionById = useMemo(() => new Map(actions.map((action) => [action.id, action])), [actions]);
   const localExecutionCounterRef = useRef(0);
   const [selectedActionId, setSelectedActionId] = useState(actions[0]?.id || "");
   const [executions, setExecutions] = useState([]);
@@ -2906,22 +2919,45 @@ function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
   const [consoleMessage, setConsoleMessage] = useState("");
   const selectedAction = actions.find((action) => action.id === selectedActionId) || actions[0] || null;
   const activeExecution = executions.find((execution) => execution.executionId === activeExecutionId) || null;
+  const activeAction = activeExecution?.action ? actionById.get(activeExecution.action) : selectedAction;
+  const activeStatus = normaliseExecutionStatus(activeExecution?.status || "");
+  const activeFailed = activeStatus === "failed";
   const isRunning = Boolean(activeExecution) && ["queued", "running"].includes(normaliseExecutionStatus(activeExecution.status));
   const persistedHistory = Array.isArray(history?.actions) ? history.actions.slice(0, 5) : [];
-  const latestExecutions = executions.length
-    ? executions.slice(0, 5)
-    : persistedHistory.map((item) => ({
-      executionId: `history-${item.id}`,
-      action: item.action,
-      label: item.action,
-      command: `ui_action:${item.action}`,
-      status: item.status,
-      summary: item.summary,
-      outputExcerpt: item.outputExcerpt,
-      startedAt: item.startedAt,
-      finishedAt: item.finishedAt,
-      durationMs: null,
-    }));
+  const historyUnavailable = history?.status === "unavailable";
+  const historyLoading = history?.loading;
+  const enrichExecution = (execution) => {
+    const actionMeta = actionById.get(execution.action);
+    return {
+      ...execution,
+      label: execution.label || actionMeta?.label || formatStateLabel(execution.action),
+      command: execution.command || actionMeta?.command || `ui_action:${execution.action}`,
+      description: actionMeta?.description || "",
+      durationLabel: execution.durationLabel || formatDurationMs(execution.durationMs),
+      timestamp: execution.finishedAt || execution.startedAt || execution.queuedAt,
+    };
+  };
+  const persistedExecutions = persistedHistory.map((item) => enrichExecution({
+    executionId: `history-${item.id}`,
+    runId: item.id,
+    action: item.action,
+    status: item.status,
+    summary: item.summary,
+    outputExcerpt: item.outputExcerpt,
+    startedAt: item.startedAt,
+    finishedAt: item.finishedAt,
+    durationMs: item.durationMs,
+    durationLabel: item.durationLabel,
+    failureSuggestion: item.failureSuggestion,
+  }));
+  const latestExecutions = [...executions.map(enrichExecution), ...persistedExecutions]
+    .reduce((items, execution) => {
+      const key = execution.runId ? `run-${execution.runId}` : execution.executionId;
+      if (items.some((item) => (item.runId ? `run-${item.runId}` : item.executionId) === key)) return items;
+      return [...items, execution];
+    }, [])
+    .sort((a, b) => new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime())
+    .slice(0, 5);
 
   const upsertExecution = (execution) => {
     setExecutions((current) => {
@@ -2990,7 +3026,7 @@ function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
   };
 
   return (
-    <section className="rounded-[28px] bg-slate-950 p-5 text-white shadow-sm md:p-6">
+    <section aria-label="Sentinel Operator Console" className="rounded-[28px] bg-slate-950 p-5 text-white shadow-sm md:p-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-300">Operator Console</p>
@@ -3024,8 +3060,16 @@ function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
 
           {selectedAction ? (
             <div className="rounded-2xl bg-slate-900/80 p-3 text-sm ring-1 ring-white/10" style={{ marginTop: "12px" }}>
-              <p className="font-semibold text-white">{selectedAction.command}</p>
-              <p className="text-slate-300" style={{ marginTop: "6px" }}>{selectedAction.description}</p>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Fixed command</p>
+                  <p className="break-all font-semibold text-white">{selectedAction.command}</p>
+                </div>
+                <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-xs font-semibold text-emerald-200 ring-1 ring-emerald-300/20">
+                  UI safe
+                </span>
+              </div>
+              <p className="text-slate-300" style={{ marginTop: "8px" }}>{selectedAction.description}</p>
               <div className="flex flex-wrap gap-2" style={{ marginTop: "10px" }}>
                 <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-xs font-semibold text-emerald-200 ring-1 ring-emerald-300/20">
                   {selectedAction.riskLevel} risk
@@ -3065,6 +3109,9 @@ function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Execution state</p>
               <h3 className="text-lg font-semibold">{activeExecution?.label || selectedAction?.label || "No execution yet"}</h3>
+              <p className="text-xs text-slate-500">
+                {activeAction?.description || "Run an allowlisted action to capture a structured result."}
+              </p>
             </div>
             <span className={`rounded-full px-3 py-1 text-xs font-semibold ring-1 ${actionStatusBadgeClass(activeExecution?.status || "queued")}`}>
               {activeExecution ? formatStateLabel(normaliseExecutionStatus(activeExecution.status)) : "waiting"}
@@ -3082,17 +3129,28 @@ function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
             </div>
             <div className="rounded-2xl bg-slate-50 p-3 ring-1 ring-slate-100">
               <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Duration</p>
-              <p className="text-xs text-slate-700">{formatDurationMs(activeExecution?.durationMs)}</p>
+              <p className="text-xs text-slate-700">{formatExecutionDuration(activeExecution)}</p>
             </div>
           </div>
 
-          <p className="text-sm text-slate-700" style={{ marginTop: "12px" }}>
-            {activeExecution?.summary || "Choose an allowlisted action and run it from the console."}
-          </p>
-          <details open={Boolean(activeExecution?.outputExcerpt)} style={{ marginTop: "12px" }}>
-            <summary className="cursor-pointer text-xs font-semibold text-slate-600">Output preview</summary>
+          <div className={`rounded-2xl p-4 ring-1 ${activeFailed ? "bg-rose-50 text-rose-950 ring-rose-100" : "bg-emerald-50 text-emerald-950 ring-emerald-100"}`} style={{ marginTop: "12px" }}>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] opacity-70">{activeFailed ? "Failure summary" : "Summary"}</p>
+            <p className="text-sm font-semibold" style={{ marginTop: "4px" }}>
+              {activeExecution?.summary || "Choose an allowlisted action and run it from the console."}
+            </p>
+            {activeFailed ? (
+              <p className="text-xs text-rose-800" style={{ marginTop: "8px" }}>
+                {activeExecution?.failureSuggestion || "Check platform:doctor, then review the output excerpt."}
+              </p>
+            ) : null}
+          </div>
+
+          <details style={{ marginTop: "12px" }}>
+            <summary className="cursor-pointer text-xs font-semibold text-slate-600">
+              {activeFailed ? "View failure output" : "View output excerpt"}
+            </summary>
             <pre className="max-h-52 overflow-auto whitespace-pre-wrap rounded-2xl bg-slate-950 p-3 text-[11px] leading-5 text-slate-100" style={{ marginTop: "8px" }}>
-              {activeExecution?.outputExcerpt || "No output captured yet."}
+              {activeFailed ? activeExecution?.stderrExcerpt || activeExecution?.outputExcerpt || "No failure output captured." : activeExecution?.outputExcerpt || "No output captured yet."}
             </pre>
           </details>
         </div>
@@ -3100,14 +3158,29 @@ function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.7fr)]" style={{ marginTop: "18px" }}>
         <div className="rounded-[24px] bg-white/8 p-4 ring-1 ring-white/10">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-pink-200">Console history</p>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-pink-200">Console history</p>
+              <p className="text-xs text-slate-400">Last five local console executions from API history, with in-session runs first.</p>
+            </div>
+            {historyLoading ? (
+              <span className="rounded-full bg-white/8 px-2.5 py-1 text-xs font-semibold text-slate-300 ring-1 ring-white/10">loading</span>
+            ) : null}
+          </div>
           <div className="grid gap-2" style={{ marginTop: "12px" }}>
+            {!executions.length && historyUnavailable ? (
+              <div className="rounded-2xl bg-blue-400/10 p-3 text-sm text-blue-100 ring-1 ring-blue-300/20">
+                API history is available when the local Sentinel API is running.
+              </div>
+            ) : null}
             {latestExecutions.length ? latestExecutions.map((execution) => (
               <div key={execution.executionId} className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="break-all text-sm font-semibold text-white">{execution.label || execution.action}</p>
-                    <p className="text-xs text-slate-400">{formatDateTime(execution.finishedAt || execution.startedAt)}</p>
+                    <p className="text-xs text-slate-400">
+                      {formatDateTime(execution.timestamp)} · {formatExecutionDuration(execution)}
+                    </p>
                   </div>
                   <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${actionStatusBadgeClass(execution.status)}`}>
                     {formatStateLabel(normaliseExecutionStatus(execution.status))}
@@ -3115,6 +3188,19 @@ function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
                 </div>
                 {execution.summary ? (
                   <p className="text-xs text-slate-300" style={{ marginTop: "8px" }}>{execution.summary}</p>
+                ) : null}
+                {normaliseExecutionStatus(execution.status) === "failed" ? (
+                  <p className="text-xs text-rose-200" style={{ marginTop: "6px" }}>
+                    {execution.failureSuggestion || "Check platform:doctor, then review the output excerpt."}
+                  </p>
+                ) : null}
+                {execution.outputExcerpt ? (
+                  <details style={{ marginTop: "8px" }}>
+                    <summary className="cursor-pointer text-xs font-semibold text-slate-300">View output</summary>
+                    <pre className="max-h-36 overflow-auto whitespace-pre-wrap rounded-xl bg-slate-950 p-2 text-[11px] leading-5 text-slate-100 ring-1 ring-white/10" style={{ marginTop: "6px" }}>
+                      {normaliseExecutionStatus(execution.status) === "failed" ? execution.stderrExcerpt || execution.outputExcerpt : execution.outputExcerpt}
+                    </pre>
+                  </details>
                 ) : null}
               </div>
             )) : (

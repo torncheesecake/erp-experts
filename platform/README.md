@@ -221,7 +221,7 @@ The Control Centre groups the operator experience into:
 - Tenant: active client context, stakeholder route, operator route and default tenant scope.
 - Tenant Registry: read-only preview of registered tenants, including active and disabled fixture entries.
 - Operations: cadence, notification payloads, report generation and state refresh context.
-- Operator Console: controlled allowlisted execution with selected action, lifecycle state, output preview and recent console history.
+- Operator Console: controlled allowlisted execution with selected action, lifecycle state, prominent summary, duration, collapsed output preview and recent console history.
 - Tools & Commands: searchable command discovery, copy buttons and low-risk Run buttons for allowlisted actions only.
 - Diagnostics: collapsed/secondary checks and the same controlled console surface when deeper checks are needed.
 
@@ -273,7 +273,7 @@ Action metadata lives in:
 platform/actions/actions.json
 ```
 
-The local API exposes `POST /action` for allowlisted actions only. It rejects unknown action IDs, rejects actions not marked `allowFromUI`, starts fixed `npm run <script>` commands with `spawn` and no shell, applies timeouts and limits captured output. It now returns an execution ID immediately so the private dashboard can poll `GET /actions/execution/<id>` for `queued`, `running`, `success` or `failed` state. Completed actions are recorded in `runs` as `ui_action:<id>` with concise redacted results in `action_results`. It also exposes read-only `GET /actions/history` so the private dashboard can show recent actions, statuses and short summaries.
+The local API exposes `POST /action` for allowlisted actions only. It rejects unknown action IDs, rejects actions not marked `allowFromUI`, starts fixed `npm run <script>` commands with `spawn` and no shell, applies timeouts and limits captured output. It now returns an execution ID immediately so the private dashboard can poll `GET /actions/execution/<id>` for `queued`, `running`, `success` or `failed` state, including timestamps, `durationMs`, `durationLabel`, summary and capped output excerpts. Completed actions are recorded in `runs` as `ui_action:<id>` with concise redacted results in `action_results`. It also exposes read-only `GET /actions/history` so the private dashboard can show recent actions, statuses, durations and short summaries.
 
 Initial UI actions are limited to low-risk local commands:
 
@@ -287,7 +287,7 @@ Initial UI actions are limited to low-risk local commands:
 - `platform:api`
 - `seo:monitor`
 
-Deploy, cleanup, restore, FTP, service installation and arbitrary shell commands are intentionally excluded. The dashboard shows Run buttons only for allowlisted actions, keeps full output out of the default view, shows capped excerpts and shows recent operator action history when the local API is running. The Operator Console is the structured execution surface for these safe actions: it has a selected action, run button, running state, output preview, recent console history and a disabled cancellation placeholder for future work. See `docs/SENTINEL_OPERATOR_ACTIONS.md` and `docs/SENTINEL_OPERATOR_CONSOLE.md`.
+Deploy, cleanup, restore, FTP, service installation and arbitrary shell commands are intentionally excluded. The dashboard shows Run buttons only for allowlisted actions, keeps full output out of the default view, shows capped excerpts and shows recent operator action history when the local API is running. The Operator Console is the structured execution surface for these safe actions: it has a selected action, run button, clear execution status, started/finished timestamps, duration, prominent summary, collapsed output preview, recent console history and a disabled cancellation placeholder for future work. Failed actions surface a clear failure state and suggest `platform:doctor`. See `docs/SENTINEL_OPERATOR_ACTIONS.md` and `docs/SENTINEL_OPERATOR_CONSOLE.md`.
 
 ## Operational State Summary
 

@@ -108,6 +108,23 @@ function actionHistoryLimit(url) {
   return Math.min(Math.floor(parsed), 50);
 }
 
+function durationMsBetween(startedAt, finishedAt) {
+  const start = startedAt ? new Date(startedAt).getTime() : 0;
+  const end = finishedAt ? new Date(finishedAt).getTime() : 0;
+  if (!start || !end || Number.isNaN(start) || Number.isNaN(end)) return null;
+  return Math.max(0, end - start);
+}
+
+function durationLabel(durationMs) {
+  const duration = Number(durationMs || 0);
+  if (!Number.isFinite(duration) || duration <= 0) return "";
+  if (duration < 1000) return `${Math.round(duration)}ms`;
+  if (duration < 60_000) return `${Math.round(duration / 1000)}s`;
+  const minutes = Math.floor(duration / 60_000);
+  const seconds = Math.round((duration % 60_000) / 1000);
+  return `${minutes}m ${seconds}s`;
+}
+
 function activityLimit(url) {
   const parsed = Number(url.searchParams.get("limit") || 20);
   if (!Number.isFinite(parsed) || parsed <= 0) return 20;
@@ -221,6 +238,12 @@ function actionOutputExcerpt({ stdout = "", stderr = "" }) {
   return combined.slice(0, MAX_RESULT_EXCERPT_CHARS);
 }
 
+function actionStderrExcerpt(stderr = "") {
+  const value = redactSensitiveOutput(stderr).trim();
+  if (!value) return "";
+  return value.slice(0, MAX_RESULT_EXCERPT_CHARS);
+}
+
 function persistOperatorActionResult({ tenantId, action, status, startedAt, finishedAt, summary, outputExcerpt }) {
   if (!databaseExists(DEFAULT_DB_PATH)) return null;
 
@@ -258,6 +281,8 @@ function executionDurationMs(execution) {
 }
 
 function publicExecution(execution) {
+  const durationMs = executionDurationMs(execution);
+  const isFailure = execution.status === "failed" || execution.status === "failure";
   return {
     executionId: execution.executionId,
     status: execution.status,
@@ -272,11 +297,14 @@ function publicExecution(execution) {
     startedAt: execution.startedAt || "",
     finishedAt: execution.finishedAt || "",
     updatedAt: execution.updatedAt || execution.queuedAt,
-    durationMs: executionDurationMs(execution),
+    durationMs,
+    durationLabel: durationLabel(durationMs),
     exitCode: execution.exitCode,
     signal: execution.signal || "",
     timedOut: Boolean(execution.timedOut),
     runId: execution.runId || null,
+    stderrExcerpt: actionStderrExcerpt(execution.stderr),
+    failureSuggestion: isFailure ? "Check platform:doctor, then review the output excerpt." : "",
   };
 }
 
@@ -553,15 +581,22 @@ function loadActionHistory({ tenantId, limit }) {
      ORDER BY COALESCE(r.finished_at, r.started_at) DESC, r.id DESC
      LIMIT ${Number(limit) || 10};`,
     DEFAULT_DB_PATH,
-  ).map(([id, command, status, startedAt, finishedAt, summary, outputExcerpt]) => ({
-    id: Number(id),
-    action: String(command || "").replace(/^ui_action:/, ""),
-    status,
-    startedAt,
-    finishedAt,
-    summary,
-    outputExcerpt: String(outputExcerpt || "").replaceAll("\\n", "\n"),
-  }));
+  ).map(([id, command, status, startedAt, finishedAt, summary, outputExcerpt]) => {
+    const durationMs = durationMsBetween(startedAt, finishedAt);
+    const isFailure = status === "failed" || status === "failure";
+    return {
+      id: Number(id),
+      action: String(command || "").replace(/^ui_action:/, ""),
+      status,
+      startedAt,
+      finishedAt,
+      durationMs,
+      durationLabel: durationLabel(durationMs),
+      summary,
+      outputExcerpt: String(outputExcerpt || "").replaceAll("\\n", "\n"),
+      failureSuggestion: isFailure ? "Check platform:doctor, then review the output excerpt." : "",
+    };
+  });
 }
 
 function handleActionHistory(request, response, url) {
