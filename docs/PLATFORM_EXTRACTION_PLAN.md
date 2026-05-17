@@ -766,7 +766,7 @@ The planned server home for the platform is documented in `docs/PINHOLE_SERVER_D
 Key decisions:
 
 - Keep source code in Git and runtime state outside Git.
-- Store server SQLite, reports, logs and backups under a stable `/srv/matthew-platform/` style layout.
+- Store server SQLite, reports, logs and backups under a stable `/srv/sentinel/` style layout.
 - Keep ERP Experts and the platform loosely coupled until the extraction boundary is proven.
 - Start with static dashboard plus CLI automation before adding a Node API service.
 - Use SQLite first, then Postgres only when multi-client concurrency or remote access requires it.

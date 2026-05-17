@@ -376,7 +376,7 @@ The first mutation-capable command is still dry-run by default:
 npm run platform:pi:install:prep
 ```
 
-It refuses to mutate without `--confirm`. Confirmed mode only installs Node/npm, creates the `/srv/matthew-platform` directory layout, assigns ownership to the SSH user and runs post-checks. It does not clone the repo, start the API, install systemd services, enable timers or expose anything publicly.
+It refuses to mutate without `--confirm`. Confirmed mode only installs Node/npm, creates the `/srv/sentinel` directory layout, assigns ownership to the SSH user and runs post-checks. It does not clone the repo, start the API, install systemd services, enable timers or expose anything publicly.
 
 The first confirmed prep attempt may stop safely if the Pi requires an interactive sudo password. Do not put sudo passwords in scripts or configure broad passwordless sudo. Use the manual guide instead:
 
@@ -390,7 +390,9 @@ After manual setup, verify the Pi from the local repo:
 npm run platform:pi:post-prep:verify
 ```
 
-The verifier is read-only and checks Node, npm, `/srv/matthew-platform`, child directories, ownership metadata and SSH-user permission bits. It does not install packages, create directories, clone the repo, write test files, start services or use sudo.
+The verifier is read-only and checks Node, npm, `/srv/sentinel`, child directories, ownership metadata and SSH-user permission bits. It does not install packages, create directories, clone the repo, write test files, start services or use sudo.
+
+`/srv/sentinel` is now the canonical Raspberry Pi runtime root. `/srv/matthew-platform` was an early internal namespace; new deployment scripts, service templates and verification commands should not target it.
 
 `service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
@@ -568,4 +570,4 @@ It checks Git cleanliness, production build readiness, platform health, DB integ
 
 It does not deploy, SSH, upload files, create server directories, start services or expose the API. `READY WITH WARNINGS` is acceptable for local-only warnings such as API smoke skipped because the API server is not running. `NOT READY` blocks deployment work.
 
-On the Raspberry Pi, real backups must live outside the repo, for example `/srv/matthew-platform/data/seo-ops/backups`, and should not use the local `.gitkeep` directory as the production backup destination.
+On the Raspberry Pi, real backups must live outside the repo, for example `/srv/sentinel/data/seo-ops/backups`, and should not use the local `.gitkeep` directory as the production backup destination.

@@ -375,7 +375,7 @@ npm run backup:restore:test
 
 `backup:verify` is read-only. It checks that `platform.db` exists, runs SQLite `integrity_check`, verifies required tables, prints row counts, prints DB file size and prints last modified time. Local checks use `platform/persistence/backups` by default so readiness can verify a backup location without creating production backup files.
 
-The local backup folder is committed only via `.gitkeep`; actual backup artefacts remain ignored. Raspberry Pi backups must use an external path such as `/srv/matthew-platform/data/seo-ops/backups`.
+The local backup folder is committed only via `.gitkeep`; actual backup artefacts remain ignored. Raspberry Pi backups must use an external path such as `/srv/sentinel/data/seo-ops/backups`.
 
 `backup:restore:test` is simulation-only. It copies the DB to a temporary restore-test file, validates the copy, then removes the temporary file unless `--keep-temp` is passed. It never overwrites the live DB and does not mutate source files.
 

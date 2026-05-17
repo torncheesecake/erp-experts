@@ -17,17 +17,19 @@ sudo: a password is required
 
 That is the correct safety outcome. Do not add passwords to scripts, do not store sudo passwords in `.env`, and do not configure broad passwordless sudo just to make automation easier.
 
-## Current State
+## Original State Before Interactive Setup
 
 - SSH works to `192.168.4.22`.
 - The Raspberry Pi user is expected to be `matthew`, unless local configuration says otherwise.
 - sudo requires an interactive password.
 - Node.js is missing.
 - npm is missing.
-- `/srv/matthew-platform` is missing.
+- `/srv/sentinel` is missing.
 - The Sentinel API is not running.
 - No repo has been cloned to the Pi.
 - No systemd service or timer has been installed.
+
+If Node/npm and `/srv/sentinel` already exist, use this guide as the recorded manual setup path and run `npm run platform:pi:post-prep:verify` from the local repo to confirm the current state.
 
 ## 1. SSH Manually
 
@@ -93,10 +95,10 @@ Exact patch versions can vary.
 On the Pi:
 
 ```bash
-sudo mkdir -p /srv/matthew-platform/apps/seo-ops
-sudo mkdir -p /srv/matthew-platform/data/seo-ops/backups
-sudo mkdir -p /srv/matthew-platform/data/seo-ops/reports
-sudo mkdir -p /srv/matthew-platform/logs/seo-ops
+sudo mkdir -p /srv/sentinel/apps/seo-ops
+sudo mkdir -p /srv/sentinel/data/seo-ops/backups
+sudo mkdir -p /srv/sentinel/data/seo-ops/reports
+sudo mkdir -p /srv/sentinel/logs/seo-ops
 ```
 
 These folders are only runtime scaffolding. Do not clone the repo yet, do not create service files yet and do not start the API yet.
@@ -106,13 +108,13 @@ These folders are only runtime scaffolding. Do not clone the repo yet, do not cr
 On the Pi:
 
 ```bash
-sudo chown -R matthew:matthew /srv/matthew-platform
+sudo chown -R matthew:matthew /srv/sentinel
 ```
 
 If the SSH user is not `matthew`, replace both ownership values with that user:
 
 ```bash
-sudo chown -R <user>:<user> /srv/matthew-platform
+sudo chown -R <user>:<user> /srv/sentinel
 ```
 
 Do not use broad permissions such as `chmod -R 777`.
@@ -122,11 +124,11 @@ Do not use broad permissions such as `chmod -R 777`.
 On the Pi:
 
 ```bash
-ls -ld /srv/matthew-platform
-ls -ld /srv/matthew-platform/apps/seo-ops
-ls -ld /srv/matthew-platform/data/seo-ops/backups
-ls -ld /srv/matthew-platform/data/seo-ops/reports
-ls -ld /srv/matthew-platform/logs/seo-ops
+ls -ld /srv/sentinel
+ls -ld /srv/sentinel/apps/seo-ops
+ls -ld /srv/sentinel/data/seo-ops/backups
+ls -ld /srv/sentinel/data/seo-ops/reports
+ls -ld /srv/sentinel/logs/seo-ops
 ```
 
 The owner should be the SSH user, for example `matthew matthew`.
@@ -156,7 +158,7 @@ The post-prep verifier is read-only. It checks Node, npm, the expected directory
 
 - Node.js present.
 - npm present.
-- `/srv/matthew-platform` present.
+- `/srv/sentinel` present.
 - Required child directories present.
 - Directories owned by the SSH user.
 - Read/write/execute access available for the SSH user.

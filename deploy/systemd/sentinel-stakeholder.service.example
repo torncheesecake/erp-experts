@@ -8,8 +8,8 @@ After=network.target
 
 [Service]
 Type=oneshot
-WorkingDirectory=/srv/matthew-platform/apps/seo-ops
-EnvironmentFile=/srv/matthew-platform/apps/seo-ops/.env
+WorkingDirectory=/srv/sentinel/apps/seo-ops
+EnvironmentFile=/srv/sentinel/apps/seo-ops/.env
 Environment=PLATFORM_TENANT=erp-experts
 ExecStart=/usr/bin/npm run platform:cadence -- --stakeholder-only
 User=matthew

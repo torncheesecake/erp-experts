@@ -258,7 +258,7 @@ Current policy:
 
 - No production deployment has been performed from this plan.
 - Runtime data belongs outside Git.
-- The server database should live outside the repo, for example `/srv/matthew-platform/data/seo-ops/platform.db`.
+- The server database should live outside the repo, for example `/srv/sentinel/data/seo-ops/platform.db`.
 - Generated reports, backups and logs should also live outside the repo.
 - The first deployment milestone should be documentation, environment templates and a read-only health check, not a live hosting move.
 
@@ -311,7 +311,7 @@ bash deploy/scripts/backup-platform.sh --confirm
 
 Current backup behaviour is intentionally non-mutating. The dry-run prints expected paths and retention. The placeholder backup script refuses without `--confirm`, and even with `--confirm` it prints TODO steps only. Real backup file creation is not implemented yet.
 
-Local readiness checks use `platform/persistence/backups`, kept in Git with `.gitkeep` only. Backup files inside that folder remain ignored. Raspberry Pi backups must live outside the repo, for example `/srv/matthew-platform/data/seo-ops/backups`.
+Local readiness checks use `platform/persistence/backups`, kept in Git with `.gitkeep` only. Backup files inside that folder remain ignored. Raspberry Pi backups must live outside the repo, for example `/srv/sentinel/data/seo-ops/backups`.
 
 `backup:verify` checks the current SQLite DB, required tables, row counts, integrity, file size and modified time. `backup:restore:test` copies the DB to a temporary restore-test file, validates the copy and removes it afterwards unless `--keep-temp` is used. No live DB overwrite or destructive restore behaviour exists.
 
@@ -458,15 +458,15 @@ The inactive Raspberry Pi service scaffold is now documented in `docs/RASPBERRY_
 
 Raspberry Pi readiness discovery is available with `npm run platform:pi:discover`. The default target host is `192.168.4.22`. Local environment setup is documented in `docs/RASPBERRY_PI_LOCAL_ENV_SETUP.md`. The command writes ignored local reports, warns rather than failing when SSH user details are missing and performs no deployment work. Optional `--scan` mode checks the local network for SSH port `22` and Sentinel API port `4317` without authenticating, and supports `--subnet <prefix-or-cidr>` for known local ranges. Optional SSH mode requires `--ssh` plus user configuration outside the repo, uses non-interactive read-only checks and must not prompt for passwords or print secrets.
 
-Raspberry Pi deployment preparation is now documented in `docs/RASPBERRY_PI_DEPLOYMENT_PREPARATION_PLAN.md`. The planning command `npm run platform:pi:prepare:plan` reads the latest ignored discovery report and writes ignored preparation reports. It captures the real blockers from discovery, currently Node/npm missing, `/srv/matthew-platform` missing and Sentinel API port `4317` closed. It performs no SSH, installation, directory creation, copying, service start or deployment.
+Raspberry Pi deployment preparation is now documented in `docs/RASPBERRY_PI_DEPLOYMENT_PREPARATION_PLAN.md`. The canonical runtime root is `/srv/sentinel`; `/srv/matthew-platform` was an early internal namespace and should not be used by new scripts or service templates. The planning command `npm run platform:pi:prepare:plan` reads the latest ignored discovery report and writes ignored preparation reports. It performs no SSH, installation, directory creation, copying, service start or deployment.
 
 `npm run platform:pi:install:dry-run` now generates an exact proposed install command sequence from the discovery and preparation reports. It writes ignored dry-run reports and prints preflight, Node/npm, directory creation, repo deployment, API smoke, service install and post-install check sections. It is dry-run only and performs no SSH or Pi mutation.
 
-`npm run platform:pi:install:preflight` is the read-only gate before the first install preparation. It requires local `RASPBERRY_PI_HOST` and `RASPBERRY_PI_USER`, uses non-interactive SSH, runs no sudo commands and writes ignored preflight reports. `READY_WITH_WARNINGS` is acceptable before first install prep when the warnings are expected targets such as missing Node/npm, missing `/srv/matthew-platform` and closed API port `4317`.
+`npm run platform:pi:install:preflight` is the read-only gate before the first install preparation. It requires local `RASPBERRY_PI_HOST` and `RASPBERRY_PI_USER`, uses non-interactive SSH, runs no sudo commands and writes ignored preflight reports. `READY_WITH_WARNINGS` is acceptable before first install prep when the warnings are expected targets such as missing Node/npm, missing `/srv/sentinel` and closed API port `4317`.
 
-`npm run platform:pi:install:prep` is the first mutation-capable preparation command, but defaults to dry-run. It refuses to mutate the Pi unless `--confirm` is provided. Confirmed mode is limited to installing Node/npm, creating `/srv/matthew-platform` directories, assigning ownership to the SSH user and running post-checks. Repo clone, API start, systemd install, timers and public exposure remain out of scope.
+`npm run platform:pi:install:prep` is the first mutation-capable preparation command, but defaults to dry-run. It refuses to mutate the Pi unless `--confirm` is provided. Confirmed mode is limited to installing Node/npm, creating `/srv/sentinel` directories, assigning ownership to the SSH user and running post-checks. Repo clone, API start, systemd install, timers and public exposure remain out of scope.
 
-The first confirmed prep attempt stopped safely at the sudo boundary because the Pi requires an interactive password. The manual privileged path is documented in `docs/RASPBERRY_PI_INTERACTIVE_SETUP.md`; it prefers an interactive `sudo -v` session over storing passwords or enabling broad passwordless sudo. `npm run platform:pi:post-prep:verify` now performs the read-only verification after manual setup, checking Node/npm, the `/srv/matthew-platform` directory tree, ownership metadata and SSH-user permission bits. It does not install packages, create directories, clone the repo, write test files, start services or use sudo.
+The first confirmed prep attempt stopped safely at the sudo boundary because the Pi requires an interactive password. The manual privileged path is documented in `docs/RASPBERRY_PI_INTERACTIVE_SETUP.md`; it prefers an interactive `sudo -v` session over storing passwords or enabling broad passwordless sudo. `npm run platform:pi:post-prep:verify` now performs the read-only verification after manual setup, checking Node/npm, the `/srv/sentinel` directory tree, ownership metadata and SSH-user permission bits. Repo absence, closed API port `4317` and missing service installation are readiness warnings for later deployment work, not runtime-prep blockers. It does not install packages, create directories, clone the repo, write test files, start services or use sudo.
 
 Access control planning is now scaffolded in `docs/SENTINEL_ACCESS_CONTROL_PLAN.md`, `docs/SENTINEL_BASIC_AUTH_SETUP.md` and `deploy/nginx/sentinel-basic-auth.example.conf`. These files document basic auth and reverse-proxy protection only. No runtime auth is enabled, no credentials are committed and the production `/seo-roadmap` redirect remains unchanged.
 

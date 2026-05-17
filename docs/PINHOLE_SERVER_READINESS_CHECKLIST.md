@@ -36,20 +36,20 @@ pwd
 Recommended server structure:
 
 ```text
-/srv/matthew-platform/apps/seo-ops
-/srv/matthew-platform/data/seo-ops
-/srv/matthew-platform/data/seo-ops/backups
-/srv/matthew-platform/logs/seo-ops
-/srv/matthew-platform/deploy/scripts
+/srv/sentinel/apps/seo-ops
+/srv/sentinel/data/seo-ops
+/srv/sentinel/data/seo-ops/backups
+/srv/sentinel/logs/seo-ops
+/srv/sentinel/deploy/scripts
 ```
 
 Checklist:
 
-- [ ] `/srv/matthew-platform/apps/seo-ops` exists.
-- [ ] `/srv/matthew-platform/data/seo-ops` exists.
-- [ ] `/srv/matthew-platform/data/seo-ops/backups` exists.
-- [ ] `/srv/matthew-platform/logs/seo-ops` exists.
-- [ ] `/srv/matthew-platform/deploy/scripts` exists.
+- [ ] `/srv/sentinel/apps/seo-ops` exists.
+- [ ] `/srv/sentinel/data/seo-ops` exists.
+- [ ] `/srv/sentinel/data/seo-ops/backups` exists.
+- [ ] `/srv/sentinel/logs/seo-ops` exists.
+- [ ] `/srv/sentinel/deploy/scripts` exists.
 - [ ] Runtime database will live outside Git.
 - [ ] Generated reports will live outside Git when server reporting becomes canonical.
 - [ ] Logs will live outside Git.
@@ -76,8 +76,8 @@ Before exposing anything publicly:
 Future manual deployment sequence:
 
 ```bash
-git clone <repo> /srv/matthew-platform/apps/seo-ops/current
-cd /srv/matthew-platform/apps/seo-ops/current
+git clone <repo> /srv/sentinel/apps/seo-ops/current
+cd /srv/sentinel/apps/seo-ops/current
 npm ci
 npm run build
 npm run platform:init

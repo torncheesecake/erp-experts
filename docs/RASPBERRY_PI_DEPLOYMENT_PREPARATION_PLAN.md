@@ -2,11 +2,15 @@
 
 This is a planning document for preparing Matthew's Raspberry Pi to run Sentinel later. It is based on read-only discovery from `192.168.4.22` and does not approve deployment.
 
-No SSH mutation, package installation, directory creation, file copying, service start or API exposure has been performed.
+The first privileged preparation step has now been completed manually: Node/npm are installed and the canonical Sentinel directory tree exists under `/srv/sentinel`. No repo clone, service installation, service start or API exposure has been approved here.
+
+## Naming Migration Note
+
+Earlier planning used `/srv/matthew-platform` as an internal namespace. Sentinel is now the canonical Raspberry Pi deployment and runtime name. New scripts, templates and docs should use `/srv/sentinel`.
 
 ## 1. Current Pi Inventory
 
-Latest confirmed read-only discovery:
+Latest confirmed runtime model:
 
 - Host: `192.168.4.22`
 - Hostname: `raspberrypi`
@@ -17,22 +21,22 @@ Latest confirmed read-only discovery:
 - Disk: `29G` total, `18G` used, `11G` available, `62%` used on `/`
 - Memory: `7.8Gi` total, `7.2Gi` available
 - `/srv`: exists and is owned by `root:root`
-- `/srv/matthew-platform`: not present
-- Node.js: not installed
-- npm: not installed
+- `/srv/sentinel`: present
+- `/srv/sentinel/apps/seo-ops`: present, repo not cloned yet
+- `/srv/sentinel/data/seo-ops/backups`: present
+- `/srv/sentinel/data/seo-ops/reports`: present
+- `/srv/sentinel/logs/seo-ops`: present
+- Node.js: installed, verify exact version with `npm run platform:pi:post-prep:verify`
+- npm: installed, verify exact version with `npm run platform:pi:post-prep:verify`
 - Sentinel API port `4317`: closed
 
-## 2. Readiness Blockers
+## 2. Remaining Readiness Blockers
 
-The Pi is reachable and suitable for a controlled preparation sequence, but it is not ready to run Sentinel yet.
+The Pi is reachable and suitable for the next controlled repo deployment planning step, but it is not ready to run Sentinel as a managed service yet.
 
-Current blockers:
+Remaining blockers:
 
-- Node.js is not installed.
-- npm is not installed.
-- The deployment root `/srv/matthew-platform` does not exist.
-- The application path `/srv/matthew-platform/apps/seo-ops` does not exist.
-- Data, backup, report and log folders do not exist.
+- The repo has not been cloned to `/srv/sentinel/apps/seo-ops`.
 - The server `.env` does not exist on the Pi.
 - No Sentinel API service is installed or running.
 - Port `4317` is closed, which is expected before service installation.
@@ -41,7 +45,7 @@ Current blockers:
 
 ## 3. Node and npm Installation Approach
 
-Node and npm should be installed only during an approved preparation task, not during discovery.
+Node and npm were installed manually after non-interactive sudo stopped safely. Keep future Node changes explicit and reviewed.
 
 Recommended target:
 
@@ -66,14 +70,14 @@ References for the future install decision:
 - Node.js release schedule: `https://github.com/nodejs/Release`
 - Node.js releases overview: `https://nodejs.org/en/about/previous-releases`
 
-No Node/npm installation has been performed yet.
+No automatic Node/npm installation should be attempted unless a future task explicitly approves it.
 
 ## 4. Directory Plan
 
 Target layout:
 
 ```text
-/srv/matthew-platform/
+/srv/sentinel/
   apps/
     seo-ops/
   data/
@@ -86,13 +90,13 @@ Target layout:
 
 Purpose:
 
-- `/srv/matthew-platform/apps/seo-ops`: Git checkout for the Sentinel application.
-- `/srv/matthew-platform/data/seo-ops`: runtime SQLite state and generated operational data.
-- `/srv/matthew-platform/data/seo-ops/backups`: backup artefacts, outside Git.
-- `/srv/matthew-platform/data/seo-ops/reports`: generated reports, outside public web roots.
-- `/srv/matthew-platform/logs/seo-ops`: service logs if journald is not enough.
+- `/srv/sentinel/apps/seo-ops`: Git checkout for the Sentinel application.
+- `/srv/sentinel/data/seo-ops`: runtime SQLite state and generated operational data.
+- `/srv/sentinel/data/seo-ops/backups`: backup artefacts, outside Git.
+- `/srv/sentinel/data/seo-ops/reports`: generated reports, outside public web roots.
+- `/srv/sentinel/logs/seo-ops`: service logs if journald is not enough.
 
-Do not create these folders until a separate preparation task is approved.
+These folders are now the canonical runtime scaffold. Do not rename them back to the earlier internal namespace.
 
 ## 5. Service User Assumptions
 
@@ -113,7 +117,7 @@ The Pi should use a server-local `.env` outside Git.
 Planned path:
 
 ```text
-/srv/matthew-platform/apps/seo-ops/.env
+/srv/sentinel/apps/seo-ops/.env
 ```
 
 Required runtime values:
@@ -121,10 +125,10 @@ Required runtime values:
 ```text
 NODE_ENV=production
 PLATFORM_TENANT=erp-experts
-PLATFORM_DB_PATH=/srv/matthew-platform/data/seo-ops/platform.db
-PLATFORM_REPORTS_PATH=/srv/matthew-platform/data/seo-ops/reports
-PLATFORM_BACKUP_PATH=/srv/matthew-platform/data/seo-ops/backups
-PLATFORM_LOG_PATH=/srv/matthew-platform/logs/seo-ops
+PLATFORM_DB_PATH=/srv/sentinel/data/seo-ops/platform.db
+PLATFORM_REPORTS_PATH=/srv/sentinel/data/seo-ops/reports
+PLATFORM_BACKUP_PATH=/srv/sentinel/data/seo-ops/backups
+PLATFORM_LOG_PATH=/srv/sentinel/logs/seo-ops
 SENTINEL_API_HOST=127.0.0.1
 SENTINEL_API_PORT=4317
 SENTINEL_REMOTE_AUTH_MODE=disabled
@@ -135,7 +139,7 @@ Rules:
 - Do not commit the Pi `.env`.
 - Do not store secrets in the repo.
 - Bind the Sentinel API to `127.0.0.1` only.
-- Keep backups under `/srv/matthew-platform/data/seo-ops/backups`.
+- Keep backups under `/srv/sentinel/data/seo-ops/backups`.
 - Keep generated operational reports outside public web roots.
 
 ## 7. Deployment Sequence Proposal
@@ -152,7 +156,7 @@ npm run platform:pi:install:prep
 
 The preflight writes `reports/sentinel-pi-install-preflight.md` and `.json`, both ignored. It uses read-only non-interactive SSH checks and a local port probe. It does not install packages, create directories, clone repositories, copy files, start services or expose the API.
 
-`READY_WITH_WARNINGS` is acceptable before the first install preparation if the warnings are expected install targets, such as missing Node/npm, missing `/srv/matthew-platform` or closed API port `4317`.
+`READY_WITH_WARNINGS` is acceptable before the first install preparation if the warnings are expected install targets, such as missing Node/npm, missing `/srv/sentinel` or closed API port `4317`.
 
 The dry-run writes `reports/sentinel-pi-install-dry-run.md` and `.json`, both ignored. It does not SSH, install packages, create directories, clone repositories, copy files, start services or expose the API.
 
@@ -183,7 +187,7 @@ After the manual setup, verify the runtime and directory structure from the loca
 npm run platform:pi:post-prep:verify
 ```
 
-The verifier is read-only. It checks Node, npm, `/srv/matthew-platform`, required child directories, ownership metadata and permission bits. It does not install packages, create directories, clone the repo, write test files, start services or use sudo.
+The verifier is read-only. It checks Node, npm, `/srv/sentinel`, required child directories, ownership metadata and permission bits. It does not install packages, create directories, clone the repo, write test files, start services or use sudo.
 
 1. Confirm SSH key-based access still works:
 
@@ -192,8 +196,8 @@ ssh -o BatchMode=yes -o PasswordAuthentication=no matthew@192.168.4.22 hostname
 ```
 
 2. Install Node.js and npm using the approved Node LTS approach.
-3. Create the `/srv/matthew-platform` directory layout.
-4. Clone or pull the repo into `/srv/matthew-platform/apps/seo-ops`.
+3. Create the `/srv/sentinel` directory layout.
+4. Clone or pull the repo into `/srv/sentinel/apps/seo-ops`.
 5. Create the Pi `.env` outside Git.
 6. Install dependencies:
 

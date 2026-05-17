@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DEPLOY_ROOT="${DEPLOY_ROOT:-/srv/matthew-platform}"
+DEPLOY_ROOT="${DEPLOY_ROOT:-/srv/sentinel}"
 EXPECTED_DIRS=(
   "$DEPLOY_ROOT/apps/seo-ops"
   "$DEPLOY_ROOT/data/seo-ops"

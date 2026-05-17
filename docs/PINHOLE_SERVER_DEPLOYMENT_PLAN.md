@@ -25,7 +25,7 @@ This plan describes how the SEO and content operations platform should eventuall
 Recommended root:
 
 ```text
-/srv/matthew-platform/
+/srv/sentinel/
   apps/
     seo-ops/
       current/              # checked-out application repo or release symlink
@@ -88,16 +88,16 @@ Development:
 Server:
 
 - Store the production SQLite database outside Git, for example:
-  - `/srv/matthew-platform/data/seo-ops/platform.db`
+  - `/srv/sentinel/data/seo-ops/platform.db`
 - Use a server-only environment variable later, for example:
-  - `SEO_OPS_DB_PATH=/srv/matthew-platform/data/seo-ops/platform.db`
+  - `SEO_OPS_DB_PATH=/srv/sentinel/data/seo-ops/platform.db`
 - Back up before any migration or manual inspection.
 - Do not edit the production DB directly without a fresh backup.
 
 Backups:
 
-- Daily SQLite backup to `/srv/matthew-platform/data/seo-ops/backups/daily/`.
-- Weekly retained backup to `/srv/matthew-platform/data/seo-ops/backups/weekly/`.
+- Daily SQLite backup to `/srv/sentinel/data/seo-ops/backups/daily/`.
+- Weekly retained backup to `/srv/sentinel/data/seo-ops/backups/weekly/`.
 - Use SQLite's `.backup` command or a safe copy after pausing writes.
 - Keep at least 7 daily and 8 weekly backups once real client state exists.
 
@@ -130,7 +130,7 @@ Recommended first step:
 
 - Server pulls the repo from GitHub.
 - Server runs `npm ci`, `npm run build`, `npm run platform:init`, and health checks.
-- Generated reports and SQLite DB live under `/srv/matthew-platform/data/seo-ops/`.
+- Generated reports and SQLite DB live under `/srv/sentinel/data/seo-ops/`.
 - Deployment is manual or scripted.
 - No live API service yet.
 
@@ -150,7 +150,7 @@ Best for: DB-backed dashboard state, authenticated report viewing and operator w
 - Add scheduled jobs for monitor, autopilot, digest and backups.
 - Put Nginx or Caddy in front of the app.
 - Add HTTPS certificates and access controls.
-- Store logs under `/srv/matthew-platform/logs/seo-ops/`.
+- Store logs under `/srv/sentinel/logs/seo-ops/`.
 
 Best for: ambient operations and reliable weekly automation.
 
@@ -183,7 +183,7 @@ Recommended workflow:
 3. Commit and push to GitHub.
 4. Server pulls from GitHub.
 5. Server runs install, build and health checks.
-6. Server writes runtime state to `/srv/matthew-platform/data/seo-ops/`.
+6. Server writes runtime state to `/srv/sentinel/data/seo-ops/`.
 7. Codex should not edit production DB state directly unless the task explicitly requires it and a backup has been taken.
 
 Initial server validation commands should mirror local checks:
@@ -353,10 +353,10 @@ The server `.env` should live on the server only, outside Git. `.env.example` no
 
 Recommended server paths:
 
-- DB: `/srv/matthew-platform/data/seo-ops/platform.db`
-- Reports: `/srv/matthew-platform/data/seo-ops/reports`
-- Backups: `/srv/matthew-platform/data/seo-ops/backups`
-- Logs: `/srv/matthew-platform/logs/seo-ops`
+- DB: `/srv/sentinel/data/seo-ops/platform.db`
+- Reports: `/srv/sentinel/data/seo-ops/reports`
+- Backups: `/srv/sentinel/data/seo-ops/backups`
+- Logs: `/srv/sentinel/logs/seo-ops`
 
 Backup planning commands:
 

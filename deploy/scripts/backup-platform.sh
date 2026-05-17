@@ -7,7 +7,7 @@ if [ "${1:-}" != "--confirm" ]; then
   exit 0
 fi
 
-DEPLOY_ROOT="${DEPLOY_ROOT:-/srv/matthew-platform}"
+DEPLOY_ROOT="${DEPLOY_ROOT:-/srv/sentinel}"
 PLATFORM_DB_PATH="${PLATFORM_DB_PATH:-$DEPLOY_ROOT/data/seo-ops/platform.db}"
 PLATFORM_REPORTS_PATH="${PLATFORM_REPORTS_PATH:-$DEPLOY_ROOT/data/seo-ops/reports}"
 PLATFORM_BACKUP_PATH="${PLATFORM_BACKUP_PATH:-$DEPLOY_ROOT/data/seo-ops/backups}"

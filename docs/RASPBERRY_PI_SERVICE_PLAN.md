@@ -26,8 +26,8 @@ Future installed service path:
 
 The template uses:
 
-- `WorkingDirectory=/srv/matthew-platform/apps/seo-ops`
-- `EnvironmentFile=/srv/matthew-platform/apps/seo-ops/.env`
+- `WorkingDirectory=/srv/sentinel/apps/seo-ops`
+- `EnvironmentFile=/srv/sentinel/apps/seo-ops/.env`
 - `SENTINEL_API_HOST=127.0.0.1`
 - `SENTINEL_API_PORT=4317`
 - `PLATFORM_TENANT=erp-experts`
@@ -43,10 +43,10 @@ The server `.env` should stay outside public access and must not be committed. U
 ```text
 NODE_ENV=production
 PLATFORM_TENANT=erp-experts
-PLATFORM_DB_PATH=/srv/matthew-platform/data/seo-ops/platform.db
-PLATFORM_REPORTS_PATH=/srv/matthew-platform/data/seo-ops/reports
-PLATFORM_BACKUP_PATH=/srv/matthew-platform/data/seo-ops/backups
-PLATFORM_LOG_PATH=/srv/matthew-platform/logs/seo-ops
+PLATFORM_DB_PATH=/srv/sentinel/data/seo-ops/platform.db
+PLATFORM_REPORTS_PATH=/srv/sentinel/data/seo-ops/reports
+PLATFORM_BACKUP_PATH=/srv/sentinel/data/seo-ops/backups
+PLATFORM_LOG_PATH=/srv/sentinel/logs/seo-ops
 SENTINEL_API_HOST=127.0.0.1
 SENTINEL_API_PORT=4317
 SENTINEL_REMOTE_AUTH_MODE=disabled
@@ -54,7 +54,7 @@ SENTINEL_REMOTE_API_BASE_URL=
 SENTINEL_OPERATOR_TOKEN=
 ```
 
-The repo contains `platform/persistence/backups/.gitkeep` only so local readiness checks have a safe backup folder convention. Do not use that repo folder for production backups. Raspberry Pi backups should stay under `/srv/matthew-platform/data/seo-ops/backups` or another server data path outside Git.
+The repo contains `platform/persistence/backups/.gitkeep` only so local readiness checks have a safe backup folder convention. Do not use that repo folder for production backups. Raspberry Pi backups should stay under `/srv/sentinel/data/seo-ops/backups` or another server data path outside Git.
 
 ## Dry-run command
 
@@ -131,7 +131,7 @@ npm run platform:pi:install:preflight
 npm run platform:pi:install:dry-run
 ```
 
-The preflight command requires `RASPBERRY_PI_HOST` and `RASPBERRY_PI_USER` in the local environment. It uses non-interactive read-only SSH checks, no password prompts, no sudo and no writes. It returns `READY_FOR_INSTALL_PREP`, `READY_WITH_WARNINGS` or `NOT_READY`. Missing Node/npm and missing `/srv/matthew-platform` are warnings before first install, not blockers.
+The preflight command requires `RASPBERRY_PI_HOST` and `RASPBERRY_PI_USER` in the local environment. It uses non-interactive read-only SSH checks, no password prompts, no sudo and no writes. It returns `READY_FOR_INSTALL_PREP`, `READY_WITH_WARNINGS` or `NOT_READY`. Missing Node/npm and missing `/srv/sentinel` are warnings before first install, not blockers.
 
 This writes `reports/sentinel-pi-install-dry-run.md` plus `.json`. It prints proposed preflight, Node/npm, directory, repo, API smoke, service and post-install commands for review only. It does not SSH or mutate the Pi.
 
@@ -155,7 +155,7 @@ Then verify the result from the local repo:
 npm run platform:pi:post-prep:verify
 ```
 
-The post-prep verifier is read-only. It checks Node/npm presence, the `/srv/matthew-platform` directory structure, ownership metadata and permission bits. It does not install packages, create directories, clone the repo, write test files, start services or use sudo.
+The post-prep verifier is read-only. It checks Node/npm presence, the `/srv/sentinel` directory structure, ownership metadata and permission bits. It does not install packages, create directories, clone the repo, write test files, start services or use sudo.
 
 ## Future install sequence
 

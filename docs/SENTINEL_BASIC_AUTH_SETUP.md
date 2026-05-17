@@ -31,8 +31,8 @@ Do not protect by default:
 On the server, generate a credentials file outside the repo:
 
 ```bash
-sudo mkdir -p /srv/matthew-platform/security
-sudo htpasswd -c /srv/matthew-platform/security/sentinel.htpasswd matthew
+sudo mkdir -p /srv/sentinel/security
+sudo htpasswd -c /srv/sentinel/security/sentinel.htpasswd matthew
 ```
 
 If `htpasswd` is unavailable, install the relevant Apache utilities package for the server OS. Do not paste the resulting hash into Git.

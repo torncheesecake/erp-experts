@@ -9,7 +9,7 @@ const jsonReportPath = path.join(reportsDir, "sentinel-pi-install-prep.json");
 const markdownReportPath = path.join(reportsDir, "sentinel-pi-install-prep.md");
 const defaultHost = "192.168.4.22";
 const defaultUser = "matthew";
-const deployRoot = "/srv/matthew-platform";
+const deployRoot = "/srv/sentinel";
 const sshPortDefault = "22";
 const allowedNodeVersions = new Set(["22", "24"]);
 

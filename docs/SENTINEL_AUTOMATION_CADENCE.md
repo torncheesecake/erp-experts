@@ -67,8 +67,8 @@ Keep cron logs outside Git. Do not commit generated reports or logs.
 On the Raspberry Pi, use the same command after the repo, `.env`, data paths and backups are confirmed:
 
 ```cron
-0 8 * * 1-5 cd /srv/matthew-platform/apps/seo-ops && npm run platform:cadence -- --operator-only >> /srv/matthew-platform/logs/seo-ops/cadence.log 2>&1
-30 8 * * 5 cd /srv/matthew-platform/apps/seo-ops && npm run platform:cadence -- --stakeholder-only >> /srv/matthew-platform/logs/seo-ops/cadence.log 2>&1
+0 8 * * 1-5 cd /srv/sentinel/apps/seo-ops && npm run platform:cadence -- --operator-only >> /srv/sentinel/logs/seo-ops/cadence.log 2>&1
+30 8 * * 5 cd /srv/sentinel/apps/seo-ops && npm run platform:cadence -- --stakeholder-only >> /srv/sentinel/logs/seo-ops/cadence.log 2>&1
 ```
 
 Alternative future systemd timer approach:

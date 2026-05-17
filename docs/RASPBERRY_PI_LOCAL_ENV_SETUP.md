@@ -26,8 +26,8 @@ Add or update these local values in `.env`:
 RASPBERRY_PI_HOST=192.168.4.22
 RASPBERRY_PI_USER=<your-pi-user>
 RASPBERRY_PI_SSH_PORT=22
-RASPBERRY_PI_DEPLOY_ROOT=/srv/matthew-platform
-RASPBERRY_PI_APP_PATH=/srv/matthew-platform/apps/seo-ops
+RASPBERRY_PI_DEPLOY_ROOT=/srv/sentinel
+RASPBERRY_PI_APP_PATH=/srv/sentinel/apps/seo-ops
 ```
 
 Replace `<your-pi-user>` with the real Raspberry Pi SSH user on your machine only.
@@ -99,7 +99,7 @@ SSH mode uses `BatchMode=yes` and `PasswordAuthentication=no`. It runs read-only
 - `git --version || true`
 - `df -h /`
 - `free -h || true`
-- `ls -ld /srv /srv/matthew-platform || true`
+- `ls -ld /srv /srv/sentinel || true`
 - `systemctl --version || true`
 
 ## Safety Rules

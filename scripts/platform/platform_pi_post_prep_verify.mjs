@@ -10,7 +10,9 @@ const markdownReportPath = path.join(reportsDir, "sentinel-pi-post-prep-verify.m
 const envPath = path.join(repoRoot, ".env");
 const defaultHost = "192.168.4.22";
 const defaultPort = "22";
-const defaultDeployRoot = "/srv/matthew-platform";
+const defaultUser = "matthew";
+const defaultDeployRoot = "/srv/sentinel";
+const legacyDeployRoot = "/srv/matthew-platform";
 const apiPort = 4317;
 
 function parseLocalEnv() {
@@ -40,6 +42,10 @@ function configValue(name, fallback = "") {
   if (envValue) return envValue;
   const fileValue = localEnv[name] && String(localEnv[name]).trim() ? String(localEnv[name]).trim() : "";
   return fileValue || fallback;
+}
+
+function normaliseDeployRoot(value) {
+  return value === legacyDeployRoot ? defaultDeployRoot : value;
 }
 
 function sshTarget({ user, host }) {
@@ -91,11 +97,13 @@ set +e
 printf '__sentinel_shell_ok__=shell_ok\n'
 printf '__sentinel_hostname__='; hostname 2>&1 || true
 printf '__sentinel_user__='; id -un 2>&1 || true
-printf '__sentinel_node_path__='; command -v node 2>/dev/null || true
+printf '__sentinel_node_path__='; command -v node 2>/dev/null || true; printf '\n'
 printf '__sentinel_node_version__='; node -v 2>&1 || true
-printf '__sentinel_npm_path__='; command -v npm 2>/dev/null || true
+printf '__sentinel_npm_path__='; command -v npm 2>/dev/null || true; printf '\n'
 printf '__sentinel_npm_version__='; npm -v 2>&1 || true
 printf '__sentinel_repo_state__='; if [ -d ${shellQuote(`${deployRoot}/apps/seo-ops/.git`)} ]; then echo repo_present; else echo repo_absent; fi
+printf '__sentinel_service_file__='; systemctl list-unit-files sentinel-api.service --no-legend 2>/dev/null | awk '{print $1 ":" $2}' || true; printf '\n'
+printf '__sentinel_service_active__='; systemctl is-active sentinel-api.service 2>&1 || true
 for dir in ${quotedDirectories}; do
   if [ -d "$dir" ]; then
     owner="$(stat -c '%U:%G' "$dir" 2>&1)"
@@ -243,19 +251,29 @@ function classify({ host, user, sshResult, parsed, deployRoot, portOpen }) {
     warnings.push("A Git checkout already exists under apps/seo-ops. Confirm this was intentional, because repo deployment is out of scope for prep verification.");
     checks.push(makeCheck("repo", "Repo not cloned yet", "warning", "Repo checkout found."));
   } else {
-    checks.push(makeCheck("repo", "Repo not cloned yet", "pass", "No Git checkout detected under apps/seo-ops."));
+    warnings.push("Repo is not cloned yet. This is expected before the separate repo deployment task.");
+    checks.push(makeCheck("repo", "Repo not cloned yet", "warning", "No Git checkout detected under apps/seo-ops."));
   }
 
   if (portOpen) {
     warnings.push(`Sentinel API port ${apiPort} is open. Confirm this is expected, because API startup is out of scope for prep verification.`);
     checks.push(makeCheck("api_port", `Port ${apiPort}`, "warning", "Open from local network."));
   } else {
-    checks.push(makeCheck("api_port", `Port ${apiPort}`, "pass", "Closed from local network."));
+    warnings.push(`Sentinel API port ${apiPort} is not running. This is expected before service installation.`);
+    checks.push(makeCheck("api_port", `Port ${apiPort}`, "warning", "Closed from local network."));
+  }
+
+  if (parsed.service_file) {
+    warnings.push(`sentinel-api.service is already present: ${parsed.service_file}. Confirm this was intentional, because service installation is out of scope for prep verification.`);
+    checks.push(makeCheck("service", "sentinel-api.service", "warning", parsed.service_file));
+  } else {
+    warnings.push("sentinel-api.service is not installed yet. This is expected before the separate service installation task.");
+    checks.push(makeCheck("service", "sentinel-api.service", "warning", "Not installed."));
   }
 
   const readyChecks = checks.filter((check) => ["node", "npm"].includes(check.id) || String(check.id).startsWith("dir_"));
   const requiredReady = readyChecks.every((check) => check.status === "pass");
-  const overallStatus = blockers.length ? "NOT_READY" : requiredReady ? "READY_FOR_REPO_DEPLOY" : "NOT_READY";
+  const overallStatus = blockers.length ? "NOT_READY" : requiredReady ? warnings.length ? "READY_WITH_WARNINGS" : "READY_FOR_REPO_DEPLOY" : "NOT_READY";
 
   return { overallStatus, checks, blockers, warnings };
 }
@@ -334,15 +352,20 @@ function printReport(report) {
 
 async function main() {
   const host = configValue("RASPBERRY_PI_HOST", defaultHost);
-  const user = configValue("RASPBERRY_PI_USER", "");
+  const user = configValue("RASPBERRY_PI_USER", defaultUser);
   const sshPort = configValue("RASPBERRY_PI_SSH_PORT", defaultPort);
-  const deployRoot = configValue("RASPBERRY_PI_DEPLOY_ROOT", defaultDeployRoot);
+  const configuredDeployRoot = configValue("RASPBERRY_PI_DEPLOY_ROOT", defaultDeployRoot);
+  const deployRoot = normaliseDeployRoot(configuredDeployRoot);
   const sshResult = host && user
     ? runSshVerify({ host, user, sshPort, deployRoot })
     : { attempted: false, ok: false, exitCode: 1, stdout: "", stderr: "Missing host or user." };
   const parsed = sshResult.ok ? parseRemoteOutput(sshResult.stdout) : {};
   const portOpen = host ? await checkPort(host, apiPort) : false;
   const classified = classify({ host, user, sshResult, parsed, deployRoot, portOpen });
+  if (configuredDeployRoot === legacyDeployRoot) {
+    classified.warnings.push(`Local configuration still points at legacy ${legacyDeployRoot}; verification used canonical ${defaultDeployRoot}.`);
+    if (classified.overallStatus === "READY_FOR_REPO_DEPLOY") classified.overallStatus = "READY_WITH_WARNINGS";
+  }
   const report = {
     checkedAt: new Date().toISOString(),
     readOnly: true,
@@ -352,6 +375,7 @@ async function main() {
       userConfigured: Boolean(user),
       sshPort,
       deployRoot,
+      legacyDeployRootConfigured: configuredDeployRoot === legacyDeployRoot,
       envFileUsed: fs.existsSync(envPath),
     },
     ssh: {
@@ -363,7 +387,7 @@ async function main() {
     remote: parsed,
     port4317Open: portOpen,
     ...classified,
-    recommendedNextStep: classified.overallStatus === "READY_FOR_REPO_DEPLOY"
+    recommendedNextStep: classified.overallStatus === "READY_FOR_REPO_DEPLOY" || classified.overallStatus === "READY_WITH_WARNINGS"
       ? "Runtime preparation is verified. Plan the separate repo deployment step next; do not start services until a smoke test task is approved."
       : "Complete the interactive setup guide, then rerun npm run platform:pi:post-prep:verify before planning repo deployment.",
     safety: {

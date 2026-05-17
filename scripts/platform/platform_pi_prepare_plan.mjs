@@ -13,7 +13,7 @@ const fallbackDiscovery = {
   target: {
     host: "192.168.4.22",
     port: "22",
-    deployRoot: "/srv/matthew-platform",
+    deployRoot: "/srv/sentinel",
   },
   ssh: {
     requested: false,
@@ -78,7 +78,7 @@ function detectPathStatus(checks, targetPath) {
 }
 
 function buildInventory(discovery, checks) {
-  const deployRoot = discovery.target?.deployRoot || "/srv/matthew-platform";
+  const deployRoot = discovery.target?.deployRoot || "/srv/sentinel";
   return {
     discoveryGeneratedAt: discovery.generatedAt,
     host: discovery.target?.host || "192.168.4.22",
@@ -120,7 +120,7 @@ function buildBlockers(inventory, discovery) {
 
   blockers.push("Pi-local .env has not been created under the future app path.");
   blockers.push("Sentinel API service is not installed or running yet.");
-  blockers.push("Backups, reports and logs directories have not been created under /srv/matthew-platform/data and /srv/matthew-platform/logs.");
+  blockers.push("Backups, reports and logs directories have not been created under /srv/sentinel/data and /srv/sentinel/logs.");
 
   return blockers;
 }
@@ -145,15 +145,15 @@ function buildPreparationPlan(discovery) {
       installApproach: "Use official Node.js Linux binaries or NodeSource LTS packages for Debian Bookworm aarch64 during an approved preparation task.",
     },
     directoryPlan: [
-      "/srv/matthew-platform/apps/seo-ops",
-      "/srv/matthew-platform/data/seo-ops/backups",
-      "/srv/matthew-platform/data/seo-ops/reports",
-      "/srv/matthew-platform/logs/seo-ops",
+      "/srv/sentinel/apps/seo-ops",
+      "/srv/sentinel/data/seo-ops/backups",
+      "/srv/sentinel/data/seo-ops/reports",
+      "/srv/sentinel/logs/seo-ops",
     ],
     proposedSequence: [
       "Install approved Node.js LTS and npm.",
-      "Create /srv/matthew-platform directory layout.",
-      "Clone or pull repo into /srv/matthew-platform/apps/seo-ops.",
+      "Create /srv/sentinel directory layout.",
+      "Clone or pull repo into /srv/sentinel/apps/seo-ops.",
       "Create Pi-local .env outside Git.",
       "Run npm ci.",
       "Run npm run build.",

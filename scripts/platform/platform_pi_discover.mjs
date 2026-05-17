@@ -7,7 +7,7 @@ import { repoRoot } from "./tenant_config.mjs";
 
 const DEFAULT_HOST = "192.168.4.22";
 const DEFAULT_PORT = "22";
-const DEFAULT_DEPLOY_ROOT = "/srv/matthew-platform";
+const DEFAULT_DEPLOY_ROOT = "/srv/sentinel";
 const DEFAULT_SUBNET_PREFIX = "192.168.4";
 const SENTINEL_API_PORT = 4317;
 const SCAN_TIMEOUT_MS = 180;
@@ -25,7 +25,7 @@ const readOnlyChecks = [
   { id: "git", command: "git --version || true" },
   { id: "disk", command: "df -h /" },
   { id: "memory", command: "free -h || true" },
-  { id: "directories", command: "ls -ld /srv /srv/matthew-platform || true" },
+  { id: "directories", command: "ls -ld /srv /srv/sentinel || true" },
   { id: "systemd", command: "systemctl --version || true" },
 ];
 

@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT_DIR"
 
-DEPLOY_ROOT="${DEPLOY_ROOT:-/srv/matthew-platform}"
+DEPLOY_ROOT="${DEPLOY_ROOT:-/srv/sentinel}"
 APP_DIR="$DEPLOY_ROOT/apps/seo-ops"
 DATA_DIR="$DEPLOY_ROOT/data/seo-ops"
 BACKUP_DIR="$DATA_DIR/backups"

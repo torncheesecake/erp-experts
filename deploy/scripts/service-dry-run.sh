@@ -22,8 +22,8 @@ fi
 
 echo "Template: deploy/systemd/sentinel-api.service.example"
 echo "Expected installed service: /etc/systemd/system/sentinel-api.service"
-echo "Expected app directory: /srv/matthew-platform/apps/seo-ops"
-echo "Expected env file: /srv/matthew-platform/apps/seo-ops/.env"
+echo "Expected app directory: /srv/sentinel/apps/seo-ops"
+echo "Expected env file: /srv/sentinel/apps/seo-ops/.env"
 echo "Expected bind: 127.0.0.1:4317"
 echo
 echo "Commands that would be run later during a controlled deployment:"
