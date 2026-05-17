@@ -247,6 +247,14 @@ npm run platform:pi:api:smoke
 
 The smoke command starts the API over SSH in a temporary session bound to `127.0.0.1:4317`, calls `/health`, `/state` and `/tenant` from the Pi itself, stops only the process it started and verifies the port closes afterwards. It writes ignored smoke reports and does not install a service, enable timers, add a reverse proxy or expose the API publicly.
 
+Plan service installation only after the foreground smoke passes:
+
+```bash
+npm run platform:pi:service:plan
+```
+
+The service planner is read-only. It checks the deployed app, the `platform:api:serve` script, systemd availability, current service state, the passing smoke report and the local systemd template. The Pi currently resolves npm at `/usr/local/bin/npm`, so the template and plan use that absolute path. The planner prints the future `sudo systemctl` sequence but does not copy files, reload systemd, start the API or expose it publicly.
+
 1. Confirm SSH key-based access still works:
 
 ```bash
@@ -290,8 +298,14 @@ npm run seo:monitor
 npm run platform:pi:api:smoke
 ```
 
-11. Install the systemd service only after the foreground smoke test passes.
-12. Enable cadence timers only in a later task after the API service is stable and backups are verified.
+11. Generate the service install plan:
+
+```bash
+npm run platform:pi:service:plan
+```
+
+12. Install the systemd service only after the foreground smoke test and service plan pass, in a separate explicitly approved task.
+13. Enable cadence timers only in a later task after the API service is stable and backups are verified.
 
 ## 8. Rollback and Safety Plan
 

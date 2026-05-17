@@ -425,6 +425,14 @@ npm run platform:pi:api:smoke
 
 This SSH-based smoke starts `npm run platform:api:serve` on the Pi with `SENTINEL_API_HOST=127.0.0.1` and `SENTINEL_API_PORT=4317`, curls `/health`, `/state` and `/tenant` from the Pi itself, then stops only the process it started and confirms port `4317` closes. It writes ignored smoke reports and does not install systemd, enable timers, reverse proxy the API or expose it publicly.
 
+Plan the systemd service installation without installing it:
+
+```bash
+npm run platform:pi:service:plan
+```
+
+This read-only planner verifies the deployed app, `platform:api:serve`, the passing foreground smoke report, systemd availability, current service state, `deploy/systemd/sentinel-api.service.example` and the Pi npm path. The current Pi runtime resolves npm at `/usr/local/bin/npm`, so the inactive template uses that absolute path plus an explicit `PATH`. The planner writes ignored service-plan reports and prints future `sudo systemctl` commands only.
+
 `service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
 Access-control planning is also scaffolded but inactive:

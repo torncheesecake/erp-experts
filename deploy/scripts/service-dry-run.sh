@@ -25,6 +25,7 @@ echo "Expected installed service: /etc/systemd/system/sentinel-api.service"
 echo "Expected app directory: /srv/sentinel/apps/seo-ops"
 echo "Expected env file: /srv/sentinel/apps/seo-ops/.env"
 echo "Expected bind: 127.0.0.1:4317"
+echo "Expected npm path on Pi: /usr/local/bin/npm"
 echo
 echo "Commands that would be run later during a controlled deployment:"
 echo "  sudo cp deploy/systemd/sentinel-api.service.example /etc/systemd/system/sentinel-api.service"

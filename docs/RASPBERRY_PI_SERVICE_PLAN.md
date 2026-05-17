@@ -31,10 +31,11 @@ The template uses:
 - `SENTINEL_API_HOST=127.0.0.1`
 - `SENTINEL_API_PORT=4317`
 - `PLATFORM_TENANT=erp-experts`
-- `ExecStart=/usr/bin/npm run platform:api:serve`
+- `PATH=/usr/local/bin:/usr/bin:/bin`
+- `ExecStart=/usr/local/bin/npm run platform:api:serve`
 - `Restart=on-failure`
 
-The `User` and `Group` values are placeholders and must match the real Raspberry Pi deployment user.
+The `User` and `Group` values are placeholders and must match the real Raspberry Pi deployment user. Current Pi discovery reports `npm` at `/usr/local/bin/npm`, so the inactive template uses that absolute path.
 
 ## Required environment variables
 
@@ -192,6 +193,14 @@ npm run platform:pi:api:smoke
 
 The command starts the Pi API through SSH with `SENTINEL_API_HOST=127.0.0.1` and `SENTINEL_API_PORT=4317`, tests `/health`, `/state` and `/tenant` from the Pi itself, then stops the temporary process and confirms port `4317` closes. It writes ignored reports to `reports/sentinel-pi-api-smoke.md` and `.json`. It does not install systemd files, enable services, enable timers, add a reverse proxy or expose the API publicly.
 
+Plan the service installation separately:
+
+```bash
+npm run platform:pi:service:plan
+```
+
+This read-only command checks the deployed app, the `platform:api:serve` script, the foreground smoke report, systemd availability, current service state, the local service template and the Pi npm path. It writes ignored reports to `reports/sentinel-pi-service-plan.md` and `.json`, prints the exact future install commands and performs no installation.
+
 ## Future install sequence
 
 These commands are documented only. Do not run them until a controlled deployment is approved:
@@ -202,6 +211,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable sentinel-api
 sudo systemctl start sentinel-api
 sudo systemctl status sentinel-api
+curl http://127.0.0.1:4317/health
 ```
 
 Smoke test after a future start:
