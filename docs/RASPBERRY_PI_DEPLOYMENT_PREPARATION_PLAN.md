@@ -164,6 +164,27 @@ Confirmed prep command, only after explicit approval:
 npm run platform:pi:install:prep -- --confirm --node-version 22
 ```
 
+The first confirmed attempt stopped safely because the Pi requires an interactive sudo password:
+
+```text
+sudo: a terminal is required to read the password
+sudo: a password is required
+```
+
+Use the manual privileged setup guide instead of storing sudo credentials or enabling broad passwordless sudo:
+
+```text
+docs/RASPBERRY_PI_INTERACTIVE_SETUP.md
+```
+
+After the manual setup, verify the runtime and directory structure from the local repo:
+
+```bash
+npm run platform:pi:post-prep:verify
+```
+
+The verifier is read-only. It checks Node, npm, `/srv/matthew-platform`, required child directories, ownership metadata and permission bits. It does not install packages, create directories, clone the repo, write test files, start services or use sudo.
+
 1. Confirm SSH key-based access still works:
 
 ```bash

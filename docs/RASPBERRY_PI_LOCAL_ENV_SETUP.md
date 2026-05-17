@@ -132,3 +132,9 @@ reports/sentinel-pi-preparation-plan.json
 ```
 
 It does not SSH, install packages, create directories, copy files, start services or deploy. The committed planning document is `docs/RASPBERRY_PI_DEPLOYMENT_PREPARATION_PLAN.md`.
+
+If the first confirmed install preparation stops because sudo requires an interactive password, do not add the password to `.env` or scripts. Use `docs/RASPBERRY_PI_INTERACTIVE_SETUP.md`, then verify the result with:
+
+```bash
+npm run platform:pi:post-prep:verify
+```

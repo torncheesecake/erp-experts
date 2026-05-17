@@ -143,6 +143,20 @@ npm run platform:pi:install:prep
 
 It is dry-run by default. It refuses to mutate the Pi unless `--confirm` is supplied. Confirmed mode is limited to Node/npm installation, Sentinel directory creation, ownership assignment to the SSH user and post-checks. It does not clone the repo, start the API, install systemd services, enable timers or expose the API.
 
+If confirmed prep stops because sudo requires an interactive password, use the manual setup path instead of storing sudo credentials:
+
+```text
+docs/RASPBERRY_PI_INTERACTIVE_SETUP.md
+```
+
+Then verify the result from the local repo:
+
+```bash
+npm run platform:pi:post-prep:verify
+```
+
+The post-prep verifier is read-only. It checks Node/npm presence, the `/srv/matthew-platform` directory structure, ownership metadata and permission bits. It does not install packages, create directories, clone the repo, write test files, start services or use sudo.
+
 ## Future install sequence
 
 These commands are documented only. Do not run them until a controlled deployment is approved:
