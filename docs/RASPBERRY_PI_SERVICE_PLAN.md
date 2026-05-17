@@ -74,6 +74,12 @@ Use the discovery command before planning any real Raspberry Pi deployment:
 npm run platform:pi:discover
 ```
 
+Local environment setup is documented in:
+
+```text
+docs/RASPBERRY_PI_LOCAL_ENV_SETUP.md
+```
+
 The default target host is `192.168.4.26`. The command reads optional local environment variables only:
 
 ```text
@@ -81,6 +87,7 @@ RASPBERRY_PI_HOST
 RASPBERRY_PI_USER
 RASPBERRY_PI_SSH_PORT
 RASPBERRY_PI_DEPLOY_ROOT
+RASPBERRY_PI_APP_PATH
 ```
 
 If the user is missing, the command exits with a warning rather than failing. It writes ignored local reports to `reports/sentinel-pi-discovery.json` and `reports/sentinel-pi-discovery.md`.

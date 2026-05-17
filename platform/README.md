@@ -349,6 +349,8 @@ npm run service:dry-run
 
 `platform:pi:discover` targets the known Raspberry Pi host `192.168.4.26` by default and writes ignored local discovery reports. It is read-only. It uses optional local environment variables for user, port and deploy root, and only attempts SSH when `--ssh` is explicitly passed. SSH mode uses non-interactive read-only checks and never prompts for passwords.
 
+Local Raspberry Pi discovery environment setup is documented in `docs/RASPBERRY_PI_LOCAL_ENV_SETUP.md`. Keep `.env`, SSH keys, passwords and tokens outside Git.
+
 `service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
 Access-control planning is also scaffolded but inactive:
