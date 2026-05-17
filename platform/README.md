@@ -405,6 +405,8 @@ npm run platform:pi:repo:deploy
 
 `platform:pi:repo:deploy` refuses to mutate without `--confirm`. Confirmed mode is limited to clone or fast-forward pull, `npm ci`, `npm run build`, `npm run platform:init` and `npm run platform:health`. It does not start the API, install services, enable timers or expose anything publicly. Confirm Pi Git remote access outside the repo if authentication is required. Review the SQLite path model before making the Pi DB canonical, because `platform:init` currently uses the repo-local persistence default.
 
+The first Pi repo deploy cloned successfully but exposed a normal `npm ci` blocker: `react-helmet-async@2.0.5` did not declare React 19 peer support. The main app now uses React 19 native document metadata through `src/components/ui/SEO.jsx`, so deployment can stay on strict `npm ci` instead of a `--legacy-peer-deps` workaround.
+
 `service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
 Access-control planning is also scaffolded but inactive:

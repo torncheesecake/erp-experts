@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet-async";
 import { useEffect, useMemo } from "react";
 
 const DEFAULTS = {
@@ -109,7 +108,7 @@ export default function SEO({
   }, [description, fullImage, fullTitle, keywords, noIndex, structuredDataItems, type, url]);
 
   return (
-    <Helmet>
+    <>
       {/* Primary Meta Tags */}
       <title>{fullTitle}</title>
       <meta name="title" content={fullTitle} />
@@ -145,13 +144,7 @@ export default function SEO({
       <meta name="geo.placename" content="Stafford" />
       <meta httpEquiv="content-language" content="en-GB" />
 
-      {structuredDataItems.map((item, index) => (
-        <script
-          key={`structured-data-${index}`}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(item) }}
-        />
-      ))}
-    </Helmet>
+      {/* JSON-LD is managed in the effect above so it stays in document.head. */}
+    </>
   );
 }

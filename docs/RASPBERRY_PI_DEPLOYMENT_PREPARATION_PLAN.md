@@ -212,6 +212,14 @@ Confirm the Pi can read the configured Git remote before any confirmed clone or 
 
 Important persistence caveat: the current `platform:init` script initialises the repo-local SQLite default unless persistence path support is extended. Before treating the Pi as canonical state, confirm whether the server DB should live under `/srv/sentinel/data/seo-ops/platform.db` and update runtime configuration accordingly.
 
+## 7.2 React 19 Dependency Resolution
+
+The first confirmed repo deployment cloned the repo successfully, then stopped at `npm ci`. The blocker was `react-helmet-async@2.0.5`, whose peer dependency allows React `^16`, `^17` or `^18`, while this project uses React `19.2.x`.
+
+The chosen resolution is to remove `react-helmet-async` from the main app and use React 19's native document metadata support through the existing `SEO` component. The component still manages runtime metadata and JSON-LD without changing SEO scoring or article content.
+
+This is safer than adding `--legacy-peer-deps` to the Pi deploy path because the server install should remain a normal `npm ci` using the committed lockfile. `--legacy-peer-deps` should remain an emergency compatibility escape hatch only, not the default deployment policy.
+
 1. Confirm SSH key-based access still works:
 
 ```bash
