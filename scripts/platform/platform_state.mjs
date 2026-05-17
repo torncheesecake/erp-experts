@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { getOperationalSummary } from "../../platform/api/state_api.mjs";
+import { resolveReportPath } from "../../platform/runtime_paths.mjs";
 
 function getArgValue(flag, fallback = null) {
   const index = process.argv.indexOf(flag);
@@ -27,7 +28,7 @@ function main() {
 
   try {
     const state = getOperationalSummary(tenantId);
-    const reportsDir = path.resolve(state.tenant.reportOutputPath || "reports");
+    const reportsDir = resolveReportPath();
     const outputPath = path.join(reportsDir, "sentinel-state.json");
 
     ensureReportsDir(reportsDir);

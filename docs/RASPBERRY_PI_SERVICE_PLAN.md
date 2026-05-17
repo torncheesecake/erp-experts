@@ -335,3 +335,18 @@ It does not deploy, SSH, create directories, upload files, start services or exp
 ## Next safe step
 
 Keep the service scaffold committed but inactive. The next safe implementation step is to review the deployment preparation plan, then approve a separate preparation-only task for Node/npm installation, directory creation, repo checkout and foreground API smoke testing.
+
+## Configurable Runtime Paths
+
+Sentinel now supports environment-controlled runtime paths before the Pi DB migration is executed:
+
+```bash
+PLATFORM_DB_PATH=/srv/sentinel/data/seo-ops/platform.db
+PLATFORM_REPORT_OUTPUT_PATH=/srv/sentinel/data/seo-ops/reports
+PLATFORM_BACKUP_PATH=/srv/sentinel/data/seo-ops/backups
+PLATFORM_LOG_PATH=/srv/sentinel/logs/seo-ops
+```
+
+Local defaults remain unchanged: SQLite uses `platform/persistence/platform.db`, platform report output uses `reports/`, backups use `platform/persistence/backups` and logs default to `logs/` when no environment override is supplied.
+
+Use `npm run platform:runtime:paths` to inspect the active paths and whether each path came from the environment or the local fallback. This command is read-only. It validates parent directories and does not migrate data, edit `.env`, restart `sentinel-api.service` or expose the API.

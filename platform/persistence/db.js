@@ -2,12 +2,13 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { ensureParentDir, getRuntimePaths } from "../runtime_paths.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../..");
 
-export const DEFAULT_DB_PATH = path.join(__dirname, "platform.db");
+export const DEFAULT_DB_PATH = getRuntimePaths().db;
 export const SCHEMA_PATH = path.join(__dirname, "schema.sql");
 
 function runSqlite(args, input = "") {
@@ -32,8 +33,8 @@ function quoteSql(value) {
   return String(value ?? "").replaceAll("'", "''");
 }
 
-export function ensurePersistenceDir() {
-  fs.mkdirSync(__dirname, { recursive: true });
+export function ensurePersistenceDir(dbPath = DEFAULT_DB_PATH) {
+  ensureParentDir(dbPath);
 }
 
 export function databaseExists(dbPath = DEFAULT_DB_PATH) {
@@ -41,13 +42,12 @@ export function databaseExists(dbPath = DEFAULT_DB_PATH) {
 }
 
 export function applySchema(dbPath = DEFAULT_DB_PATH) {
-  ensurePersistenceDir();
+  ensurePersistenceDir(dbPath);
   const schema = fs.readFileSync(SCHEMA_PATH, "utf8");
   runSqlite([dbPath], schema);
 }
 
 export function executeSql(sql, dbPath = DEFAULT_DB_PATH) {
-  ensurePersistenceDir();
   runSqlite([dbPath], sql);
 }
 

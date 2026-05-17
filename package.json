@@ -88,7 +88,8 @@
     "backup:dry-run": "bash deploy/scripts/backup-dry-run.sh",
     "backup:verify": "bash deploy/scripts/verify-backup.sh",
     "backup:restore:test": "bash deploy/scripts/restore-simulate.sh",
-    "service:dry-run": "bash deploy/scripts/service-dry-run.sh"
+    "service:dry-run": "bash deploy/scripts/service-dry-run.sh",
+    "platform:runtime:paths": "node scripts/platform/platform_runtime_paths.mjs"
   },
   "homepage": "https://torncheesecake.github.io/erp-experts",
   "dependencies": {

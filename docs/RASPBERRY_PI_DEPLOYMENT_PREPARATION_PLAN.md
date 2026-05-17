@@ -387,3 +387,16 @@ The next safe step is to review and approve a preparation-only work package for:
 - local-only API smoke testing.
 
 That task should still avoid public exposure and should stop before enabling systemd if any validation step fails.
+
+## Runtime Path Configuration Support
+
+Sentinel now has code-level support for these Pi runtime variables:
+
+```bash
+PLATFORM_DB_PATH=/srv/sentinel/data/seo-ops/platform.db
+PLATFORM_REPORT_OUTPUT_PATH=/srv/sentinel/data/seo-ops/reports
+PLATFORM_BACKUP_PATH=/srv/sentinel/data/seo-ops/backups
+PLATFORM_LOG_PATH=/srv/sentinel/logs/seo-ops
+```
+
+The current Pi service still uses the repo-local DB until a separate approved migration copies the DB and updates the Pi `.env`. Before that migration, run `npm run platform:runtime:paths` locally and with the intended Pi environment values to confirm the resolved paths.

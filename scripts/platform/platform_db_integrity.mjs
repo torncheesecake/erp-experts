@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { getRuntimePaths } from "../../platform/runtime_paths.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,7 +20,7 @@ export const requiredTables = [
 ];
 
 export function defaultDbPath() {
-  return path.join(repoRoot, "platform/persistence/platform.db");
+  return getRuntimePaths().db;
 }
 
 function runSqlite(dbPath, sql) {

@@ -16,6 +16,7 @@ dist-ssr/
 *.log
 output/
 logs/
+tmp/
 *.tmp
 *.bak
 *~

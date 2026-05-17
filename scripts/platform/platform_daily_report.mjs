@@ -2,11 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getOperationalSummary } from "../../platform/api/state_api.mjs";
+import { resolveReportPath } from "../../platform/runtime_paths.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../..");
-const reportPath = path.join(repoRoot, "reports/sentinel-daily-operator-report.md");
+const reportPath = resolveReportPath("sentinel-daily-operator-report.md");
 const tenantId = getArgValue("--tenant", process.env.PLATFORM_TENANT || "erp-experts");
 
 function getArgValue(flag, fallback = null) {
@@ -20,7 +21,7 @@ function rel(filePath) {
 }
 
 function readReadinessStatus() {
-  const readinessPath = path.join(repoRoot, "reports/sentinel-deploy-readiness.json");
+  const readinessPath = resolveReportPath("sentinel-deploy-readiness.json");
   if (!fs.existsSync(readinessPath)) {
     return {
       status: "UNKNOWN",

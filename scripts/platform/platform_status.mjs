@@ -1,8 +1,14 @@
 import path from "node:path";
 import { DEFAULT_DB_PATH, databaseExists, getPersistenceSummary } from "../../platform/persistence/db.js";
+import { describeRuntimePaths } from "../../platform/runtime_paths.mjs";
 
+const runtimePaths = describeRuntimePaths();
 console.log("Platform Persistence Status");
 console.log(`DB path: ${path.relative(process.cwd(), DEFAULT_DB_PATH)}`);
+console.log(`DB path source: ${runtimePaths.db.source}`);
+console.log(`Report output path: ${runtimePaths.reports.relativePath} (${runtimePaths.reports.source})`);
+console.log(`Backup path: ${runtimePaths.backups.relativePath} (${runtimePaths.backups.source})`);
+console.log(`Log path: ${runtimePaths.logs.relativePath} (${runtimePaths.logs.source})`);
 console.log("Operational summary: run npm run platform:state");
 
 if (!databaseExists(DEFAULT_DB_PATH)) {

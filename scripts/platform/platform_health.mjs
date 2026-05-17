@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { loadTenantConfig } from "./tenant_config.mjs";
 import { DEFAULT_DB_PATH, SCHEMA_PATH, databaseExists, getPersistenceSummary, queryValue } from "../../platform/persistence/db.js";
+import { describeRuntimePaths } from "../../platform/runtime_paths.mjs";
 import { safeFinishRun, safeStartRun } from "./run_logger.mjs";
 import { checkDbIntegrity } from "./platform_db_integrity.mjs";
 import { validateTenants } from "./platform_tenant_validate.mjs";
@@ -39,9 +40,8 @@ const appendHeavyTables = [
   ["plan_statuses", "planStatusCount"],
   ["inbox_items", "inboxItemCount"],
 ];
-const backupPath = process.env.PLATFORM_BACKUP_PATH
-  ? path.resolve(process.env.PLATFORM_BACKUP_PATH)
-  : path.join(repoRoot, "platform/persistence/backups");
+const runtimePaths = describeRuntimePaths();
+const backupPath = runtimePaths.backups.path;
 const dbAgeWarningDays = 7;
 
 function rel(filePath) {
@@ -142,8 +142,16 @@ function main() {
     critical.push(`SQLite schema is missing: ${rel(SCHEMA_PATH)}`);
   }
 
-  if (!fs.existsSync(backupPath)) {
+  if (!runtimePaths.reports.exists) {
+    warnings.push(`Report output path is not present yet: ${runtimePaths.reports.relativePath}. Configure PLATFORM_REPORT_OUTPUT_PATH or create it during initialisation.`);
+  }
+
+  if (!runtimePaths.backups.exists) {
     warnings.push(`Backup path is not present yet: ${rel(backupPath)}. Configure PLATFORM_BACKUP_PATH before server deployment.`);
+  }
+
+  if (runtimePaths.logs.source === "env" && !runtimePaths.logs.exists) {
+    warnings.push(`Log path is not present yet: ${runtimePaths.logs.relativePath}. Configure PLATFORM_LOG_PATH before service deployment if file logs are used.`);
   }
 
   if (!databaseExists(DEFAULT_DB_PATH)) {
@@ -255,7 +263,10 @@ function main() {
   console.log("Platform Health");
   printCheck("Tenant", tenant?.name || "unknown", tenant?.tenantId || "not loaded");
   printCheck("Tenant validation", tenantValidation.status, `${tenantValidation.tenantsChecked} tenant${tenantValidation.tenantsChecked === 1 ? "" : "s"} checked`);
-  printCheck("DB", dbStatus, rel(DEFAULT_DB_PATH));
+  printCheck("DB", dbStatus, `${rel(DEFAULT_DB_PATH)} (${runtimePaths.db.source})`);
+  printCheck("Report output path", runtimePaths.reports.exists ? "present" : "missing", `${runtimePaths.reports.relativePath} (${runtimePaths.reports.source})`);
+  printCheck("Backup path", runtimePaths.backups.exists ? "present" : "missing", `${runtimePaths.backups.relativePath} (${runtimePaths.backups.source})`);
+  printCheck("Log path", runtimePaths.logs.exists ? "present" : "missing", `${runtimePaths.logs.relativePath} (${runtimePaths.logs.source})`);
   printCheck("Snapshots", String(snapshotCount));
   printCheck("Opportunity summaries", String(opportunitySummaryCount));
   printCheck("Plan summaries", String(planSummaryCount));
@@ -264,7 +275,6 @@ function main() {
   printCheck("Inbox items", String(inboxItemCount));
   if (dbIntegrityResult) {
     printCheck("DB integrity", dbIntegrityResult.integrity, `${dbIntegrityResult.requiredTables.length}/${dbIntegrityResult.requiredTables.length + dbIntegrityResult.missingTables.length} required tables`);
-    printCheck("Backup path", fs.existsSync(backupPath) ? "present" : "missing", rel(backupPath));
   }
   printCheck("SEO", monitorStatus);
   printCheck("QA", `${pass} pass, ${review} review, ${blocked} blocked`);

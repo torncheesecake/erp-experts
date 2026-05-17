@@ -3,11 +3,12 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { getOperationalSummary } from "../../platform/api/state_api.mjs";
+import { resolveReportPath } from "../../platform/runtime_paths.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../..");
-const summaryPath = path.join(repoRoot, "reports/sentinel-cadence-summary.json");
+const summaryPath = resolveReportPath("sentinel-cadence-summary.json");
 const tenantId = getArgValue("--tenant", process.env.PLATFORM_TENANT || "erp-experts");
 const dryRun = process.argv.includes("--dry-run");
 const stakeholderOnly = process.argv.includes("--stakeholder-only");

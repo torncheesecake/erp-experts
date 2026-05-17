@@ -4,11 +4,12 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { checkDbIntegrity, defaultDbPath } from "./platform_db_integrity.mjs";
+import { resolveReportPath } from "../../platform/runtime_paths.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../..");
-const outputPath = path.join(repoRoot, "reports/sentinel-deploy-readiness.json");
+const outputPath = resolveReportPath("sentinel-deploy-readiness.json");
 
 function runCommand(label, command, args, { warningOnFailure = false } = {}) {
   const result = spawnSync(command, args, {

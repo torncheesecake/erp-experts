@@ -57,14 +57,23 @@ PLATFORM_LOG_PATH=/srv/sentinel/logs/seo-ops
 
 Keep `.env` on the Pi only. Do not commit it.
 
-## Important Implementation Caveat
+## Runtime Path Support
 
-The current persistence module still defaults to `platform/persistence/platform.db`. Before the migration is executed, Sentinel must either:
+Sentinel now resolves runtime paths from environment variables while keeping local defaults for development:
 
-- honour `PLATFORM_DB_PATH` in the persistence layer, or
-- provide an equivalent runtime configuration mechanism that points API and platform commands at `/srv/sentinel/data/seo-ops/platform.db`.
+- `PLATFORM_DB_PATH` controls the active SQLite DB path.
+- `PLATFORM_REPORT_OUTPUT_PATH` controls Sentinel platform report output.
+- `PLATFORM_BACKUP_PATH` controls backup verification and backup planning.
+- `PLATFORM_LOG_PATH` documents the active operational log location.
 
-Do not update the Pi service `.env` to `PLATFORM_DB_PATH` and assume it works until this support is verified.
+The local default DB remains `platform/persistence/platform.db`, so existing development commands continue to work. `platform:init` can create the parent directory for an overridden DB path. Read-only checks report missing path parents clearly and do not create directories.
+
+Before the Pi DB is migrated, verify the configured paths with:
+
+```bash
+npm run platform:runtime:paths
+npm run platform:runtime:paths -- --json
+```
 
 ## Dry-run Planning Command
 
@@ -88,7 +97,7 @@ It does not stop the service, copy the DB, edit `.env`, restart systemd or expos
 Run these steps only in a separate approved migration task:
 
 1. Confirm `platform:pi:service:verify` is healthy.
-2. Confirm `PLATFORM_DB_PATH` support is implemented and validated.
+2. Confirm `PLATFORM_DB_PATH` support is validated with `platform:runtime:paths`, `platform:init`, `platform:status` and `platform:health`.
 3. Stop `sentinel-api.service`.
 4. Copy the repo-local DB to `/srv/sentinel/data/seo-ops/platform.db`.
 5. Preserve the repo-local DB as a temporary rollback copy.

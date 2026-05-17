@@ -2,11 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getOperationalSummary } from "../../platform/api/state_api.mjs";
+import { resolveReportPath } from "../../platform/runtime_paths.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../..");
-const outputPath = path.join(repoRoot, "reports/sentinel-stakeholder-weekly-report.md");
+const outputPath = resolveReportPath("sentinel-stakeholder-weekly-report.md");
 const tenantId = getArgValue("--tenant", process.env.PLATFORM_TENANT || "erp-experts");
 
 function getArgValue(flag, fallback = null) {

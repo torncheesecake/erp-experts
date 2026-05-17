@@ -570,3 +570,14 @@ Modes:
 Generated payloads are ignored under `reports/notifications/`. Operator payloads may include useful commands and workflow context. Stakeholder payloads are sanitised and blocked if forbidden internal terms are detected, including commands, Codex, Sentinel, SQLite, DB, API, approval, private route names, diagnostics, tenant wording or plan IDs. Cadence now calls `platform:notify` for its selected mode, so notification payloads are prepared during scheduled/local refreshes while sending remains future work.
 
 Future integrations may send these payloads via email, Slack or dashboard alerts, but delivery is intentionally not implemented yet.
+
+## Configurable Runtime Paths
+
+Sentinel now resolves runtime paths from environment variables while preserving local defaults:
+
+- `PLATFORM_DB_PATH`, default `platform/persistence/platform.db`
+- `PLATFORM_REPORT_OUTPUT_PATH`, default `reports/`
+- `PLATFORM_BACKUP_PATH`, default `platform/persistence/backups`
+- `PLATFORM_LOG_PATH`, default `logs/`
+
+`npm run platform:runtime:paths` prints the active paths, source of each path and parent-directory status. `platform:health`, `platform:status` and `platform:doctor` now surface the active runtime path configuration. This prepares the Pi migration to `/srv/sentinel/data/seo-ops` without migrating the DB, editing the Pi `.env` or restarting the service.

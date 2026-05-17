@@ -626,3 +626,30 @@ It checks Git cleanliness, production build readiness, platform health, DB integ
 It does not deploy, SSH, upload files, create server directories, start services or expose the API. `READY WITH WARNINGS` is acceptable for local-only warnings such as API smoke skipped because the API server is not running. `NOT READY` blocks deployment work.
 
 On the Raspberry Pi, real backups must live outside the repo, for example `/srv/sentinel/data/seo-ops/backups`, and should not use the local `.gitkeep` directory as the production backup destination.
+
+## Runtime Path Configuration
+
+Sentinel supports configurable runtime paths for the SQLite DB, platform report output, backups and logs:
+
+```bash
+PLATFORM_DB_PATH=/srv/sentinel/data/seo-ops/platform.db
+PLATFORM_REPORT_OUTPUT_PATH=/srv/sentinel/data/seo-ops/reports
+PLATFORM_BACKUP_PATH=/srv/sentinel/data/seo-ops/backups
+PLATFORM_LOG_PATH=/srv/sentinel/logs/seo-ops
+```
+
+Local defaults are still used when these variables are absent:
+
+- DB: `platform/persistence/platform.db`
+- reports: `reports/`
+- backups: `platform/persistence/backups`
+- logs: `logs/`
+
+Inspect the active configuration with:
+
+```bash
+npm run platform:runtime:paths
+npm run platform:runtime:paths -- --json
+```
+
+`platform:init` can initialise an overridden `PLATFORM_DB_PATH` and create its parent directory. Read-only commands report missing path parents rather than mutating them. The Raspberry Pi migration to `/srv/sentinel/data/seo-ops/platform.db` remains a separate approved task.

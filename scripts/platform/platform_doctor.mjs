@@ -5,11 +5,12 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { checkDbIntegrity, defaultDbPath } from "./platform_db_integrity.mjs";
 import { getOperationalSummary } from "../../platform/api/state_api.mjs";
+import { describeRuntimePaths, resolveReportPath } from "../../platform/runtime_paths.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../..");
-const outputPath = path.join(repoRoot, "reports/sentinel-doctor.json");
+const outputPath = resolveReportPath("sentinel-doctor.json");
 const apiHost = process.env.SENTINEL_API_HOST || "127.0.0.1";
 const apiPort = Number(process.env.SENTINEL_API_PORT || 4317);
 const apiUrl = `http://${apiHost}:${apiPort}`;
@@ -319,8 +320,13 @@ function printDoctor({ checks, state, dbIntegrity, cadence, readiness, overallSt
 
   console.log("Sentinel Doctor");
   console.log("");
+  const runtimePaths = describeRuntimePaths();
   printStatusLine("Git", git?.status === "pass" ? "clean" : statusWord(git?.status));
   printStatusLine("DB", dbIntegrity?.integrity === "ok" ? "healthy" : statusWord(checks.find((item) => item.name === "DB")?.status));
+  printStatusLine("DB path", `${runtimePaths.db.relativePath} (${runtimePaths.db.source})`);
+  printStatusLine("Report output path", `${runtimePaths.reports.relativePath} (${runtimePaths.reports.source})`);
+  printStatusLine("Backup path", `${runtimePaths.backups.relativePath} (${runtimePaths.backups.source})`);
+  printStatusLine("Log path", `${runtimePaths.logs.relativePath} (${runtimePaths.logs.source})`);
   printStatusLine("SEO", state?.health?.monitorStatus || dbIntegrity?.latestSnapshot?.monitorStatus || "unknown");
   printStatusLine(
     "QA",

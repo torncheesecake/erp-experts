@@ -8,6 +8,7 @@ const jsonReportPath = path.join(reportsDir, "sentinel-pi-data-path-plan.json");
 const markdownReportPath = path.join(reportsDir, "sentinel-pi-data-path-plan.md");
 const envPath = path.join(repoRoot, ".env");
 const persistenceModulePath = path.join(repoRoot, "platform/persistence/db.js");
+const runtimePathsModulePath = path.join(repoRoot, "platform/runtime_paths.mjs");
 const defaultHost = "192.168.4.22";
 const defaultUser = "matthew";
 const defaultPort = "22";
@@ -168,15 +169,17 @@ function makeCheck(id, label, status, detail) {
 }
 
 function persistenceSupportsPlatformDbPath() {
-  if (!fs.existsSync(persistenceModulePath)) return false;
-  const content = fs.readFileSync(persistenceModulePath, "utf8");
+  const content = [persistenceModulePath, runtimePathsModulePath]
+    .filter((filePath) => fs.existsSync(filePath))
+    .map((filePath) => fs.readFileSync(filePath, "utf8"))
+    .join("\n");
   return content.includes("process.env.PLATFORM_DB_PATH") || content.includes("PLATFORM_DB_PATH");
 }
 
 function proposedSteps() {
   return [
     "Confirm npm run platform:pi:service:verify is healthy.",
-    "Implement and validate PLATFORM_DB_PATH support in the persistence layer if it is not already present.",
+    "Validate PLATFORM_DB_PATH support with npm run platform:runtime:paths, platform:init, platform:status and platform:health.",
     "Stop sentinel-api.service.",
     `Copy ${defaultAppPath}/${repoLocalDbRelative} to ${canonicalDbPath} without deleting the source DB.`,
     "Update the Pi .env with PLATFORM_DB_PATH, PLATFORM_REPORT_OUTPUT_PATH, PLATFORM_BACKUP_PATH and PLATFORM_LOG_PATH.",
