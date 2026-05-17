@@ -108,6 +108,22 @@ npm run platform:pi:discover -- --ssh
 
 SSH mode uses `BatchMode=yes`, does not prompt for a password and runs read-only checks only: host name, kernel, Node, npm, Git, disk, memory, `/srv` path visibility and systemd version. It does not install packages, create directories, copy files, start services or expose the API.
 
+## Deployment preparation planning
+
+The concrete preparation plan is documented in:
+
+```text
+docs/RASPBERRY_PI_DEPLOYMENT_PREPARATION_PLAN.md
+```
+
+Generate the local ignored preparation report with:
+
+```bash
+npm run platform:pi:prepare:plan
+```
+
+This command reads `reports/sentinel-pi-discovery.json`, prints current blockers and writes `reports/sentinel-pi-preparation-plan.md` plus `.json`. It does not SSH, install Node, create directories, copy files, start services or deploy.
+
 ## Future install sequence
 
 These commands are documented only. Do not run them until a controlled deployment is approved:
@@ -213,4 +229,4 @@ It does not deploy, SSH, create directories, upload files, start services or exp
 
 ## Next safe step
 
-Keep the service scaffold committed but inactive. The next safe implementation step is a local service dry run on the Raspberry Pi that confirms paths, Node, npm, Git and `.env` presence without installing the service.
+Keep the service scaffold committed but inactive. The next safe implementation step is to review the deployment preparation plan, then approve a separate preparation-only task for Node/npm installation, directory creation, repo checkout and foreground API smoke testing.

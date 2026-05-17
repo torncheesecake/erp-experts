@@ -351,6 +351,14 @@ npm run service:dry-run
 
 Local Raspberry Pi discovery environment setup is documented in `docs/RASPBERRY_PI_LOCAL_ENV_SETUP.md`. Keep `.env`, SSH keys, passwords and tokens outside Git.
 
+Review the concrete preparation plan before any Pi mutation:
+
+```bash
+npm run platform:pi:prepare:plan
+```
+
+The committed plan is `docs/RASPBERRY_PI_DEPLOYMENT_PREPARATION_PLAN.md`. The command writes ignored preparation reports from the latest discovery report and does not SSH, install Node, create directories, copy files, start services or deploy.
+
 `service:dry-run` validates `deploy/systemd/sentinel-api.service.example` and prints the future systemd commands without copying files, reloading systemd, enabling services or starting anything. See `docs/RASPBERRY_PI_SERVICE_PLAN.md`.
 
 Access-control planning is also scaffolded but inactive:

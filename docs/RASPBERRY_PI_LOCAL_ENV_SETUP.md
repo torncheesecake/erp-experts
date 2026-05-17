@@ -115,3 +115,20 @@ SSH mode uses `BatchMode=yes` and `PasswordAuthentication=no`. It runs read-only
 ## Expected Missing-User Behaviour
 
 If `RASPBERRY_PI_USER` is missing, discovery should warn and exit safely. That is expected until your local environment is configured.
+
+## Deployment Preparation Report
+
+After read-only SSH discovery passes, generate the planning-only preparation report:
+
+```bash
+npm run platform:pi:prepare:plan
+```
+
+The command reads the latest ignored discovery report and writes:
+
+```text
+reports/sentinel-pi-preparation-plan.md
+reports/sentinel-pi-preparation-plan.json
+```
+
+It does not SSH, install packages, create directories, copy files, start services or deploy. The committed planning document is `docs/RASPBERRY_PI_DEPLOYMENT_PREPARATION_PLAN.md`.
