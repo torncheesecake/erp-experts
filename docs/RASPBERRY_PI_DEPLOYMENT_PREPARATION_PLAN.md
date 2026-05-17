@@ -145,8 +145,13 @@ This is a proposed sequence only. Do not run it until deployment preparation is 
 Before running anything on the Pi, generate the exact dry-run command plan:
 
 ```bash
+npm run platform:pi:install:preflight
 npm run platform:pi:install:dry-run
 ```
+
+The preflight writes `reports/sentinel-pi-install-preflight.md` and `.json`, both ignored. It uses read-only non-interactive SSH checks and a local port probe. It does not install packages, create directories, clone repositories, copy files, start services or expose the API.
+
+`READY_WITH_WARNINGS` is acceptable before the first install preparation if the warnings are expected install targets, such as missing Node/npm, missing `/srv/matthew-platform` or closed API port `4317`.
 
 The dry-run writes `reports/sentinel-pi-install-dry-run.md` and `.json`, both ignored. It does not SSH, install packages, create directories, clone repositories, copy files, start services or expose the API.
 

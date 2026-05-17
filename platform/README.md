@@ -362,8 +362,11 @@ The committed plan is `docs/RASPBERRY_PI_DEPLOYMENT_PREPARATION_PLAN.md`. The co
 Generate the proposed command sequence without running it:
 
 ```bash
+npm run platform:pi:install:preflight
 npm run platform:pi:install:dry-run
 ```
+
+`platform:pi:install:preflight` requires local `RASPBERRY_PI_HOST` and `RASPBERRY_PI_USER`, then runs read-only non-interactive SSH checks and a local `4317` port probe. It does not use sudo, install Node, create directories, clone files, start services or expose the API. `READY_WITH_WARNINGS` can be acceptable before first install prep when the warnings are expected missing install targets.
 
 This writes ignored install dry-run reports and prints preflight, Node/npm, directory, repo, API smoke, service and post-install check sections. It is dry-run only and does not SSH or mutate the Pi.
 

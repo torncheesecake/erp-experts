@@ -127,8 +127,11 @@ This command reads `reports/sentinel-pi-discovery.json`, prints current blockers
 Generate the exact install dry-run sequence with:
 
 ```bash
+npm run platform:pi:install:preflight
 npm run platform:pi:install:dry-run
 ```
+
+The preflight command requires `RASPBERRY_PI_HOST` and `RASPBERRY_PI_USER` in the local environment. It uses non-interactive read-only SSH checks, no password prompts, no sudo and no writes. It returns `READY_FOR_INSTALL_PREP`, `READY_WITH_WARNINGS` or `NOT_READY`. Missing Node/npm and missing `/srv/matthew-platform` are warnings before first install, not blockers.
 
 This writes `reports/sentinel-pi-install-dry-run.md` plus `.json`. It prints proposed preflight, Node/npm, directory, repo, API smoke, service and post-install commands for review only. It does not SSH or mutate the Pi.
 
