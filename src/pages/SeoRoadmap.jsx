@@ -1318,33 +1318,75 @@ function SentinelAppHeader({
   compactView,
   onCompactViewChange,
   onResetWorkspace,
+  standaloneMode = false,
 }) {
   const workflowState = sentinelState?.workflow?.state || "unknown";
   const cadenceLabel = cadenceSummary?.ranAt ? formatDateTime(cadenceSummary.ranAt) : "Not recorded";
   const readinessStatus = readinessSummary?.overallStatus || "Not checked";
+  const headerClass = standaloneMode
+    ? "border-b border-white/10 bg-[#07111f]/95 text-white shadow-2xl shadow-slate-950/20 backdrop-blur"
+    : "border-b border-slate-200 bg-white/90 backdrop-blur";
+  const iconClass = standaloneMode
+    ? "inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-cyan-400/15 text-cyan-200 ring-1 ring-cyan-300/25"
+    : "inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-pink-50 text-pink-600 ring-1 ring-pink-100";
+  const eyebrowClass = standaloneMode
+    ? "text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200"
+    : "text-xs font-semibold uppercase tracking-[0.18em] text-pink-600";
+  const titleClass = standaloneMode ? "font-heading text-white" : "font-heading text-slate-950";
+  const descriptionClass = standaloneMode ? "text-sm text-slate-300" : "text-sm text-slate-600";
+  const metaClass = standaloneMode ? "text-xs text-slate-300" : "text-xs text-slate-500";
+  const pillClass = standaloneMode
+    ? "rounded-full bg-white/8 px-2.5 py-1 ring-1 ring-white/10"
+    : "rounded-full bg-slate-50 px-2.5 py-1 ring-1 ring-slate-100";
+  const strongClass = standaloneMode ? "text-white" : "text-slate-800";
+  const statusCardClass = standaloneMode
+    ? "rounded-xl bg-white/8 px-3 py-2 ring-1 ring-white/10"
+    : "rounded-xl bg-slate-50/70 px-3 py-2 ring-1 ring-slate-100";
+  const statusLabelClass = standaloneMode
+    ? "text-[11px] font-medium uppercase tracking-[0.12em] text-slate-400"
+    : "text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500";
+  const statusValueClass = standaloneMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950";
+  const statusDetailClass = standaloneMode ? "text-[11px] text-slate-400" : "text-[11px] text-slate-500";
+  const buttonClass = standaloneMode
+    ? "inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/8 px-3 py-2 text-sm font-medium text-slate-100 hover:bg-white/14 transition-colors cursor-pointer"
+    : "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer";
 
   return (
-    <header className="border-b border-slate-200 bg-white/90 backdrop-blur">
+    <header className={headerClass}>
       <div className="container" style={{ paddingTop: "var(--space-md)", paddingBottom: "var(--space-md)" }}>
         <div className="flex items-center justify-between gap-lg flex-wrap">
           <div className="min-w-0">
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-pink-50 text-pink-600 ring-1 ring-pink-100">
+              <span className={iconClass}>
                 <Zap size={17} />
               </span>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-pink-600">Sentinel</p>
-                <h1 className="font-heading text-slate-950" style={{ fontSize: "clamp(1.65rem, 3vw, 2.2rem)" }}>Control Centre</h1>
+                <p className={eyebrowClass}>{standaloneMode ? "Sentinel by Artifexa" : "Sentinel"}</p>
+                <h1 className={titleClass} style={{ fontSize: "clamp(1.65rem, 3vw, 2.2rem)" }}>
+                  {standaloneMode ? "Operator Workbench" : "Control Centre"}
+                </h1>
               </div>
             </div>
-            <p className="text-sm text-slate-600" style={{ marginTop: "8px" }}>
-              Private operator app shell for state, cadence, actions, tenants and diagnostics.
+            <p className={descriptionClass} style={{ marginTop: "8px" }}>
+              {standaloneMode
+                ? "Standalone operator shell for content operations, controlled execution and governance."
+                : "Private operator app shell for state, cadence, actions, tenants and diagnostics."}
             </p>
-            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500" style={{ marginTop: "8px" }}>
-              <span className="rounded-full bg-slate-50 px-2.5 py-1 ring-1 ring-slate-100">
-                Tenant: <strong className="text-slate-800">{activeTenant?.name || "ERP Experts"}</strong>
+            <div className={`flex flex-wrap items-center gap-2 ${metaClass}`} style={{ marginTop: "8px" }}>
+              <span className={pillClass}>
+                Tenant: <strong className={strongClass}>{activeTenant?.name || "ERP Experts"}</strong>
               </span>
-              <span className="rounded-full bg-slate-50 px-2.5 py-1 ring-1 ring-slate-100">
+              {standaloneMode ? (
+                <span className={pillClass}>
+                  Operator space: <strong className={strongClass}>Artifexa-owned</strong>
+                </span>
+              ) : null}
+              {standaloneMode ? (
+                <span className={pillClass}>
+                  Authority: <strong className={strongClass}>{sentinelAuthorityMode === "enabled" ? "required" : "local bypass"}</strong>
+                </span>
+              ) : null}
+              <span className={pillClass}>
                 Loaded {dashboardLoadedAt.toLocaleTimeString("en-GB")}
               </span>
             </div>
@@ -1352,50 +1394,50 @@ function SentinelAppHeader({
 
           <div className="grid gap-2 sm:min-w-[420px]">
             <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="rounded-xl bg-slate-50/70 px-3 py-2 ring-1 ring-slate-100">
-                <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Health</p>
-                <p className="text-sm font-semibold text-slate-950">{dashboardMode.stateLabel}</p>
-                <p className="text-[11px] text-slate-500">{summaryGate.pass} pass · {summaryGate.blocked} blocked</p>
+              <div className={statusCardClass}>
+                <p className={statusLabelClass}>Health</p>
+                <p className={statusValueClass}>{dashboardMode.stateLabel}</p>
+                <p className={statusDetailClass}>{summaryGate.pass} pass · {summaryGate.blocked} blocked</p>
               </div>
-              <div className="rounded-xl bg-slate-50/70 px-3 py-2 ring-1 ring-slate-100">
-                <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Workflow</p>
-                <p className="text-sm font-semibold text-slate-950">{formatStateLabel(workflowState)}</p>
-                <p className="text-[11px] text-slate-500">{sentinelState?.workflow?.humanInputRequired ? "Review needed" : "No urgent review"}</p>
+              <div className={statusCardClass}>
+                <p className={statusLabelClass}>Workflow</p>
+                <p className={statusValueClass}>{formatStateLabel(workflowState)}</p>
+                <p className={statusDetailClass}>{sentinelState?.workflow?.humanInputRequired ? "Review needed" : "No urgent review"}</p>
               </div>
-              <div className="rounded-xl bg-slate-50/70 px-3 py-2 ring-1 ring-slate-100">
-                <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Cadence</p>
-                <p className="text-sm font-semibold text-slate-950">{cadenceSummary?.mode ? formatStateLabel(cadenceSummary.mode) : "Not recorded"}</p>
-                <p className="text-[11px] text-slate-500">{cadenceLabel}</p>
+              <div className={statusCardClass}>
+                <p className={statusLabelClass}>Cadence</p>
+                <p className={statusValueClass}>{cadenceSummary?.mode ? formatStateLabel(cadenceSummary.mode) : "Not recorded"}</p>
+                <p className={statusDetailClass}>{cadenceLabel}</p>
               </div>
-              <div className="rounded-xl bg-slate-50/70 px-3 py-2 ring-1 ring-slate-100">
-                <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Readiness</p>
-                <p className="text-sm font-semibold text-slate-950">{formatStateLabel(readinessStatus)}</p>
-                <p className="text-[11px] text-slate-500">Local gate</p>
+              <div className={statusCardClass}>
+                <p className={statusLabelClass}>Readiness</p>
+                <p className={statusValueClass}>{formatStateLabel(readinessStatus)}</p>
+                <p className={statusDetailClass}>Local gate</p>
               </div>
             </div>
             <div className="flex flex-wrap items-center justify-start gap-2 sm:justify-end">
               <button
                 onClick={() => onCompactViewChange(!compactView)}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                className={buttonClass}
               >
                 {compactView ? "Expanded view" : "Compact view"}
               </button>
               <button
                 onClick={onResetWorkspace}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                className={buttonClass}
               >
                 Reset workspace
               </button>
               <button
                 onClick={() => window.location.reload()}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                className={buttonClass}
               >
                 <CheckCircle2 size={14} />
                 Refresh
               </button>
               <button
                 onClick={onPreview}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                className={buttonClass}
               >
                 <Eye size={14} />
                 Preview
@@ -1417,13 +1459,14 @@ function SentinelNavigationRail({
   summaryGate,
   collapsed,
   onCollapsedChange,
+  standaloneMode = false,
 }) {
   return (
     <aside className="rounded-[28px] bg-white/85 p-4 shadow-sm ring-1 ring-slate-100/80 h-fit lg:sticky lg:top-24">
       <div className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">App Shell</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">{standaloneMode ? "Artifexa Operator" : "App Shell"}</p>
             <p className="text-lg font-semibold text-slate-950">Sentinel</p>
             {collapsed ? null : <p className="text-xs text-slate-500">{activeTenant?.name || "ERP Experts"}</p>}
           </div>
@@ -4974,9 +5017,11 @@ async function saveStatuses(map) {
 /* ── password gate ── */
 
 /* ── main component ── */
-export default function SeoRoadmap() {
+export default function SeoRoadmap({ standaloneMode = false }) {
   useEffect(() => {
-    document.title = "Sentinel SEO Overview - ERP Experts (Internal)";
+    document.title = standaloneMode
+      ? "Sentinel Operator Workbench - Artifexa"
+      : "Sentinel SEO Overview - ERP Experts (Internal)";
     let meta = document.querySelector('meta[name="robots"]');
     if (!meta) {
       meta = document.createElement("meta");
@@ -4985,9 +5030,9 @@ export default function SeoRoadmap() {
     }
     meta.content = "noindex, nofollow";
     return () => (meta.content = "index, follow");
-  }, []);
+  }, [standaloneMode]);
 
-  return <RoadmapContent canEdit={EDITS_ENABLED} />;
+  return <RoadmapContent canEdit={EDITS_ENABLED} standaloneMode={standaloneMode} />;
 }
 
 function useRoadmapState() {
@@ -5052,12 +5097,12 @@ function useRoadmapState() {
   return { phases: openPhases, allItems, openItems, doneItems, updateStatus, loaded, statusSource, saveBlocked };
 }
 
-function RoadmapContent({ canEdit }) {
+function RoadmapContent({ canEdit, standaloneMode = false }) {
   const isAdmin = canEdit;
   const [previewing, setPreviewing] = useState(false);
 
   if (isAdmin && !previewing) {
-    return <AdminView onPreview={() => setPreviewing(true)} />;
+    return <AdminView onPreview={() => setPreviewing(true)} standaloneMode={standaloneMode} />;
   }
 
   return <ViewerView showBackToAdmin={isAdmin && previewing} onBackToAdmin={() => setPreviewing(false)} />;
@@ -5067,7 +5112,7 @@ function RoadmapContent({ canEdit }) {
    ADMIN VIEW — simple checklist, focused on action
    ════════════════════════════════════════════════════════════ */
 
-function AdminView({ onPreview }) {
+function AdminView({ onPreview, standaloneMode = false }) {
   const { allItems, loaded, statusSource, saveBlocked } = useRoadmapState();
   const [qaReport, setQaReport] = useState(null);
   const [qaLoading, setQaLoading] = useState(true);
@@ -6291,7 +6336,7 @@ function AdminView({ onPreview }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className={standaloneMode ? "min-h-screen bg-[#07111f]" : "min-h-screen bg-slate-50"}>
       <SentinelAppHeader
         activeTenant={activeTenant}
         dashboardMode={dashboardMode}
@@ -6304,9 +6349,40 @@ function AdminView({ onPreview }) {
         compactView={compactView}
         onCompactViewChange={setCompactView}
         onResetWorkspace={resetControlCentreState}
+        standaloneMode={standaloneMode}
       />
 
       <main className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-2xl)" }}>
+        {standaloneMode ? (
+          <div className="rounded-[32px] border border-cyan-300/15 bg-white/8 p-5 text-slate-100 shadow-2xl shadow-slate-950/20 backdrop-blur" style={{ marginBottom: "var(--space-xl)" }}>
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">Standalone prototype</p>
+                <h2 className="font-heading text-2xl text-white" style={{ marginTop: "4px" }}>Sentinel operator shell</h2>
+                <p className="max-w-3xl text-sm text-slate-300" style={{ marginTop: "8px" }}>
+                  This route separates the private operator experience from the ERP Experts public website chrome. The future target remains sentinel.artifexa.co.uk after authority, deployment and domain work are approved.
+                </p>
+              </div>
+              <div className="grid gap-2 text-sm sm:grid-cols-3 lg:min-w-[520px]">
+                <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Product</p>
+                  <p className="font-semibold text-white">Sentinel</p>
+                  <p className="text-xs text-slate-400">by Artifexa</p>
+                </div>
+                <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Active tenant</p>
+                  <p className="font-semibold text-white">{activeTenant?.name || "ERP Experts"}</p>
+                  <p className="text-xs text-slate-400">tenant context only</p>
+                </div>
+                <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Exposure</p>
+                  <p className="font-semibold text-white">local prototype</p>
+                  <p className="text-xs text-slate-400">production redirects</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
         <div className={`grid ${compactView ? "gap-lg" : "gap-xl"} ${sidebarCollapsed ? "lg:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]" : "lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)]"}`}>
           <SentinelNavigationRail
             navItems={navItems}
@@ -6317,6 +6393,7 @@ function AdminView({ onPreview }) {
             summaryGate={summaryGate}
             collapsed={sidebarCollapsed}
             onCollapsedChange={setSidebarCollapsed}
+            standaloneMode={standaloneMode}
           />
 
           <div className={`grid ${compactView ? "gap-md" : "gap-lg"}`}>

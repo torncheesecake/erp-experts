@@ -2,7 +2,7 @@
 
 This document plans the safe migration of the private Sentinel operator frontend out of the ERP Experts website shell and into an Artifexa-owned operator space at `sentinel.artifexa.co.uk`.
 
-This is planning only. It does not deploy `sentinel.artifexa.co.uk`, change DNS, expose the Raspberry Pi API, remove `/seo-progress`, change the production `/seo-roadmap` redirect or alter runtime behaviour.
+The first local prototype now exists at `/sentinel`. It does not deploy `sentinel.artifexa.co.uk`, change DNS, expose the Raspberry Pi API, remove `/seo-progress`, change the production `/seo-roadmap` redirect or alter stakeholder behaviour.
 
 ## Goal
 
@@ -73,6 +73,14 @@ Purpose:
 - controlled actions, pipelines, cadence, roadmap intelligence, feedback, backups and diagnostics
 - tenant context showing ERP Experts as first active tenant
 - auth-gated before serious or public use
+
+Local prototype route:
+
+```text
+http://localhost:5173/sentinel
+```
+
+The prototype reuses the existing Control Centre systems but renders outside the ERP Experts website layout, with Sentinel by Artifexa branding and no ERP Experts public header or footer.
 
 ### Existing `/seo-roadmap`
 
@@ -181,6 +189,24 @@ Start with Option A: same repo, separate build mode.
 
 This gives the safest short-term migration because the current app, docs, reports, Pi deployment scripts and stakeholder page already live in one repository. Once `sentinel.artifexa.co.uk` has a working standalone shell, authority gate and deployment process, extract to a separate Sentinel repository only if the boundary is stable enough to justify it.
 
+## Current Prototype
+
+The first standalone operator shell prototype is implemented as a development-only route:
+
+```text
+/sentinel
+```
+
+Prototype behaviour:
+
+- renders outside the ERP Experts `Layout`, so it does not show the ERP Experts public navbar, footer or marketing navigation
+- reuses the current Control Centre, Content Workbench, Activity Feed, Operator Console, Workspaces, Authority State, Execution Pipelines and governance panels
+- applies Sentinel by Artifexa header treatment and a darker standalone shell frame
+- shows ERP Experts only as active tenant context
+- mirrors the existing `/seo-roadmap` production guard by redirecting to `/seo-progress` in production builds
+
+This is still a prototype. It is not a separate build target yet and it has not been deployed to `sentinel.artifexa.co.uk`.
+
 ## Branding Plan
 
 The standalone app should use Sentinel and Artifexa identity:
@@ -263,7 +289,7 @@ Current step.
 
 ### Phase 1: Standalone Build Scaffold
 
-Planned future implementation.
+Started locally with the `/sentinel` prototype route.
 
 - add a separate Sentinel operator app entry point
 - create a Sentinel app shell without ERP Experts public chrome
@@ -271,6 +297,13 @@ Planned future implementation.
 - keep `/seo-roadmap` local route working during transition
 - add build command for Sentinel operator frontend
 - validate that `/seo-progress` remains stakeholder-safe
+
+Remaining Phase 1 work:
+
+- split a true standalone build output for the operator app
+- decide final source folder boundaries
+- add route/domain-aware environment defaults
+- keep production exposure blocked until authority is ready
 
 ### Phase 2: Local Preview And Static Deploy Dry Run
 

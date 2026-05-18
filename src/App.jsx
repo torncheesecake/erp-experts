@@ -57,13 +57,13 @@ function ScrollToTop() {
   return null;
 }
 
-function SentinelOperatorRoute() {
+function SentinelOperatorRoute({ standaloneMode = false }) {
   if (import.meta.env.PROD || !SeoRoadmap) {
     return <Navigate to="/seo-progress" replace />;
   }
 
   const OperatorDashboard = SeoRoadmap;
-  return <OperatorDashboard />;
+  return <OperatorDashboard standaloneMode={standaloneMode} />;
 }
 
 // v2
@@ -76,6 +76,7 @@ function App() {
         <Routes>
           {/* Standalone pages (no navbar/footer) */}
           <Route path="/video/ai-powered-reporting" element={<VideoPage />} />
+          <Route path="/sentinel" element={<SentinelOperatorRoute standaloneMode />} />
 
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />

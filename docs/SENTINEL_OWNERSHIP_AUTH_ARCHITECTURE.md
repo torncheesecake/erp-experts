@@ -33,7 +33,7 @@ Today it works locally for Matthew and production builds redirect it to `/seo-pr
 
 Planned standalone Sentinel operator frontend.
 
-The preferred migration path is to move the private operator app out of the ERP Experts website shell and into an Artifexa-owned Sentinel domain. ERP Experts remains the first active tenant, but the operator app should use Sentinel/Artifexa branding, remove ERP Experts public chrome and require Matthew-controlled authority before serious use. See `docs/SENTINEL_STANDALONE_APP_MIGRATION_PLAN.md`.
+The preferred migration path is to move the private operator app out of the ERP Experts website shell and into an Artifexa-owned Sentinel domain. ERP Experts remains the first active tenant, but the operator app should use Sentinel/Artifexa branding, remove ERP Experts public chrome and require Matthew-controlled authority before serious use. The first local prototype route is `/sentinel`; it is development-only and redirects to `/seo-progress` in production builds. See `docs/SENTINEL_STANDALONE_APP_MIGRATION_PLAN.md`.
 
 ### Sentinel API
 
