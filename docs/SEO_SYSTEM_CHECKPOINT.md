@@ -12,7 +12,7 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 
 `docs/SENTINEL_STANDALONE_APP_MIGRATION_PLAN.md` documents the planned migration from the private `/seo-roadmap` operator UI inside the ERP Experts shell to a standalone Artifexa-owned Sentinel frontend at `sentinel.artifexa.co.uk`. The recommended path is same repo, separate build mode first, with `/seo-progress` staying on `erpexperts.co.uk` and the Pi API remaining localhost-only until authority enforcement is ready.
 
-The first local prototype route now exists at `/sentinel`. It renders the Sentinel operator shell outside the ERP Experts website layout, uses Sentinel by Artifexa branding and reuses the existing Control Centre systems. It is development-only and mirrors the `/seo-roadmap` production guard by redirecting to `/seo-progress` in production builds.
+The first local prototype route now exists at `/sentinel`. It renders the Sentinel operator shell outside the ERP Experts website layout, uses Sentinel by Artifexa branding, reuses the existing Control Centre systems and now opens with Content Workbench as the primary work surface. It is development-only and mirrors the `/seo-roadmap` production guard by redirecting to `/seo-progress` in production builds.
 
 
 ## Current commands
@@ -80,7 +80,7 @@ The first local prototype route now exists at `/sentinel`. It renders the Sentin
 
 - `/seo-progress` is the stakeholder-facing SEO and content progress view.
 - `/seo-roadmap` is the Sentinel operator dashboard for local/internal use only.
-- `/sentinel` is the local standalone Sentinel operator shell prototype for local/internal use only.
+- `/sentinel` is the local standalone Sentinel operator shell prototype for local/internal use only. It uses a separate local browser session key, `sentinel.operatorSession.standalone.v1`, and defaults to Content Workbench.
 - `sentinel.artifexa.co.uk` is the planned future standalone operator app domain, not deployed yet.
 - Production builds redirect `/seo-roadmap` and `/sentinel` to `/seo-progress` until real authentication exists.
 - Do not expose operator commands, prompts, diagnostics, tenant state, approval gates or generated report internals on public ERP Experts pages.

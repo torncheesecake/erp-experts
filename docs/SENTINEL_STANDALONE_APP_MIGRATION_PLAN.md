@@ -2,7 +2,7 @@
 
 This document plans the safe migration of the private Sentinel operator frontend out of the ERP Experts website shell and into an Artifexa-owned operator space at `sentinel.artifexa.co.uk`.
 
-The first local prototype now exists at `/sentinel`. It does not deploy `sentinel.artifexa.co.uk`, change DNS, expose the Raspberry Pi API, remove `/seo-progress`, change the production `/seo-roadmap` redirect or alter stakeholder behaviour.
+The first local prototype now exists at `/sentinel`. It does not deploy `sentinel.artifexa.co.uk`, change DNS, expose the Raspberry Pi API, remove `/seo-progress`, change the production `/seo-roadmap` redirect or alter stakeholder behaviour. The prototype now treats Content Workbench as the default operator surface and keeps its browser session state separate from `/seo-roadmap`.
 
 ## Goal
 
@@ -80,7 +80,7 @@ Local prototype route:
 http://localhost:5173/sentinel
 ```
 
-The prototype reuses the existing Control Centre systems but renders outside the ERP Experts website layout, with Sentinel by Artifexa branding and no ERP Experts public header or footer.
+The prototype reuses the existing Control Centre systems but renders outside the ERP Experts website layout, with Sentinel by Artifexa branding and no ERP Experts public header or footer. It opens into a standalone operator frame that highlights the active tenant, runtime source and private access state before the detailed platform panels.
 
 ### Existing `/seo-roadmap`
 
@@ -201,7 +201,8 @@ Prototype behaviour:
 
 - renders outside the ERP Experts `Layout`, so it does not show the ERP Experts public navbar, footer or marketing navigation
 - reuses the current Control Centre, Content Workbench, Activity Feed, Operator Console, Workspaces, Authority State, Execution Pipelines and governance panels
-- applies Sentinel by Artifexa header treatment and a darker standalone shell frame
+- applies Sentinel by Artifexa header treatment, a darker standalone shell frame and a concise operator context strip
+- defaults to Content Workbench via the standalone browser session key `sentinel.operatorSession.standalone.v1`
 - shows ERP Experts only as active tenant context
 - mirrors the existing `/seo-roadmap` production guard by redirecting to `/seo-progress` in production builds
 

@@ -45,6 +45,7 @@ const sentinelApiBaseUrl = String(import.meta.env.VITE_SENTINEL_API_BASE_URL || 
 const sentinelActionApiBaseUrl = sentinelApiBaseUrl || "http://127.0.0.1:4317";
 const sentinelAuthorityMode = String(import.meta.env.VITE_SENTINEL_AUTHORITY_MODE || "disabled").trim().toLowerCase();
 const SENTINEL_OPERATOR_SESSION_KEY = "sentinel.operatorSession.v1";
+const SENTINEL_STANDALONE_OPERATOR_SESSION_KEY = "sentinel.operatorSession.standalone.v1";
 const SENTINEL_OPERATOR_WORKSPACES_KEY = "sentinel.operatorWorkspaces.v1";
 const SENTINEL_CONTENT_WORKBENCH_KEY = "sentinel.contentWorkbench.v1";
 const SENTINEL_DEFAULT_WORKSPACE_ID = "monitoring";
@@ -91,6 +92,11 @@ const SENTINEL_OPERATOR_SESSION_DEFAULTS = {
     articleWorkbench: false,
     advancedDiagnostics: false,
   },
+};
+const SENTINEL_STANDALONE_OPERATOR_SESSION_DEFAULTS = {
+  ...SENTINEL_OPERATOR_SESSION_DEFAULTS,
+  activeWorkspaceId: "development",
+  activeSection: "content",
 };
 const SENTINEL_BUILT_IN_WORKSPACES = [
   {
@@ -307,12 +313,21 @@ function getInitialTenantRegistry() {
   };
 }
 
-function mergeOperatorSessionState(savedState = {}) {
+function getOperatorSessionKey(standaloneMode = false) {
+  return standaloneMode ? SENTINEL_STANDALONE_OPERATOR_SESSION_KEY : SENTINEL_OPERATOR_SESSION_KEY;
+}
+
+function getOperatorSessionDefaults(standaloneMode = false) {
+  return standaloneMode ? SENTINEL_STANDALONE_OPERATOR_SESSION_DEFAULTS : SENTINEL_OPERATOR_SESSION_DEFAULTS;
+}
+
+function mergeOperatorSessionState(savedState = {}, standaloneMode = false) {
+  const defaults = getOperatorSessionDefaults(standaloneMode);
   return {
-    ...SENTINEL_OPERATOR_SESSION_DEFAULTS,
+    ...defaults,
     ...savedState,
     panels: {
-      ...SENTINEL_OPERATOR_SESSION_DEFAULTS.panels,
+      ...defaults.panels,
       ...(savedState?.panels || {}),
     },
   };
@@ -427,52 +442,53 @@ function buildVisiblePanelsFromState({ activeSection, panels }) {
   return [...new Set(visiblePanels)];
 }
 
-function readOperatorSessionState() {
-  if (typeof window === "undefined") return SENTINEL_OPERATOR_SESSION_DEFAULTS;
+function readOperatorSessionState(standaloneMode = false) {
+  if (typeof window === "undefined") return getOperatorSessionDefaults(standaloneMode);
 
   try {
-    const raw = window.localStorage.getItem(SENTINEL_OPERATOR_SESSION_KEY);
-    if (!raw) return SENTINEL_OPERATOR_SESSION_DEFAULTS;
-    return mergeOperatorSessionState(JSON.parse(raw));
+    const raw = window.localStorage.getItem(getOperatorSessionKey(standaloneMode));
+    if (!raw) return getOperatorSessionDefaults(standaloneMode);
+    return mergeOperatorSessionState(JSON.parse(raw), standaloneMode);
   } catch {
-    return SENTINEL_OPERATOR_SESSION_DEFAULTS;
+    return getOperatorSessionDefaults(standaloneMode);
   }
 }
 
-function hasStoredOperatorSessionState() {
+function hasStoredOperatorSessionState(standaloneMode = false) {
   if (typeof window === "undefined") return false;
 
   try {
-    return Boolean(window.localStorage.getItem(SENTINEL_OPERATOR_SESSION_KEY));
+    return Boolean(window.localStorage.getItem(getOperatorSessionKey(standaloneMode)));
   } catch {
     return false;
   }
 }
 
-function isDefaultOperatorSessionState(state) {
-  const merged = mergeOperatorSessionState(state);
-  return JSON.stringify(merged) === JSON.stringify(SENTINEL_OPERATOR_SESSION_DEFAULTS);
+function isDefaultOperatorSessionState(state, standaloneMode = false) {
+  const merged = mergeOperatorSessionState(state, standaloneMode);
+  return JSON.stringify(merged) === JSON.stringify(getOperatorSessionDefaults(standaloneMode));
 }
 
-function writeOperatorSessionState(state) {
+function writeOperatorSessionState(state, standaloneMode = false) {
   if (typeof window === "undefined") return;
 
   try {
-    if (isDefaultOperatorSessionState(state)) {
-      window.localStorage.removeItem(SENTINEL_OPERATOR_SESSION_KEY);
+    const storageKey = getOperatorSessionKey(standaloneMode);
+    if (isDefaultOperatorSessionState(state, standaloneMode)) {
+      window.localStorage.removeItem(storageKey);
       return;
     }
-    window.localStorage.setItem(SENTINEL_OPERATOR_SESSION_KEY, JSON.stringify(mergeOperatorSessionState(state)));
+    window.localStorage.setItem(storageKey, JSON.stringify(mergeOperatorSessionState(state, standaloneMode)));
   } catch {
     // Local browser preference persistence is optional.
   }
 }
 
-function clearOperatorSessionState() {
+function clearOperatorSessionState(standaloneMode = false) {
   if (typeof window === "undefined") return;
 
   try {
-    window.localStorage.removeItem(SENTINEL_OPERATOR_SESSION_KEY);
+    window.localStorage.removeItem(getOperatorSessionKey(standaloneMode));
   } catch {
     // Local browser preference persistence is optional.
   }
@@ -1324,10 +1340,10 @@ function SentinelAppHeader({
   const cadenceLabel = cadenceSummary?.ranAt ? formatDateTime(cadenceSummary.ranAt) : "Not recorded";
   const readinessStatus = readinessSummary?.overallStatus || "Not checked";
   const headerClass = standaloneMode
-    ? "border-b border-white/10 bg-[#07111f]/95 text-white shadow-2xl shadow-slate-950/20 backdrop-blur"
+    ? "border-b border-cyan-200/10 bg-[#07111f] text-white shadow-2xl shadow-slate-950/30 backdrop-blur"
     : "border-b border-slate-200 bg-white/90 backdrop-blur";
   const iconClass = standaloneMode
-    ? "inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-cyan-400/15 text-cyan-200 ring-1 ring-cyan-300/25"
+    ? "inline-flex h-12 w-12 items-center justify-center rounded-[1.35rem] bg-cyan-300/15 text-cyan-100 ring-1 ring-cyan-200/25 shadow-lg shadow-cyan-950/20"
     : "inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-pink-50 text-pink-600 ring-1 ring-pink-100";
   const eyebrowClass = standaloneMode
     ? "text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200"
@@ -1342,6 +1358,9 @@ function SentinelAppHeader({
   const statusCardClass = standaloneMode
     ? "rounded-xl bg-white/8 px-3 py-2 ring-1 ring-white/10"
     : "rounded-xl bg-slate-50/70 px-3 py-2 ring-1 ring-slate-100";
+  const statusGridClass = standaloneMode
+    ? "grid gap-2 sm:grid-cols-2 2xl:grid-cols-4"
+    : "grid gap-2 sm:grid-cols-2 xl:grid-cols-4";
   const statusLabelClass = standaloneMode
     ? "text-[11px] font-medium uppercase tracking-[0.12em] text-slate-400"
     : "text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500";
@@ -1350,10 +1369,19 @@ function SentinelAppHeader({
   const buttonClass = standaloneMode
     ? "inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/8 px-3 py-2 text-sm font-medium text-slate-100 hover:bg-white/14 transition-colors cursor-pointer"
     : "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer";
+  const containerClass = standaloneMode
+    ? "mx-auto box-border w-full max-w-[1120px] px-[var(--space-lg)] md:px-[var(--space-xl)] lg:px-[var(--space-2xl)]"
+    : "container";
+  const headerStyle = standaloneMode
+    ? {
+      background:
+        "radial-gradient(circle at 12% 0%, rgba(34, 211, 238, 0.2), transparent 30%), radial-gradient(circle at 78% 10%, rgba(244, 114, 182, 0.12), transparent 34%), #07111f",
+    }
+    : undefined;
 
   return (
-    <header className={headerClass}>
-      <div className="container" style={{ paddingTop: "var(--space-md)", paddingBottom: "var(--space-md)" }}>
+    <header className={headerClass} style={headerStyle}>
+      <div className={containerClass} style={{ paddingTop: "var(--space-md)", paddingBottom: "var(--space-md)" }}>
         <div className="flex items-center justify-between gap-lg flex-wrap">
           <div className="min-w-0">
             <div className="flex items-center gap-3">
@@ -1393,7 +1421,7 @@ function SentinelAppHeader({
           </div>
 
           <div className="grid gap-2 sm:min-w-[420px]">
-            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+            <div className={statusGridClass}>
               <div className={statusCardClass}>
                 <p className={statusLabelClass}>Health</p>
                 <p className={statusValueClass}>{dashboardMode.stateLabel}</p>
@@ -5163,8 +5191,8 @@ function AdminView({ onPreview, standaloneMode = false }) {
   const operatorSessionInitialRef = useRef(null);
   if (!operatorSessionInitialRef.current) {
     operatorSessionInitialRef.current = {
-      state: readOperatorSessionState(),
-      exists: hasStoredOperatorSessionState(),
+      state: readOperatorSessionState(standaloneMode),
+      exists: hasStoredOperatorSessionState(standaloneMode),
     };
   }
   const operatorWorkspacesInitialRef = useRef(null);
@@ -5253,7 +5281,7 @@ function AdminView({ onPreview, standaloneMode = false }) {
         articleWorkbench: articleWorkbenchOpen,
         advancedDiagnostics: advancedDiagnosticsOpen,
       },
-    });
+    }, standaloneMode);
   }, [
     activeWorkspaceId,
     activeNav,
@@ -5266,6 +5294,7 @@ function AdminView({ onPreview, standaloneMode = false }) {
     supportingIntelligenceOpen,
     articleWorkbenchOpen,
     advancedDiagnosticsOpen,
+    standaloneMode,
   ]);
 
   const loadActionHistory = async () => {
@@ -6101,6 +6130,7 @@ function AdminView({ onPreview, standaloneMode = false }) {
   const sentinelState = sentinelStateSnapshot.state;
   const sentinelStateSource = sentinelStateSnapshot.source;
   const { activeTenant } = resolveTenantRegistrySnapshot(tenantRegistrySnapshot);
+  const standaloneRuntimeLabel = sentinelStateSource === "api" ? "Pi-backed Sentinel node" : "local report fallback";
   const activeRow = selectedSlug ? selectedRow : (filteredRows[0] || articleRows[0] || null);
 
   if (!loaded) return (
@@ -6300,20 +6330,21 @@ function AdminView({ onPreview, standaloneMode = false }) {
   };
 
   const resetControlCentreState = () => {
-    clearOperatorSessionState();
-    setActiveNav(SENTINEL_OPERATOR_SESSION_DEFAULTS.activeSection);
-    setCommandQuery(SENTINEL_OPERATOR_SESSION_DEFAULTS.commandQuery);
-    setCommandCategory(SENTINEL_OPERATOR_SESSION_DEFAULTS.commandCategory);
-    setActiveWorkspaceId(SENTINEL_OPERATOR_SESSION_DEFAULTS.activeWorkspaceId);
-    setSidebarCollapsed(SENTINEL_OPERATOR_SESSION_DEFAULTS.sidebarCollapsed);
-    setCompactView(SENTINEL_OPERATOR_SESSION_DEFAULTS.compactView);
-    setHelpOpen(SENTINEL_OPERATOR_SESSION_DEFAULTS.helpOpen);
-    setFirstRunHintDismissed(SENTINEL_OPERATOR_SESSION_DEFAULTS.firstRunHintDismissed);
+    const sessionDefaults = getOperatorSessionDefaults(standaloneMode);
+    clearOperatorSessionState(standaloneMode);
+    setActiveNav(sessionDefaults.activeSection);
+    setCommandQuery(sessionDefaults.commandQuery);
+    setCommandCategory(sessionDefaults.commandCategory);
+    setActiveWorkspaceId(sessionDefaults.activeWorkspaceId);
+    setSidebarCollapsed(sessionDefaults.sidebarCollapsed);
+    setCompactView(sessionDefaults.compactView);
+    setHelpOpen(sessionDefaults.helpOpen);
+    setFirstRunHintDismissed(sessionDefaults.firstRunHintDismissed);
     setIsFirstRunSession(true);
-    setSupportingIntelligenceOpen(SENTINEL_OPERATOR_SESSION_DEFAULTS.panels.supportingIntelligence);
-    setArticleWorkbenchOpen(SENTINEL_OPERATOR_SESSION_DEFAULTS.panels.articleWorkbench);
-    setAdvancedDiagnosticsOpen(SENTINEL_OPERATOR_SESSION_DEFAULTS.panels.advancedDiagnostics);
-    setSessionResetNotice("Control Centre state reset locally.");
+    setSupportingIntelligenceOpen(sessionDefaults.panels.supportingIntelligence);
+    setArticleWorkbenchOpen(sessionDefaults.panels.articleWorkbench);
+    setAdvancedDiagnosticsOpen(sessionDefaults.panels.advancedDiagnostics);
+    setSessionResetNotice(standaloneMode ? "Sentinel workspace state reset locally." : "Control Centre state reset locally.");
     window.setTimeout(() => setSessionResetNotice(""), 1800);
   };
 
@@ -6352,38 +6383,49 @@ function AdminView({ onPreview, standaloneMode = false }) {
         standaloneMode={standaloneMode}
       />
 
-      <main className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-2xl)" }}>
+      <main
+        className={standaloneMode
+          ? "mx-auto box-border w-full max-w-[1120px] px-[var(--space-lg)] md:px-[var(--space-xl)] lg:px-[var(--space-2xl)]"
+          : "container"}
+        style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-2xl)" }}
+      >
         {standaloneMode ? (
-          <div className="rounded-[32px] border border-cyan-300/15 bg-white/8 p-5 text-slate-100 shadow-2xl shadow-slate-950/20 backdrop-blur" style={{ marginBottom: "var(--space-xl)" }}>
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">Standalone prototype</p>
-                <h2 className="font-heading text-2xl text-white" style={{ marginTop: "4px" }}>Sentinel operator shell</h2>
-                <p className="max-w-3xl text-sm text-slate-300" style={{ marginTop: "8px" }}>
-                  This route separates the private operator experience from the ERP Experts public website chrome. The future target remains sentinel.artifexa.co.uk after authority, deployment and domain work are approved.
+          <div className="min-w-0 overflow-hidden rounded-[34px] border border-cyan-300/15 bg-white/[0.07] p-5 text-slate-100 shadow-2xl shadow-slate-950/25 backdrop-blur" style={{ marginBottom: "var(--space-xl)" }}>
+            <div className="grid gap-5 2xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
+              <div className="min-w-0 rounded-[28px] bg-slate-950/35 p-5 ring-1 ring-white/10">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">Private operator workspace</p>
+                <h2 className="font-heading text-3xl text-white" style={{ marginTop: "6px" }}>What do I work on next?</h2>
+                <p className="max-w-3xl text-sm text-slate-300" style={{ marginTop: "10px" }}>
+                  Start in Content Workbench. It is the primary Sentinel surface for deciding which article, brief or content opportunity should move next.
                 </p>
+                <div className="rounded-2xl bg-cyan-300/10 p-4 ring-1 ring-cyan-200/15" style={{ marginTop: "18px" }}>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-100">Recommended next action</p>
+                  <p className="font-semibold text-white" style={{ marginTop: "6px" }}>{nextBestAction.title}</p>
+                  <p className="text-sm text-slate-300" style={{ marginTop: "6px" }}>{nextBestAction.why}</p>
+                  <p className="text-xs text-slate-400" style={{ marginTop: "8px" }}>Priority: {nextBestAction.priority}</p>
+                </div>
               </div>
-              <div className="grid gap-2 text-sm sm:grid-cols-3 lg:min-w-[520px]">
-                <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Product</p>
-                  <p className="font-semibold text-white">Sentinel</p>
-                  <p className="text-xs text-slate-400">by Artifexa</p>
-                </div>
-                <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+              <div className="min-w-0 grid gap-3 text-sm">
+                <div className="rounded-[24px] bg-white/8 p-4 ring-1 ring-white/10">
                   <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Active tenant</p>
-                  <p className="font-semibold text-white">{activeTenant?.name || "ERP Experts"}</p>
-                  <p className="text-xs text-slate-400">tenant context only</p>
+                  <p className="text-lg font-semibold text-white">{activeTenant?.name || "ERP Experts"}</p>
+                  <p className="text-xs text-slate-400">ERP Experts appears as tenant context only.</p>
                 </div>
-                <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Exposure</p>
-                  <p className="font-semibold text-white">local prototype</p>
-                  <p className="text-xs text-slate-400">production redirects</p>
+                <div className="rounded-[24px] bg-white/8 p-4 ring-1 ring-white/10">
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Runtime</p>
+                  <p className="text-lg font-semibold text-white">{standaloneRuntimeLabel}</p>
+                  <p className="text-xs text-slate-400">Uses the Pi-backed Sentinel node when the local API is connected.</p>
+                </div>
+                <div className="rounded-[24px] bg-white/8 p-4 ring-1 ring-white/10">
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Access</p>
+                  <p className="text-lg font-semibold text-white">private operator workspace</p>
+                  <p className="text-xs text-slate-400">Local prototype only. Production still redirects until authority is ready.</p>
                 </div>
               </div>
             </div>
           </div>
         ) : null}
-        <div className={`grid ${compactView ? "gap-lg" : "gap-xl"} ${sidebarCollapsed ? "lg:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]" : "lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)]"}`}>
+        <div className={`grid min-w-0 ${compactView ? "gap-lg" : "gap-xl"} ${sidebarCollapsed ? "lg:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]" : "lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)]"}`}>
           <SentinelNavigationRail
             navItems={navItems}
             activeNav={activeNav}
@@ -6396,7 +6438,7 @@ function AdminView({ onPreview, standaloneMode = false }) {
             standaloneMode={standaloneMode}
           />
 
-          <div className={`grid ${compactView ? "gap-md" : "gap-lg"}`}>
+          <div className={`grid min-w-0 ${compactView ? "gap-md" : "gap-lg"}`}>
             {sessionResetNotice ? (
               <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 ring-1 ring-emerald-100">
                 {sessionResetNotice}

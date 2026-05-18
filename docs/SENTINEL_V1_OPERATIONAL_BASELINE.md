@@ -14,7 +14,7 @@ Sentinel now has three separated operating surfaces:
 
 The current model keeps application code under Git and persistent operational state outside the repo on the Pi. The Pi API remains bound to localhost only and is not exposed through a reverse proxy.
 
-The planned next ownership boundary is a standalone Sentinel operator frontend at `sentinel.artifexa.co.uk`. A local prototype route now exists at `/sentinel`; it uses Artifexa/Sentinel branding, keeps ERP Experts as tenant context only and removes ERP Experts public website chrome from the operator experience. The migration plan is documented in `docs/SENTINEL_STANDALONE_APP_MIGRATION_PLAN.md`.
+The planned next ownership boundary is a standalone Sentinel operator frontend at `sentinel.artifexa.co.uk`. A local prototype route now exists at `/sentinel`; it uses Artifexa/Sentinel branding, keeps ERP Experts as tenant context only, removes ERP Experts public website chrome from the operator experience and opens with Content Workbench as the primary work surface. The migration plan is documented in `docs/SENTINEL_STANDALONE_APP_MIGRATION_PLAN.md`.
 
 ## Local Platform State
 
@@ -110,10 +110,12 @@ Current route separation:
 - `/seo-progress`: stakeholder-safe progress page, live and plain-English
 - `/reports`: points stakeholders to `/seo-progress`
 - `/seo-roadmap`: private operator route, protected in production
-- `/sentinel`: local standalone operator shell prototype, protected in production
+- `/sentinel`: local standalone operator shell prototype, protected in production, defaulting to Content Workbench
 - `sentinel.artifexa.co.uk`: planned standalone operator app, not deployed yet
 
 The stakeholder page must not expose Sentinel internals, operator controls, commands, diagnostics, API details, database details, approvals, pipelines or implementation roadmap content.
+
+The `/sentinel` prototype keeps its local browser session preferences under `sentinel.operatorSession.standalone.v1` so its Content Workbench-first default does not change `/seo-roadmap` behaviour.
 
 ## Security And Auth Status
 
