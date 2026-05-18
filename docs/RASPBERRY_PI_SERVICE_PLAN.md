@@ -173,7 +173,7 @@ npm run platform:pi:repo:deploy
 
 Confirm the Pi can read the Git remote before any confirmed clone or pull. If authentication is required, configure it outside Git and do not commit credentials.
 
-Review DB placement before the Pi becomes canonical. Current `platform:init` uses the repo-local SQLite default unless persistence path handling is changed.
+The repo verifier now distinguishes application code from persistent runtime state. After canonical migration, `/srv/sentinel/data/seo-ops/platform.db` is the active DB and the repo-local SQLite file is a retained fallback only.
 
 Verify the deployed repo phase separately from runtime preparation:
 
@@ -181,7 +181,7 @@ Verify the deployed repo phase separately from runtime preparation:
 npm run platform:pi:repo:verify
 ```
 
-This read-only command checks the Git checkout, clean branch, package files, installed dependencies, `dist`, repo-local platform DB and required npm scripts. It does not start the API or install the service. A closed API port and missing `sentinel-api.service` are expected warnings before foreground smoke testing and service installation.
+This read-only command checks the Git checkout, clean branch, package files, installed dependencies, `dist`, DB runtime state and required npm scripts. It does not start the API or install the service. A closed API port and missing `sentinel-api.service` are expected warnings before foreground smoke testing and service installation. When `PLATFORM_DB_PATH`, the canonical DB file and `platform:runtime:paths` all confirm `/srv/sentinel/data/seo-ops/platform.db`, the retained repo-local DB is reported as `present as fallback`, not as a warning.
 
 ## Foreground API smoke
 

@@ -403,7 +403,7 @@ npm run platform:pi:repo:deploy
 
 `platform:pi:repo:plan` is dry-run/read-only. It checks the local Git remote, branch, latest commit, tracked worktree state and `/srv/sentinel/apps/seo-ops` over SSH, then writes ignored plan reports.
 
-`platform:pi:repo:deploy` refuses to mutate without `--confirm`. Confirmed mode is limited to clone or fast-forward pull, `npm ci`, `npm run build`, `npm run platform:init` and `npm run platform:health`. It does not start the API, install services, enable timers or expose anything publicly. Confirm Pi Git remote access outside the repo if authentication is required. Review the SQLite path model before making the Pi DB canonical, because `platform:init` currently uses the repo-local persistence default.
+`platform:pi:repo:deploy` refuses to mutate without `--confirm`. Confirmed mode is limited to clone or fast-forward pull, `npm ci`, `npm run build`, `npm run platform:init` and `npm run platform:health`. It does not start the API, install services, enable timers or expose anything publicly. Confirm Pi Git remote access outside the repo if authentication is required.
 
 The first Pi repo deploy cloned successfully but exposed a normal `npm ci` blocker: `react-helmet-async@2.0.5` did not declare React 19 peer support. The main app now uses React 19 native document metadata through `src/components/ui/SEO.jsx`, so deployment can stay on strict `npm ci` instead of a `--legacy-peer-deps` workaround.
 
@@ -415,7 +415,7 @@ Verify the repo-deployed phase separately from runtime prep:
 npm run platform:pi:repo:verify
 ```
 
-This read-only verifier checks `/srv/sentinel/apps/seo-ops` for a clean Git checkout, package files, `node_modules`, `dist`, repo-local platform DB and the required npm scripts. It reports closed API port `4317` and missing `sentinel-api.service` as warnings because the next phase is foreground API smoke testing, not service installation.
+This read-only verifier checks `/srv/sentinel/apps/seo-ops` for a clean Git checkout, package files, `node_modules`, `dist`, active DB runtime state and the required npm scripts. When `PLATFORM_DB_PATH`, the canonical DB file and `platform:runtime:paths` confirm `/srv/sentinel/data/seo-ops/platform.db`, the repo-local SQLite file is reported as `present as fallback`, not as a warning. It reports closed API port `4317` and missing `sentinel-api.service` as warnings because the next phase is foreground API smoke testing, not service installation.
 
 Smoke test the Pi API in a temporary foreground session before any service installation:
 
@@ -701,13 +701,13 @@ npm run platform:pi:data:path:verify
 
 The verifier is read-only. It confirms the canonical DB exists under `/srv/sentinel/data/seo-ops/platform.db`, the repo-local rollback DB still exists, the Pi `.env` contains canonical runtime paths, `sentinel-api.service` is active, the local API responds and `platform:runtime:paths` reports the canonical DB path.
 
-## Pi Service Verifier After Canonical DB Migration
+## Pi Verifiers After Canonical DB Migration
 
-After the Pi `.env` points `PLATFORM_DB_PATH` at `/srv/sentinel/data/seo-ops/platform.db`, the service verifier treats the repo-local SQLite file as an intentional fallback:
+After the Pi `.env` points `PLATFORM_DB_PATH` at `/srv/sentinel/data/seo-ops/platform.db`, the repo and service verifiers treat the repo-local SQLite file as an intentional fallback:
 
 ```text
 Active DB: canonical
 Repo-local DB: present as fallback
 ```
 
-This avoids a false service warning after migration. The verifier still warns if the canonical DB is missing, runtime paths are not `READY`, runtime paths point at the repo-local DB, or the API cannot return `/state`.
+This avoids false repo/service warnings after migration. The verifiers still warn if the canonical DB is missing, runtime paths are not `READY`, runtime paths point at the repo-local DB, or the API cannot return `/state`.
