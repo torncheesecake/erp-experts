@@ -46,9 +46,37 @@ const sentinelActionApiBaseUrl = sentinelApiBaseUrl || "http://127.0.0.1:4317";
 const sentinelAuthorityMode = String(import.meta.env.VITE_SENTINEL_AUTHORITY_MODE || "disabled").trim().toLowerCase();
 const SENTINEL_OPERATOR_SESSION_KEY = "sentinel.operatorSession.v1";
 const SENTINEL_OPERATOR_WORKSPACES_KEY = "sentinel.operatorWorkspaces.v1";
+const SENTINEL_CONTENT_WORKBENCH_KEY = "sentinel.contentWorkbench.v1";
 const SENTINEL_DEFAULT_WORKSPACE_ID = "monitoring";
 const SENTINEL_WORKSPACE_PANEL_KEYS = ["supportingIntelligence", "articleWorkbench", "advancedDiagnostics"];
 const SENTINEL_TERMINAL_EXECUTION_STATES = new Set(["success", "failed", "failure", "cancelled"]);
+const CONTENT_LIFECYCLE_STATUSES = [
+  "discovered",
+  "approved",
+  "researching",
+  "drafting",
+  "review",
+  "ready",
+  "published",
+  "monitoring",
+];
+const CONTENT_STATUS_META = {
+  discovered: { label: "Discovered", tone: "bg-slate-50 text-slate-700 ring-slate-200" },
+  approved: { label: "Approved", tone: "bg-blue-50 text-blue-700 ring-blue-100" },
+  researching: { label: "Researching", tone: "bg-cyan-50 text-cyan-700 ring-cyan-100" },
+  drafting: { label: "Drafting", tone: "bg-indigo-50 text-indigo-700 ring-indigo-100" },
+  review: { label: "Review", tone: "bg-amber-50 text-amber-800 ring-amber-100" },
+  ready: { label: "Ready", tone: "bg-emerald-50 text-emerald-700 ring-emerald-100" },
+  published: { label: "Published", tone: "bg-green-50 text-green-700 ring-green-100" },
+  monitoring: { label: "Monitoring", tone: "bg-purple-50 text-purple-700 ring-purple-100" },
+};
+const CONTENT_STATUS_GROUPS = [
+  { id: "intake", label: "Intake", statuses: ["discovered", "approved"] },
+  { id: "making", label: "Making", statuses: ["researching", "drafting"] },
+  { id: "review", label: "Review", statuses: ["review", "ready"] },
+  { id: "live", label: "Live", statuses: ["published", "monitoring"] },
+];
+const CONTENT_PRIORITY_ORDER = { critical: 0, high: 1, medium: 2, low: 3, monitor: 4 };
 const SENTINEL_OPERATOR_SESSION_DEFAULTS = {
   activeWorkspaceId: SENTINEL_DEFAULT_WORKSPACE_ID,
   activeSection: "overview",
@@ -80,7 +108,7 @@ const SENTINEL_BUILT_IN_WORKSPACES = [
       advancedDiagnostics: true,
     },
     compactMode: false,
-    visiblePanels: ["Overview", "Activity", "Cadence"],
+    visiblePanels: ["Overview", "Content Workbench", "Activity", "Cadence"],
     preferredFocus: "monitoring",
     notes: "Daily operating view focused on health, activity and cadence.",
   },
@@ -89,7 +117,7 @@ const SENTINEL_BUILT_IN_WORKSPACES = [
     name: "Development",
     createdAt: "built-in",
     builtIn: true,
-    selectedSection: "actions",
+    selectedSection: "content",
     commandFilter: "All",
     commandSearch: "",
     sidebarCollapsed: false,
@@ -99,9 +127,9 @@ const SENTINEL_BUILT_IN_WORKSPACES = [
       advancedDiagnostics: true,
     },
     compactMode: false,
-    visiblePanels: ["Actions", "Roadmap", "Feedback"],
-    preferredFocus: "development",
-    notes: "Implementation preparation view for safe actions, roadmap and feedback.",
+    visiblePanels: ["Content Workbench", "Actions", "Roadmap", "Feedback"],
+    preferredFocus: "content_workflow",
+    notes: "Content operations view for editorial work, safe actions, roadmap and feedback.",
   },
   {
     id: "deployment",
@@ -137,7 +165,7 @@ const SENTINEL_BUILT_IN_WORKSPACES = [
       advancedDiagnostics: true,
     },
     compactMode: false,
-    visiblePanels: ["Feedback", "Roadmap", "Packages"],
+    visiblePanels: ["Content Workbench", "Feedback", "Roadmap", "Packages"],
     preferredFocus: "roadmap_review",
     notes: "Planning view for feedback triage, roadmap intelligence and handoff packages.",
   },
@@ -447,6 +475,51 @@ function clearOperatorSessionState() {
     window.localStorage.removeItem(SENTINEL_OPERATOR_SESSION_KEY);
   } catch {
     // Local browser preference persistence is optional.
+  }
+}
+
+function normaliseContentWorkbenchState(state = {}) {
+  const sourceItems = state?.items && typeof state.items === "object" ? state.items : {};
+  const items = Object.entries(sourceItems).reduce((acc, [id, item]) => {
+    const status = CONTENT_LIFECYCLE_STATUSES.includes(item?.status) ? item.status : "";
+    if (!id || !status) return acc;
+    acc[id] = {
+      status,
+      updatedAt: item.updatedAt || null,
+      note: item.note || "",
+    };
+    return acc;
+  }, {});
+
+  return {
+    version: 1,
+    items,
+  };
+}
+
+function readContentWorkbenchState() {
+  if (typeof window === "undefined") return normaliseContentWorkbenchState();
+
+  try {
+    const raw = window.localStorage.getItem(SENTINEL_CONTENT_WORKBENCH_KEY);
+    return normaliseContentWorkbenchState(raw ? JSON.parse(raw) : {});
+  } catch {
+    return normaliseContentWorkbenchState();
+  }
+}
+
+function writeContentWorkbenchState(state) {
+  if (typeof window === "undefined") return;
+
+  try {
+    const normalised = normaliseContentWorkbenchState(state);
+    if (!Object.keys(normalised.items).length) {
+      window.localStorage.removeItem(SENTINEL_CONTENT_WORKBENCH_KEY);
+      return;
+    }
+    window.localStorage.setItem(SENTINEL_CONTENT_WORKBENCH_KEY, JSON.stringify(normalised));
+  } catch {
+    // Local content workflow persistence is optional.
   }
 }
 
@@ -4303,6 +4376,197 @@ function buildFixCreateRecommendations({ qaReport, allItems, demandGaps, topicBa
   });
 }
 
+function contentPriorityFromScore(score, fallback = "medium") {
+  const value = Number(score || 0);
+  if (value >= 85) return "critical";
+  if (value >= 70) return "high";
+  if (value >= 45) return "medium";
+  return fallback || "low";
+}
+
+function contentCategoryLabel(value = "") {
+  const label = formatStateLabel(value || "content");
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+function defaultContentStatus({ opportunity, recommendation, plan, inboxItem }) {
+  if (inboxItem?.status === "awaiting_review") return "review";
+  if (recommendation?.type === "blocked_review") return "review";
+  if (recommendation?.type === "improve_existing") return "review";
+  if (recommendation?.type === "monitor") return "monitoring";
+  if (plan?.targetSlug && plan?.recommendedWorkflow?.nextCommand) return "review";
+  if (plan && !plan.targetSlug) return "approved";
+  if (opportunity?.targetSlug && opportunity?.actionTheme === "content_creation") return "published";
+  if (opportunity?.targetSlug) return "review";
+  if (recommendation?.type === "create_new") return "discovered";
+  return "discovered";
+}
+
+function contentGoalForItem({ opportunity, recommendation, plan }) {
+  if (recommendation?.type === "create_new" || opportunity?.actionTheme === "content_creation" || plan?.planType === "content_brief") {
+    return "Create a focused resource brief before any drafting.";
+  }
+  if (opportunity?.actionTheme === "internal_linking") return "Improve internal paths around an existing article.";
+  if (opportunity?.actionTheme === "conversion_path") return "Strengthen the article's next-step and CTA alignment.";
+  if (opportunity?.actionTheme === "refresh") return "Refresh the existing article without broad rewrites.";
+  if (opportunity?.targetSlug || recommendation?.type === "improve_existing") return "Improve an existing resource while preserving QA health.";
+  return "Clarify the content opportunity and decide whether it should enter production.";
+}
+
+function buildContentWorkbenchItems({
+  articleRows,
+  recommendations,
+  opportunityReport,
+  plansReport,
+  inboxReport,
+  workflowState,
+}) {
+  const opportunities = Array.isArray(opportunityReport?.opportunities)
+    ? opportunityReport.opportunities
+    : Array.isArray(opportunityReport?.topOpportunities)
+      ? opportunityReport.topOpportunities
+      : [];
+  const plans = Array.isArray(plansReport?.plans)
+    ? plansReport.plans
+    : Array.isArray(plansReport?.topPlans)
+      ? plansReport.topPlans
+      : [];
+  const inboxItems = Array.isArray(inboxReport?.items) ? inboxReport.items : [];
+
+  const planByOpportunityId = new Map();
+  const planBySlug = new Map();
+  const planByTitle = new Map();
+  plans.forEach((plan) => {
+    if (plan?.targetSlug) planBySlug.set(plan.targetSlug, plan);
+    if (plan?.title) planByTitle.set(norm(plan.title), plan);
+    (Array.isArray(plan?.sourceOpportunityIds) ? plan.sourceOpportunityIds : []).forEach((id) => {
+      if (id) planByOpportunityId.set(id, plan);
+    });
+  });
+
+  const inboxByOpportunityId = new Map();
+  const inboxByPlanId = new Map();
+  const inboxBySlug = new Map();
+  inboxItems.forEach((item) => {
+    if (item?.relatedOpportunityId) inboxByOpportunityId.set(item.relatedOpportunityId, item);
+    if (item?.relatedPlanId) inboxByPlanId.set(item.relatedPlanId, item);
+    if (item?.targetSlug) inboxBySlug.set(item.targetSlug, item);
+  });
+
+  const recBySlug = new Map();
+  const recByTitle = new Map();
+  recommendations.forEach((rec) => {
+    if (rec?.slug) recBySlug.set(rec.slug, rec);
+    if (rec?.title) recByTitle.set(norm(rec.title), rec);
+  });
+
+  const articleBySlug = new Map((articleRows || []).map((row) => [row.slug, row]));
+  const items = [];
+  const seen = new Set();
+
+  const pushItem = ({ id, title, targetSlug, targetPath, opportunity, recommendation, plan, inboxItem, article }) => {
+    if (!id || seen.has(id)) return;
+    seen.add(id);
+    const published = Boolean(targetSlug || targetPath || article?.slug);
+    const priority = opportunity?.priorityLabel
+      || plan?.executionPriority
+      || contentPriorityFromScore(recommendation?.priorityScore || opportunity?.score || plan?.opportunityScore, "medium");
+    const category = opportunity?.actionTheme || plan?.planType || recommendation?.type || "content_work";
+    const nextAction = inboxItem?.recommendedNextStep
+      || plan?.recommendedWorkflow?.nextCommand
+      || opportunity?.recommendedAction
+      || recommendation?.suggestedNextAction
+      || "Review the content item and choose the next workflow stage.";
+
+    items.push({
+      id,
+      title: title || targetSlug || "Untitled content item",
+      priority,
+      category,
+      categoryLabel: contentCategoryLabel(category),
+      defaultStatus: defaultContentStatus({ opportunity, recommendation, plan, inboxItem }),
+      targetSlug: targetSlug || article?.slug || "",
+      targetPath: targetPath || opportunity?.targetPath || plan?.targetPath || (targetSlug ? `/resources/${targetSlug}` : ""),
+      targetTopic: opportunity?.canonicalOpportunityTitle || opportunity?.groupTitle || recommendation?.rawQuery || recommendation?.title || title || "",
+      summary: opportunity?.whyThisRanks || recommendation?.reason || plan?.recommendedWorkflow?.notes || "Content work item from Sentinel reports.",
+      nextAction,
+      relatedOpportunityId: opportunity?.id || inboxItem?.relatedOpportunityId || "",
+      relatedPlanId: plan?.id || inboxItem?.relatedPlanId || "",
+      relatedInboxId: inboxItem?.id || "",
+      sourceSignals: opportunity?.combinedSignals || opportunity?.sourceSignals || recommendation?.sourceSignals || [],
+      score: opportunity?.score || recommendation?.priorityScore || plan?.opportunityScore || article?.score || 0,
+      effort: opportunity?.effortLabel || plan?.estimatedEffort || "unknown",
+      confidence: opportunity?.confidenceLabel || plan?.confidence || "unknown",
+      contentGoal: contentGoalForItem({ opportunity, recommendation, plan }),
+      suggestedAngle: opportunity?.recommendedAction || recommendation?.suggestedNextAction || plan?.recommendedWorkflow?.notes || "",
+      briefCommand: plan?.id ? `npm run seo:plan:run -- ${plan.id}` : opportunity?.nextCommandOrPrompt || "",
+      briefPrompt: opportunity?.codexPrompt || plan?.codexPlanningPrompt || recommendation?.brief?.codexPatchPrompt || "",
+      owner: "",
+      published,
+      workflowState: workflowState || "unknown",
+      articleGate: article?.gate || "",
+      articleScore: article?.score ?? null,
+    });
+  };
+
+  opportunities.slice(0, 16).forEach((opportunity) => {
+    const targetSlug = opportunity?.targetSlug || "";
+    const plan = planByOpportunityId.get(opportunity?.id) || (targetSlug ? planBySlug.get(targetSlug) : null) || planByTitle.get(norm(opportunity?.title));
+    const inboxItem = inboxByOpportunityId.get(opportunity?.id) || (plan?.id ? inboxByPlanId.get(plan.id) : null) || (targetSlug ? inboxBySlug.get(targetSlug) : null);
+    const recommendation = (targetSlug ? recBySlug.get(targetSlug) : null) || recByTitle.get(norm(opportunity?.title));
+    pushItem({
+      id: targetSlug ? `content-${targetSlug}` : `content-${opportunity?.id || titleToSlug(opportunity?.title)}`,
+      title: opportunity?.title,
+      targetSlug,
+      targetPath: opportunity?.targetPath,
+      opportunity,
+      recommendation,
+      plan,
+      inboxItem,
+      article: targetSlug ? articleBySlug.get(targetSlug) : null,
+    });
+  });
+
+  recommendations.slice(0, 12).forEach((recommendation) => {
+    const targetSlug = recommendation?.slug || "";
+    const id = targetSlug ? `content-${targetSlug}` : `content-rec-${titleToSlug(recommendation?.title)}`;
+    if (seen.has(id)) return;
+    const plan = (targetSlug ? planBySlug.get(targetSlug) : null) || planByTitle.get(norm(recommendation?.title));
+    const inboxItem = (plan?.id ? inboxByPlanId.get(plan.id) : null) || (targetSlug ? inboxBySlug.get(targetSlug) : null);
+    pushItem({
+      id,
+      title: recommendation?.preferredTitle || recommendation?.title,
+      targetSlug,
+      targetPath: targetSlug ? `/resources/${targetSlug}` : "",
+      recommendation,
+      plan,
+      inboxItem,
+      article: targetSlug ? articleBySlug.get(targetSlug) : null,
+    });
+  });
+
+  if (!items.length) {
+    (articleRows || []).slice(0, 12).forEach((article) => {
+      pushItem({
+        id: `content-${article.slug}`,
+        title: article.title,
+        targetSlug: article.slug,
+        targetPath: `/resources/${article.slug}`,
+        article,
+        recommendation: article.rec,
+        plan: null,
+        inboxItem: null,
+      });
+    });
+  }
+
+  return items.sort((a, b) => {
+    const priorityDelta = (CONTENT_PRIORITY_ORDER[a.priority] ?? 5) - (CONTENT_PRIORITY_ORDER[b.priority] ?? 5);
+    if (priorityDelta !== 0) return priorityDelta;
+    return Number(b.score || 0) - Number(a.score || 0);
+  });
+}
+
 function suggestedLinksForRecommendation(rec) {
   const text = norm(`${rec.title} ${rec.reason}`);
   const links = ["/resources"];
@@ -4910,6 +5174,7 @@ function AdminView({ onPreview }) {
     loading: true,
     status: "loading",
   });
+  const [contentWorkbenchState, setContentWorkbenchState] = useState(readContentWorkbenchState);
   const [doctorSummary] = useState(readDoctorSummary);
   const [readinessSummary] = useState(readReadinessSummary);
   const [roadmapSummary] = useState(readRoadmapSummary);
@@ -4921,6 +5186,7 @@ function AdminView({ onPreview }) {
   const overviewRef = useRef(null);
   const stateRef = useRef(null);
   const inboxRef = useRef(null);
+  const contentWorkbenchRef = useRef(null);
   const opportunitiesRef = useRef(null);
   const actionsRef = useRef(null);
   const cadenceRef = useRef(null);
@@ -5721,6 +5987,22 @@ function AdminView({ onPreview }) {
       hasThinContent: warnings.some((w) => /thin/i.test(w)),
     };
   });
+  const contentWorkbenchItems = buildContentWorkbenchItems({
+    articleRows,
+    recommendations,
+    opportunityReport,
+    plansReport,
+    inboxReport: actionInboxReport,
+    workflowState: sentinelStateSnapshot.state?.workflow?.state || "unknown",
+  }).map((item) => {
+    const persisted = contentWorkbenchState.items[item.id];
+    const status = persisted?.status || item.defaultStatus;
+    return {
+      ...item,
+      status,
+      statusUpdatedAt: persisted?.updatedAt || null,
+    };
+  });
 
   const filteredRows = articleRows
     .filter((row) => {
@@ -5788,6 +6070,7 @@ function AdminView({ onPreview }) {
   const showOverviewTab = activeNav === "overview";
   const showStateTab = activeNav === "state";
   const showInboxTab = activeNav === "inbox";
+  const showContentWorkbenchTab = activeNav === "content";
   const showOpportunitiesTab = activeNav === "opportunities";
   const showActionsTab = activeNav === "actions";
   const showCadenceTab = activeNav === "cadence";
@@ -5797,11 +6080,12 @@ function AdminView({ onPreview }) {
     { key: "overview", label: "Overview", description: "Focus and next action", ref: overviewRef },
     { key: "state", label: "State", description: "Health and state reports", ref: stateRef },
     { key: "inbox", label: "Inbox", description: "Attention queue", ref: inboxRef },
+    { key: "content", label: "Content Workbench", description: "Article workflow", ref: contentWorkbenchRef },
     { key: "opportunities", label: "Opportunities", description: "Priorities and plans", ref: opportunitiesRef },
     { key: "actions", label: "Actions", description: "Commands and history", ref: actionsRef },
     { key: "cadence", label: "Cadence", description: "Automation rhythm", ref: cadenceRef },
     { key: "tenants", label: "Tenants", description: "Registry preview", ref: tenantsRef },
-    { key: "diagnostics", label: "Diagnostics", description: "Checks and workbench", ref: diagnosticsRef },
+    { key: "diagnostics", label: "Diagnostics", description: "Checks and QA tools", ref: diagnosticsRef },
   ];
   const activeWorkspace = operatorWorkspaces.find((workspace) => workspace.id === activeWorkspaceId)
     || operatorWorkspaces.find((workspace) => workspace.id === SENTINEL_DEFAULT_WORKSPACE_ID)
@@ -5988,6 +6272,24 @@ function AdminView({ onPreview }) {
     window.setTimeout(() => setSessionResetNotice(""), 1800);
   };
 
+  const updateContentWorkbenchStatus = (itemId, status) => {
+    if (!itemId || !CONTENT_LIFECYCLE_STATUSES.includes(status)) return;
+    setContentWorkbenchState((current) => {
+      const next = normaliseContentWorkbenchState({
+        ...current,
+        items: {
+          ...(current?.items || {}),
+          [itemId]: {
+            status,
+            updatedAt: new Date().toISOString(),
+          },
+        },
+      });
+      writeContentWorkbenchState(next);
+      return next;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       <SentinelAppHeader
@@ -6149,6 +6451,24 @@ function AdminView({ onPreview }) {
               </section>
             ) : null}
 
+            {isMonitorMode && showContentWorkbenchTab ? (
+              <section ref={contentWorkbenchRef} className="grid gap-lg">
+                <SectionIntro
+                  eyebrow="Content Workbench"
+                  title="Article workflow"
+                  description="Editorial operating view for discovered topics, active briefs, article reviews and live monitoring."
+                />
+                <ContentWorkbenchPanel
+                  items={contentWorkbenchItems}
+                  loading={qaLoading || opportunityLoading || plansLoading || actionInboxLoading}
+                  onStatusChange={updateContentWorkbenchStatus}
+                  onOpenArticle={(slug) => {
+                    if (slug) setSelectedSlug(slug);
+                  }}
+                />
+              </section>
+            ) : null}
+
             {isMonitorMode && showOpportunitiesTab ? (
               <section ref={opportunitiesRef} className="grid gap-lg">
                 <SectionIntro
@@ -6251,7 +6571,7 @@ function AdminView({ onPreview }) {
                 <SectionIntro
                   eyebrow="Diagnostics"
                   title="Checks and advanced tools"
-                  description="Readiness, doctor state, monitoring details and the collapsed article workbench."
+                  description="Readiness, doctor state, monitoring details and the collapsed article QA planner."
                 />
                 <SystemStatusZone
                   dashboardMode={dashboardMode}
@@ -6328,9 +6648,9 @@ function AdminView({ onPreview }) {
               className="rounded-xl border border-slate-200 bg-white/85"
               style={{ padding: "var(--space-md)" }}
             >
-              <summary className="cursor-pointer text-sm font-semibold text-slate-700">Article workbench and operator tools</summary>
+              <summary className="cursor-pointer text-sm font-semibold text-slate-700">Article QA planner and operator tools</summary>
               <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)", marginBottom: "var(--space-lg)" }}>
-                Expand when you need manual article-level control.
+                Expand when you need manual article-level QA prompts.
               </p>
               {!qaReport ? (
                 <div className="rounded-2xl border border-slate-200 bg-white text-sm text-slate-600" style={{ padding: "var(--space-lg)" }}>
@@ -6733,6 +7053,331 @@ function ActionInboxPanel({ inboxReport, loading }) {
         </>
       )}
     </div>
+  );
+}
+
+function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle }) {
+  const [selectedId, setSelectedId] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [publishedFilter, setPublishedFilter] = useState("all");
+  const [ownershipFilter, setOwnershipFilter] = useState("all");
+  const [copyTarget, setCopyTarget] = useState("");
+  const [copyState, setCopyState] = useState("idle");
+
+  const categories = [...new Set(items.map((item) => item.category).filter(Boolean))];
+  const priorities = [...new Set(items.map((item) => item.priority).filter(Boolean))]
+    .sort((a, b) => (CONTENT_PRIORITY_ORDER[a] ?? 9) - (CONTENT_PRIORITY_ORDER[b] ?? 9));
+  const filteredItems = items.filter((item) => {
+    if (statusFilter !== "all" && item.status !== statusFilter) return false;
+    if (priorityFilter !== "all" && item.priority !== priorityFilter) return false;
+    if (categoryFilter !== "all" && item.category !== categoryFilter) return false;
+    if (publishedFilter === "published" && !item.published) return false;
+    if (publishedFilter === "unpublished" && item.published) return false;
+    if (ownershipFilter === "assigned" && !item.owner) return false;
+    if (ownershipFilter === "unassigned" && item.owner) return false;
+    return true;
+  });
+  const selectedItem = filteredItems.find((item) => item.id === selectedId)
+    || items.find((item) => item.id === selectedId)
+    || filteredItems[0]
+    || items[0]
+    || null;
+
+  const statusCounts = CONTENT_LIFECYCLE_STATUSES.reduce((acc, status) => ({
+    ...acc,
+    [status]: items.filter((item) => item.status === status).length,
+  }), {});
+  const topNextItem = items.find((item) => ["review", "drafting", "researching", "approved", "discovered"].includes(item.status)) || items[0];
+
+  const copyValue = async (value, target) => {
+    const ok = await copyText(value, `content workbench ${target}`);
+    setCopyTarget(target);
+    setCopyState(ok ? "copied" : "failed");
+    window.setTimeout(() => {
+      setCopyTarget("");
+      setCopyState("idle");
+    }, 1400);
+  };
+
+  const copyLabel = (target, fallback) => {
+    if (copyTarget !== target) return fallback;
+    if (copyState === "copied") return "Copied";
+    if (copyState === "failed") return "Copy failed";
+    return fallback;
+  };
+
+  const moveStatus = (item, direction) => {
+    const currentIndex = CONTENT_LIFECYCLE_STATUSES.indexOf(item.status);
+    if (currentIndex < 0) return;
+    const nextStatus = CONTENT_LIFECYCLE_STATUSES[currentIndex + direction];
+    if (nextStatus) onStatusChange(item.id, nextStatus);
+  };
+
+  return (
+    <section className="rounded-[28px] bg-white/90 p-5 shadow-sm ring-1 ring-slate-100/80">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="max-w-3xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-600">Editorial Operations</p>
+          <h2 className="text-2xl font-semibold text-slate-950">Content Workbench</h2>
+          <p className="text-sm text-slate-600">
+            Article-level workflow built from opportunities, execution plans, action inbox items and QA signals.
+            Infrastructure controls remain in Actions and Diagnostics.
+          </p>
+        </div>
+        <div className="grid gap-2 rounded-2xl bg-slate-50/80 p-3 text-sm ring-1 ring-slate-100 sm:min-w-[260px]">
+          <div className="flex items-center justify-between gap-3">
+            <span className="font-medium text-slate-600">Items</span>
+            <span className="font-semibold text-slate-950">{items.length}</span>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <span className="font-medium text-slate-600">Review/ready</span>
+            <span className="font-semibold text-amber-700">{(statusCounts.review || 0) + (statusCounts.ready || 0)}</span>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <span className="font-medium text-slate-600">Live/monitoring</span>
+            <span className="font-semibold text-emerald-700">{(statusCounts.published || 0) + (statusCounts.monitoring || 0)}</span>
+          </div>
+        </div>
+      </div>
+
+      {topNextItem ? (
+        <div className="rounded-2xl bg-pink-50/70 p-4 ring-1 ring-pink-100" style={{ marginTop: "16px" }}>
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-pink-700">Recommended content focus</p>
+          <p className="text-sm font-semibold text-slate-950" style={{ marginTop: "4px" }}>{topNextItem.title}</p>
+          <p className="text-sm text-slate-700" style={{ marginTop: "4px" }}>{topNextItem.nextAction}</p>
+        </div>
+      ) : null}
+
+      <div className="grid gap-3 lg:grid-cols-5" style={{ marginTop: "16px" }}>
+        <label className="grid gap-1 text-xs font-semibold text-slate-600">
+          Status
+          <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800">
+            <option value="all">All statuses</option>
+            {CONTENT_LIFECYCLE_STATUSES.map((status) => (
+              <option key={status} value={status}>{CONTENT_STATUS_META[status]?.label || formatStateLabel(status)}</option>
+            ))}
+          </select>
+        </label>
+        <label className="grid gap-1 text-xs font-semibold text-slate-600">
+          Priority
+          <select value={priorityFilter} onChange={(event) => setPriorityFilter(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800">
+            <option value="all">All priorities</option>
+            {priorities.map((priority) => <option key={priority} value={priority}>{formatStateLabel(priority)}</option>)}
+          </select>
+        </label>
+        <label className="grid gap-1 text-xs font-semibold text-slate-600">
+          Category
+          <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800">
+            <option value="all">All categories</option>
+            {categories.map((category) => <option key={category} value={category}>{contentCategoryLabel(category)}</option>)}
+          </select>
+        </label>
+        <label className="grid gap-1 text-xs font-semibold text-slate-600">
+          Publication
+          <select value={publishedFilter} onChange={(event) => setPublishedFilter(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800">
+            <option value="all">Published and planned</option>
+            <option value="published">Published only</option>
+            <option value="unpublished">Not published</option>
+          </select>
+        </label>
+        <label className="grid gap-1 text-xs font-semibold text-slate-600">
+          Owner
+          <select value={ownershipFilter} onChange={(event) => setOwnershipFilter(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800">
+            <option value="all">Assigned and unassigned</option>
+            <option value="assigned">Assigned</option>
+            <option value="unassigned">Unassigned</option>
+          </select>
+        </label>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-slate-500" style={{ marginTop: "16px" }}>Loading content workflow signals…</p>
+      ) : !items.length ? (
+        <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 ring-1 ring-slate-100" style={{ marginTop: "16px" }}>
+          Content workflow data is not available yet. Run the SEO reports to populate opportunities, plans and QA signals.
+        </div>
+      ) : (
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]" style={{ marginTop: "18px" }}>
+          <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
+            {CONTENT_STATUS_GROUPS.map((group) => {
+              const groupItems = filteredItems.filter((item) => group.statuses.includes(item.status));
+              return (
+                <div key={group.id} className="rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-semibold text-slate-900">{group.label}</p>
+                    <span className="rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-500 ring-1 ring-slate-100">{groupItems.length}</span>
+                  </div>
+                  <div className="grid gap-2" style={{ marginTop: "10px" }}>
+                    {groupItems.length ? groupItems.map((item) => (
+                      <article
+                        key={item.id}
+                        className={`rounded-2xl border bg-white p-3 shadow-sm transition-colors ${
+                          selectedItem?.id === item.id ? "border-pink-200 ring-2 ring-pink-100" : "border-slate-100 hover:border-slate-200"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold leading-snug text-slate-950">{item.title}</p>
+                            <p className="text-xs text-slate-500" style={{ marginTop: "4px" }}>
+                              {item.targetSlug || "New resource"} · {item.categoryLabel}
+                            </p>
+                          </div>
+                          <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${CONTENT_STATUS_META[item.status]?.tone || "bg-slate-50 text-slate-700 ring-slate-100"}`}>
+                            {CONTENT_STATUS_META[item.status]?.label || formatStateLabel(item.status)}
+                          </span>
+                        </div>
+                        <p className="line-clamp-2 text-xs text-slate-600" style={{ marginTop: "8px" }}>{item.summary}</p>
+                        <div className="flex flex-wrap gap-1.5" style={{ marginTop: "8px" }}>
+                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">{formatStateLabel(item.priority)}</span>
+                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">{item.published ? "published" : "not published"}</span>
+                          {item.relatedPlanId ? <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">plan linked</span> : null}
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2" style={{ marginTop: "10px" }}>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedId(item.id)}
+                            className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                          >
+                            Open details
+                          </button>
+                          <select
+                            value={item.status}
+                            onChange={(event) => onStatusChange(item.id, event.target.value)}
+                            className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700"
+                            aria-label={`Set workflow status for ${item.title}`}
+                          >
+                            {CONTENT_LIFECYCLE_STATUSES.map((status) => (
+                              <option key={status} value={status}>{CONTENT_STATUS_META[status]?.label || formatStateLabel(status)}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </article>
+                    )) : (
+                      <p className="rounded-xl bg-white p-3 text-xs text-slate-500 ring-1 ring-slate-100">No matching items in this lane.</p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <aside className="rounded-2xl bg-slate-950 p-4 text-white shadow-sm">
+            {selectedItem ? (
+              <>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-pink-200">Selected content item</p>
+                    <h3 className="text-xl font-semibold" style={{ marginTop: "4px" }}>{selectedItem.title}</h3>
+                    <p className="text-sm text-slate-300" style={{ marginTop: "6px" }}>{selectedItem.targetTopic || selectedItem.categoryLabel}</p>
+                  </div>
+                  <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-slate-200">
+                    {formatStateLabel(selectedItem.priority)}
+                  </span>
+                </div>
+
+                <div className="grid gap-3" style={{ marginTop: "16px" }}>
+                  <div className="rounded-2xl bg-white/10 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Content goal</p>
+                    <p className="text-sm text-slate-100" style={{ marginTop: "6px" }}>{selectedItem.contentGoal}</p>
+                  </div>
+                  <div className="rounded-2xl bg-white/10 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Opportunity rationale</p>
+                    <p className="text-sm text-slate-100" style={{ marginTop: "6px" }}>{selectedItem.summary}</p>
+                  </div>
+                  <div className="rounded-2xl bg-white/10 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Recommended next step</p>
+                    <p className="text-sm text-slate-100" style={{ marginTop: "6px" }}>{selectedItem.nextAction}</p>
+                  </div>
+                  {selectedItem.suggestedAngle ? (
+                    <div className="rounded-2xl bg-white/10 p-3">
+                      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Suggested angle</p>
+                      <p className="text-sm text-slate-100" style={{ marginTop: "6px" }}>{selectedItem.suggestedAngle}</p>
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs" style={{ marginTop: "14px" }}>
+                  <div className="rounded-xl bg-white/10 p-2">
+                    <p className="text-slate-400">Opportunity</p>
+                    <p className="font-semibold text-slate-100">{selectedItem.relatedOpportunityId || "none"}</p>
+                  </div>
+                  <div className="rounded-xl bg-white/10 p-2">
+                    <p className="text-slate-400">Plan</p>
+                    <p className="font-semibold text-slate-100">{selectedItem.relatedPlanId || "none"}</p>
+                  </div>
+                  <div className="rounded-xl bg-white/10 p-2">
+                    <p className="text-slate-400">Article QA</p>
+                    <p className="font-semibold text-slate-100">{selectedItem.articleGate || "not checked"}{selectedItem.articleScore !== null ? ` · ${selectedItem.articleScore}` : ""}</p>
+                  </div>
+                  <div className="rounded-xl bg-white/10 p-2">
+                    <p className="text-slate-400">Owner</p>
+                    <p className="font-semibold text-slate-100">{selectedItem.owner || "unassigned"}</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2" style={{ marginTop: "14px" }}>
+                  <button
+                    type="button"
+                    onClick={() => moveStatus(selectedItem, -1)}
+                    disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) <= 0}
+                    className="rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Move back
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveStatus(selectedItem, 1)}
+                    disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) >= CONTENT_LIFECYCLE_STATUSES.length - 1}
+                    className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-slate-950 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Move forward
+                  </button>
+                  {selectedItem.briefCommand ? (
+                    <button
+                      type="button"
+                      onClick={() => copyValue(selectedItem.briefCommand, `${selectedItem.id}-command`)}
+                      className="rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15"
+                    >
+                      {copyLabel(`${selectedItem.id}-command`, "Copy command")}
+                    </button>
+                  ) : null}
+                  {selectedItem.briefPrompt ? (
+                    <button
+                      type="button"
+                      onClick={() => copyValue(selectedItem.briefPrompt, `${selectedItem.id}-brief`)}
+                      className="rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15"
+                    >
+                      {copyLabel(`${selectedItem.id}-brief`, "Copy brief")}
+                    </button>
+                  ) : null}
+                  {selectedItem.targetSlug ? (
+                    <button
+                      type="button"
+                      onClick={() => onOpenArticle(selectedItem.targetSlug)}
+                      className="rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15"
+                    >
+                      Open QA planner
+                    </button>
+                  ) : null}
+                </div>
+
+                <div className="rounded-2xl bg-white/10 p-3 text-xs text-slate-300" style={{ marginTop: "14px" }}>
+                  <p className="font-semibold text-slate-100">Workflow history</p>
+                  <p style={{ marginTop: "4px" }}>
+                    Current status: {CONTENT_STATUS_META[selectedItem.status]?.label || formatStateLabel(selectedItem.status)}.
+                    {selectedItem.statusUpdatedAt ? ` Last changed ${formatDateTime(selectedItem.statusUpdatedAt)}.` : " No local status change recorded yet."}
+                  </p>
+                </div>
+              </>
+            ) : (
+              <p className="text-sm text-slate-300">Select a content item to see details.</p>
+            )}
+          </aside>
+        </div>
+      )}
+    </section>
   );
 }
 

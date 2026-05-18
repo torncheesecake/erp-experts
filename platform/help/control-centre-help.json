@@ -42,6 +42,20 @@
         "Commands remain terminal-first unless exposed as allowlisted local actions."
       ]
     },
+    "content": {
+      "title": "Content Workbench",
+      "shortDescription": "Article-level workflow for topics, briefs, drafts, reviews and monitoring.",
+      "whenToUse": "Use this as the primary editorial surface when deciding what content work to progress next.",
+      "keyActions": [
+        "Move content items through lifecycle stages.",
+        "Open details for opportunity rationale and linked plans.",
+        "Copy brief or plan commands without running them automatically."
+      ],
+      "safeNotes": [
+        "Status changes are local workflow state and do not publish content.",
+        "The workbench does not generate full articles or execute arbitrary commands."
+      ]
+    },
     "opportunities": {
       "title": "Opportunities",
       "shortDescription": "Strategic SEO priorities, decision output and execution plans grouped together.",

@@ -197,7 +197,7 @@ The private `/seo-roadmap` route is now framed as the Sentinel Control Centre. I
 The Control Centre is now moving toward an app-shell structure:
 
 - Top App Header: Sentinel branding, current tenant, health, workflow, cadence and readiness indicators.
-- Left Navigation Rail: section-level navigation for Overview, State, Inbox, Opportunities, Actions, Cadence, Tenants and Diagnostics.
+- Left Navigation Rail: section-level navigation for Overview, State, Inbox, Content Workbench, Opportunities, Actions, Cadence, Tenants and Diagnostics.
 - Main Content Area: the current operator panels grouped by purpose rather than stacked as one long dashboard.
 - Status Bar: lightweight readiness, cadence and state-source context.
 
@@ -215,10 +215,13 @@ The Control Centre also supports saved local operator workspaces in `sentinel.op
 
 Contextual operator help lives in `platform/help/control-centre-help.json`. The private Control Centre reads this metadata to explain the selected section, when to use it, safe notes and practical next actions. The help layer is operator-only, includes a subtle first-run hint, and is not shown on `/seo-progress`.
 
+The Content Workbench is now the primary editorial/operator surface inside `/seo-roadmap`. It turns existing opportunities, plans, inbox items, article QA rows and recommendations into content work cards with lifecycle status, priority, category, next action and linked context. Status changes are browser-local workflow state in `sentinel.contentWorkbench.v1`; they do not publish articles, generate articles, run commands or change SEO scoring. See `docs/SENTINEL_CONTENT_WORKBENCH.md`.
+
 The Control Centre groups the operator experience into:
 
 - System Status: health, workflow, cadence, readiness and doctor state.
 - Current Focus: latest opportunity, latest plan, inbox item and recommended next step.
+- Content Workbench: article and topic workflow from discovery through review, readiness, publication and monitoring.
 - Activity Feed: a concise chronological narrative of recent monitor runs, operator actions, cadence runs, report generation and notification payload preparation.
 - Tenant: active client context, stakeholder route, operator route and default tenant scope.
 - Authority State: first gate layer showing whether controlled operator actions are in local bypass, required, verified or failed state.

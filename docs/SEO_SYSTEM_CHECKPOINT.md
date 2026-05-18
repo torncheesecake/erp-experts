@@ -85,7 +85,7 @@ The private `/seo-roadmap` route is being consolidated into the Sentinel Control
 The route now uses a clearer app-shell structure:
 
 - Top App Header: Sentinel branding, current tenant and lightweight health, workflow, cadence and readiness indicators.
-- Left Navigation Rail: Overview, State, Inbox, Opportunities, Actions, Cadence, Tenants and Diagnostics.
+- Left Navigation Rail: Overview, State, Inbox, Content Workbench, Opportunities, Actions, Cadence, Tenants and Diagnostics.
 - Main Content Area: existing panels grouped by operator purpose.
 - Status Bar: readiness, latest cadence and state-source context.
 
@@ -94,6 +94,8 @@ The private Control Centre also persists lightweight operator preferences in loc
 The Control Centre now supports saved local operator workspaces via `sentinel.operatorWorkspaces.v1`. Built-in presets cover Monitoring, Development, Deployment and Roadmap Review, while custom workspaces can be created from the current layout, overwritten, deleted and restored locally. Workspaces remember section, command filter/search, compact mode, sidebar state, visible focus panels and collapse state. They remain browser-local only and are not exposed on `/seo-progress`.
 
 The Control Centre now includes contextual operator help backed by `platform/help/control-centre-help.json`. Help changes with the selected section, explains when to use each area, lists safe notes and shows a subtle first-run hint for new local sessions. This help is private/operator-only and is not exposed on `/seo-progress`.
+
+The Control Centre now includes a primary Content Workbench section for editorial operations. It derives article and topic workflow cards from existing opportunities, plans, inbox items, article QA rows and recommendations, then groups them through `discovered`, `approved`, `researching`, `drafting`, `review`, `ready`, `published` and `monitoring` states. Status changes are persisted only in local browser storage under `sentinel.contentWorkbench.v1`. The Workbench does not publish content, generate full articles, run arbitrary commands or change SEO scoring, and it is not exposed on `/seo-progress`.
 
 The Control Centre has had a UX polish pass focused on daily operation rather than new behaviour. The Overview now prioritises current focus, recommended next step and primary safe actions; command groups are less dense; Activity Feed rows are quieter and taxonomy-labelled; stakeholder routes remain unchanged.
 
@@ -107,6 +109,7 @@ Current operator zones:
 
 - System Status: health, workflow, cadence state, deployment readiness and doctor state.
 - Current Focus: latest opportunity, latest plan, practical inbox item and recommended next step.
+- Content Workbench: article-level workflow for discovered topics, approved work, research, drafting, review, readiness, publication and monitoring.
 - Activity Feed: chronological narrative of recent monitor runs, controlled operator actions, cadence runs, report generation and notification payload preparation.
 - Tenant: active client context for ERP Experts, including base URL, operator route, stakeholder route and future multi-tenant note.
 - Authority State: first gate layer showing whether operator controls are in local bypass, required, verified or failed state.
