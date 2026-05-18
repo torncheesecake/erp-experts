@@ -585,3 +585,7 @@ Sentinel now resolves runtime paths from environment variables while preserving 
 ## Pi Runtime Data Path Migration Command
 
 `npm run platform:pi:data:path:migrate` now provides the dry-run and confirmed command for the future Pi data-path migration. Default mode is read-only. Confirmed mode requires `--confirm`, backs up the repo-local DB before copying, updates only the Pi service `.env` runtime path variables, restarts only `sentinel-api.service` and verifies the localhost API endpoints. The repo-local DB is left in place for rollback.
+
+## Interactive Pi DB Migration Verification
+
+`docs/RASPBERRY_PI_INTERACTIVE_DB_MIGRATION.md` documents the manual migration path for environments where the Pi requires an interactive sudo password. `npm run platform:pi:data:path:verify` is the read-only post-migration verifier. Before manual migration it is expected to report `NOT_READY` because the canonical DB and Pi `.env` runtime path are not yet active. It does not stop services, copy files, edit `.env` or expose the API.

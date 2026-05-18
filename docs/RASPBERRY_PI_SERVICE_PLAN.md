@@ -366,3 +366,17 @@ It stops only `sentinel-api.service`, backs up the repo-local DB, copies it to t
 ### Data Path Migration Sudo Gate
 
 The data-path migration dry-run checks whether non-interactive sudo is available before reporting ready for confirmation. This is required because confirmed mode must stop and restart only `sentinel-api.service`. If `sudo -n true` fails, the migration remains blocked until an approved interactive maintenance path or a narrowly scoped sudoers rule exists. Do not put sudo passwords in scripts, `.env` or committed files.
+
+## Interactive DB Migration Guide
+
+When non-interactive sudo is unavailable, use `docs/RASPBERRY_PI_INTERACTIVE_DB_MIGRATION.md` for the manual DB migration. The guide stops only `sentinel-api.service`, copies the repo-local SQLite DB to `/srv/sentinel/data/seo-ops/platform.db`, updates the Pi `.env` runtime path variables and restarts the service.
+
+After the manual migration, run:
+
+```bash
+npm run platform:pi:data:path:verify
+npm run platform:pi:service:verify
+npm run seo:monitor
+```
+
+`platform:pi:data:path:verify` is read-only. It checks that the canonical DB exists, the repo-local rollback DB still exists, the Pi `.env` points `PLATFORM_DB_PATH` at the canonical DB, the service is active, the API responds locally and `platform:runtime:paths` reports the canonical DB path.

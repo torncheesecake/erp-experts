@@ -90,7 +90,8 @@
     "backup:restore:test": "bash deploy/scripts/restore-simulate.sh",
     "service:dry-run": "bash deploy/scripts/service-dry-run.sh",
     "platform:runtime:paths": "node scripts/platform/platform_runtime_paths.mjs",
-    "platform:pi:data:path:migrate": "node scripts/platform/platform_pi_data_path_migrate.mjs"
+    "platform:pi:data:path:migrate": "node scripts/platform/platform_pi_data_path_migrate.mjs",
+    "platform:pi:data:path:verify": "node scripts/platform/platform_pi_data_path_verify.mjs"
   },
   "homepage": "https://torncheesecake.github.io/erp-experts",
   "dependencies": {

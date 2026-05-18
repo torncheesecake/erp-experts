@@ -101,6 +101,8 @@ reports/sentinel-pi-data-path-plan.json
 reports/sentinel-pi-data-path-plan.md
 reports/sentinel-pi-data-path-migration.md
 reports/sentinel-pi-data-path-migration.json
+reports/sentinel-pi-data-path-verify.json
+reports/sentinel-pi-data-path-verify.md
 reports/sentinel-daily-operator-report.md
 reports/sentinel-stakeholder-weekly-report.md
 reports/sentinel-cadence-summary.json

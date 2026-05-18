@@ -671,3 +671,19 @@ npm run platform:pi:data:path:migrate -- --confirm
 ```
 
 It backs up the repo-local DB, copies it to `/srv/sentinel/data/seo-ops/platform.db`, updates the Pi `.env` with `PLATFORM_DB_PATH`, `PLATFORM_REPORT_OUTPUT_PATH`, `PLATFORM_BACKUP_PATH` and `PLATFORM_LOG_PATH`, runs `platform:health`, restarts `sentinel-api.service` and verifies `/health`, `/state` and `/tenant`. It does not expose the API or enable timers, and it leaves the repo-local DB as the rollback copy.
+
+## Interactive Pi DB Migration Verification
+
+If the automated data-path migration is blocked by interactive sudo, follow:
+
+```text
+docs/RASPBERRY_PI_INTERACTIVE_DB_MIGRATION.md
+```
+
+Then verify the result with:
+
+```bash
+npm run platform:pi:data:path:verify
+```
+
+The verifier is read-only. It confirms the canonical DB exists under `/srv/sentinel/data/seo-ops/platform.db`, the repo-local rollback DB still exists, the Pi `.env` contains canonical runtime paths, `sentinel-api.service` is active, the local API responds and `platform:runtime:paths` reports the canonical DB path.
