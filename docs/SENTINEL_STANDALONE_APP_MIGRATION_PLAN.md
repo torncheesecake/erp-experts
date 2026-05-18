@@ -227,6 +227,7 @@ Design principles:
 - The first viewport is a command surface with live editorial queue rows and lifecycle lanes, not a boxed admin hero.
 - The latest interaction pass reduces the hero treatment further into a compact work-next strip so the Content Workbench itself becomes the main surface.
 - Content items behave as focused editorial work cards with a persistent working panel for rationale, goal, next action, status and safe helpers.
+- Workflow actions now sit above raw commands. The operator chooses tasks such as start research, generate brief, move to review or refresh monitoring, while manual commands remain collapsed for advanced use.
 
 This design pass does not remove operator functionality, change scoring, deploy the standalone app or expose the Pi API. It is a same-repo layout and hierarchy refactor for local operator use.
 

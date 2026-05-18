@@ -124,8 +124,12 @@ The `/sentinel` visual hierarchy now prioritises content operations:
 - Compact operational rail for health, authority, runtime and cadence.
 - Content Workbench-first navigation order.
 - Larger main work surface for article status lanes and selected item detail.
+- Workflow actions on cards and selected-item panels so operators choose the next task before thinking about commands.
+- Raw commands, status overrides and brief prompts remain available behind collapsed manual controls.
 - Workspace and help controls placed after the active work surface so they do not compete with the editorial queue.
 - Infrastructure sections remain accessible but visually secondary.
+
+Workflow action history is local browser state under `sentinel.workflowActions.v1`. It records selected content item actions, status transitions and safe execution outcomes without storing secrets or raw command output.
 
 Local Pi-backed `/sentinel` testing is documented in `docs/SENTINEL_LOCAL_OPERATOR_LAUNCH.md`. It uses an SSH tunnel to reach the Pi API through local `127.0.0.1:4317`, then launches Vite with `VITE_SENTINEL_API_BASE_URL=http://127.0.0.1:4317`. `npm run sentinel:launch -- --tunnel` can start the tunnel in the foreground when explicitly requested. This does not expose the Pi API publicly.
 

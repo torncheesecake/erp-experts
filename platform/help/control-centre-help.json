@@ -47,9 +47,9 @@
       "shortDescription": "Article-level workflow for topics, briefs, drafts, reviews and monitoring.",
       "whenToUse": "Use this as the primary editorial surface when deciding what content work to progress next.",
       "keyActions": [
-        "Move content items through lifecycle stages.",
+        "Use workflow actions to start research, generate briefs and move items into review.",
         "Open details for opportunity rationale and linked plans.",
-        "Copy brief or plan commands without running them automatically."
+        "Keep raw commands in collapsed manual controls unless needed."
       ],
       "safeNotes": [
         "Status changes are local workflow state and do not publish content.",

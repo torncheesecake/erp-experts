@@ -1,6 +1,6 @@
 # Sentinel Content Workbench
 
-The Sentinel Content Workbench is the operator-facing content workflow layer inside `/seo-roadmap`. It shifts the Control Centre from infrastructure-first operation toward day-to-day editorial work.
+The Sentinel Content Workbench is the operator-facing content workflow layer inside `/sentinel` and `/seo-roadmap`. It shifts the Control Centre from infrastructure-first operation toward day-to-day editorial work.
 
 ## Purpose
 
@@ -63,14 +63,29 @@ The standalone view also includes a calmer stage ribbon for:
 
 ## Actions
 
-The workbench supports safe operator actions only:
+The workbench now prioritises workflow actions over raw command thinking. Workflow actions are defined in `platform/workflows/content-workflow-actions.json` and documented in `docs/SENTINEL_WORKFLOW_ACTIONS.md`.
 
-- open details
-- change lifecycle status
-- move status backward or forward
-- copy linked plan command
-- copy brief/planning prompt
-- open the existing QA planner for a published article
+Primary actions include:
+
+- review opportunity
+- approve plan
+- start research
+- generate brief
+- prepare work package
+- move to review
+- mark ready
+- mark published
+- refresh monitoring
+- open diagnostics
+- generate roadmap update
+
+Each action maps to one of three behaviours:
+
+- local lifecycle transition
+- copy-only manual guidance
+- existing allowlisted action execution through the Sentinel API
+
+Raw status controls, linked plan commands and brief prompts remain available, but they are placed behind collapsed manual controls so the operator starts from the task they want to complete.
 
 It does not auto-generate articles, auto-publish, run arbitrary commands or expose deploy/restore/cleanup actions.
 
@@ -80,6 +95,12 @@ Status changes persist in browser local storage under:
 
 ```text
 sentinel.contentWorkbench.v1
+```
+
+Workflow action history persists in browser local storage under:
+
+```text
+sentinel.workflowActions.v1
 ```
 
 This is deliberately local-only for the first release. It avoids a database migration while the workflow model is still being shaped. No secrets, command output, article bodies or API payloads are stored.

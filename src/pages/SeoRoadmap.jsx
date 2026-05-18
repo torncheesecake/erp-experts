@@ -29,6 +29,7 @@ import sentinelTenantRegistry from "../../platform/tenants/tenant-registry.json"
 import sentinelControlCentreHelp from "../../platform/help/control-centre-help.json";
 import sentinelActivityTaxonomy from "../../platform/activity/activity-taxonomy.json";
 import sentinelFeedbackOptions from "../../platform/feedback/feedback-categories.json";
+import sentinelContentWorkflowActions from "../../platform/workflows/content-workflow-actions.json";
 const historyQaModules = import.meta.glob("../../reports/history/*/resource-qa-report.json", { eager: true });
 const sentinelStateModules = import.meta.glob("../../reports/sentinel-state.json", { eager: true });
 const sentinelCadenceModules = import.meta.glob("../../reports/sentinel-cadence-summary.json", { eager: true });
@@ -78,6 +79,10 @@ const CONTENT_STATUS_GROUPS = [
   { id: "live", label: "Live", statuses: ["published", "monitoring"] },
 ];
 const CONTENT_PRIORITY_ORDER = { critical: 0, high: 1, medium: 2, low: 3, monitor: 4 };
+const SENTINEL_WORKFLOW_ACTION_HISTORY_KEY = "sentinel.workflowActions.v1";
+const SENTINEL_CONTENT_WORKFLOW_ACTION_LIST = Array.isArray(sentinelContentWorkflowActions?.actions)
+  ? sentinelContentWorkflowActions.actions
+  : [];
 const SENTINEL_OPERATOR_SESSION_DEFAULTS = {
   activeWorkspaceId: SENTINEL_DEFAULT_WORKSPACE_ID,
   activeSection: "overview",
@@ -537,6 +542,136 @@ function writeContentWorkbenchState(state) {
   } catch {
     // Local content workflow persistence is optional.
   }
+}
+
+function normaliseWorkflowActionHistory(state = {}) {
+  const entries = Array.isArray(state?.entries) ? state.entries : [];
+  return {
+    version: 1,
+    entries: entries
+      .filter((entry) => entry?.id && entry?.actionId && entry?.itemId)
+      .slice(0, 20)
+      .map((entry) => ({
+        id: String(entry.id),
+        itemId: String(entry.itemId),
+        itemTitle: entry.itemTitle || "Untitled content item",
+        actionId: String(entry.actionId),
+        actionLabel: entry.actionLabel || formatStateLabel(entry.actionId),
+        executionMode: entry.executionMode || "local_transition",
+        status: normaliseExecutionStatus(entry.status || "success"),
+        fromStatus: entry.fromStatus || "",
+        toStatus: entry.toStatus || "",
+        message: entry.message || "",
+        recovery: entry.recovery || "",
+        createdAt: entry.createdAt || new Date().toISOString(),
+      })),
+  };
+}
+
+function readWorkflowActionHistory() {
+  if (typeof window === "undefined") return normaliseWorkflowActionHistory();
+
+  try {
+    const raw = window.localStorage.getItem(SENTINEL_WORKFLOW_ACTION_HISTORY_KEY);
+    return normaliseWorkflowActionHistory(raw ? JSON.parse(raw) : {});
+  } catch {
+    return normaliseWorkflowActionHistory();
+  }
+}
+
+function writeWorkflowActionHistory(state) {
+  if (typeof window === "undefined") return;
+
+  try {
+    const normalised = normaliseWorkflowActionHistory(state);
+    if (!normalised.entries.length) {
+      window.localStorage.removeItem(SENTINEL_WORKFLOW_ACTION_HISTORY_KEY);
+      return;
+    }
+    window.localStorage.setItem(SENTINEL_WORKFLOW_ACTION_HISTORY_KEY, JSON.stringify(normalised));
+  } catch {
+    // Local workflow action history is optional.
+  }
+}
+
+function hydrateWorkflowTemplate(template = "", item = {}) {
+  const values = {
+    itemId: item.id || "",
+    title: item.title || "",
+    slug: item.targetSlug || "",
+    planId: item.relatedPlanId || "",
+    opportunityId: item.relatedOpportunityId || "",
+  };
+
+  return String(template).replace(/\{([a-zA-Z0-9_]+)\}/g, (_, key) => values[key] || "");
+}
+
+function getWorkflowManualCopyValue(action = {}, item = {}) {
+  if (!action || !item) return "";
+  if (action.manualSource === "briefCommand") {
+    return item.briefCommand || hydrateWorkflowTemplate(action.fallbackTemplate, item);
+  }
+  if (action.manualSource === "briefPrompt") {
+    return item.briefPrompt || item.briefCommand || hydrateWorkflowTemplate(action.fallbackTemplate, item);
+  }
+  if (action.manualTemplate) return hydrateWorkflowTemplate(action.manualTemplate, item);
+  if (action.fallbackTemplate) return hydrateWorkflowTemplate(action.fallbackTemplate, item);
+  return "";
+}
+
+function isWorkflowActionAvailable(action = {}, item = {}) {
+  if (!action?.id || !item?.id) return false;
+  const validStatuses = Array.isArray(action.validStatuses) ? action.validStatuses : [];
+  if (validStatuses.length && !validStatuses.includes(item.status)) return false;
+  if (action.requiresPlan && !item.relatedPlanId) return false;
+  if (action.executionMode === "manual_copy" && !getWorkflowManualCopyValue(action, item)) return false;
+  return true;
+}
+
+function getWorkflowActionsForItem(item) {
+  if (!item) return [];
+  return SENTINEL_CONTENT_WORKFLOW_ACTION_LIST.filter((action) => isWorkflowActionAvailable(action, item));
+}
+
+function getWorkflowActionGroupsForItem(item) {
+  const available = getWorkflowActionsForItem(item);
+  const primary = available.filter((action) => (
+    Array.isArray(action.primaryStatuses) && action.primaryStatuses.includes(item.status)
+  ));
+  const primaryIds = new Set(primary.map((action) => action.id));
+  const manual = available.filter((action) => action.executionMode === "manual_copy" && !primaryIds.has(action.id));
+  const manualIds = new Set(manual.map((action) => action.id));
+  const secondary = available.filter((action) => !primaryIds.has(action.id) && !manualIds.has(action.id));
+
+  return { primary, secondary, manual };
+}
+
+function getPrimaryWorkflowActionForItem(item) {
+  const { primary, secondary, manual } = getWorkflowActionGroupsForItem(item);
+  return primary[0] || secondary[0] || manual[0] || null;
+}
+
+function workflowActionSafetyLabel(action = {}) {
+  if (action.safety === "safe_allowlisted") return "Allowlisted";
+  if (action.safety === "manual_review") return "Manual review";
+  return "Local state";
+}
+
+function workflowActionModeLabel(action = {}) {
+  if (action.executionMode === "allowlisted_action") return "Runs safe action";
+  if (action.executionMode === "allowlisted_pipeline") return "Runs safe workflow";
+  if (action.executionMode === "manual_copy") return "Copies next step";
+  return "Updates workflow";
+}
+
+function workflowActionButtonClass(action = {}, active = false) {
+  const base = "inline-flex items-center justify-center gap-2 rounded-full px-3 py-2 text-xs font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-50";
+  if (active) return `${base} bg-white text-slate-950 shadow-lg shadow-cyan-950/20 hover:bg-cyan-100`;
+  if (action.executionMode === "manual_copy") return `${base} bg-white/10 text-white hover:bg-white/15`;
+  if (action.executionMode === "allowlisted_action" || action.executionMode === "allowlisted_pipeline") {
+    return `${base} bg-blue-300/15 text-blue-100 ring-1 ring-blue-200/20 hover:bg-blue-300/25`;
+  }
+  return `${base} bg-white text-slate-950 hover:bg-cyan-100`;
 }
 
 function resolveTenantRegistrySnapshot(tenantRegistrySnapshot) {
@@ -1714,6 +1849,8 @@ function SentinelStandaloneFocusSurface({
     .slice(0, 4);
   const liveQueue = priorityQueue.length ? priorityQueue : contentWorkbenchItems.slice(0, 4);
   const leadItem = liveQueue[0] || null;
+  const leadWorkflowAction = getPrimaryWorkflowActionForItem(leadItem);
+  const leadActionLabel = leadWorkflowAction?.label || "Open Workbench";
 
   return (
     <section
@@ -1738,7 +1875,9 @@ function SentinelStandaloneFocusSurface({
               {leadItem?.title || nextBestAction.title}
             </h2>
             <p className="max-w-3xl truncate text-sm text-slate-400" style={{ marginTop: "4px" }}>
-              {leadItem?.nextAction || nextBestAction.why}
+              {leadWorkflowAction
+                ? `${leadWorkflowAction.label}: ${leadWorkflowAction.description}`
+                : leadItem?.nextAction || nextBestAction.why}
             </p>
           </div>
         </div>
@@ -1757,7 +1896,7 @@ function SentinelStandaloneFocusSurface({
             onClick={onOpenContent}
             className="group inline-flex items-center justify-center gap-2 rounded-full bg-cyan-200 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-950/20 transition-colors hover:bg-white"
           >
-            Workbench
+            {leadActionLabel}
             <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
           </button>
         </div>
@@ -2383,7 +2522,9 @@ function SentinelCommandsPanel({
   const authorityAllowsExecution = canUseOperatorAuthority(authoritySnapshot);
   const authorityMessage = authorityDisabledMessage(authoritySnapshot);
   const commands = Array.isArray(commandRegistry?.commands) ? commandRegistry.commands : [];
-  const actions = Array.isArray(actionRegistry?.actions) ? actionRegistry.actions : [];
+  const actions = useMemo(() => (
+    Array.isArray(actionRegistry?.actions) ? actionRegistry.actions : []
+  ), [actionRegistry]);
   const defaultTenant = commandRegistry?.defaultTenant || "erp-experts";
   const tenantScopeNote = commandRegistry?.tenantScopeNote || "Commands currently use the default tenant.";
   const actionByCommand = new Map(actions.filter((action) => action.allowFromUI).map((action) => [action.command, action]));
@@ -6812,6 +6953,9 @@ function AdminView({ onPreview, standaloneMode = false }) {
                     if (slug) setSelectedSlug(slug);
                   }}
                   standaloneMode={standaloneMode}
+                  actionRegistry={sentinelActionRegistry}
+                  authoritySnapshot={authoritySnapshot}
+                  onWorkflowActionComplete={refreshOperatorActivity}
                 />
               </section>
             ) : null}
@@ -7441,7 +7585,16 @@ function ActionInboxPanel({ inboxReport, loading }) {
   );
 }
 
-function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, standaloneMode = false }) {
+function ContentWorkbenchPanel({
+  items,
+  loading,
+  onStatusChange,
+  onOpenArticle,
+  standaloneMode = false,
+  actionRegistry = sentinelActionRegistry,
+  authoritySnapshot,
+  onWorkflowActionComplete,
+}) {
   const [selectedId, setSelectedId] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
@@ -7450,6 +7603,14 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
   const [ownershipFilter, setOwnershipFilter] = useState("all");
   const [copyTarget, setCopyTarget] = useState("");
   const [copyState, setCopyState] = useState("idle");
+  const [workflowActionStates, setWorkflowActionStates] = useState({});
+  const [workflowHistory, setWorkflowHistory] = useState(() => readWorkflowActionHistory());
+  const actions = useMemo(() => (
+    Array.isArray(actionRegistry?.actions) ? actionRegistry.actions : []
+  ), [actionRegistry]);
+  const actionById = useMemo(() => new Map(actions.map((action) => [action.id, action])), [actions]);
+  const authorityAllowsExecution = canUseOperatorAuthority(authoritySnapshot);
+  const authorityMessage = authorityDisabledMessage(authoritySnapshot);
 
   const categories = [...new Set(items.map((item) => item.category).filter(Boolean))];
   const priorities = [...new Set(items.map((item) => item.priority).filter(Boolean))]
@@ -7475,6 +7636,7 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
     [status]: items.filter((item) => item.status === status).length,
   }), {});
   const topNextItem = items.find((item) => ["review", "drafting", "researching", "approved", "discovered"].includes(item.status)) || items[0];
+  const topWorkflowAction = getPrimaryWorkflowActionForItem(topNextItem);
 
   const copyValue = async (value, target) => {
     const ok = await copyText(value, `content workbench ${target}`);
@@ -7500,6 +7662,174 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
     if (nextStatus) onStatusChange(item.id, nextStatus);
   };
 
+  const workflowActionKey = (item, action) => `${item?.id || "item"}:${action?.id || "action"}`;
+
+  const setWorkflowActionState = (item, action, state) => {
+    setWorkflowActionStates((current) => ({
+      ...current,
+      [workflowActionKey(item, action)]: {
+        ...current[workflowActionKey(item, action)],
+        ...state,
+      },
+    }));
+  };
+
+  const recordWorkflowAction = (entry) => {
+    const nextEntry = {
+      id: `workflow-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      createdAt: new Date().toISOString(),
+      ...entry,
+    };
+    setWorkflowHistory((current) => {
+      const next = normaliseWorkflowActionHistory({
+        entries: [nextEntry, ...(current?.entries || [])],
+      });
+      writeWorkflowActionHistory(next);
+      return next;
+    });
+  };
+
+  const executeWorkflowAction = async (action, item) => {
+    if (!action?.id || !item?.id) return;
+    const startedAt = new Date().toISOString();
+    setWorkflowActionState(item, action, {
+      status: "running",
+      message: `${action.label} started.`,
+      startedAt,
+    });
+
+    const finishAction = async ({ status, message, outputExcerpt = "", toStatus = "", recovery = action.recovery || "" }) => {
+      setWorkflowActionState(item, action, {
+        status,
+        message,
+        outputExcerpt,
+        recovery,
+        finishedAt: new Date().toISOString(),
+      });
+      recordWorkflowAction({
+        itemId: item.id,
+        itemTitle: item.title,
+        actionId: action.id,
+        actionLabel: action.label,
+        executionMode: action.executionMode,
+        status,
+        fromStatus: item.status,
+        toStatus,
+        message,
+        recovery,
+      });
+      if (typeof onWorkflowActionComplete === "function") {
+        await onWorkflowActionComplete();
+      }
+    };
+
+    if (action.executionMode === "local_transition") {
+      if (action.nextStatus && action.nextStatus !== item.status) {
+        onStatusChange(item.id, action.nextStatus);
+      }
+      await finishAction({
+        status: "success",
+        message: action.expectedResult || `${action.label} completed.`,
+        toStatus: action.nextStatus || "",
+      });
+      return;
+    }
+
+    if (action.executionMode === "manual_copy") {
+      const copyValueForAction = getWorkflowManualCopyValue(action, item);
+      const ok = await copyText(copyValueForAction, `workflow action ${action.id}`);
+      await finishAction({
+        status: ok ? "success" : "failed",
+        message: ok
+          ? action.expectedResult || `${action.label} copied.`
+          : "Could not copy the workflow step.",
+        outputExcerpt: copyValueForAction,
+      });
+      return;
+    }
+
+    if (!authorityAllowsExecution) {
+      await finishAction({
+        status: "failed",
+        message: authorityMessage,
+      });
+      return;
+    }
+
+    if (action.executionMode === "allowlisted_action") {
+      const allowlistedAction = actionById.get(action.actionId);
+      if (!allowlistedAction?.allowFromUI) {
+        await finishAction({
+          status: "failed",
+          message: "Workflow action is not backed by an allowlisted operator action.",
+        });
+        return;
+      }
+
+      try {
+        const response = await fetch(`${sentinelActionApiBaseUrl}/action`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ actionId: allowlistedAction.id }),
+        });
+        const payload = await response.json().catch(() => ({
+          status: "failed",
+          message: "Action API returned a non-JSON response.",
+        }));
+
+        if (!response.ok || !payload.executionId) {
+          await finishAction({
+            status: "failed",
+            message: payload.message || "Workflow action could not be started.",
+            outputExcerpt: payload.outputExcerpt || payload.error || "",
+          });
+          return;
+        }
+
+        setWorkflowActionState(item, action, {
+          status: normaliseExecutionStatus(payload.status),
+          message: payload.summary || `${action.label} is running.`,
+          executionId: payload.executionId,
+          outputExcerpt: payload.outputExcerpt || "",
+        });
+
+        const finalExecution = await pollSentinelActionExecution(payload.executionId, {
+          onUpdate: (nextExecution) => {
+            setWorkflowActionState(item, action, {
+              status: normaliseExecutionStatus(nextExecution.status),
+              message: nextExecution.summary || `${action.label} is running.`,
+              executionId: nextExecution.executionId || payload.executionId,
+              outputExcerpt: nextExecution.outputExcerpt || "",
+            });
+          },
+        });
+        const finalStatus = normaliseExecutionStatus(finalExecution?.status);
+        const succeeded = finalStatus === "success";
+        if (succeeded && action.nextStatus && action.nextStatus !== item.status) {
+          onStatusChange(item.id, action.nextStatus);
+        }
+        await finishAction({
+          status: succeeded ? "success" : "failed",
+          message: finalExecution?.summary || (succeeded ? action.expectedResult : `${action.label} failed.`),
+          outputExcerpt: finalExecution?.outputExcerpt || "",
+          toStatus: succeeded ? action.nextStatus || "" : "",
+        });
+      } catch (error) {
+        await finishAction({
+          status: "failed",
+          message: `Could not reach local Sentinel API at ${sentinelActionApiBaseUrl}.`,
+          outputExcerpt: error.message,
+        });
+      }
+      return;
+    }
+
+    await finishAction({
+      status: "failed",
+      message: "Workflow action mode is not supported yet.",
+    });
+  };
+
   const stageForItem = (item) => CONTENT_STATUS_GROUPS.find((group) => group.statuses.includes(item?.status))
     || CONTENT_STATUS_GROUPS[0];
   const stageCounts = CONTENT_STATUS_GROUPS.map((group) => ({
@@ -7513,6 +7843,38 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
     if (statusDelta !== 0) return statusDelta;
     return (CONTENT_PRIORITY_ORDER[a.priority] ?? 9) - (CONTENT_PRIORITY_ORDER[b.priority] ?? 9);
   });
+  const selectedWorkflowGroups = getWorkflowActionGroupsForItem(selectedItem);
+  const selectedWorkflowHistory = (workflowHistory?.entries || [])
+    .filter((entry) => entry.itemId === selectedItem?.id)
+    .slice(0, 4);
+  const latestWorkflowAction = selectedItem ? getPrimaryWorkflowActionForItem(selectedItem) : null;
+  const latestWorkflowActionState = selectedItem && latestWorkflowAction
+    ? workflowActionStates[workflowActionKey(selectedItem, latestWorkflowAction)]
+    : null;
+
+  const renderWorkflowActionButton = (action, item, primary = false) => {
+    const state = workflowActionStates[workflowActionKey(item, action)] || {};
+    const actionStatus = state.status ? normaliseExecutionStatus(state.status) : "";
+    const running = actionStatus === "running" || actionStatus === "queued";
+    const locked = (action.executionMode === "allowlisted_action" || action.executionMode === "allowlisted_pipeline") && !authorityAllowsExecution;
+    const disabled = running || locked;
+
+    return (
+      <button
+        key={action.id}
+        type="button"
+        onClick={() => executeWorkflowAction(action, item)}
+        disabled={disabled}
+        title={locked ? authorityMessage : `${workflowActionSafetyLabel(action)}. ${action.description || ""}`}
+        className={workflowActionButtonClass(action, primary)}
+      >
+        {running ? "Running" : action.label}
+        <span className="rounded-full bg-black/10 px-1.5 py-0.5 text-[10px] font-semibold">
+          {workflowActionModeLabel(action)}
+        </span>
+      </button>
+    );
+  };
 
   if (standaloneMode) {
     const selectedStage = selectedItem ? stageForItem(selectedItem) : null;
@@ -7641,6 +8003,13 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
                         {stageItems.map((item) => {
                           const active = selectedItem?.id === item.id;
                           const itemStage = stageForItem(item);
+                          const cardWorkflowAction = getPrimaryWorkflowActionForItem(item);
+                          const cardActionState = cardWorkflowAction ? workflowActionStates[workflowActionKey(item, cardWorkflowAction)] : null;
+                          const cardActionStatus = cardActionState?.status ? normaliseExecutionStatus(cardActionState.status) : "";
+                          const cardActionRunning = ["queued", "running"].includes(cardActionStatus);
+                          const cardActionLocked = cardWorkflowAction
+                            && (cardWorkflowAction.executionMode === "allowlisted_action" || cardWorkflowAction.executionMode === "allowlisted_pipeline")
+                            && !authorityAllowsExecution;
                           return (
                             <article
                               key={item.id}
@@ -7683,17 +8052,22 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
                                   {item.categoryLabel || contentCategoryLabel(item.category)}
                                   {item.targetSlug ? ` · ${item.targetSlug}` : ""}
                                 </p>
-                                <select
-                                  value={item.status}
-                                  onClick={(event) => event.stopPropagation()}
-                                  onChange={(event) => onStatusChange(item.id, event.target.value)}
-                                  className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700"
-                                  aria-label={`Set workflow status for ${item.title}`}
-                                >
-                                  {CONTENT_LIFECYCLE_STATUSES.map((status) => (
-                                    <option key={status} value={status}>{CONTENT_STATUS_META[status]?.label || formatStateLabel(status)}</option>
-                                  ))}
-                                </select>
+                                {cardWorkflowAction ? (
+                                  <button
+                                    type="button"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      executeWorkflowAction(cardWorkflowAction, item);
+                                    }}
+                                    disabled={cardActionRunning || cardActionLocked}
+                                    className="rounded-full bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-cyan-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                    title={cardActionLocked ? authorityMessage : cardWorkflowAction.description}
+                                  >
+                                    {cardActionRunning ? "Running" : cardWorkflowAction.label}
+                                  </button>
+                                ) : (
+                                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-500">No action</span>
+                                )}
                               </div>
                             </article>
                           );
@@ -7719,22 +8093,58 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
                     </div>
 
                     <div className="rounded-2xl bg-cyan-200 p-4 text-slate-950" style={{ marginTop: "18px" }}>
-                      <p className="text-xs font-semibold text-cyan-950/70">Next action</p>
-                      <p className="text-sm font-semibold leading-6" style={{ marginTop: "5px" }}>{selectedItem.nextAction}</p>
+                      <p className="text-xs font-semibold text-cyan-950/70">Next workflow action</p>
+                      <div className="flex flex-wrap items-center justify-between gap-3" style={{ marginTop: "5px" }}>
+                        <p className="text-base font-semibold leading-6">
+                          {latestWorkflowAction?.label || selectedItem.nextAction}
+                        </p>
+                        {latestWorkflowAction ? renderWorkflowActionButton(latestWorkflowAction, selectedItem, true) : null}
+                      </div>
+                      <p className="text-sm leading-6 text-cyan-950/75" style={{ marginTop: "6px" }}>
+                        {latestWorkflowAction?.description || selectedItem.nextAction}
+                      </p>
+                      {latestWorkflowActionState?.message ? (
+                        <p className={`rounded-xl px-3 py-2 text-xs font-semibold ${
+                          normaliseExecutionStatus(latestWorkflowActionState.status) === "failed"
+                            ? "bg-rose-100 text-rose-800"
+                            : "bg-white/65 text-cyan-950"
+                        }`} style={{ marginTop: "10px" }}>
+                          {latestWorkflowActionState.message}
+                        </p>
+                      ) : null}
                     </div>
 
-                    <label className="grid gap-2 text-sm text-slate-300" style={{ marginTop: "16px" }}>
-                      Workflow status
-                      <select
-                        value={selectedItem.status}
-                        onChange={(event) => onStatusChange(selectedItem.id, event.target.value)}
-                        className="rounded-2xl border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold text-white"
-                      >
-                        {CONTENT_LIFECYCLE_STATUSES.map((status) => (
-                          <option key={status} value={status}>{CONTENT_STATUS_META[status]?.label || formatStateLabel(status)}</option>
-                        ))}
-                      </select>
-                    </label>
+                    <div className="grid gap-3" style={{ marginTop: "16px" }}>
+                      {selectedWorkflowGroups.primary.length ? (
+                        <section className="grid gap-2">
+                          <div className="flex items-center justify-between gap-3">
+                            <h4 className="text-sm font-semibold text-white">Primary actions</h4>
+                            <span className="text-xs text-slate-500">Task first</span>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedWorkflowGroups.primary.map((action) => renderWorkflowActionButton(action, selectedItem, true))}
+                          </div>
+                        </section>
+                      ) : null}
+
+                      {selectedWorkflowGroups.secondary.length ? (
+                        <section className="grid gap-2">
+                          <h4 className="text-sm font-semibold text-slate-200">Secondary actions</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedWorkflowGroups.secondary.map((action) => renderWorkflowActionButton(action, selectedItem))}
+                          </div>
+                        </section>
+                      ) : null}
+
+                      {selectedWorkflowGroups.manual.length ? (
+                        <section className="grid gap-2">
+                          <h4 className="text-sm font-semibold text-slate-200">Manual handoff</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedWorkflowGroups.manual.map((action) => renderWorkflowActionButton(action, selectedItem))}
+                          </div>
+                        </section>
+                      ) : null}
+                    </div>
 
                     <div className="grid gap-4" style={{ marginTop: "18px" }}>
                       <section>
@@ -7772,51 +8182,68 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-2" style={{ marginTop: "18px" }}>
-                      <button
-                        type="button"
-                        onClick={() => moveStatus(selectedItem, -1)}
-                        disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) <= 0}
-                        className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-40"
-                      >
-                        Move back
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => moveStatus(selectedItem, 1)}
-                        disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) >= CONTENT_LIFECYCLE_STATUSES.length - 1}
-                        className="rounded-full bg-white px-3 py-2 text-xs font-semibold text-slate-950 transition-colors hover:bg-cyan-100 disabled:cursor-not-allowed disabled:opacity-40"
-                      >
-                        Move forward
-                      </button>
-                      {selectedItem.briefCommand ? (
-                        <button
-                          type="button"
-                          onClick={() => copyValue(selectedItem.briefCommand, `${selectedItem.id}-command`)}
-                          className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
-                        >
-                          {copyLabel(`${selectedItem.id}-command`, "Copy command")}
-                        </button>
-                      ) : null}
-                      {selectedItem.briefPrompt ? (
-                        <button
-                          type="button"
-                          onClick={() => copyValue(selectedItem.briefPrompt, `${selectedItem.id}-brief`)}
-                          className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
-                        >
-                          {copyLabel(`${selectedItem.id}-brief`, "Copy brief")}
-                        </button>
-                      ) : null}
-                      {selectedItem.targetSlug ? (
-                        <button
-                          type="button"
-                          onClick={() => onOpenArticle(selectedItem.targetSlug)}
-                          className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
-                        >
-                          Open QA planner
-                        </button>
-                      ) : null}
-                    </div>
+                    <details className="rounded-2xl bg-white/8 p-3 text-sm text-slate-300" style={{ marginTop: "18px" }}>
+                      <summary className="cursor-pointer font-semibold text-slate-100">Advanced manual controls</summary>
+                      <div className="grid gap-3" style={{ marginTop: "12px" }}>
+                        <label className="grid gap-2 text-sm text-slate-300">
+                          Workflow status
+                          <select
+                            value={selectedItem.status}
+                            onChange={(event) => onStatusChange(selectedItem.id, event.target.value)}
+                            className="rounded-2xl border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold text-white"
+                          >
+                            {CONTENT_LIFECYCLE_STATUSES.map((status) => (
+                              <option key={status} value={status}>{CONTENT_STATUS_META[status]?.label || formatStateLabel(status)}</option>
+                            ))}
+                          </select>
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() => moveStatus(selectedItem, -1)}
+                            disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) <= 0}
+                            className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-40"
+                          >
+                            Move back
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => moveStatus(selectedItem, 1)}
+                            disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) >= CONTENT_LIFECYCLE_STATUSES.length - 1}
+                            className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-40"
+                          >
+                            Move forward
+                          </button>
+                          {selectedItem.briefCommand ? (
+                            <button
+                              type="button"
+                              onClick={() => copyValue(selectedItem.briefCommand, `${selectedItem.id}-command`)}
+                              className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
+                            >
+                              {copyLabel(`${selectedItem.id}-command`, "Copy raw command")}
+                            </button>
+                          ) : null}
+                          {selectedItem.briefPrompt ? (
+                            <button
+                              type="button"
+                              onClick={() => copyValue(selectedItem.briefPrompt, `${selectedItem.id}-brief`)}
+                              className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
+                            >
+                              {copyLabel(`${selectedItem.id}-brief`, "Copy brief prompt")}
+                            </button>
+                          ) : null}
+                          {selectedItem.targetSlug ? (
+                            <button
+                              type="button"
+                              onClick={() => onOpenArticle(selectedItem.targetSlug)}
+                              className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
+                            >
+                              Open QA planner
+                            </button>
+                          ) : null}
+                        </div>
+                      </div>
+                    </details>
 
                     <div className="border-t border-white/10 pt-4 text-xs text-slate-400" style={{ marginTop: "18px" }}>
                       <p className="font-semibold text-slate-200">Workflow notes</p>
@@ -7824,6 +8251,24 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
                         Current status is {CONTENT_STATUS_META[selectedItem.status]?.label || formatStateLabel(selectedItem.status)}.
                         {selectedItem.statusUpdatedAt ? ` Last changed ${formatDateTime(selectedItem.statusUpdatedAt)}.` : " No local status change recorded yet."}
                       </p>
+                      {selectedWorkflowHistory.length ? (
+                        <div className="grid gap-2" style={{ marginTop: "10px" }}>
+                          {selectedWorkflowHistory.map((entry) => (
+                            <div key={entry.id} className="rounded-xl bg-white/8 p-2">
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="font-semibold text-slate-200">{entry.actionLabel}</span>
+                                <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ${actionStatusBadgeClass(entry.status)}`}>
+                                  {formatStateLabel(entry.status)}
+                                </span>
+                              </div>
+                              <p style={{ marginTop: "3px" }}>{entry.message || "Workflow action recorded."}</p>
+                              <p className="text-slate-500" style={{ marginTop: "3px" }}>{formatDateTime(entry.createdAt)}</p>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p style={{ marginTop: "8px" }}>No workflow action history recorded for this item yet.</p>
+                      )}
                     </div>
                   </>
                 ) : (
@@ -7890,8 +8335,13 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
       {topNextItem ? (
         <div className={focusClass} style={{ marginTop: "18px" }}>
           <p className={standaloneMode ? "text-xs font-semibold uppercase tracking-[0.14em] text-cyan-200" : "text-xs font-semibold uppercase tracking-[0.12em] text-pink-700"}>Recommended content focus</p>
-          <p className={standaloneMode ? "text-lg font-semibold tracking-[-0.02em] text-white" : "text-sm font-semibold text-slate-950"} style={{ marginTop: "4px" }}>{topNextItem.title}</p>
-          <p className={standaloneMode ? "text-sm leading-6 text-slate-300" : "text-sm text-slate-700"} style={{ marginTop: "4px" }}>{topNextItem.nextAction}</p>
+          <div className="flex flex-wrap items-center justify-between gap-3" style={{ marginTop: "4px" }}>
+            <p className={standaloneMode ? "text-lg font-semibold tracking-[-0.02em] text-white" : "text-sm font-semibold text-slate-950"}>{topNextItem.title}</p>
+            {topWorkflowAction ? renderWorkflowActionButton(topWorkflowAction, topNextItem, true) : null}
+          </div>
+          <p className={standaloneMode ? "text-sm leading-6 text-slate-300" : "text-sm text-slate-700"} style={{ marginTop: "4px" }}>
+            {topWorkflowAction ? `${topWorkflowAction.label}: ${topWorkflowAction.description}` : topNextItem.nextAction}
+          </p>
         </div>
       ) : null}
 
@@ -8041,6 +8491,25 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
                   ) : null}
                 </div>
 
+                <div className="grid gap-3" style={{ marginTop: "14px" }}>
+                  {selectedWorkflowGroups.primary.length ? (
+                    <section className="grid gap-2">
+                      <h4 className="text-sm font-semibold text-white">Workflow actions</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedWorkflowGroups.primary.map((action) => renderWorkflowActionButton(action, selectedItem, true))}
+                      </div>
+                    </section>
+                  ) : null}
+                  {selectedWorkflowGroups.secondary.length ? (
+                    <section className="grid gap-2">
+                      <h4 className="text-sm font-semibold text-slate-200">Support actions</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedWorkflowGroups.secondary.slice(0, 3).map((action) => renderWorkflowActionButton(action, selectedItem))}
+                      </div>
+                    </section>
+                  ) : null}
+                </div>
+
                 <div className="grid grid-cols-2 gap-2 text-xs" style={{ marginTop: "14px" }}>
                   <div className="rounded-xl bg-white/10 p-2">
                     <p className="text-slate-400">Opportunity</p>
@@ -8060,51 +8529,68 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2" style={{ marginTop: "14px" }}>
-                  <button
-                    type="button"
-                    onClick={() => moveStatus(selectedItem, -1)}
-                    disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) <= 0}
-                    className="rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Move back
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => moveStatus(selectedItem, 1)}
-                    disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) >= CONTENT_LIFECYCLE_STATUSES.length - 1}
-                    className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-slate-950 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Move forward
-                  </button>
-                  {selectedItem.briefCommand ? (
-                    <button
-                      type="button"
-                      onClick={() => copyValue(selectedItem.briefCommand, `${selectedItem.id}-command`)}
-                      className="rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15"
-                    >
-                      {copyLabel(`${selectedItem.id}-command`, "Copy command")}
-                    </button>
-                  ) : null}
-                  {selectedItem.briefPrompt ? (
-                    <button
-                      type="button"
-                      onClick={() => copyValue(selectedItem.briefPrompt, `${selectedItem.id}-brief`)}
-                      className="rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15"
-                    >
-                      {copyLabel(`${selectedItem.id}-brief`, "Copy brief")}
-                    </button>
-                  ) : null}
-                  {selectedItem.targetSlug ? (
-                    <button
-                      type="button"
-                      onClick={() => onOpenArticle(selectedItem.targetSlug)}
-                      className="rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15"
-                    >
-                      Open QA planner
-                    </button>
-                  ) : null}
-                </div>
+                <details className="rounded-2xl bg-white/10 p-3 text-sm text-slate-300" style={{ marginTop: "14px" }}>
+                  <summary className="cursor-pointer font-semibold text-slate-100">Manual controls and commands</summary>
+                  <div className="grid gap-3" style={{ marginTop: "12px" }}>
+                    <label className="grid gap-2 text-sm text-slate-300">
+                      Workflow status
+                      <select
+                        value={selectedItem.status}
+                        onChange={(event) => onStatusChange(selectedItem.id, event.target.value)}
+                        className="rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold text-white"
+                      >
+                        {CONTENT_LIFECYCLE_STATUSES.map((status) => (
+                          <option key={status} value={status}>{CONTENT_STATUS_META[status]?.label || formatStateLabel(status)}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => moveStatus(selectedItem, -1)}
+                        disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) <= 0}
+                        className="rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        Move back
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveStatus(selectedItem, 1)}
+                        disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) >= CONTENT_LIFECYCLE_STATUSES.length - 1}
+                        className="rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        Move forward
+                      </button>
+                      {selectedItem.briefCommand ? (
+                        <button
+                          type="button"
+                          onClick={() => copyValue(selectedItem.briefCommand, `${selectedItem.id}-command`)}
+                          className="rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15"
+                        >
+                          {copyLabel(`${selectedItem.id}-command`, "Copy raw command")}
+                        </button>
+                      ) : null}
+                      {selectedItem.briefPrompt ? (
+                        <button
+                          type="button"
+                          onClick={() => copyValue(selectedItem.briefPrompt, `${selectedItem.id}-brief`)}
+                          className="rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15"
+                        >
+                          {copyLabel(`${selectedItem.id}-brief`, "Copy brief prompt")}
+                        </button>
+                      ) : null}
+                      {selectedItem.targetSlug ? (
+                        <button
+                          type="button"
+                          onClick={() => onOpenArticle(selectedItem.targetSlug)}
+                          className="rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15"
+                        >
+                          Open QA planner
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+                </details>
 
                 <div className="rounded-2xl bg-white/10 p-3 text-xs text-slate-300" style={{ marginTop: "14px" }}>
                   <p className="font-semibold text-slate-100">Workflow history</p>
@@ -8112,6 +8598,21 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
                     Current status: {CONTENT_STATUS_META[selectedItem.status]?.label || formatStateLabel(selectedItem.status)}.
                     {selectedItem.statusUpdatedAt ? ` Last changed ${formatDateTime(selectedItem.statusUpdatedAt)}.` : " No local status change recorded yet."}
                   </p>
+                  {selectedWorkflowHistory.length ? (
+                    <div className="grid gap-2" style={{ marginTop: "10px" }}>
+                      {selectedWorkflowHistory.map((entry) => (
+                        <div key={entry.id} className="rounded-xl bg-white/10 p-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-semibold text-slate-100">{entry.actionLabel}</span>
+                            <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ${actionStatusBadgeClass(entry.status)}`}>
+                              {formatStateLabel(entry.status)}
+                            </span>
+                          </div>
+                          <p style={{ marginTop: "3px" }}>{entry.message || "Workflow action recorded."}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               </>
             ) : (
