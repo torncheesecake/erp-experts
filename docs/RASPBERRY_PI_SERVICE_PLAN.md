@@ -380,3 +380,14 @@ npm run seo:monitor
 ```
 
 `platform:pi:data:path:verify` is read-only. It checks that the canonical DB exists, the repo-local rollback DB still exists, the Pi `.env` points `PLATFORM_DB_PATH` at the canonical DB, the service is active, the API responds locally and `platform:runtime:paths` reports the canonical DB path.
+
+## Post-Migration Service Verification
+
+After the canonical DB migration, `npm run platform:pi:service:verify` reports the active DB separately from the retained repo-local fallback:
+
+```text
+Active DB: canonical
+Repo-local DB: present as fallback
+```
+
+The repo-local DB remains in `/srv/sentinel/apps/seo-ops/platform/persistence/platform.db` as a rollback copy and is no longer a warning when `PLATFORM_DB_PATH` points to `/srv/sentinel/data/seo-ops/platform.db`, the canonical DB exists and `platform:runtime:paths` reports `READY`. The verifier still warns if the Pi `.env` is missing `PLATFORM_DB_PATH`, runtime paths still point at the repo-local DB, the canonical DB is missing or `/state` cannot be read.

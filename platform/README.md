@@ -687,3 +687,14 @@ npm run platform:pi:data:path:verify
 ```
 
 The verifier is read-only. It confirms the canonical DB exists under `/srv/sentinel/data/seo-ops/platform.db`, the repo-local rollback DB still exists, the Pi `.env` contains canonical runtime paths, `sentinel-api.service` is active, the local API responds and `platform:runtime:paths` reports the canonical DB path.
+
+## Pi Service Verifier After Canonical DB Migration
+
+After the Pi `.env` points `PLATFORM_DB_PATH` at `/srv/sentinel/data/seo-ops/platform.db`, the service verifier treats the repo-local SQLite file as an intentional fallback:
+
+```text
+Active DB: canonical
+Repo-local DB: present as fallback
+```
+
+This avoids a false service warning after migration. The verifier still warns if the canonical DB is missing, runtime paths are not `READY`, runtime paths point at the repo-local DB, or the API cannot return `/state`.

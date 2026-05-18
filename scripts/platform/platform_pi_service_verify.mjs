@@ -18,6 +18,10 @@ const expectedNpmPath = "/usr/local/bin/npm";
 const expectedExecStart = `${expectedNpmPath} run platform:api:serve`;
 const expectedWorkingDirectory = defaultAppPath;
 const expectedEnvFile = `${defaultAppPath}/.env`;
+const canonicalDataRoot = `${defaultDeployRoot}/data/seo-ops`;
+const repoLocalDbRelative = "platform/persistence/platform.db";
+const repoLocalDbPath = `${defaultAppPath}/${repoLocalDbRelative}`;
+const canonicalDbPath = `${canonicalDataRoot}/platform.db`;
 const apiHost = "127.0.0.1";
 const apiPort = "4317";
 
@@ -115,6 +119,12 @@ ${marker("git_status_count", "cd \"$APP_PATH\" 2>/dev/null && git status --short
 ${marker("git_status_excerpt", "cd \"$APP_PATH\" 2>/dev/null && git status --short | head -n 10 | paste -sd '|' -")}
 emit platform_db "$([ -f "$APP_PATH/platform/persistence/platform.db" ] && printf present || printf missing)"
 ${marker("platform_db_size", "du -h \"$APP_PATH/platform/persistence/platform.db\" 2>/dev/null | cut -f1")}
+CANONICAL_DB=${shellQuote(canonicalDbPath)}
+ENV_FILE="$APP_PATH/.env"
+${marker("canonical_db", "if [ -f \"$CANONICAL_DB\" ]; then echo present; else echo missing; fi")}
+${marker("canonical_db_size", "du -h \"$CANONICAL_DB\" 2>/dev/null | cut -f1")}
+${marker("env_platform_db_path", "grep -E '^PLATFORM_DB_PATH=' \"$ENV_FILE\" 2>/dev/null | tail -n 1 | cut -d= -f2-")}
+${marker("canonical_backup_count", "find \"$(dirname \"$CANONICAL_DB\")\" -maxdepth 1 -type f -name 'platform.db.backup-*' 2>/dev/null | wc -l | tr -d ' '")}
 ${marker("service_unit_file", "systemctl list-unit-files \"$SERVICE\" --no-legend 2>/dev/null | awk '{print $1 \":\" $2}'")}
 ${marker("service_enabled", "systemctl is-enabled \"$SERVICE\" 2>&1")}
 ${marker("service_active", "systemctl is-active \"$SERVICE\" 2>&1")}
@@ -127,6 +137,9 @@ ${marker("environment_files", "systemctl show \"$SERVICE\" -p EnvironmentFiles -
 ${marker("environment", "systemctl show \"$SERVICE\" -p Environment --value 2>/dev/null")}
 ${marker("listen_addresses", "ss -ltn | awk '$4 ~ /:4317$/ {print $4}' | paste -sd '|' -")}
 ${marker("sentinel_timers", "systemctl list-timers --all --no-pager 2>/dev/null | grep -i sentinel | paste -sd '|' -")}
+RUNTIME_OUTPUT="$(cd "$APP_PATH" 2>/dev/null && set -a && . "$ENV_FILE" 2>/dev/null && set +a && node scripts/platform/platform_runtime_paths.mjs --json 2>&1)"
+emit runtime_paths_status "$?"
+emit_b64 runtime_paths "$RUNTIME_OUTPUT"
 SERVICE_CAT="$(systemctl cat "$SERVICE" 2>/dev/null)"
 emit_b64 service_cat "$SERVICE_CAT"
 curl_endpoint health "http://$API_HOST:$API_PORT/health"
@@ -239,6 +252,14 @@ function summariseState(json) {
 function summariseTenant(json) {
   if (!json || typeof json !== "object") return "No tenant JSON returned.";
   return `${json.name || json.brandName || "unknown"} (${json.tenantId || "unknown"})`;
+}
+
+function runtimePathValue(runtimeJson, key) {
+  if (!runtimeJson || typeof runtimeJson !== "object") return null;
+  if (Array.isArray(runtimeJson.paths)) {
+    return runtimeJson.paths.find((item) => item?.key === key)?.path || null;
+  }
+  return runtimeJson.paths?.[key]?.path || null;
 }
 
 function listenAddresses(remote) {
@@ -387,9 +408,56 @@ function classify({ host, user, sshResult, remote }) {
     checks.push(makeCheck("timers", "Sentinel timers", "pass", "No Sentinel timers listed."));
   }
 
-  if (remote.platform_db === "present") {
-    warnings.push("Platform DB is currently repo-local at platform/persistence/platform.db. Review this before making the Pi the canonical runtime state.");
-    checks.push(makeCheck("platform_db_location", "Platform DB location", "warning", `Repo-local DB present${remote.platform_db_size ? ` (${remote.platform_db_size})` : ""}.`));
+  const runtime = parseJsonPayload(remote.runtime_paths_b64);
+  const runtimeDbPath = runtimePathValue(runtime.json, "db");
+  const runtimeReady = remote.runtime_paths_status === "0" && runtime.json?.status === "READY";
+  const canonicalDbExists = remote.canonical_db === "present";
+  const canonicalDbActive = remote.env_platform_db_path === canonicalDbPath
+    && canonicalDbExists
+    && runtimeReady
+    && runtimeDbPath === canonicalDbPath;
+
+  if (canonicalDbActive) {
+    checks.push(makeCheck("active_db", "Active DB", "pass", `canonical ${canonicalDbPath}`));
+    if (remote.platform_db === "present") {
+      checks.push(makeCheck("repo_db_fallback", "Repo-local DB", "pass", `present as fallback${remote.platform_db_size ? ` (${remote.platform_db_size})` : ""}.`));
+    }
+  } else if (sshResult.ok) {
+    if (!remote.env_platform_db_path) {
+      warnings.push("PLATFORM_DB_PATH is missing. The service may still be using the repo-local DB.");
+      checks.push(makeCheck("active_db", "Active DB", "warning", "PLATFORM_DB_PATH is not set."));
+    } else if (remote.env_platform_db_path !== canonicalDbPath) {
+      warnings.push(`PLATFORM_DB_PATH does not point to the canonical DB: ${remote.env_platform_db_path}.`);
+      checks.push(makeCheck("active_db", "Active DB", "warning", remote.env_platform_db_path));
+    }
+
+    if (!canonicalDbExists) {
+      warnings.push(`Canonical DB is missing: ${canonicalDbPath}.`);
+      checks.push(makeCheck("canonical_db", "Canonical DB", "warning", "Missing."));
+    }
+
+    if (remote.runtime_paths_status === "0" && runtimeDbPath === repoLocalDbPath) {
+      warnings.push("Runtime paths still point to the repo-local DB.");
+      checks.push(makeCheck("runtime_paths_db", "Runtime paths DB", "warning", runtimeDbPath));
+    } else if (remote.runtime_paths_status !== "0") {
+      warnings.push("Runtime paths command could not be read on the Pi.");
+      checks.push(makeCheck("runtime_paths_db", "Runtime paths DB", "warning", decodeB64(remote.runtime_paths_b64) || "Unavailable."));
+    } else if (runtimeDbPath && runtimeDbPath !== canonicalDbPath) {
+      warnings.push(`Runtime paths point to a non-canonical DB: ${runtimeDbPath}.`);
+      checks.push(makeCheck("runtime_paths_db", "Runtime paths DB", "warning", runtimeDbPath));
+    }
+
+    if (remote.platform_db === "present") {
+      checks.push(makeCheck("repo_db_fallback", "Repo-local DB", "warning", `present, active DB not confirmed canonical${remote.platform_db_size ? ` (${remote.platform_db_size})` : ""}.`));
+    }
+  }
+
+  if (canonicalDbExists && !canonicalDbActive) {
+    checks.push(makeCheck("canonical_db_present", "Canonical DB present", "pass", `Present${remote.canonical_db_size ? ` (${remote.canonical_db_size})` : ""}.`));
+  }
+
+  if (canonicalDbActive && Number(remote.canonical_backup_count || 0) > 0) {
+    checks.push(makeCheck("canonical_db_backup", "Canonical DB backup", "pass", `${remote.canonical_backup_count} backup file(s) present.`));
   }
 
   warnings.push("Remote auth enforcement is not implemented yet. Keep the API localhost-only and do not add a reverse proxy until auth exists.");
@@ -437,6 +505,12 @@ function buildReport() {
       listenAddresses: listenAddresses(remote),
       sentinelTimers: remote.sentinel_timers || "none",
       platformDbSize: remote.platform_db_size || "unknown",
+      activeDbPath: runtimePathValue(parseJsonPayload(remote.runtime_paths_b64).json, "db") || remote.env_platform_db_path || "unknown",
+      canonicalDbPath,
+      canonicalDbPresent: remote.canonical_db === "present",
+      repoLocalDbPresent: remote.platform_db === "present",
+      repoLocalDbPath,
+      canonicalBackupCount: Number(remote.canonical_backup_count || 0),
     },
     endpointResults: {
       health: {
@@ -458,7 +532,7 @@ function buildReport() {
     blockers: classification.blockers,
     recommendedNextStep: classification.blockers.length
       ? "Fix service blockers, then rerun npm run platform:pi:service:verify."
-      : "Service is healthy. Keep it localhost-only; next work should address canonical DB path and remote auth before any public exposure.",
+      : "Service is healthy. Keep it localhost-only; do not add public exposure until remote auth exists.",
   };
 }
 
@@ -494,6 +568,9 @@ function buildMarkdown(report) {
     `- EnvironmentFiles: ${report.remote.environmentFiles}`,
     `- Listen addresses: ${report.remote.listenAddresses.join(", ") || "none"}`,
     `- Sentinel timers: ${report.remote.sentinelTimers}`,
+    `- Active DB: ${report.remote.activeDbPath === report.remote.canonicalDbPath ? "canonical" : report.remote.activeDbPath}`,
+    `- Canonical DB: ${report.remote.canonicalDbPresent ? report.remote.canonicalDbPath : "missing"}`,
+    `- Repo-local DB: ${report.remote.repoLocalDbPresent ? "present as fallback" : "missing"}`,
     "",
     "## Endpoint Results",
     "",
@@ -545,6 +622,8 @@ function printReport(report) {
   console.log(`- ExecStart: ${report.remote.execStart}`);
   console.log(`- WorkingDirectory: ${report.remote.workingDirectory}`);
   console.log(`- Listen addresses: ${report.remote.listenAddresses.join(", ") || "none"}`);
+  console.log(`- Active DB: ${report.remote.activeDbPath === report.remote.canonicalDbPath ? "canonical" : report.remote.activeDbPath}`);
+  console.log(`- Repo-local DB: ${report.remote.repoLocalDbPresent ? "present as fallback" : "missing"}`);
   console.log("");
   console.log("Endpoint results:");
   console.log(`- /health: ${report.endpointResults.health.summary}`);
