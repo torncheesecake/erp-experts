@@ -82,7 +82,7 @@ http://localhost:5173/sentinel
 
 The prototype reuses the existing Control Centre systems but renders outside the ERP Experts website layout, with Sentinel by Artifexa branding and no ERP Experts public header or footer. It opens into a standalone operator frame that highlights the active tenant, runtime source and private access state before the detailed platform panels.
 
-For local Pi-backed testing, use `docs/SENTINEL_LOCAL_OPERATOR_LAUNCH.md`. The workflow keeps the Pi API private by using an SSH tunnel from local port `4317` to the Pi's `127.0.0.1:4317`, then starts Vite with `VITE_SENTINEL_API_BASE_URL=http://127.0.0.1:4317`.
+For local Pi-backed testing, use `docs/SENTINEL_LOCAL_OPERATOR_LAUNCH.md`. The workflow keeps the Pi API private by using an SSH tunnel from local port `4317` to the Pi's `127.0.0.1:4317`, then starts Vite with `VITE_SENTINEL_API_BASE_URL=http://127.0.0.1:4317`. `npm run sentinel:launch -- --tunnel` can start that tunnel in the foreground when explicitly requested.
 
 ### Existing `/seo-roadmap`
 

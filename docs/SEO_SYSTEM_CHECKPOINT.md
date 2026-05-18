@@ -14,7 +14,7 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 
 The first local prototype route now exists at `/sentinel`. It renders the Sentinel operator shell outside the ERP Experts website layout, uses Sentinel by Artifexa branding, reuses the existing Control Centre systems and now opens with Content Workbench as the primary work surface. It is development-only and mirrors the `/seo-roadmap` production guard by redirecting to `/seo-progress` in production builds.
 
-`docs/SENTINEL_LOCAL_OPERATOR_LAUNCH.md` documents the local Pi-backed launch workflow. `npm run sentinel:launch` prints the two-terminal SSH tunnel and Vite instructions, checks local `4317` and `5173` reachability, and does not start processes or mutate the Pi.
+`docs/SENTINEL_LOCAL_OPERATOR_LAUNCH.md` documents the local Pi-backed launch workflow. `npm run sentinel:launch` prints the SSH tunnel and Vite instructions, checks local `4317` and `5173` reachability, and does not start processes or mutate the Pi. `npm run sentinel:launch -- --tunnel` can start the localhost-only SSH tunnel in the foreground when explicitly requested; it still does not start Vite or expose the Pi API.
 
 
 ## Current commands

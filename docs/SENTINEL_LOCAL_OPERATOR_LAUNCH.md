@@ -21,7 +21,7 @@ http://localhost:5173/sentinel
 - The Pi API remains bound to localhost on the Pi.
 - Remote authority is still disabled unless a later task explicitly enables it.
 
-## Quick Check
+## Quick Check Mode
 
 From the local repo:
 
@@ -35,17 +35,43 @@ The helper prints the two-terminal launch workflow and checks:
 - whether `/authority/status` is readable when the API is reachable
 - whether the local Vite dev server appears to be running at `http://localhost:5173/sentinel`
 
-It does not start SSH, does not start Vite and does not mutate the Pi.
+Default mode does not start SSH, does not start Vite and does not mutate the Pi.
+
+Useful options:
+
+```bash
+npm run sentinel:launch -- --help
+npm run sentinel:launch -- --port 4318
+npm run sentinel:launch -- --pi-host 192.168.4.22 --pi-user matthew
+```
+
+The helper reads `RASPBERRY_PI_HOST` and `RASPBERRY_PI_USER` from local environment variables or local `.env` files when available. Do not put passwords in `.env`.
 
 ## Terminal 1: SSH Tunnel
 
-Keep this terminal open:
+Recommended helper mode:
 
 ```bash
-ssh -N -L 4317:127.0.0.1:4317 matthew@192.168.4.22
+npm run sentinel:launch -- --tunnel
+```
+
+This starts the tunnel in the foreground only if `http://127.0.0.1:4317/health` is not already reachable.
+
+Keep this terminal open. `Ctrl+C` closes the tunnel.
+
+Equivalent raw SSH command:
+
+```bash
+ssh -N -L 127.0.0.1:4317:127.0.0.1:4317 matthew@192.168.4.22
 ```
 
 This maps local Mac port `4317` to the Pi's private localhost API. It does not expose the API to the wider network.
+
+If `RASPBERRY_PI_USER` is not available, pass it explicitly:
+
+```bash
+npm run sentinel:launch -- --tunnel --pi-user matthew
+```
 
 ## Terminal 2: Frontend
 
@@ -81,6 +107,14 @@ Check:
 - `sentinel-api.service` is active on the Pi
 - the frontend was launched with `VITE_SENTINEL_API_BASE_URL=http://127.0.0.1:4317`
 
+You can rerun:
+
+```bash
+npm run sentinel:launch
+```
+
+to check local API and dev server reachability.
+
 ### Authority State Shows Local Bypass
 
 This is expected while `SENTINEL_AUTHORITY_MODE=disabled`.
@@ -104,3 +138,11 @@ The Pi service should continue to bind to:
 ```
 
 Do not change firewall rules, router settings, DNS, reverse proxy or Nginx for this workflow.
+
+## What This Does Not Do
+
+- It does not start Vite automatically.
+- It does not expose the Pi API publicly.
+- It does not change `SENTINEL_AUTHORITY_MODE`.
+- It does not store passwords.
+- It does not mutate the Pi.
