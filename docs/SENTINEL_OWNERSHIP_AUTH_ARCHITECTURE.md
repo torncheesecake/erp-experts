@@ -114,6 +114,10 @@ Target model:
 - Controlled actions, execution pipelines, cadence, approvals and operational reports remain governed by Matthew-controlled infrastructure.
 - Future tenant dashboards should authenticate against Sentinel rather than becoming standalone public control panels.
 
+## Implemented First Gate
+
+The first authority gate layer now exists in the local Sentinel API and private Control Centre. The API exposes `GET /authority/status`, reads any expected operator token from `SENTINEL_OPERATOR_TOKEN`, and protects mutation endpoints when `SENTINEL_AUTHORITY_MODE=enabled`. The default remains disabled with local bypass for development. This is not a login system and it does not expose the API publicly.
+
 ## Non-Goals For This Step
 
 This document does not implement:

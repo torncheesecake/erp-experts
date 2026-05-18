@@ -43,6 +43,7 @@ const sentinelWorkPackageReviewModules = import.meta.glob("../../reports/sentine
 const sentinelImplementationStatusModules = import.meta.glob("../../reports/sentinel-implementation-status.json", { eager: true });
 const sentinelApiBaseUrl = String(import.meta.env.VITE_SENTINEL_API_BASE_URL || "").replace(/\/+$/, "");
 const sentinelActionApiBaseUrl = sentinelApiBaseUrl || "http://127.0.0.1:4317";
+const sentinelAuthorityMode = String(import.meta.env.VITE_SENTINEL_AUTHORITY_MODE || "disabled").trim().toLowerCase();
 const SENTINEL_OPERATOR_SESSION_KEY = "sentinel.operatorSession.v1";
 const SENTINEL_OPERATOR_WORKSPACES_KEY = "sentinel.operatorWorkspaces.v1";
 const SENTINEL_DEFAULT_WORKSPACE_ID = "monitoring";
@@ -469,6 +470,41 @@ function resolveTenantRegistrySnapshot(tenantRegistrySnapshot) {
 
 function formatStateLabel(value = "") {
   return String(value || "unknown").replaceAll("_", " ");
+}
+
+function initialAuthoritySnapshot() {
+  const mode = sentinelAuthorityMode === "enabled" ? "enabled" : "disabled";
+  return {
+    mode,
+    authorityName: "Matthew-controlled Sentinel API",
+    localBypass: mode === "disabled",
+    authorityVerified: false,
+    state: mode === "enabled" ? "authority_required" : "local_bypass",
+    source: "frontend_config",
+  };
+}
+
+function canUseOperatorAuthority(authoritySnapshot) {
+  const state = authoritySnapshot?.state || "local_bypass";
+  return state === "local_bypass" || state === "authority_verified";
+}
+
+function authorityStateBadgeClass(state = "") {
+  if (state === "authority_verified" || state === "local_bypass") {
+    return "bg-emerald-50 text-emerald-700 ring-emerald-100";
+  }
+  if (state === "authority_required") {
+    return "bg-amber-50 text-amber-800 ring-amber-100";
+  }
+  return "bg-rose-50 text-rose-700 ring-rose-100";
+}
+
+function authorityDisabledMessage(authoritySnapshot) {
+  if (canUseOperatorAuthority(authoritySnapshot)) return "";
+  if (authoritySnapshot?.state === "authority_required") {
+    return "Operator authority is required before controlled actions can run.";
+  }
+  return "Operator authority could not be verified. Controlled actions are locked.";
 }
 
 function formatDateTime(value) {
@@ -1778,35 +1814,45 @@ function TenantContextPanel({ tenantRegistrySnapshot }) {
   );
 }
 
-function RemoteAuthorityNote() {
+function AuthorityStatePanel({ authoritySnapshot }) {
+  const state = authoritySnapshot?.state || "local_bypass";
+  const mode = authoritySnapshot?.mode || "disabled";
+  const protectedEndpoints = Array.isArray(authoritySnapshot?.protectedEndpoints)
+    ? authoritySnapshot.protectedEndpoints
+    : ["/action", "/pipeline/run", "/feedback", "/feedback/triage"];
+  const controlsUnlocked = canUseOperatorAuthority(authoritySnapshot);
+
   return (
     <section className="rounded-[28px] bg-slate-950 p-5 text-white shadow-sm ring-1 ring-slate-900/80 md:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-200">Future Remote Authority</p>
-          <h2 className="text-xl font-semibold text-white">Matthew-controlled Sentinel API</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-200">Authority State</p>
+          <h2 className="text-xl font-semibold text-white">{authoritySnapshot?.authorityName || "Matthew-controlled Sentinel API"}</h2>
           <p className="max-w-3xl text-sm text-slate-300">
-            Future remote authority: operator controls should require Matthew's Sentinel API before production exposure.
+            First authority gate layer for controlled operator actions. Local development remains available by default, and no public API exposure exists.
           </p>
         </div>
-        <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200 ring-1 ring-white/15">
-          planning only
+        <span className={`rounded-full px-3 py-1 text-xs font-semibold ring-1 ${authorityStateBadgeClass(state)}`}>
+          {formatStateLabel(state)}
         </span>
       </div>
       <div className="grid gap-3 md:grid-cols-3" style={{ marginTop: "16px" }}>
         <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Current</p>
-          <p className="text-sm font-semibold text-white">Local development remains unlocked.</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Mode</p>
+          <p className="text-sm font-semibold text-white">{formatStateLabel(mode)}</p>
         </div>
         <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Future</p>
-          <p className="text-sm font-semibold text-white">Operator controls unlock only after API authority.</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Controls</p>
+          <p className="text-sm font-semibold text-white">{controlsUnlocked ? "Unlocked for current mode" : "Locked until verified"}</p>
         </div>
         <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Stakeholder</p>
-          <p className="text-sm font-semibold text-white">/seo-progress remains safe without the API.</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Local bypass</p>
+          <p className="text-sm font-semibold text-white">{authoritySnapshot?.localBypass ? "Allowed" : "Disabled"}</p>
         </div>
       </div>
+      <p className="text-xs text-slate-400" style={{ marginTop: "14px" }}>
+        Protected endpoints: {protectedEndpoints.join(", ")}. Stakeholder pages are unaffected. No token values are returned or stored in the browser.
+      </p>
     </section>
   );
 }
@@ -1951,6 +1997,7 @@ function CommandCategoryButton({ label, active, onClick }) {
 function SentinelCommandsPanel({
   commandRegistry,
   actionRegistry,
+  authoritySnapshot,
   query,
   category,
   onQueryChange,
@@ -1961,6 +2008,8 @@ function SentinelCommandsPanel({
   const [copyState, setCopyState] = useState("idle");
   const [runningAction, setRunningAction] = useState("");
   const [actionResult, setActionResult] = useState(null);
+  const authorityAllowsExecution = canUseOperatorAuthority(authoritySnapshot);
+  const authorityMessage = authorityDisabledMessage(authoritySnapshot);
   const commands = Array.isArray(commandRegistry?.commands) ? commandRegistry.commands : [];
   const actions = Array.isArray(actionRegistry?.actions) ? actionRegistry.actions : [];
   const defaultTenant = commandRegistry?.defaultTenant || "erp-experts";
@@ -2003,6 +2052,16 @@ function SentinelCommandsPanel({
   };
 
   const runAction = async (action) => {
+    if (!authorityAllowsExecution) {
+      setActionResult({
+        action: action.id,
+        status: "failed",
+        ok: false,
+        message: authorityMessage,
+      });
+      return;
+    }
+
     setRunningAction(action.id);
     setActionResult(null);
     try {
@@ -2068,6 +2127,11 @@ function SentinelCommandsPanel({
           <p className="text-xs text-slate-500" style={{ marginTop: "6px" }}>
             Default tenant: <span className="font-semibold text-slate-700">{defaultTenant}</span>. {tenantScopeNote}
           </p>
+          {!authorityAllowsExecution ? (
+            <p className="text-xs font-semibold text-amber-700" style={{ marginTop: "6px" }}>
+              {authorityMessage}
+            </p>
+          ) : null}
         </div>
         <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">
           {commands.length} registered
@@ -2093,7 +2157,7 @@ function SentinelCommandsPanel({
                   key={action.id}
                   type="button"
                   onClick={() => runAction(action)}
-                  disabled={Boolean(isRunning)}
+                  disabled={Boolean(isRunning) || !authorityAllowsExecution}
                   className="rounded-2xl bg-white p-3 text-left ring-1 ring-slate-100 transition hover:bg-pink-50 hover:ring-pink-100 disabled:cursor-wait disabled:opacity-70"
                 >
                   <span className="block text-sm font-semibold text-slate-950">{isRunning ? "Running…" : action.label}</span>
@@ -2161,7 +2225,7 @@ function SentinelCommandsPanel({
                         <button
                           type="button"
                           onClick={() => runAction(safeAction)}
-                          disabled={Boolean(isRunning)}
+                          disabled={Boolean(isRunning) || !authorityAllowsExecution}
                           className="rounded-full bg-pink-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-pink-700 disabled:cursor-wait disabled:bg-pink-300"
                         >
                           {isRunning ? "Running" : "Run"}
@@ -2953,12 +3017,14 @@ function RoadmapIntelligencePanel({ roadmap, approvals = [], implementationBrief
   );
 }
 
-function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
+function OperatorConsolePanel({ actionRegistry, history, authoritySnapshot, onActionComplete }) {
   const actions = useMemo(() => (
     Array.isArray(actionRegistry?.actions)
       ? actionRegistry.actions.filter((action) => action.allowFromUI)
       : []
   ), [actionRegistry]);
+  const authorityAllowsExecution = canUseOperatorAuthority(authoritySnapshot);
+  const authorityMessage = authorityDisabledMessage(authoritySnapshot);
   const actionById = useMemo(() => new Map(actions.map((action) => [action.id, action])), [actions]);
   const localExecutionCounterRef = useRef(0);
   const [selectedActionId, setSelectedActionId] = useState(actions[0]?.id || "");
@@ -3022,6 +3088,10 @@ function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
 
   const runSelectedAction = async () => {
     if (!selectedAction) return;
+    if (!authorityAllowsExecution) {
+      setConsoleMessage(authorityMessage);
+      return;
+    }
 
     setConsoleMessage("");
     try {
@@ -3085,9 +3155,14 @@ function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
           </p>
         </div>
         <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200 ring-1 ring-white/10">
-          no shell access
+          {formatStateLabel(authoritySnapshot?.state || "local_bypass")}
         </span>
       </div>
+      {!authorityAllowsExecution ? (
+        <div className="rounded-2xl bg-amber-400/10 p-3 text-sm text-amber-100 ring-1 ring-amber-300/20" style={{ marginTop: "14px" }}>
+          {authorityMessage}
+        </div>
+      ) : null}
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]" style={{ marginTop: "18px" }}>
         <div className="rounded-[24px] bg-white/8 p-4 ring-1 ring-white/10">
@@ -3133,7 +3208,7 @@ function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
             <button
               type="button"
               onClick={runSelectedAction}
-              disabled={!selectedAction || isRunning}
+              disabled={!selectedAction || isRunning || !authorityAllowsExecution}
               className="rounded-full bg-pink-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-pink-400 disabled:cursor-wait disabled:bg-pink-300/50"
             >
               {isRunning ? "Execution running" : "Run selected action"}
@@ -3273,11 +3348,13 @@ function OperatorConsolePanel({ actionRegistry, history, onActionComplete }) {
   );
 }
 
-function ExecutionPipelinesPanel({ pipelineSnapshot, onRefresh, onPipelineComplete }) {
+function ExecutionPipelinesPanel({ pipelineSnapshot, authoritySnapshot, onRefresh, onPipelineComplete }) {
   const pipelines = Array.isArray(pipelineSnapshot?.pipelines) ? pipelineSnapshot.pipelines : [];
   const history = Array.isArray(pipelineSnapshot?.history) ? pipelineSnapshot.history.slice(0, 5) : [];
   const loading = pipelineSnapshot?.loading;
   const unavailable = pipelineSnapshot?.status === "unavailable";
+  const authorityAllowsExecution = canUseOperatorAuthority(authoritySnapshot);
+  const authorityMessage = authorityDisabledMessage(authoritySnapshot);
   const [executions, setExecutions] = useState([]);
   const [runningPipelineId, setRunningPipelineId] = useState("");
 
@@ -3290,6 +3367,21 @@ function ExecutionPipelinesPanel({ pipelineSnapshot, onRefresh, onPipelineComple
 
   const runPipeline = async (pipeline) => {
     if (!pipeline?.id || runningPipelineId) return;
+    if (!authorityAllowsExecution) {
+      upsertExecution({
+        executionId: `pipeline-authority-${Date.now()}`,
+        pipeline: pipeline.id,
+        label: pipeline.label,
+        status: "failed",
+        summary: authorityMessage,
+        steps: [],
+        startedAt: new Date().toISOString(),
+        finishedAt: new Date().toISOString(),
+        durationMs: 0,
+      });
+      return;
+    }
+
     setRunningPipelineId(pipeline.id);
 
     try {
@@ -3402,6 +3494,12 @@ function ExecutionPipelinesPanel({ pipelineSnapshot, onRefresh, onPipelineComple
         </div>
       ) : null}
 
+      {!authorityAllowsExecution ? (
+        <div className="rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-amber-900 ring-1 ring-amber-100" style={{ marginTop: "16px" }}>
+          {authorityMessage}
+        </div>
+      ) : null}
+
       <div className="grid gap-3 xl:grid-cols-2" style={{ marginTop: "16px" }}>
         {!unavailable && pipelines.map((pipeline) => {
           const running = runningPipelineId === pipeline.id;
@@ -3485,7 +3583,7 @@ function ExecutionPipelinesPanel({ pipelineSnapshot, onRefresh, onPipelineComple
               <button
                 type="button"
                 onClick={() => runPipeline(pipeline)}
-                disabled={Boolean(runningPipelineId) || !pipeline.valid}
+                disabled={Boolean(runningPipelineId) || !pipeline.valid || !authorityAllowsExecution}
                 className="rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 disabled:cursor-wait disabled:bg-slate-400"
                 style={{ marginTop: "12px" }}
               >
@@ -4801,6 +4899,7 @@ function AdminView({ onPreview }) {
     loading: true,
     status: "loading",
   });
+  const [authoritySnapshot, setAuthoritySnapshot] = useState(initialAuthoritySnapshot);
   const [activityFeedSnapshot, setActivityFeedSnapshot] = useState({
     activities: [],
     loading: true,
@@ -4912,6 +5011,31 @@ function AdminView({ onPreview }) {
     }
   };
 
+  const loadAuthorityStatus = async () => {
+    try {
+      const res = await fetch(`${sentinelActionApiBaseUrl}/authority/status`, {
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error(`Sentinel authority returned ${res.status}`);
+      const data = await res.json();
+      setAuthoritySnapshot({
+        mode: data?.mode || "disabled",
+        authorityName: data?.authorityName || "Matthew-controlled Sentinel API",
+        localBypass: Boolean(data?.localBypass),
+        authorityVerified: Boolean(data?.authorityVerified),
+        state: data?.state || (data?.mode === "enabled" ? "authority_required" : "local_bypass"),
+        protectedEndpoints: Array.isArray(data?.protectedEndpoints) ? data.protectedEndpoints : [],
+        source: "api",
+      });
+    } catch {
+      setAuthoritySnapshot({
+        ...initialAuthoritySnapshot(),
+        source: sentinelAuthorityMode === "enabled" ? "unavailable" : "frontend_config",
+        state: sentinelAuthorityMode === "enabled" ? "authority_failed" : "local_bypass",
+      });
+    }
+  };
+
   const loadActivityFeed = async () => {
     setActivityFeedSnapshot((current) => ({
       ...current,
@@ -4967,6 +5091,7 @@ function AdminView({ onPreview }) {
   };
 
   useEffect(() => {
+    loadAuthorityStatus();
     loadActionHistory();
     loadPipelines();
     loadActivityFeed();
@@ -5941,6 +6066,7 @@ function AdminView({ onPreview }) {
                   readinessSummary={readinessSummary}
                   doctorSummary={doctorSummary}
                 />
+                <AuthorityStatePanel authoritySnapshot={authoritySnapshot} />
                 <ActivityFeedPanel activityFeed={activityFeedSnapshot} onRefresh={loadActivityFeed} />
                 <OperatorFeedbackPanel
                   activeSection={activeNav}
@@ -6067,10 +6193,12 @@ function AdminView({ onPreview }) {
                 <OperatorConsolePanel
                   actionRegistry={sentinelActionRegistry}
                   history={actionHistorySnapshot}
+                  authoritySnapshot={authoritySnapshot}
                   onActionComplete={refreshOperatorActivity}
                 />
                 <ExecutionPipelinesPanel
                   pipelineSnapshot={pipelineSnapshot}
+                  authoritySnapshot={authoritySnapshot}
                   onRefresh={loadPipelines}
                   onPipelineComplete={refreshOperatorActivity}
                 />
@@ -6082,6 +6210,7 @@ function AdminView({ onPreview }) {
                 <SentinelCommandsPanel
                   commandRegistry={sentinelCommandRegistry}
                   actionRegistry={sentinelActionRegistry}
+                  authoritySnapshot={authoritySnapshot}
                   query={commandQuery}
                   category={commandCategory}
                   onQueryChange={setCommandQuery}
@@ -6112,7 +6241,7 @@ function AdminView({ onPreview }) {
                   description="Read-only tenant awareness for ERP Experts and disabled fixtures. Switching is intentionally not enabled."
                 />
                 <TenantContextPanel tenantRegistrySnapshot={tenantRegistrySnapshot} />
-                <RemoteAuthorityNote />
+                <AuthorityStatePanel authoritySnapshot={authoritySnapshot} />
                 <TenantRegistryPanel tenantRegistrySnapshot={tenantRegistrySnapshot} />
               </section>
             ) : null}
@@ -6146,6 +6275,7 @@ function AdminView({ onPreview }) {
                 <OperatorConsolePanel
                   actionRegistry={sentinelActionRegistry}
                   history={actionHistorySnapshot}
+                  authoritySnapshot={authoritySnapshot}
                   onActionComplete={refreshOperatorActivity}
                 />
               </section>

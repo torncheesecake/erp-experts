@@ -1,0 +1,17 @@
+{
+  "authorityMode": "disabled",
+  "authorityName": "Matthew-controlled Sentinel API",
+  "apiBaseUrl": "http://127.0.0.1:4317",
+  "tokenHeader": "X-Sentinel-Operator-Token",
+  "tokenEnvVar": "SENTINEL_OPERATOR_TOKEN",
+  "allowedOrigins": [
+    "http://127.0.0.1:5173",
+    "http://localhost:5173"
+  ],
+  "localBypass": true,
+  "notes": [
+    "Example configuration only. Do not put real tokens in this file.",
+    "Authority is disabled by default so local development remains usable.",
+    "When authority is enabled, operator mutations should require a Matthew-controlled Sentinel API token unless an explicit local bypass is configured."
+  ]
+}

@@ -1,7 +1,7 @@
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
-import { randomUUID } from "node:crypto";
+import { randomUUID, timingSafeEqual } from "node:crypto";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { getOperationalSummary, getTenantState } from "./state_api.mjs";
@@ -28,6 +28,13 @@ const PIPELINE_APPROVAL_MODES = new Set(["none", "operator_required", "review_re
 const PIPELINE_EXECUTION_MODES = new Set(["manual", "scheduled", "hybrid"]);
 const PIPELINE_SCHEDULE_MODES = new Set(["disabled", "daily", "weekly", "custom_future"]);
 const PIPELINE_MAX_FREQUENCIES = new Set(["once_per_day", "once_per_hour", "manual_only"]);
+const AUTHORITY_TOKEN_HEADER = "x-sentinel-operator-token";
+const AUTHORITY_PROTECTED_POST_ENDPOINTS = new Set([
+  "/action",
+  "/pipeline/run",
+  "/feedback",
+  "/feedback/triage",
+]);
 const actionExecutions = new Map();
 const pipelineExecutions = new Map();
 
@@ -56,7 +63,7 @@ function sendJson(request, response, statusCode, payload) {
 
   if (origin) {
     headers["Access-Control-Allow-Origin"] = origin;
-    headers["Access-Control-Allow-Headers"] = "Content-Type";
+    headers["Access-Control-Allow-Headers"] = "Content-Type, X-Sentinel-Operator-Token";
     headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
     headers.Vary = "Origin";
   }
@@ -74,7 +81,7 @@ function sendOptions(request, response) {
   };
   if (origin) {
     headers["Access-Control-Allow-Origin"] = origin;
-    headers["Access-Control-Allow-Headers"] = "Content-Type";
+    headers["Access-Control-Allow-Headers"] = "Content-Type, X-Sentinel-Operator-Token";
     headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
     headers.Vary = "Origin";
   }
@@ -103,6 +110,81 @@ function tenantSummary(tenant) {
 function isLocalRequest(request) {
   const remoteAddress = request.socket?.remoteAddress || "";
   return ["127.0.0.1", "::1", "::ffff:127.0.0.1"].includes(remoteAddress);
+}
+
+function parseBooleanEnv(value, fallback = false) {
+  if (value === undefined || value === null || value === "") return fallback;
+  return ["1", "true", "yes", "on"].includes(String(value).trim().toLowerCase());
+}
+
+function authoritySettings() {
+  const rawMode = String(process.env.SENTINEL_AUTHORITY_MODE || "disabled").trim().toLowerCase();
+  const mode = rawMode === "enabled" ? "enabled" : "disabled";
+  return {
+    mode,
+    authorityName: process.env.SENTINEL_AUTHORITY_NAME || "Matthew-controlled Sentinel API",
+    localBypass: parseBooleanEnv(process.env.SENTINEL_AUTHORITY_LOCAL_BYPASS, mode === "disabled"),
+    tokenHeader: "X-Sentinel-Operator-Token",
+    tokenHeaderName: AUTHORITY_TOKEN_HEADER,
+    tokenEnvVar: "SENTINEL_OPERATOR_TOKEN",
+    expectedToken: process.env.SENTINEL_OPERATOR_TOKEN || "",
+  };
+}
+
+function safeTokenEqual(value = "", expected = "") {
+  const left = Buffer.from(String(value), "utf8");
+  const right = Buffer.from(String(expected), "utf8");
+  if (!left.length || !right.length || left.length !== right.length) return false;
+  return timingSafeEqual(left, right);
+}
+
+function authorityStatusForRequest(request) {
+  const settings = authoritySettings();
+  const providedToken = request.headers[settings.tokenHeaderName] || "";
+  const localRequest = isLocalRequest(request);
+  let state = "local_bypass";
+  let authorityVerified = false;
+
+  if (settings.mode === "enabled") {
+    if (settings.localBypass && localRequest) {
+      state = "local_bypass";
+    } else if (!providedToken) {
+      state = "authority_required";
+    } else if (safeTokenEqual(providedToken, settings.expectedToken)) {
+      state = "authority_verified";
+      authorityVerified = true;
+    } else {
+      state = "authority_failed";
+    }
+  }
+
+  return {
+    mode: settings.mode,
+    authorityName: settings.authorityName,
+    state,
+    localBypass: settings.localBypass,
+    authorityVerified,
+    tokenHeader: settings.tokenHeader,
+    protectedEndpoints: [...AUTHORITY_PROTECTED_POST_ENDPOINTS],
+  };
+}
+
+function enforceOperatorAuthority(request, response) {
+  const status = authorityStatusForRequest(request);
+  if (status.mode !== "enabled") return true;
+  if (status.state === "local_bypass" || status.state === "authority_verified") return true;
+
+  sendJson(request, response, 401, {
+    error: status.state,
+    message: "Sentinel operator authority is required for this endpoint.",
+    authority: {
+      mode: status.mode,
+      state: status.state,
+      authorityVerified: false,
+      localBypass: status.localBypass,
+    },
+  });
+  return false;
 }
 
 function quoteSql(value) {
@@ -1278,6 +1360,19 @@ async function handleFeedbackTriage(request, response) {
   }
 }
 
+function handleAuthorityStatus(request, response) {
+  const status = authorityStatusForRequest(request);
+  sendJson(request, response, 200, {
+    mode: status.mode,
+    authorityName: status.authorityName,
+    localBypass: status.localBypass,
+    authorityVerified: status.authorityVerified,
+    state: status.state,
+    tokenHeader: status.tokenHeader,
+    protectedEndpoints: status.protectedEndpoints,
+  });
+}
+
 const server = http.createServer(async (request, response) => {
   if (request.method === "OPTIONS") {
     sendOptions(request, response);
@@ -1295,6 +1390,10 @@ const server = http.createServer(async (request, response) => {
   const url = new URL(request.url || "/", `http://${HOST}:${PORT}`);
 
   if (request.method === "POST") {
+    if (AUTHORITY_PROTECTED_POST_ENDPOINTS.has(url.pathname) && !enforceOperatorAuthority(request, response)) {
+      return;
+    }
+
     if (url.pathname === "/action") {
       await handleAction(request, response, url);
       return;
@@ -1328,6 +1427,11 @@ const server = http.createServer(async (request, response) => {
         status: "ok",
         service: "sentinel-api",
       });
+      return;
+    }
+
+    if (url.pathname === "/authority/status") {
+      handleAuthorityStatus(request, response);
       return;
     }
 
@@ -1388,6 +1492,7 @@ const server = http.createServer(async (request, response) => {
 });
 
 server.listen(PORT, HOST, () => {
+  const authority = authoritySettings();
   console.log("Sentinel local HTTP API prototype");
   console.log("");
   console.log("Safety:");
@@ -1395,8 +1500,8 @@ server.listen(PORT, HOST, () => {
   console.log("- /action uses a strict allowlist and fixed npm scripts only.");
   console.log("- /actions/execution/<id> exposes lifecycle polling for started executions.");
   console.log("- /pipeline/run uses registered allowlisted pipelines and sequential fixed steps only.");
+  console.log(`- Authority gate mode: ${authority.mode}${authority.localBypass ? " with local bypass" : ""}.`);
   console.log("- No arbitrary shell input, deploy commands or destructive actions are exposed.");
-  console.log("- No authentication is implemented yet.");
   console.log("- Do not expose this API publicly.");
   console.log("");
   console.log(`Listening: http://${HOST}:${PORT}`);

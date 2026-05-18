@@ -219,7 +219,7 @@ The Control Centre groups the operator experience into:
 - Current Focus: latest opportunity, latest plan, inbox item and recommended next step.
 - Activity Feed: a concise chronological narrative of recent monitor runs, operator actions, cadence runs, report generation and notification payload preparation.
 - Tenant: active client context, stakeholder route, operator route and default tenant scope.
-- Future Remote Authority: a planning note that operator controls should require Matthew-controlled Sentinel API authority before production exposure.
+- Authority State: first gate layer showing whether controlled operator actions are in local bypass, required, verified or failed state.
 - Tenant Registry: read-only preview of registered tenants, including active and disabled fixture entries.
 - Operations: cadence, notification payloads, report generation and state refresh context.
 - Operator Console: controlled allowlisted execution with selected action, lifecycle state, prominent summary, duration, collapsed output preview and recent console history.
@@ -338,7 +338,7 @@ npm run platform:api:serve
 npm run platform:api:smoke
 ```
 
-The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /state`, `GET /tenant`, `GET /tenants`, `GET /activity`, `GET /feedback`, `GET /actions/history`, `GET /actions/execution/<id>`, `GET /pipelines` and `GET /pipeline/execution/<id>` endpoints, plus controlled `POST /action` for allowlisted local operator actions, controlled `POST /pipeline/run` for registered safe pipelines, local-only `POST /feedback` for operator notes and `POST /feedback/triage` for feedback backlog updates. It has no authentication and must not be exposed publicly. Keep it local until authentication and service hardening are added.
+The HTTP prototype uses Node's built-in `http` module and defaults to `http://127.0.0.1:4317`. It exposes read-only `GET /health`, `GET /authority/status`, `GET /state`, `GET /tenant`, `GET /tenants`, `GET /activity`, `GET /feedback`, `GET /actions/history`, `GET /actions/execution/<id>`, `GET /pipelines` and `GET /pipeline/execution/<id>` endpoints, plus controlled `POST /action` for allowlisted local operator actions, controlled `POST /pipeline/run` for registered safe pipelines, local-only `POST /feedback` for operator notes and `POST /feedback/triage` for feedback backlog updates. The first authority gate is disabled by default; when `SENTINEL_AUTHORITY_MODE=enabled`, those mutation endpoints require `X-Sentinel-Operator-Token` unless an explicit local bypass is configured. Keep the API local-only until remote auth, transport and service hardening are complete.
 
 The Raspberry Pi service scaffold is also present but inactive:
 
@@ -458,7 +458,7 @@ Access-control planning is also scaffolded but inactive:
 - `docs/SENTINEL_OWNERSHIP_AUTH_ARCHITECTURE.md`
 - `deploy/nginx/sentinel-basic-auth.example.conf`
 
-The short-term recommendation is reverse-proxy basic auth for operator routes, while the API remains bound to `127.0.0.1`. The longer-term model is a Matthew-controlled Sentinel API authority: the operator dashboard checks the configured API, sends an operator token and unlocks controls only if the API authorises the session. No auth code is active in the app yet, and no credentials belong in the repo.
+The short-term recommendation remains to keep the API bound to `127.0.0.1`. The first authority gate now lets the operator dashboard check `GET /authority/status` and disables controlled Run buttons if authority is required but not verified. Full login, sessions and role-based access are still future work, and no credentials belong in the repo.
 
 The private `/seo-roadmap` operator dashboard consumes `reports/sentinel-state.json` for its compact Current Sentinel State panel by default. For local API experiments, set:
 

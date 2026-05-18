@@ -105,7 +105,7 @@ Current operator zones:
 - Current Focus: latest opportunity, latest plan, practical inbox item and recommended next step.
 - Activity Feed: chronological narrative of recent monitor runs, controlled operator actions, cadence runs, report generation and notification payload preparation.
 - Tenant: active client context for ERP Experts, including base URL, operator route, stakeholder route and future multi-tenant note.
-- Future Remote Authority: planning note that operator controls should require Matthew's Sentinel API before production exposure.
+- Authority State: first gate layer showing whether operator controls are in local bypass, required, verified or failed state.
 - Tenant Registry: read-only preview of registered tenants, showing ERP Experts as active and disabled fixtures as non-actionable.
 - Operations: cadence, notification payloads, report generation and state refresh context.
 - Operator Console: selected allowlisted action, lifecycle state, prominent summary, duration, collapsed output preview and recent console execution history.
@@ -452,7 +452,7 @@ The private Sentinel operator dashboard at `/seo-roadmap` now reads `reports/sen
 
 The current dashboard remains report-compatible. The new API layer is the first step towards DB-backed services and dashboard reads without relying entirely on generated report files.
 
-The HTTP prototype defaults to `http://127.0.0.1:4317` and provides read-only `GET /health`, `GET /state`, `GET /state?tenant=erp-experts`, `GET /tenant`, `GET /tenants`, `GET /activity`, `GET /feedback`, `GET /actions/history`, `GET /actions/execution/<id>`, `GET /pipelines` and `GET /pipeline/execution/<id>`, plus controlled `POST /action` for allowlisted local operator actions, controlled `POST /pipeline/run` for registered safe pipelines, local-only `POST /feedback` for operator notes and `POST /feedback/triage` for feedback backlog updates. It has no authentication. Do not expose it publicly or run it as a Raspberry Pi service until auth, process supervision and deployment hardening exist.
+The HTTP prototype defaults to `http://127.0.0.1:4317` and provides read-only `GET /health`, `GET /authority/status`, `GET /state`, `GET /state?tenant=erp-experts`, `GET /tenant`, `GET /tenants`, `GET /activity`, `GET /feedback`, `GET /actions/history`, `GET /actions/execution/<id>`, `GET /pipelines` and `GET /pipeline/execution/<id>`, plus controlled `POST /action` for allowlisted local operator actions, controlled `POST /pipeline/run` for registered safe pipelines, local-only `POST /feedback` for operator notes and `POST /feedback/triage` for feedback backlog updates. The first authority gate is disabled by default and can protect mutation endpoints when `SENTINEL_AUTHORITY_MODE=enabled`. Keep it localhost-only until remote auth transport and role/session hardening exist.
 
 For local operator testing, `/seo-roadmap` can try the HTTP API first when `VITE_SENTINEL_API_BASE_URL` is configured. It falls back quietly to `reports/sentinel-state.json` if the API is unavailable. `/seo-progress` remains stakeholder-safe and does not use Sentinel operator API state.
 
@@ -591,6 +591,10 @@ Sentinel now resolves runtime paths from environment variables while preserving 
 ## Interactive Pi DB Migration Verification
 
 `docs/RASPBERRY_PI_INTERACTIVE_DB_MIGRATION.md` documents the manual migration path for environments where the Pi requires an interactive sudo password. `npm run platform:pi:data:path:verify` is the read-only post-migration verifier. Before manual migration it is expected to report `NOT_READY` because the canonical DB and Pi `.env` runtime path are not yet active. It does not stop services, copy files, edit `.env` or expose the API.
+
+## Remote Authority Gate
+
+The first Sentinel authority gate is implemented but disabled by default. `GET /authority/status` reports non-secret authority state, and mutation endpoints such as `POST /action`, `POST /pipeline/run`, `POST /feedback` and `POST /feedback/triage` can require `X-Sentinel-Operator-Token` when `SENTINEL_AUTHORITY_MODE=enabled`. The Control Centre shows Authority State and disables Run controls if authority is required but not verified. `/seo-progress` is unaffected. The Pi API remains localhost-only.
 
 ## Pi Service Verifier Canonical DB State
 
