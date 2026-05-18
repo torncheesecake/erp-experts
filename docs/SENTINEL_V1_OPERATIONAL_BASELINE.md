@@ -117,6 +117,8 @@ The stakeholder page must not expose Sentinel internals, operator controls, comm
 
 The `/sentinel` prototype keeps its local browser session preferences under `sentinel.operatorSession.standalone.v1` so its Content Workbench-first default does not change `/seo-roadmap` behaviour.
 
+Local Pi-backed `/sentinel` testing is documented in `docs/SENTINEL_LOCAL_OPERATOR_LAUNCH.md`. It uses an SSH tunnel to reach the Pi API through local `127.0.0.1:4317`, then launches Vite with `VITE_SENTINEL_API_BASE_URL=http://127.0.0.1:4317`. This does not expose the Pi API publicly.
+
 ## Security And Auth Status
 
 Current auth/security baseline:

@@ -467,6 +467,8 @@ The short-term recommendation remains to keep the API bound to `127.0.0.1`. The 
 
 The standalone operator app migration is now planned in `docs/SENTINEL_STANDALONE_APP_MIGRATION_PLAN.md`. The target is to keep `erpexperts.co.uk/seo-progress` as the stakeholder-safe ERP Experts view, then move the private Sentinel operator frontend to `sentinel.artifexa.co.uk` with Artifexa/Sentinel branding and authority-gated controls. A local prototype route exists at `/sentinel`; it renders outside the ERP Experts website layout, reuses the Control Centre systems, defaults to Content Workbench, uses the separate browser session key `sentinel.operatorSession.standalone.v1` and redirects to `/seo-progress` in production builds. The recommended next implementation is same repo, separate build mode, followed by a later extraction only if the product boundary proves stable. This is not deployed yet and the Pi API remains localhost-only.
 
+For local Pi-backed standalone testing, run `npm run sentinel:launch`. The helper prints the SSH tunnel command, the Vite launch command and the local `/sentinel` URL, then checks whether local port `4317` and the dev server are reachable. It does not start SSH, start Vite, expose the Pi API, change auth mode or mutate the Pi. See `docs/SENTINEL_LOCAL_OPERATOR_LAUNCH.md`.
+
 The private `/seo-roadmap` operator dashboard consumes `reports/sentinel-state.json` for its compact Current Sentinel State panel by default. For local API experiments, set:
 
 ```bash

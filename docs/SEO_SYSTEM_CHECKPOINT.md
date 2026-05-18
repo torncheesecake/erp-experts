@@ -14,6 +14,8 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 
 The first local prototype route now exists at `/sentinel`. It renders the Sentinel operator shell outside the ERP Experts website layout, uses Sentinel by Artifexa branding, reuses the existing Control Centre systems and now opens with Content Workbench as the primary work surface. It is development-only and mirrors the `/seo-roadmap` production guard by redirecting to `/seo-progress` in production builds.
 
+`docs/SENTINEL_LOCAL_OPERATOR_LAUNCH.md` documents the local Pi-backed launch workflow. `npm run sentinel:launch` prints the two-terminal SSH tunnel and Vite instructions, checks local `4317` and `5173` reachability, and does not start processes or mutate the Pi.
+
 
 ## Current commands
 
@@ -83,6 +85,7 @@ The first local prototype route now exists at `/sentinel`. It renders the Sentin
 - `/sentinel` is the local standalone Sentinel operator shell prototype for local/internal use only. It uses a separate local browser session key, `sentinel.operatorSession.standalone.v1`, and defaults to Content Workbench.
 - `sentinel.artifexa.co.uk` is the planned future standalone operator app domain, not deployed yet.
 - Production builds redirect `/seo-roadmap` and `/sentinel` to `/seo-progress` until real authentication exists.
+- Local Pi-backed testing should use the SSH tunnel workflow rather than exposing the Pi API.
 - Do not expose operator commands, prompts, diagnostics, tenant state, approval gates or generated report internals on public ERP Experts pages.
 - Future operator controls should depend on Matthew-controlled Sentinel API authority before any production exposure.
 

@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "sentinel:launch": "node scripts/platform/platform_sentinel_launch.mjs",
     "deploy": "gh-pages -d dist",
     "qa:resources": "node scripts/qa_resources.mjs",
     "seo:briefs": "node scripts/seo_action_briefs.mjs",
