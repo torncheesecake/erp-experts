@@ -193,6 +193,7 @@ ${marker("env_log_path", "grep -E '^PLATFORM_LOG_PATH=' \"$ENV_FILE\" 2>/dev/nul
 ${marker("service_exists", "systemctl cat \"$SERVICE\" >/dev/null 2>&1 && echo present || echo missing")}
 ${marker("service_enabled", "systemctl is-enabled \"$SERVICE\" 2>&1")}
 ${marker("service_active", "systemctl is-active \"$SERVICE\" 2>&1")}
+${marker("sudo_noninteractive", "sudo -n true >/dev/null 2>&1 && echo available || echo unavailable")}
 ${marker("listen_addresses", "ss -ltn | awk '$4 ~ /:4317$/ {print $4}' | paste -sd '|' -")}
 curl_endpoint health "http://$API_HOST:$API_PORT/health"
 curl_endpoint tenant "http://$API_HOST:$API_PORT/tenant"
@@ -238,7 +239,7 @@ run_step() {
   output="$(bash -lc "$command" 2>&1)"
   status=$?
   emit step_status "$step_id|$status|$label"
-  emit_b64 "step_${step_id}_output" "$output"
+  emit_b64 "step_${"${"}step_id}_output" "$output"
   if [ "$status" -ne 0 ]; then
     if [ "$SERVICE_STOPPED" -eq 1 ]; then
       restart_output="$(sudo -n systemctl start "$SERVICE" 2>&1)"
@@ -463,6 +464,13 @@ function classifyReadiness({ host, user, sshResult, remote, allowExistingTarget 
   else if (sshResult.ok) {
     blockers.push("sentinel-api.service is not active before migration.");
     add("service_active", "Service active before migration", "fail", remote.service_active || "unknown");
+  }
+
+  if (remote.sudo_noninteractive === "available") {
+    add("sudo_noninteractive", "Non-interactive sudo", "pass", "available");
+  } else if (sshResult.ok) {
+    blockers.push("Non-interactive sudo is unavailable. The migration cannot safely stop and restart sentinel-api.service without an approved sudo path.");
+    add("sudo_noninteractive", "Non-interactive sudo", "fail", remote.sudo_noninteractive || "unknown");
   }
 
   if (remote.listen_addresses && !remote.listen_addresses.split("|").includes("127.0.0.1:4317")) {

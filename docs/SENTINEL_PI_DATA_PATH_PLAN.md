@@ -141,3 +141,7 @@ Default mode is dry-run only. It performs read-only SSH checks, prints the plann
 Confirmed mode requires `--confirm`. It refuses to run if the repo-local DB is missing, the canonical DB already exists, the service is missing or inactive, canonical directories are missing, Pi `.env` is missing, or SSH fails. If `--allow-existing-target` is supplied, an existing canonical DB is not overwritten.
 
 The confirmed sequence backs up the repo-local DB to `/srv/sentinel/data/seo-ops/backups`, copies the DB to `/srv/sentinel/data/seo-ops/platform.db`, updates Pi `.env` with canonical runtime paths, runs `platform:health` with that env loaded, restarts `sentinel-api.service`, verifies `/health`, `/state` and `/tenant`, and leaves the repo-local DB untouched as the rollback copy.
+
+### Sudo Gate
+
+Confirmed migration requires non-interactive sudo for the narrow service-control steps. The dry-run checks `sudo -n true` and reports `NOT_READY` if sudo would require an interactive password. Do not store sudo passwords in scripts or `.env`. If non-interactive sudo is unavailable, use a separately approved interactive maintenance window or a narrowly scoped sudoers rule before retrying the confirmed migration.

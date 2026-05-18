@@ -362,3 +362,7 @@ npm run platform:pi:data:path:migrate -- --confirm
 ```
 
 It stops only `sentinel-api.service`, backs up the repo-local DB, copies it to the canonical data path, updates the Pi service `.env`, runs `platform:health` with the Pi env loaded, restarts the service and verifies the local API endpoints. It does not expose the API, add a reverse proxy, alter firewall rules, enable timers or delete the repo-local rollback DB.
+
+### Data Path Migration Sudo Gate
+
+The data-path migration dry-run checks whether non-interactive sudo is available before reporting ready for confirmation. This is required because confirmed mode must stop and restart only `sentinel-api.service`. If `sudo -n true` fails, the migration remains blocked until an approved interactive maintenance path or a narrowly scoped sudoers rule exists. Do not put sudo passwords in scripts, `.env` or committed files.
