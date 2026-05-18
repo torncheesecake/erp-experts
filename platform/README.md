@@ -613,6 +613,19 @@ npm run backup:restore:test -- --keep-temp
 
 `scripts/platform/platform_db_integrity.mjs` is the shared integrity helper used by backup verification, restore simulation and `platform:health`.
 
+## Raspberry Pi Canonical DB Backup
+
+The Pi runtime has dedicated backup checks for the canonical SQLite database:
+
+```bash
+npm run platform:pi:backup:verify
+npm run platform:pi:backup
+```
+
+`platform:pi:backup:verify` is read-only. It SSHes to the Pi, confirms `PLATFORM_DB_PATH=/srv/sentinel/data/seo-ops/platform.db`, confirms `PLATFORM_BACKUP_PATH=/srv/sentinel/data/seo-ops/backups`, checks the canonical DB integrity, checks that the backup directory is writable by the SSH user and lists recent `platform.db.backup-*` files if present.
+
+`platform:pi:backup` is dry-run by default and creates nothing. Confirmed mode requires `--confirm`; it creates a timestamped SQLite online backup under `/srv/sentinel/data/seo-ops/backups` and does not stop `sentinel-api.service`, expose the API, enable timers or delete old backups.
+
 ## Deployment Readiness Gate
 
 Use the read-only deployment gate before any Raspberry Pi promotion work:

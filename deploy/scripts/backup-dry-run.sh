@@ -9,7 +9,7 @@ BACKUP_RETENTION_DAYS="${BACKUP_RETENTION_DAYS:-30}"
 TIMESTAMP_PATTERN="YYYY-MM-DD-HHmmss"
 
 cat <<EOF_DRY_RUN
-Pinhole Backup Dry Run
+Sentinel Backup Dry Run
 Mode: DRY RUN ONLY
 
 Expected runtime paths:

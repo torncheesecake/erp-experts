@@ -320,6 +320,19 @@ Before enabling a managed API service:
 
 Backups are not trusted until a restore simulation succeeds. The current restore simulation is non-destructive: it validates a temporary copy and never overwrites the live DB.
 
+## Canonical Pi backup workflow
+
+After the canonical DB migration, use the Pi-specific backup workflow for `/srv/sentinel/data/seo-ops/platform.db`:
+
+```bash
+npm run platform:pi:backup:verify
+npm run platform:pi:backup
+```
+
+`platform:pi:backup:verify` is read-only. It confirms the Pi `.env` points `PLATFORM_DB_PATH` and `PLATFORM_BACKUP_PATH` at the canonical paths, checks SQLite integrity, confirms `/srv/sentinel/data/seo-ops/backups` is writable by the SSH user and lists recent backup files if any exist.
+
+`platform:pi:backup` is dry-run by default. Confirmed mode requires `--confirm` and writes a timestamped backup such as `/srv/sentinel/data/seo-ops/backups/platform.db.backup-20260518-090000`. It does not stop `sentinel-api.service`, enable timers, expose the API, delete old backups or touch the repo-local fallback DB.
+
 ## Deployment readiness gate
 
 Before any Raspberry Pi promotion, run:
