@@ -16,7 +16,7 @@ The current model keeps application code under Git and persistent operational st
 
 The planned next ownership boundary is a standalone Sentinel operator frontend at `sentinel.artifexa.co.uk`. A local prototype route now exists at `/sentinel`; it uses Artifexa/Sentinel branding, keeps ERP Experts as tenant context only, removes ERP Experts public website chrome from the operator experience and opens with Content Workbench as the primary work surface. The migration plan is documented in `docs/SENTINEL_STANDALONE_APP_MIGRATION_PLAN.md`.
 
-The current standalone UX direction is workflow-first rather than infrastructure-first. `/sentinel` uses a wider dark operational workspace, compact status rail, slimmer navigation and a more prominent Content Workbench. Existing orchestration, pipelines, governance, activity, authority, workspaces and diagnostics remain available as supporting systems.
+The current standalone UX direction is workflow-first rather than infrastructure-first. `/sentinel` uses a wider dark operational workspace, compact status rail, slimmer navigation and a more prominent Content Workbench. A code-native Sentinel mark now anchors the product identity, and the first viewport shows a live editorial queue rather than a boxed infrastructure dashboard. Existing orchestration, pipelines, governance, activity, authority, workspaces and diagnostics remain available as supporting systems.
 
 ## Local Platform State
 

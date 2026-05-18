@@ -223,6 +223,8 @@ Design principles:
 - Navigation is calmer and workbench-first, with Content Workbench, Inbox and Opportunities ahead of infrastructure sections.
 - The layout uses a wider dark workspace, subtle depth, slimmer rails and fewer equal-weight boxes.
 - ERP Experts remains visible only as active tenant context, not as app branding.
+- A code-native Sentinel mark now anchors the header and workspace surface, replacing generic icon treatment.
+- The first viewport is a command surface with live editorial queue rows and lifecycle lanes, not a boxed admin hero.
 
 This design pass does not remove operator functionality, change scoring, deploy the standalone app or expose the Pi API. It is a same-repo layout and hierarchy refactor for local operator use.
 
