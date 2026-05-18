@@ -7,7 +7,7 @@ const seoProgressSnapshot = {
     blocked: 0,
   },
   headlineSummary:
-    "SEO and content work is healthy. Current focus is strategic growth rather than maintenance.",
+    "SEO and content work is healthy. Current priorities are focused on content planning and strategic growth.",
   activePlans: [
     {
       recommendationType: "create_new",

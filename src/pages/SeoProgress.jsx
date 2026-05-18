@@ -110,7 +110,7 @@ export default function SeoProgress() {
     <>
       <SEO
         title="SEO & Content Progress"
-        description="Internal progress view for ERP Experts SEO and content activity."
+        description="Internal progress view for ERP Experts SEO review, content planning and current priorities."
         path="/seo-progress"
         noIndex
       />
@@ -127,13 +127,13 @@ export default function SeoProgress() {
             <div className="grid gap-8">
               <div className="min-w-0">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-pink-600">
-                  Internal progress view
+                  Internal visibility
                 </p>
                 <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 md:text-5xl xl:text-6xl">
                   SEO & Content Progress
                 </h1>
                 <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
-                  This view summarises SEO and content progress for internal visibility. It is designed for business review, not technical administration.
+                  This internal progress view summarises SEO review, content planning and current priorities. It is designed for business review and planning discussions.
                 </p>
               </div>
               <div className="w-full max-w-xl rounded-3xl bg-slate-950 p-6 text-white shadow-sm ring-1 ring-slate-800/40 sm:p-7">
@@ -142,12 +142,12 @@ export default function SeoProgress() {
                     <ShieldCheck size={20} />
                   </span>
                   <div>
-                    <p className="text-sm text-white/60">Current content health</p>
+                    <p className="text-sm text-white/60">Content health</p>
                     <p className="text-xl font-semibold">{blockedCount === 0 && reviewCount === 0 ? "Healthy" : "Needs review"}</p>
                   </div>
                 </div>
                 <p className="mt-5 text-sm leading-6 text-white/70">
-                  Last updated {formatDate(lastUpdated)}. Current resource QA shows {passCount} passing articles, {reviewCount} needing review and {blockedCount} blocked.
+                  Last updated {formatDate(lastUpdated)}. Current SEO review shows {passCount} healthy articles, {reviewCount} needing review and {blockedCount} blocked.
                 </p>
               </div>
             </div>
@@ -164,21 +164,21 @@ export default function SeoProgress() {
           <div className="grid items-stretch gap-5 md:grid-cols-2 xl:grid-cols-4">
             <StatCard
               icon={CheckCircle2}
-              label="Healthy resources"
+              label="Content health"
               value={passCount}
               note={`${reviewCount} needing review · ${blockedCount} blocked`}
               tone="green"
             />
             <StatCard
               icon={FileText}
-              label="Work completed"
+              label="Completed work"
               value={allCompletedItems.length}
-              note="Roadmap items currently marked as complete."
+              note="Content planning items currently marked as complete."
               tone="blue"
             />
             <StatCard
               icon={CircleDot}
-              label="In progress"
+              label="Current work"
               value={stakeholderBriefs.length}
               note="Topics currently being scoped or prepared for review."
               tone="pink"
@@ -195,10 +195,10 @@ export default function SeoProgress() {
           <div className="mt-8 rounded-[2rem] bg-white p-5 shadow-sm ring-1 ring-slate-200/70 sm:p-7 md:mt-10">
             <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
               <div className="min-w-0">
-                <h2 className="text-2xl font-semibold tracking-tight text-slate-950">Plain-English summary</h2>
+                <h2 className="text-2xl font-semibold tracking-tight text-slate-950">Internal visibility</h2>
                 <p className="mt-3 max-w-4xl text-base leading-8 text-slate-600">{currentSummary}</p>
                 <p className="mt-3 max-w-4xl text-sm leading-6 text-slate-500">
-                  A weekly stakeholder summary can be prepared from this same progress data for internal meetings.
+                  Completed work, current work and planned next work are grouped here for simple internal progress tracking.
                 </p>
               </div>
               <div className="w-full rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600 md:w-auto md:shrink-0">
@@ -210,10 +210,10 @@ export default function SeoProgress() {
 
           <div className="mt-8 grid gap-6 lg:grid-cols-2 lg:gap-8">
             <SimpleList
-              title="Completed recently"
-              description="Published or improved resources currently marked as complete in the content roadmap."
+              title="Completed work"
+              description="Published or improved resources currently marked as complete in content planning."
               items={completedItems}
-              emptyText="No completed roadmap items are available in the current report."
+              emptyText="No completed content planning items are available in the current view."
               renderItem={(item) => (
                 <div key={`${item.phase}-${item.priority}-${item.title}`} className="rounded-2xl bg-slate-50 p-4">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -230,10 +230,10 @@ export default function SeoProgress() {
             />
 
             <SimpleList
-              title="Currently being worked on"
-              description="Content ideas being shaped into reviewable plans before drafting or publication."
+              title="Current work"
+              description="Content ideas being shaped into SEO review notes before drafting or publication."
               items={stakeholderBriefs}
-              emptyText="No active content plans are listed in the current report."
+              emptyText="No active content plans are listed in the current view."
               renderItem={(brief) => (
                 <div key={`${brief.displayRank || brief.targetArticleTitle}-${brief.preferredTitle || brief.targetArticleTitle}`} className="rounded-2xl bg-slate-50 p-4">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -255,9 +255,9 @@ export default function SeoProgress() {
 
             <SimpleList
               title="Planned next"
-              description="Known roadmap items that remain planned or queued for future review."
+              description="Known content planning items queued for future SEO review."
               items={plannedItems}
-              emptyText="No planned roadmap items are currently listed."
+              emptyText="No planned content work is currently listed."
               renderItem={(item) => (
                 <div key={`${item.phase}-${item.priority}-${item.title}`} className="rounded-2xl bg-slate-50 p-4">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -274,10 +274,10 @@ export default function SeoProgress() {
             />
 
             <SimpleList
-              title="Strategic opportunities"
-              description="High-level opportunities that may become new resources, refreshes, or internal-link improvements."
+              title="Strategic focus"
+              description="High-level content opportunities that may become new resources, refreshes, or internal-link improvements."
               items={topOpportunities}
-              emptyText="No strategic opportunities are available in the current report."
+              emptyText="No strategic focus items are available in the current view."
               renderItem={(opportunity) => (
                 <div key={opportunity.id || opportunity.groupTitle || opportunity.title} className="rounded-2xl bg-slate-50 p-4">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -303,10 +303,10 @@ export default function SeoProgress() {
                   <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-pink-200">
                     <TrendingUp size={20} />
                   </span>
-                  <h2 className="text-2xl font-semibold tracking-tight">What this means</h2>
+                  <h2 className="text-2xl font-semibold tracking-tight">Strategic focus</h2>
                 </div>
                 <p className="mt-4 max-w-3xl text-sm leading-7 text-white/70">
-                  The resource library is currently healthy. The priority is now controlled growth: choosing the right topics, strengthening relevant paths to services, and keeping completed content visible to the wider business.
+                  The resource library is currently healthy. The priority is measured growth: choosing the right topics, strengthening relevant paths to services, and keeping completed content visible to the wider business.
                 </p>
               </div>
               <Link
