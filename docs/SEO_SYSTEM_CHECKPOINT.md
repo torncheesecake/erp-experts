@@ -4,6 +4,10 @@
 
 Sentinel is the working name for the SEO/content operations platform. The existing file names, commands, folders and routes have not been renamed. Any filename cleanup, including files that still contain `PINHOLE`, should happen later as a separate low-risk cleanup.
 
+## Sentinel v1 operational baseline
+
+`docs/SENTINEL_V1_OPERATIONAL_BASELINE.md` records the current stable operating state: Pi service active, API localhost-only, canonical DB active at `/srv/sentinel/data/seo-ops/platform.db`, first Pi backup verified, restore simulation passed, stakeholder page safe, operator route protected in production and remote authority scaffold present but disabled.
+
 
 ## Current commands
 

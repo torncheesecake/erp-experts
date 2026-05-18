@@ -4,6 +4,8 @@ Sentinel is the working name for the SEO/content operations platform. This folde
 
 The current implementation is intentionally conservative. It does not move existing scripts, alter scoring logic or change article data. The private `/seo-roadmap` dashboard now has a narrow allowlisted action layer, but no arbitrary terminal access.
 
+The current stable Pi operating state is documented in `docs/SENTINEL_V1_OPERATIONAL_BASELINE.md`: service active, API localhost-only, canonical DB active, backup verified, restore simulation passed and remote authority scaffold present but disabled.
+
 ## Structure
 
 ```text

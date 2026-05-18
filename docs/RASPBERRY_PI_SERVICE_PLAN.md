@@ -2,6 +2,8 @@
 
 Sentinel now has a local read-only HTTP API prototype. This document describes how it could later run as a managed private service on Matthew's Raspberry Pi server. It is planning and scaffold only. Do not deploy, enable or expose the service yet.
 
+Current stable operating state is captured in `docs/SENTINEL_V1_OPERATIONAL_BASELINE.md`. That baseline records the active Pi service, localhost-only API, canonical DB path, verified backup and successful restore simulation. Future service changes should be compared against that checkpoint.
+
 ## Why localhost-only
 
 The API currently has no authentication. It exposes operational state from SQLite, including workflow state, opportunities, plans, approvals and inbox summaries. That is operator data, not public website content.

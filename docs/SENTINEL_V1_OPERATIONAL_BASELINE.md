@@ -1,0 +1,169 @@
+# Sentinel v1 Operational Baseline
+
+Checked: 18 May 2026
+
+This checkpoint records the first stable Sentinel operating baseline after the Raspberry Pi node, canonical runtime database, backup workflow and restore simulation were verified.
+
+## Architecture Summary
+
+Sentinel now has three separated operating surfaces:
+
+- Local development workspace: source code, local validation, dashboard development and operator tooling.
+- Raspberry Pi Sentinel node: Matthew-controlled private runtime for the Sentinel API and persistent operational state.
+- ERP Experts public website: stakeholder-safe content and progress pages only.
+
+The current model keeps application code under Git and persistent operational state outside the repo on the Pi. The Pi API remains bound to localhost only and is not exposed through a reverse proxy.
+
+## Local Platform State
+
+Local Sentinel remains healthy for the ERP Experts tenant:
+
+- Tenant: `erp-experts`
+- SEO monitor: `HEALTHY`
+- QA: `pass=27`, `needs_review=0`, `blocked=0`
+- Local build: expected to pass with committed stakeholder-safe fallback data
+- Operator dashboard: developed at `/seo-roadmap`
+- Stakeholder page: `/seo-progress`
+
+Local generated reports, SQLite files, browser state and operational artefacts remain ignored and should not be committed.
+
+## Raspberry Pi Node State
+
+Current Pi node baseline:
+
+- Host: `192.168.4.22`
+- Hostname: `raspberrypi`
+- Runtime root: `/srv/sentinel`
+- App path: `/srv/sentinel/apps/seo-ops`
+- Service: `sentinel-api.service`
+- Service state: installed, enabled and active
+- API bind: `127.0.0.1:4317`
+- Public API exposure: none
+- Reverse proxy: not configured
+- Cadence timers: not enabled
+
+The repo checkout on the Pi is expected to remain clean before deployment or service work.
+
+## Canonical Runtime Paths
+
+The canonical Pi runtime paths are:
+
+```text
+/srv/sentinel/apps/seo-ops
+/srv/sentinel/data/seo-ops/platform.db
+/srv/sentinel/data/seo-ops/reports
+/srv/sentinel/data/seo-ops/backups
+/srv/sentinel/logs/seo-ops
+```
+
+The repo-local database remains intentionally present as a fallback only:
+
+```text
+/srv/sentinel/apps/seo-ops/platform/persistence/platform.db
+```
+
+Verifiers should report:
+
+```text
+Active DB: canonical
+Repo-local DB: present as fallback
+```
+
+The repo-local DB should not be deleted until a later rollback policy is explicitly approved.
+
+## DB, Backup And Restore Status
+
+Current canonical DB state:
+
+- Active DB: `/srv/sentinel/data/seo-ops/platform.db`
+- Backup path: `/srv/sentinel/data/seo-ops/backups`
+- First canonical backup: `platform.db.backup-20260518-104625`
+- Backup integrity: `ok`
+- Restore simulation: passed
+- Restore simulation mode: latest backup copied to a temporary restore-test DB, integrity checked, expected tables checked, temporary DB removed
+- Live DB safety: live canonical DB was not overwritten
+
+The restore simulation confirms recovery confidence without performing a destructive restore.
+
+## API And Service Status
+
+The Pi service baseline is:
+
+- `sentinel-api.service` enabled at boot
+- `sentinel-api.service` active
+- `ExecStart` uses `/usr/local/bin/npm run platform:api:serve`
+- Working directory: `/srv/sentinel/apps/seo-ops`
+- Environment file: `/srv/sentinel/apps/seo-ops/.env`
+- API listens only on `127.0.0.1:4317`
+- `/health` returns `ok`
+- `/tenant` returns ERP Experts
+- `/state` returns JSON
+
+The API must stay localhost-only until remote authority enforcement and transport hardening are explicitly enabled.
+
+## Stakeholder And Operator Routes
+
+Current route separation:
+
+- `/seo-progress`: stakeholder-safe progress page, live and plain-English
+- `/reports`: points stakeholders to `/seo-progress`
+- `/seo-roadmap`: private operator route, protected in production
+
+The stakeholder page must not expose Sentinel internals, operator controls, commands, diagnostics, API details, database details, approvals, pipelines or implementation roadmap content.
+
+## Security And Auth Status
+
+Current auth/security baseline:
+
+- Remote authority gate scaffold exists
+- `SENTINEL_AUTHORITY_MODE` remains disabled
+- No operator token is committed
+- No public API exposure exists
+- No reverse proxy is configured for the API
+- No user login flow exists yet
+- No cadence timers are enabled
+
+The only expected verifier warning at this baseline is remote auth enforcement pending. That warning is acceptable while the API remains localhost-only.
+
+## Known Warnings
+
+Expected warning:
+
+- Remote auth enforcement is not implemented yet. Keep the API localhost-only and do not add a reverse proxy until auth exists.
+
+Warnings that should not appear in this baseline:
+
+- Repo-local DB treated as active state
+- Canonical DB missing
+- Runtime paths not ready
+- API bound to `0.0.0.0`
+- Sentinel timers enabled unexpectedly
+- Backup integrity failure
+- Restore-test temp DB retained unexpectedly
+
+## Intentionally Disabled
+
+These are intentionally disabled or not yet implemented:
+
+- Public Sentinel API exposure
+- Reverse proxy for the Sentinel API
+- Remote authority enforcement
+- Login and user accounts
+- Tenant switching
+- Cadence timers
+- Deployment automation from the UI
+- Arbitrary shell execution
+- Destructive restore workflows
+- Cleanup automation on the Pi
+
+## Next Phase Recommendations
+
+Recommended next phases, in order:
+
+1. Keep collecting operational evidence from the Pi node with the current localhost-only service.
+2. Add remote authority enforcement and token handling before any public transport is considered.
+3. Add a controlled service restart/deploy policy for Pi updates, still without exposing the API.
+4. Define backup retention and restore runbook policy before enabling timers.
+5. Consider cadence timers only after auth, backup retention and restore runbooks are reviewed.
+
+Do not expose the Pi API publicly or enable timers until remote authority, backup policy and service rollback procedures are in place.
