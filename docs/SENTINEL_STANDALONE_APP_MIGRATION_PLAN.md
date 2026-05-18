@@ -225,6 +225,8 @@ Design principles:
 - ERP Experts remains visible only as active tenant context, not as app branding.
 - A code-native Sentinel mark now anchors the header and workspace surface, replacing generic icon treatment.
 - The first viewport is a command surface with live editorial queue rows and lifecycle lanes, not a boxed admin hero.
+- The latest interaction pass reduces the hero treatment further into a compact work-next strip so the Content Workbench itself becomes the main surface.
+- Content items behave as focused editorial work cards with a persistent working panel for rationale, goal, next action, status and safe helpers.
 
 This design pass does not remove operator functionality, change scoring, deploy the standalone app or expose the Pi API. It is a same-repo layout and hierarchy refactor for local operator use.
 

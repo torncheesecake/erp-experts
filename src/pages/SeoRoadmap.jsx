@@ -1696,7 +1696,6 @@ function SectionIntro({ eyebrow, title, description, standaloneMode = false }) {
 function SentinelStandaloneFocusSurface({
   activeTenant,
   nextBestAction,
-  standaloneFocusStats,
   contentWorkbenchItems,
   standaloneRuntimeLabel,
   onOpenContent,
@@ -1718,151 +1717,55 @@ function SentinelStandaloneFocusSurface({
 
   return (
     <section
-      className="relative isolate overflow-hidden border-y border-white/10 py-8 md:py-10"
-      style={{ marginBottom: "var(--space-xl)" }}
+      className="relative isolate overflow-hidden border-b border-white/10 py-3 md:py-4"
+      style={{ marginBottom: "var(--space-md)" }}
       aria-label="Sentinel standalone command surface"
     >
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(circle at 8% 20%, rgba(45, 212, 191, 0.2), transparent 24%), radial-gradient(circle at 92% 8%, rgba(99, 102, 241, 0.18), transparent 28%), linear-gradient(100deg, rgba(255,255,255,0.055), transparent 42%)",
+            "radial-gradient(circle at 8% 0%, rgba(45, 212, 191, 0.16), transparent 28%), linear-gradient(100deg, rgba(255,255,255,0.04), transparent 48%)",
         }}
         aria-hidden="true"
       />
-      <SentinelLogoMark className="pointer-events-none absolute -right-8 -top-10 h-56 w-56 opacity-[0.07] md:h-72 md:w-72" compact />
-      <div className="relative grid gap-8 xl:grid-cols-[minmax(320px,0.78fr)_minmax(0,1.22fr)] xl:items-start">
-        <div className="min-w-0">
-          <div className="flex items-center gap-4">
-            <SentinelLogoMark className="h-16 w-16 shrink-0" />
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-cyan-200/85">Sentinel by Artifexa</p>
-              <p className="text-sm text-slate-500">Private operator workspace</p>
-            </div>
-          </div>
-          <h2
-            className="font-heading font-semibold tracking-[-0.055em] text-white"
-            style={{ marginTop: "22px", fontSize: "clamp(2.35rem, 5.2vw, 4.85rem)", lineHeight: 0.94 }}
-          >
-            Content operations command centre
-          </h2>
-          <p className="max-w-2xl text-base leading-7 text-slate-300" style={{ marginTop: "18px" }}>
-            Sentinel now leads with article workflow. Infrastructure, pipelines and diagnostics support the work, they do not dominate the first screen.
-          </p>
-
-          <div className="grid gap-4" style={{ marginTop: "28px" }}>
-            <div className="border-l border-cyan-200/45 pl-5">
-              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-cyan-200">Next content move</p>
-              <p className="text-2xl font-semibold tracking-[-0.035em] text-white" style={{ marginTop: "8px" }}>
-                {leadItem?.title || nextBestAction.title}
-              </p>
-              <p className="max-w-xl text-sm leading-6 text-slate-400" style={{ marginTop: "7px" }}>
-                {leadItem?.nextAction || nextBestAction.why}
-              </p>
-              <button
-                type="button"
-                onClick={onOpenContent}
-                className="group inline-flex items-center gap-2 rounded-full bg-cyan-200 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-950/20 transition-colors hover:bg-white"
-                style={{ marginTop: "16px" }}
-              >
-                Open Content Workbench
-                <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
-              </button>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              {standaloneFocusStats.map((item) => (
-                <div key={item.label} className="border-l border-white/10 pl-4">
-                  <p className="text-4xl font-semibold tracking-[-0.06em] text-white" style={{ lineHeight: 1 }}>{item.value}</p>
-                  <p className="text-xs font-semibold text-slate-300" style={{ marginTop: "7px" }}>{item.label}</p>
-                  <p className="text-[11px] text-slate-600">{item.detail}</p>
-                </div>
-              ))}
-            </div>
+      <div className="relative grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(420px,0.8fr)] xl:items-center">
+        <div className="flex min-w-0 items-start gap-3">
+          <SentinelLogoMark className="h-10 w-10 shrink-0" />
+          <div className="min-w-0">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-200/85">Work next</p>
+            <h2 className="truncate text-xl font-semibold tracking-[-0.035em] text-white md:text-2xl">
+              {leadItem?.title || nextBestAction.title}
+            </h2>
+            <p className="max-w-3xl truncate text-sm text-slate-400" style={{ marginTop: "4px" }}>
+              {leadItem?.nextAction || nextBestAction.why}
+            </p>
           </div>
         </div>
 
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-4">
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-cyan-200/80">Live editorial queue</p>
-              <h3 className="text-2xl font-semibold tracking-[-0.035em] text-white">Work visible before systems</h3>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <span className="h-2 w-2 rounded-full bg-emerald-300" />
-              {activeTenant?.name || "ERP Experts"}
-            </div>
-          </div>
-
-          <div className="grid gap-3" style={{ marginTop: "18px" }}>
-            {liveQueue.length ? liveQueue.map((item, index) => (
-              <article
-                key={item.id || item.title}
-                className="group grid gap-3 border-b border-white/10 pb-3 last:border-b-0 last:pb-0 md:grid-cols-[44px_minmax(0,1fr)_minmax(130px,0.22fr)] md:items-start"
-              >
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/[0.055] font-mono text-xs font-semibold text-cyan-100 ring-1 ring-white/10">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h4 className="text-base font-semibold leading-snug text-white">{item.title}</h4>
-                    <span className="rounded-full bg-white/[0.055] px-2 py-0.5 text-[11px] font-semibold text-slate-300 ring-1 ring-white/10">
-                      {formatStateLabel(item.priority)}
-                    </span>
-                  </div>
-                  <p className="text-sm leading-6 text-slate-400" style={{ marginTop: "5px" }}>
-                    {item.nextAction || item.summary}
-                  </p>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-600" style={{ marginTop: "8px" }}>
-                    {item.categoryLabel || contentCategoryLabel(item.category)} · {item.targetSlug || "new resource"}
-                  </p>
-                </div>
-                <div className="md:text-right">
-                  <span className="inline-flex rounded-full bg-cyan-200/10 px-2.5 py-1 text-xs font-semibold text-cyan-100 ring-1 ring-cyan-200/20">
-                    {CONTENT_STATUS_META[item.status]?.label || formatStateLabel(item.status)}
-                  </span>
-                </div>
-              </article>
-            )) : (
-              <div className="border border-dashed border-white/15 px-4 py-6 text-sm text-slate-400">
-                Content queue is not populated yet. Run the platform reports, then return to this workspace.
-              </div>
-            )}
-          </div>
-
-          <div className="grid gap-2 sm:grid-cols-4" style={{ marginTop: "22px" }}>
+        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+          <div className="grid grid-cols-4 gap-2">
             {stageCounts.map((stage) => (
-              <div key={stage.id} className="border-t border-white/10 pt-3">
-                <div className="h-1 rounded-full bg-white/[0.06]">
-                  <div
-                    className="h-1 rounded-full bg-cyan-200"
-                    style={{ width: `${Math.min(100, Math.max(8, stage.count * 18))}%` }}
-                  />
-                </div>
-                <p className="text-xs font-semibold text-slate-300" style={{ marginTop: "10px" }}>{stage.label}</p>
+              <div key={stage.id} className="border-l border-white/10 pl-3">
+                <p className="text-xs font-semibold text-slate-300">{stage.label}</p>
                 <p className="font-mono text-[11px] text-slate-600">{stage.count} items</p>
               </div>
             ))}
           </div>
+          <button
+            type="button"
+            onClick={onOpenContent}
+            className="group inline-flex items-center justify-center gap-2 rounded-full bg-cyan-200 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-950/20 transition-colors hover:bg-white"
+          >
+            Workbench
+            <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
+          </button>
+        </div>
 
-          <div className="grid gap-3 border-t border-white/10 pt-4 text-sm sm:grid-cols-4" style={{ marginTop: "24px" }}>
-            <div>
-              <p className="text-slate-600">Tenant</p>
-              <p className="font-semibold text-white">{activeTenant?.name || "ERP Experts"}</p>
-            </div>
-            <div>
-              <p className="text-slate-600">Runtime</p>
-              <p className="font-semibold text-white">{standaloneRuntimeLabel}</p>
-            </div>
-            <div>
-              <p className="text-slate-600">Access</p>
-              <p className="font-semibold text-white">Private workspace</p>
-            </div>
-            <div>
-              <p className="text-slate-600">Mode</p>
-              <p className="font-semibold text-cyan-100">Content first</p>
-            </div>
-          </div>
+        <div className="flex flex-wrap gap-3 text-xs text-slate-500 xl:col-span-2">
+          <span>Tenant: <strong className="text-slate-300">{activeTenant?.name || "ERP Experts"}</strong></span>
+          <span>Runtime: <strong className="text-slate-300">{standaloneRuntimeLabel}</strong></span>
+          <span>Access: <strong className="text-slate-300">private workspace</strong></span>
         </div>
       </div>
     </section>
@@ -6402,32 +6305,6 @@ function AdminView({ onPreview, standaloneMode = false }) {
       statusUpdatedAt: persisted?.updatedAt || null,
     };
   });
-  const workbenchStatusCounts = CONTENT_LIFECYCLE_STATUSES.reduce((acc, status) => ({
-    ...acc,
-    [status]: contentWorkbenchItems.filter((item) => item.status === status).length,
-  }), {});
-  const activeWorkbenchCount = (workbenchStatusCounts.researching || 0)
-    + (workbenchStatusCounts.drafting || 0)
-    + (workbenchStatusCounts.review || 0)
-    + (workbenchStatusCounts.ready || 0);
-  const standaloneFocusStats = [
-    {
-      label: "Active content",
-      value: activeWorkbenchCount,
-      detail: "research, draft and review",
-    },
-    {
-      label: "Review lane",
-      value: (workbenchStatusCounts.review || 0) + (workbenchStatusCounts.ready || 0),
-      detail: "needs editorial judgement",
-    },
-    {
-      label: "Live monitoring",
-      value: (workbenchStatusCounts.published || 0) + (workbenchStatusCounts.monitoring || 0),
-      detail: "published or watched",
-    },
-  ];
-
   const filteredRows = articleRows
     .filter((row) => {
       if (articleFilter === "needs_review") return row.gate === "needs_review";
@@ -6759,7 +6636,6 @@ function AdminView({ onPreview, standaloneMode = false }) {
           <SentinelStandaloneFocusSurface
             activeTenant={activeTenant}
             nextBestAction={nextBestAction}
-            standaloneFocusStats={standaloneFocusStats}
             contentWorkbenchItems={contentWorkbenchItems}
             standaloneRuntimeLabel={standaloneRuntimeLabel}
             onOpenContent={() => {
@@ -7623,6 +7499,344 @@ function ContentWorkbenchPanel({ items, loading, onStatusChange, onOpenArticle, 
     const nextStatus = CONTENT_LIFECYCLE_STATUSES[currentIndex + direction];
     if (nextStatus) onStatusChange(item.id, nextStatus);
   };
+
+  const stageForItem = (item) => CONTENT_STATUS_GROUPS.find((group) => group.statuses.includes(item?.status))
+    || CONTENT_STATUS_GROUPS[0];
+  const stageCounts = CONTENT_STATUS_GROUPS.map((group) => ({
+    ...group,
+    count: filteredItems.filter((item) => group.statuses.includes(item.status)).length,
+  }));
+  const standaloneQueue = [...filteredItems].sort((a, b) => {
+    const selectedDelta = (selectedItem?.id === b.id ? 1 : 0) - (selectedItem?.id === a.id ? 1 : 0);
+    if (selectedDelta !== 0) return selectedDelta;
+    const statusDelta = CONTENT_LIFECYCLE_STATUSES.indexOf(a.status) - CONTENT_LIFECYCLE_STATUSES.indexOf(b.status);
+    if (statusDelta !== 0) return statusDelta;
+    return (CONTENT_PRIORITY_ORDER[a.priority] ?? 9) - (CONTENT_PRIORITY_ORDER[b.priority] ?? 9);
+  });
+
+  if (standaloneMode) {
+    const selectedStage = selectedItem ? stageForItem(selectedItem) : null;
+
+    return (
+      <section className="relative overflow-hidden rounded-[30px] bg-[#eef4f4] p-4 text-slate-950 shadow-2xl shadow-slate-950/25 ring-1 ring-white/20 md:p-5">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_18%_0%,rgba(20,184,166,0.2),transparent_34%),linear-gradient(180deg,rgba(15,23,42,0.08),transparent)]" aria-hidden="true" />
+        <div className="relative">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div className="max-w-3xl">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-cyan-800/70">Editorial workspace</p>
+              <h2 className="font-heading text-3xl font-semibold tracking-[-0.045em] text-slate-950 md:text-4xl">Content Workbench</h2>
+              <p className="max-w-2xl text-sm leading-6 text-slate-600" style={{ marginTop: "6px" }}>
+                Pick one article, move the status, then use the detail panel to keep the next step clear.
+              </p>
+            </div>
+            <div className="grid min-w-[240px] grid-cols-3 gap-3 border-l border-slate-200 pl-4 text-sm">
+              <div>
+                <p className="text-slate-500">Total</p>
+                <p className="text-xl font-semibold tracking-[-0.04em] text-slate-950">{items.length}</p>
+              </div>
+              <div>
+                <p className="text-slate-500">Review</p>
+                <p className="text-xl font-semibold tracking-[-0.04em] text-amber-700">{(statusCounts.review || 0) + (statusCounts.ready || 0)}</p>
+              </div>
+              <div>
+                <p className="text-slate-500">Live</p>
+                <p className="text-xl font-semibold tracking-[-0.04em] text-emerald-700">{(statusCounts.published || 0) + (statusCounts.monitoring || 0)}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-4" style={{ marginTop: "20px" }} aria-label="Content workflow stages">
+            {stageCounts.map((stage) => {
+              const active = selectedStage?.id === stage.id;
+              return (
+                <div
+                  key={stage.id}
+                  className={`rounded-2xl border px-4 py-3 transition-colors ${
+                    active
+                      ? "border-cyan-300 bg-white shadow-lg shadow-cyan-900/5"
+                      : "border-slate-200/80 bg-white/55"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-slate-950">{stage.label}</p>
+                    <span className={active ? "text-sm font-semibold text-cyan-700" : "text-sm font-semibold text-slate-500"}>{stage.count}</span>
+                  </div>
+                  <div className="h-1 rounded-full bg-slate-200" style={{ marginTop: "10px" }}>
+                    <div
+                      className={`h-1 rounded-full ${active ? "bg-cyan-500" : "bg-slate-400"}`}
+                      style={{ width: `${Math.min(100, Math.max(9, stage.count * 16))}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-slate-500" style={{ marginTop: "8px" }}>
+                    {stage.statuses.map((status) => CONTENT_STATUS_META[status]?.label || formatStateLabel(status)).join(" / ")}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200/80 bg-white/60 p-2" style={{ marginTop: "16px" }}>
+            {[
+              ["Status", statusFilter, setStatusFilter, ["all", ...CONTENT_LIFECYCLE_STATUSES]],
+              ["Priority", priorityFilter, setPriorityFilter, ["all", ...priorities]],
+              ["Category", categoryFilter, setCategoryFilter, ["all", ...categories]],
+            ].map(([label, value, setter, options]) => (
+              <label key={label} className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs text-slate-500 ring-1 ring-slate-100">
+                {label}
+                <select
+                  value={value}
+                  onChange={(event) => setter(event.target.value)}
+                  className="bg-transparent text-sm font-semibold text-slate-800 outline-none"
+                >
+                  {options.map((option) => (
+                    <option key={option} value={option}>
+                      {option === "all"
+                        ? "All"
+                        : CONTENT_STATUS_META[option]?.label || contentCategoryLabel(option)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ))}
+            <label className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs text-slate-500 ring-1 ring-slate-100">
+              Publication
+              <select value={publishedFilter} onChange={(event) => setPublishedFilter(event.target.value)} className="bg-transparent text-sm font-semibold text-slate-800 outline-none">
+                <option value="all">All</option>
+                <option value="published">Published</option>
+                <option value="unpublished">Not published</option>
+              </select>
+            </label>
+            <label className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs text-slate-500 ring-1 ring-slate-100">
+              Owner
+              <select value={ownershipFilter} onChange={(event) => setOwnershipFilter(event.target.value)} className="bg-transparent text-sm font-semibold text-slate-800 outline-none">
+                <option value="all">All</option>
+                <option value="assigned">Assigned</option>
+                <option value="unassigned">Unassigned</option>
+              </select>
+            </label>
+          </div>
+
+          {loading ? (
+            <p className="text-sm text-slate-500" style={{ marginTop: "18px" }}>Loading content workflow signals...</p>
+          ) : !items.length ? (
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white/70 p-5 text-sm text-slate-600" style={{ marginTop: "18px" }}>
+              Content workflow data is not available yet. Run the SEO reports to populate opportunities, plans and QA signals.
+            </div>
+          ) : (
+            <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(360px,0.42fr)]" style={{ marginTop: "18px" }}>
+              <div className="grid gap-5">
+                {CONTENT_STATUS_GROUPS.map((stage) => {
+                  const stageItems = standaloneQueue.filter((item) => stage.statuses.includes(item.status));
+                  if (!stageItems.length) return null;
+                  return (
+                    <section key={stage.id} className="grid gap-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <span className="h-px w-8 bg-slate-300" />
+                          <h3 className="text-sm font-semibold text-slate-700">{stage.label}</h3>
+                        </div>
+                        <span className="text-xs text-slate-500">{stageItems.length} active</span>
+                      </div>
+                      <div className="grid gap-3 lg:grid-cols-2">
+                        {stageItems.map((item) => {
+                          const active = selectedItem?.id === item.id;
+                          const itemStage = stageForItem(item);
+                          return (
+                            <article
+                              key={item.id}
+                              tabIndex={0}
+                              role="button"
+                              aria-pressed={active}
+                              onClick={() => setSelectedId(item.id)}
+                              onKeyDown={(event) => {
+                                if (event.key === "Enter" || event.key === " ") {
+                                  event.preventDefault();
+                                  setSelectedId(item.id);
+                                }
+                              }}
+                              className={`group cursor-pointer rounded-[24px] border bg-white p-4 text-left shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-300 ${
+                                active
+                                  ? "border-cyan-300 shadow-xl shadow-cyan-900/10 ring-1 ring-cyan-200"
+                                  : "border-slate-200/80 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-900/5"
+                              }`}
+                            >
+                              <div className="flex items-start justify-between gap-4">
+                                <div className="min-w-0">
+                                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                                    <span className={`h-2 w-2 rounded-full ${active ? "bg-cyan-500" : "bg-slate-300"}`} />
+                                    <span>{itemStage.label}</span>
+                                    <span>{CONTENT_STATUS_META[item.status]?.label || formatStateLabel(item.status)}</span>
+                                  </div>
+                                  <h4 className="text-lg font-semibold leading-snug tracking-[-0.025em] text-slate-950" style={{ marginTop: "8px" }}>
+                                    {item.title}
+                                  </h4>
+                                </div>
+                                <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
+                                  {formatStateLabel(item.priority)}
+                                </span>
+                              </div>
+                              <p className="line-clamp-2 text-sm leading-6 text-slate-600" style={{ marginTop: "10px" }}>
+                                {item.nextAction || item.summary}
+                              </p>
+                              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3" style={{ marginTop: "14px" }}>
+                                <p className="text-xs text-slate-500">
+                                  {item.categoryLabel || contentCategoryLabel(item.category)}
+                                  {item.targetSlug ? ` · ${item.targetSlug}` : ""}
+                                </p>
+                                <select
+                                  value={item.status}
+                                  onClick={(event) => event.stopPropagation()}
+                                  onChange={(event) => onStatusChange(item.id, event.target.value)}
+                                  className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700"
+                                  aria-label={`Set workflow status for ${item.title}`}
+                                >
+                                  {CONTENT_LIFECYCLE_STATUSES.map((status) => (
+                                    <option key={status} value={status}>{CONTENT_STATUS_META[status]?.label || formatStateLabel(status)}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </article>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+
+              <aside className="h-fit rounded-[28px] bg-slate-950 p-5 text-white shadow-2xl shadow-slate-950/25 xl:sticky xl:top-24">
+                {selectedItem ? (
+                  <>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-sm text-cyan-200">Working on</p>
+                        <h3 className="text-2xl font-semibold leading-tight tracking-[-0.035em]" style={{ marginTop: "6px" }}>{selectedItem.title}</h3>
+                        <p className="text-sm text-slate-400" style={{ marginTop: "8px" }}>{selectedItem.targetTopic || selectedItem.categoryLabel}</p>
+                      </div>
+                      <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-slate-200">
+                        {formatStateLabel(selectedItem.priority)}
+                      </span>
+                    </div>
+
+                    <div className="rounded-2xl bg-cyan-200 p-4 text-slate-950" style={{ marginTop: "18px" }}>
+                      <p className="text-xs font-semibold text-cyan-950/70">Next action</p>
+                      <p className="text-sm font-semibold leading-6" style={{ marginTop: "5px" }}>{selectedItem.nextAction}</p>
+                    </div>
+
+                    <label className="grid gap-2 text-sm text-slate-300" style={{ marginTop: "16px" }}>
+                      Workflow status
+                      <select
+                        value={selectedItem.status}
+                        onChange={(event) => onStatusChange(selectedItem.id, event.target.value)}
+                        className="rounded-2xl border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold text-white"
+                      >
+                        {CONTENT_LIFECYCLE_STATUSES.map((status) => (
+                          <option key={status} value={status}>{CONTENT_STATUS_META[status]?.label || formatStateLabel(status)}</option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <div className="grid gap-4" style={{ marginTop: "18px" }}>
+                      <section>
+                        <h4 className="text-sm font-semibold text-white">Why this matters</h4>
+                        <p className="text-sm leading-6 text-slate-300" style={{ marginTop: "6px" }}>{selectedItem.summary}</p>
+                      </section>
+                      <section>
+                        <h4 className="text-sm font-semibold text-white">Content goal</h4>
+                        <p className="text-sm leading-6 text-slate-300" style={{ marginTop: "6px" }}>{selectedItem.contentGoal}</p>
+                      </section>
+                      {selectedItem.suggestedAngle ? (
+                        <section>
+                          <h4 className="text-sm font-semibold text-white">Suggested angle</h4>
+                          <p className="text-sm leading-6 text-slate-300" style={{ marginTop: "6px" }}>{selectedItem.suggestedAngle}</p>
+                        </section>
+                      ) : null}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs" style={{ marginTop: "18px" }}>
+                      <div className="rounded-2xl bg-white/8 p-3">
+                        <p className="text-slate-500">Opportunity</p>
+                        <p className="font-semibold text-slate-100">{selectedItem.relatedOpportunityId || "none"}</p>
+                      </div>
+                      <div className="rounded-2xl bg-white/8 p-3">
+                        <p className="text-slate-500">Plan</p>
+                        <p className="font-semibold text-slate-100">{selectedItem.relatedPlanId || "none"}</p>
+                      </div>
+                      <div className="rounded-2xl bg-white/8 p-3">
+                        <p className="text-slate-500">Article QA</p>
+                        <p className="font-semibold text-slate-100">{selectedItem.articleGate || "not checked"}{selectedItem.articleScore !== null ? ` · ${selectedItem.articleScore}` : ""}</p>
+                      </div>
+                      <div className="rounded-2xl bg-white/8 p-3">
+                        <p className="text-slate-500">Owner</p>
+                        <p className="font-semibold text-slate-100">{selectedItem.owner || "unassigned"}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2" style={{ marginTop: "18px" }}>
+                      <button
+                        type="button"
+                        onClick={() => moveStatus(selectedItem, -1)}
+                        disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) <= 0}
+                        className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        Move back
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveStatus(selectedItem, 1)}
+                        disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) >= CONTENT_LIFECYCLE_STATUSES.length - 1}
+                        className="rounded-full bg-white px-3 py-2 text-xs font-semibold text-slate-950 transition-colors hover:bg-cyan-100 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        Move forward
+                      </button>
+                      {selectedItem.briefCommand ? (
+                        <button
+                          type="button"
+                          onClick={() => copyValue(selectedItem.briefCommand, `${selectedItem.id}-command`)}
+                          className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
+                        >
+                          {copyLabel(`${selectedItem.id}-command`, "Copy command")}
+                        </button>
+                      ) : null}
+                      {selectedItem.briefPrompt ? (
+                        <button
+                          type="button"
+                          onClick={() => copyValue(selectedItem.briefPrompt, `${selectedItem.id}-brief`)}
+                          className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
+                        >
+                          {copyLabel(`${selectedItem.id}-brief`, "Copy brief")}
+                        </button>
+                      ) : null}
+                      {selectedItem.targetSlug ? (
+                        <button
+                          type="button"
+                          onClick={() => onOpenArticle(selectedItem.targetSlug)}
+                          className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
+                        >
+                          Open QA planner
+                        </button>
+                      ) : null}
+                    </div>
+
+                    <div className="border-t border-white/10 pt-4 text-xs text-slate-400" style={{ marginTop: "18px" }}>
+                      <p className="font-semibold text-slate-200">Workflow notes</p>
+                      <p style={{ marginTop: "5px" }}>
+                        Current status is {CONTENT_STATUS_META[selectedItem.status]?.label || formatStateLabel(selectedItem.status)}.
+                        {selectedItem.statusUpdatedAt ? ` Last changed ${formatDateTime(selectedItem.statusUpdatedAt)}.` : " No local status change recorded yet."}
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-sm text-slate-300">Select a content item to start working.</p>
+                )}
+              </aside>
+            </div>
+          )}
+        </div>
+      </section>
+    );
+  }
+
   const shellClass = standaloneMode
     ? "overflow-hidden rounded-[34px] bg-slate-100/95 p-5 text-slate-950 shadow-2xl shadow-slate-950/20 ring-1 ring-white/20 md:p-6"
     : "rounded-[28px] bg-white/90 p-5 shadow-sm ring-1 ring-slate-100/80";

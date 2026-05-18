@@ -41,19 +41,25 @@ These statuses are workflow labels for the operator. They do not publish content
 
 ## Workbench UI
 
-Each content card shows:
+The standalone Sentinel shell now treats the workbench as a focused editorial workspace rather than a compact dashboard list. The top shell provides a short work-next strip, then the workbench becomes the main surface.
+
+Each content work card now prioritises:
 
 - title
-- priority
-- lifecycle status
 - category or topic
-- short rationale
 - next action
-- related opportunity ID when available
-- related plan ID when available
-- article QA gate and score when available
+- lifecycle status
+- priority
+- enough rationale to choose what to open next
 
-The detail panel shows content goal, opportunity rationale, suggested angle, recommended next step, linked plan/opportunity state and local workflow history.
+The focused working panel shows content goal, opportunity rationale, suggested angle, recommended next step, linked plan/opportunity state and local workflow history. It is designed to feel like working on the selected item, not reading a metadata table.
+
+The standalone view also includes a calmer stage ribbon for:
+
+- Intake
+- Making
+- Review
+- Live
 
 ## Actions
 
