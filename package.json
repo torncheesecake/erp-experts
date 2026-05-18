@@ -75,6 +75,7 @@
     "platform:pi:service:verify": "node scripts/platform/platform_pi_service_verify.mjs",
     "platform:pi:backup:verify": "node scripts/platform/platform_pi_backup.mjs --verify",
     "platform:pi:backup": "node scripts/platform/platform_pi_backup.mjs",
+    "platform:pi:backup:restore:test": "node scripts/platform/platform_pi_backup.mjs --restore-test",
     "platform:pi:data:path:plan": "node scripts/platform/platform_pi_data_path_plan.mjs",
     "platform:roadmap": "node scripts/platform/platform_roadmap.mjs",
     "platform:roadmap:approve": "node scripts/platform/platform_roadmap_approve.mjs",

@@ -315,7 +315,7 @@ Local readiness checks use `platform/persistence/backups`, kept in Git with `.gi
 
 `backup:verify` checks the current SQLite DB, required tables, row counts, integrity, file size and modified time. `backup:restore:test` copies the DB to a temporary restore-test file, validates the copy and removes it afterwards unless `--keep-temp` is used. No live DB overwrite or destructive restore behaviour exists.
 
-`npm run platform:pi:backup:verify` verifies the live Pi canonical DB path and backup path without mutation. `npm run platform:pi:backup` is dry-run by default and prints the planned timestamped backup path. Confirmed mode requires `--confirm` and uses SQLite's online backup command to write `/srv/sentinel/data/seo-ops/backups/platform.db.backup-<timestamp>` without stopping the API or deleting old backups.
+`npm run platform:pi:backup:verify` verifies the live Pi canonical DB path and backup path without mutation. `npm run platform:pi:backup` is dry-run by default and prints the planned timestamped backup path. Confirmed mode requires `--confirm` and uses SQLite's online backup command to write `/srv/sentinel/data/seo-ops/backups/platform.db.backup-<timestamp>` without stopping the API or deleting old backups. `npm run platform:pi:backup:restore:test` copies the latest Pi backup to a temporary restore-test DB, checks SQLite integrity and expected tables, removes the temporary DB by default and never overwrites `/srv/sentinel/data/seo-ops/platform.db`.
 
 ## Deployment readiness gate
 

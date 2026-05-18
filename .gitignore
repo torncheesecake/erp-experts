@@ -101,6 +101,8 @@ reports/sentinel-pi-backup.json
 reports/sentinel-pi-backup.md
 reports/sentinel-pi-backup-verify.json
 reports/sentinel-pi-backup-verify.md
+reports/sentinel-pi-backup-restore-test.json
+reports/sentinel-pi-backup-restore-test.md
 reports/sentinel-pi-data-path-plan.json
 reports/sentinel-pi-data-path-plan.md
 reports/sentinel-pi-data-path-migration.md

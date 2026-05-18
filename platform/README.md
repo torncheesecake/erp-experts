@@ -620,11 +620,14 @@ The Pi runtime has dedicated backup checks for the canonical SQLite database:
 ```bash
 npm run platform:pi:backup:verify
 npm run platform:pi:backup
+npm run platform:pi:backup:restore:test
 ```
 
 `platform:pi:backup:verify` is read-only. It SSHes to the Pi, confirms `PLATFORM_DB_PATH=/srv/sentinel/data/seo-ops/platform.db`, confirms `PLATFORM_BACKUP_PATH=/srv/sentinel/data/seo-ops/backups`, checks the canonical DB integrity, checks that the backup directory is writable by the SSH user and lists recent `platform.db.backup-*` files if present.
 
 `platform:pi:backup` is dry-run by default and creates nothing. Confirmed mode requires `--confirm`; it creates a timestamped SQLite online backup under `/srv/sentinel/data/seo-ops/backups` and does not stop `sentinel-api.service`, expose the API, enable timers or delete old backups.
+
+`platform:pi:backup:restore:test` copies the latest Pi backup to a timestamped temporary restore-test DB under `/srv/sentinel/data/seo-ops/backups`, runs SQLite integrity and expected table checks, confirms the live canonical DB path was not targeted and removes the temporary DB by default. Use `-- --keep-temp` only when you explicitly need to inspect the temporary copy. It never overwrites `/srv/sentinel/data/seo-ops/platform.db`.
 
 ## Deployment Readiness Gate
 

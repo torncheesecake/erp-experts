@@ -21,6 +21,8 @@ function parseArgs(argv) {
   return {
     verify: argv.includes("--verify"),
     confirm: argv.includes("--confirm"),
+    restoreTest: argv.includes("--restore-test"),
+    keepTemp: argv.includes("--keep-temp"),
   };
 }
 
@@ -301,6 +303,168 @@ fi
 `;
 }
 
+function restoreTestRemoteScript({ appPath, keepTemp }) {
+  const quotedAppPath = shellQuote(appPath);
+  return String.raw`set +e
+APP_PATH=${quotedAppPath}
+CANONICAL_DB=${shellQuote(canonicalDbPath)}
+BACKUP_PATH=${shellQuote(canonicalBackupPath)}
+ENV_FILE="$APP_PATH/.env"
+SERVICE=${shellQuote(serviceName)}
+API_HOST=${shellQuote(apiHost)}
+API_PORT=${shellQuote(apiPort)}
+KEEP_TEMP=${keepTemp ? "yes" : "no"}
+EXPECTED_TABLES="tenants runs snapshots opportunity_summaries plan_summaries plan_approvals plan_statuses inbox_items action_results"
+
+emit() {
+  printf '__sentinel_%s__=%s\n' "$1" "$2"
+}
+
+emit_b64() {
+  printf '__sentinel_%s_b64__=' "$1"
+  printf '%s' "$2" | base64 | tr -d '\n'
+  printf '\n'
+}
+
+emit shell_ok shell_ok
+emit hostname "$(hostname 2>&1 || true)"
+emit user "$(id -un 2>&1 || true)"
+emit app_path "$APP_PATH"
+emit app_exists "$([ -d "$APP_PATH" ] && printf present || printf missing)"
+${marker("git_commit", "cd \"$APP_PATH\" 2>/dev/null && git rev-parse --short HEAD")}
+${marker("git_status_count", "cd \"$APP_PATH\" 2>/dev/null && git status --short | wc -l | tr -d ' '")}
+${marker("env_file", "if [ -f \"$ENV_FILE\" ]; then echo present; else echo missing; fi")}
+${marker("env_platform_db_path", "grep -E '^PLATFORM_DB_PATH=' \"$ENV_FILE\" 2>/dev/null | tail -n 1 | cut -d= -f2-")}
+${marker("env_backup_path", "grep -E '^PLATFORM_BACKUP_PATH=' \"$ENV_FILE\" 2>/dev/null | tail -n 1 | cut -d= -f2-")}
+${marker("canonical_db", "if [ -f \"$CANONICAL_DB\" ]; then echo present; else echo missing; fi")}
+${marker("canonical_db_size", "du -h \"$CANONICAL_DB\" 2>/dev/null | cut -f1")}
+${marker("canonical_db_bytes", "wc -c < \"$CANONICAL_DB\" 2>/dev/null | tr -d ' '")}
+${marker("canonical_db_mtime", "stat -c %y \"$CANONICAL_DB\" 2>/dev/null")}
+${marker("backup_path", "if [ -d \"$BACKUP_PATH\" ]; then echo present; else echo missing; fi")}
+${marker("backup_path_writable", "if [ -d \"$BACKUP_PATH\" ] && [ -w \"$BACKUP_PATH\" ]; then echo yes; else echo no; fi")}
+${marker("backup_count", "find \"$BACKUP_PATH\" -maxdepth 1 -type f -name 'platform.db.backup-*' 2>/dev/null | wc -l | tr -d ' '")}
+${marker("sqlite3_path", "command -v sqlite3 || true")}
+${marker("sqlite3_version", "sqlite3 --version 2>/dev/null | awk '{print $1}'")}
+${marker("db_integrity", "sqlite3 \"$CANONICAL_DB\" 'PRAGMA integrity_check;' 2>&1")}
+${marker("service_active", "systemctl is-active \"$SERVICE\" 2>&1")}
+${marker("listen_addresses", "ss -ltn | awk '$4 ~ /:4317$/ {print $4}' | paste -sd '|' -")}
+LATEST_BACKUPS="$(find "$BACKUP_PATH" -maxdepth 1 -type f -name 'platform.db.backup-*' -printf '%T@ %s %f\n' 2>/dev/null | sort -nr | head -n 5)"
+emit_b64 latest_backups "$LATEST_BACKUPS"
+LATEST_BACKUP="$(printf '%s\n' "$LATEST_BACKUPS" | head -n 1 | awk '{print $3}')"
+if [ -n "$LATEST_BACKUP" ]; then
+  emit latest_backup "$LATEST_BACKUP"
+  ${marker("latest_backup_integrity", "sqlite3 \"$BACKUP_PATH/$LATEST_BACKUP\" 'PRAGMA integrity_check;' 2>&1")}
+else
+  emit latest_backup ""
+  emit latest_backup_integrity not_checked
+fi
+RUNTIME_OUTPUT="$(cd "$APP_PATH" 2>/dev/null && set -a && . "$ENV_FILE" 2>/dev/null && set +a && node scripts/platform/platform_runtime_paths.mjs --json 2>&1)"
+emit runtime_paths_status "$?"
+emit_b64 runtime_paths "$RUNTIME_OUTPUT"
+
+if [ -z "$LATEST_BACKUP" ]; then
+  emit restore_result failed_no_backup
+  exit 0
+fi
+
+if [ ! -f "$ENV_FILE" ]; then
+  emit restore_result failed_env_missing
+  exit 0
+fi
+
+if [ "$(grep -E '^PLATFORM_DB_PATH=' "$ENV_FILE" 2>/dev/null | tail -n 1 | cut -d= -f2-)" != "$CANONICAL_DB" ]; then
+  emit restore_result failed_env_db_path
+  exit 0
+fi
+
+if [ "$(grep -E '^PLATFORM_BACKUP_PATH=' "$ENV_FILE" 2>/dev/null | tail -n 1 | cut -d= -f2-)" != "$BACKUP_PATH" ]; then
+  emit restore_result failed_env_backup_path
+  exit 0
+fi
+
+if [ ! -f "$CANONICAL_DB" ]; then
+  emit restore_result failed_live_db_missing
+  exit 0
+fi
+
+if [ ! -d "$BACKUP_PATH" ] || [ ! -w "$BACKUP_PATH" ]; then
+  emit restore_result failed_backup_path
+  exit 0
+fi
+
+if ! command -v sqlite3 >/dev/null 2>&1; then
+  emit restore_result failed_sqlite_missing
+  exit 0
+fi
+
+TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
+RESTORE_TEST_DB="$BACKUP_PATH/restore-test-platform-$TIMESTAMP.db"
+LIVE_BEFORE="$(stat -c '%s|%Y|%i' "$CANONICAL_DB" 2>/dev/null)"
+emit restore_source "$BACKUP_PATH/$LATEST_BACKUP"
+emit restore_temp "$RESTORE_TEST_DB"
+emit live_db_before "$LIVE_BEFORE"
+
+if [ "$RESTORE_TEST_DB" = "$CANONICAL_DB" ]; then
+  emit restore_result refused_live_target
+  exit 0
+fi
+
+cp "$BACKUP_PATH/$LATEST_BACKUP" "$RESTORE_TEST_DB" >/tmp/sentinel-pi-restore-test.out 2>&1
+COPY_STATUS="$?"
+emit restore_copy_status "$COPY_STATUS"
+if [ "$COPY_STATUS" -ne 0 ]; then
+  emit_b64 restore_copy_output "$(cat /tmp/sentinel-pi-restore-test.out 2>/dev/null)"
+  rm -f /tmp/sentinel-pi-restore-test.out >/dev/null 2>&1 || true
+  emit restore_result failed_copy
+  exit 0
+fi
+rm -f /tmp/sentinel-pi-restore-test.out >/dev/null 2>&1 || true
+
+RESTORE_INTEGRITY="$(sqlite3 "$RESTORE_TEST_DB" 'PRAGMA integrity_check;' 2>&1)"
+emit restore_integrity "$RESTORE_INTEGRITY"
+RESTORE_TABLES="$(sqlite3 "$RESTORE_TEST_DB" "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;" 2>&1)"
+emit_b64 restore_tables "$RESTORE_TABLES"
+MISSING_TABLES=""
+for TABLE_NAME in $EXPECTED_TABLES; do
+  if ! printf '%s\n' "$RESTORE_TABLES" | grep -qx "$TABLE_NAME"; then
+    MISSING_TABLES="$MISSING_TABLES $TABLE_NAME"
+  fi
+done
+emit missing_tables "$(printf '%s' "$MISSING_TABLES" | sed 's/^ //')"
+emit restore_size "$(du -h "$RESTORE_TEST_DB" 2>/dev/null | cut -f1)"
+emit restore_bytes "$(wc -c < "$RESTORE_TEST_DB" 2>/dev/null | tr -d ' ')"
+
+if [ "$KEEP_TEMP" = "yes" ]; then
+  emit restore_temp_removed no
+else
+  rm -f "$RESTORE_TEST_DB" >/tmp/sentinel-pi-restore-remove.out 2>&1
+  REMOVE_STATUS="$?"
+  emit restore_remove_status "$REMOVE_STATUS"
+  if [ "$REMOVE_STATUS" -eq 0 ] && [ ! -e "$RESTORE_TEST_DB" ]; then
+    emit restore_temp_removed yes
+  else
+    emit_b64 restore_remove_output "$(cat /tmp/sentinel-pi-restore-remove.out 2>/dev/null)"
+    emit restore_temp_removed no
+  fi
+  rm -f /tmp/sentinel-pi-restore-remove.out >/dev/null 2>&1 || true
+fi
+
+LIVE_AFTER="$(stat -c '%s|%Y|%i' "$CANONICAL_DB" 2>/dev/null)"
+emit live_db_after "$LIVE_AFTER"
+if [ "$LIVE_BEFORE" = "$LIVE_AFTER" ]; then
+  emit live_db_unchanged yes
+else
+  emit live_db_unchanged no
+fi
+
+if [ "$RESTORE_INTEGRITY" = "ok" ] && [ -z "$MISSING_TABLES" ] && { [ "$KEEP_TEMP" = "yes" ] || [ "$REMOVE_STATUS" -eq 0 ]; }; then
+  emit restore_result success
+else
+  emit restore_result failed_validation
+fi
+`;
+}
+
 function runtimePathValue(runtimeJson, key) {
   if (!runtimeJson || typeof runtimeJson !== "object") return null;
   if (Array.isArray(runtimeJson.paths)) {
@@ -497,8 +661,82 @@ function classifyBackup({ host, user, sshResult, remote, confirm }) {
   };
 }
 
+function classifyRestoreTest({ host, user, sshResult, remote, keepTemp }) {
+  const verify = classifyVerify({ host, user, sshResult, remote });
+  const blockers = [...verify.blockers];
+  const warnings = [...verify.warnings];
+  const checks = [...verify.checks];
+  const restoreTables = decodeB64(remote.restore_tables_b64)
+    .split(/\r?\n/)
+    .map((table) => table.trim())
+    .filter(Boolean);
+
+  if (remote.restore_result === "success") {
+    checks.push(makeCheck("restore_copy", "Restore-test copy", "pass", remote.restore_temp || "temporary DB created."));
+    checks.push(makeCheck("restore_integrity", "Restore-test integrity", "pass", remote.restore_integrity || "ok"));
+  } else {
+    blockers.push(`Restore simulation failed: ${remote.restore_result || "unknown"}.`);
+    checks.push(makeCheck("restore_copy", "Restore-test copy", "fail", remote.restore_result || "unknown"));
+  }
+
+  if (remote.missing_tables) {
+    blockers.push(`Restore-test DB is missing expected table(s): ${remote.missing_tables}.`);
+    checks.push(makeCheck("restore_tables", "Restore-test expected tables", "fail", remote.missing_tables));
+  } else if (remote.restore_result) {
+    checks.push(makeCheck("restore_tables", "Restore-test expected tables", "pass", `${restoreTables.length} table(s) present.`));
+  }
+
+  if (remote.live_db_unchanged === "yes") {
+    checks.push(makeCheck("live_db_unchanged", "Live DB unchanged", "pass", "Live canonical DB stat was unchanged by restore simulation."));
+  } else if (remote.live_db_unchanged === "no") {
+    warnings.push("Live DB stat changed during the restore simulation window. Review whether the running service wrote state at the same time.");
+    checks.push(makeCheck("live_db_unchanged", "Live DB unchanged", "warning", `Before ${remote.live_db_before || "unknown"}; after ${remote.live_db_after || "unknown"}.`));
+  }
+
+  if (keepTemp) {
+    checks.push(makeCheck("restore_temp_removed", "Restore-test temp DB", "warning", `Kept at ${remote.restore_temp || "unknown"} because --keep-temp was used.`));
+    warnings.push("Restore-test temp DB was kept because --keep-temp was used.");
+  } else if (remote.restore_temp_removed === "yes") {
+    checks.push(makeCheck("restore_temp_removed", "Restore-test temp DB removed", "pass", "Removed after validation."));
+  } else if (remote.restore_result) {
+    blockers.push("Restore-test temp DB was not removed.");
+    checks.push(makeCheck("restore_temp_removed", "Restore-test temp DB removed", "fail", remote.restore_temp || "unknown"));
+  }
+
+  const status = blockers.length ? "RESTORE_TEST_FAILED" : warnings.length ? "RESTORE_TEST_PASSED_WITH_WARNINGS" : "RESTORE_TEST_PASSED";
+  return {
+    status,
+    checks,
+    warnings,
+    blockers,
+    runtimePaths: verify.runtimePaths,
+    latestBackups: verify.latestBackups,
+    plannedBackupPath: verify.plannedBackupPath,
+    restoreResult: {
+      result: remote.restore_result || "unknown",
+      source: remote.restore_source || null,
+      tempPath: remote.restore_temp || null,
+      size: remote.restore_size || null,
+      bytes: remote.restore_bytes ? Number(remote.restore_bytes) : null,
+      integrity: remote.restore_integrity || null,
+      tables: restoreTables,
+      missingTables: remote.missing_tables || "",
+      tempRemoved: remote.restore_temp_removed === "yes",
+      liveDbUnchanged: remote.live_db_unchanged === "yes",
+    },
+    backupResult: null,
+    recommendedNextStep: blockers.length
+      ? "Review restore-test blockers. Do not overwrite the live DB."
+      : "Restore simulation passed. Keep the API localhost-only and retain backup files.",
+  };
+}
+
 function reportPaths(mode) {
-  const base = mode === "verify" ? "sentinel-pi-backup-verify" : "sentinel-pi-backup";
+  const base = mode === "verify"
+    ? "sentinel-pi-backup-verify"
+    : mode === "restore-test"
+      ? "sentinel-pi-backup-restore-test"
+      : "sentinel-pi-backup";
   return {
     json: path.join(reportsDir, `${base}.json`),
     markdown: path.join(reportsDir, `${base}.md`),
@@ -543,10 +781,15 @@ function buildReport({ mode, confirm, target, sshResult, remote, classification 
     latestBackups: classification.latestBackups,
     plannedBackupPath: classification.plannedBackupPath,
     backupResult: classification.backupResult,
+    restoreResult: classification.restoreResult,
     checks: classification.checks,
     warnings: classification.warnings,
     blockers: classification.blockers,
-    mutation: mode === "backup" && confirm ? "created timestamped canonical DB backup if checks passed" : "none",
+    mutation: mode === "backup" && confirm
+      ? "created timestamped canonical DB backup if checks passed"
+      : mode === "restore-test"
+        ? "created a temporary restore-test DB copy and removed it unless --keep-temp was used"
+        : "none",
     recommendedNextStep: classification.recommendedNextStep || (
       classification.status === "READY"
         ? "Backup path is ready. Run npm run platform:pi:backup for the dry-run plan."
@@ -561,13 +804,24 @@ function statusIcon(status) {
   return "fail";
 }
 
+function modeLabel(report) {
+  if (report.confirmed) return "confirmed";
+  if (report.mode === "backup") return "dry-run";
+  if (report.mode === "restore-test") return "restore-test";
+  return "read-only";
+}
+
 function buildMarkdown(report) {
   const lines = [
-    report.mode === "verify" ? "# Sentinel Pi Backup Verification" : "# Sentinel Pi Backup",
+    report.mode === "verify"
+      ? "# Sentinel Pi Backup Verification"
+      : report.mode === "restore-test"
+        ? "# Sentinel Pi Backup Restore Simulation"
+        : "# Sentinel Pi Backup",
     "",
     `Checked: ${report.checkedAt}`,
     `Status: ${report.status}`,
-    `Mode: ${report.confirmed ? "confirmed" : report.mode === "backup" ? "dry-run" : "read-only"}`,
+    `Mode: ${modeLabel(report)}`,
     "",
     "## Target",
     "",
@@ -604,6 +858,23 @@ function buildMarkdown(report) {
       `- Path: ${report.backupResult.path || "not created"}`,
       `- Size: ${report.backupResult.size || "unknown"}`,
       `- Integrity: ${report.backupResult.integrity || "unknown"}`,
+    );
+  }
+
+  if (report.restoreResult) {
+    lines.push(
+      "",
+      "## Restore Simulation Result",
+      "",
+      `- Result: ${report.restoreResult.result}`,
+      `- Source backup: ${report.restoreResult.source || "unknown"}`,
+      `- Temporary DB: ${report.restoreResult.tempPath || "unknown"}`,
+      `- Temp removed: ${report.restoreResult.tempRemoved ? "yes" : "no"}`,
+      `- Live DB unchanged: ${report.restoreResult.liveDbUnchanged ? "yes" : "no"}`,
+      `- Size: ${report.restoreResult.size || "unknown"}`,
+      `- Integrity: ${report.restoreResult.integrity || "unknown"}`,
+      `- Tables checked: ${report.restoreResult.tables.length}`,
+      `- Missing tables: ${report.restoreResult.missingTables || "none"}`,
     );
   }
 
@@ -645,11 +916,15 @@ function writeReports(report) {
 }
 
 function printReport(report, paths) {
-  console.log(report.mode === "verify" ? "Sentinel Pi Backup Verification" : "Sentinel Pi Backup");
+  console.log(report.mode === "verify"
+    ? "Sentinel Pi Backup Verification"
+    : report.mode === "restore-test"
+      ? "Sentinel Pi Backup Restore Simulation"
+      : "Sentinel Pi Backup");
   console.log("");
   console.log(`Host: ${report.target.host}`);
   console.log(`Status: ${report.status}`);
-  console.log(`Mode: ${report.confirmed ? "confirmed" : report.mode === "backup" ? "dry-run" : "read-only"}`);
+  console.log(`Mode: ${modeLabel(report)}`);
   console.log("");
   console.log("Paths:");
   console.log(`- Canonical DB: ${report.target.canonicalDbPath}`);
@@ -662,6 +937,18 @@ function printReport(report, paths) {
     console.log(`- Result: ${report.backupResult.result}`);
     console.log(`- Path: ${report.backupResult.path || "not created"}`);
     console.log(`- Integrity: ${report.backupResult.integrity || "unknown"}`);
+    console.log("");
+  }
+
+  if (report.restoreResult) {
+    console.log("Restore simulation result:");
+    console.log(`- Result: ${report.restoreResult.result}`);
+    console.log(`- Source backup: ${report.restoreResult.source || "unknown"}`);
+    console.log(`- Temporary DB: ${report.restoreResult.tempPath || "unknown"}`);
+    console.log(`- Temp removed: ${report.restoreResult.tempRemoved ? "yes" : "no"}`);
+    console.log(`- Live DB unchanged: ${report.restoreResult.liveDbUnchanged ? "yes" : "no"}`);
+    console.log(`- Integrity: ${report.restoreResult.integrity || "unknown"}`);
+    console.log(`- Tables checked: ${report.restoreResult.tables.length}`);
     console.log("");
   }
 
@@ -691,23 +978,29 @@ function printReport(report, paths) {
 
 function main() {
   const args = parseArgs(process.argv.slice(2));
-  const mode = args.verify ? "verify" : "backup";
+  const mode = args.restoreTest ? "restore-test" : args.verify ? "verify" : "backup";
   const host = configValue("RASPBERRY_PI_HOST", defaultHost);
   const user = configValue("RASPBERRY_PI_USER", defaultUser);
   const sshPort = configValue("RASPBERRY_PI_SSH_PORT", defaultPort);
   const appPath = configValue("RASPBERRY_PI_APP_PATH", defaultAppPath);
   const target = { host, sshUser: user, sshPort, appPath };
-  const script = mode === "backup" && args.confirm ? confirmedBackupRemoteScript : readOnlyRemoteScript;
-  const sshResult = runSsh({ host, user, sshPort, appPath, script, timeoutMs: args.confirm ? 60_000 : 45_000 });
+  const script = mode === "restore-test"
+    ? (options) => restoreTestRemoteScript({ ...options, keepTemp: args.keepTemp })
+    : mode === "backup" && args.confirm
+      ? confirmedBackupRemoteScript
+      : readOnlyRemoteScript;
+  const sshResult = runSsh({ host, user, sshPort, appPath, script, timeoutMs: args.confirm || mode === "restore-test" ? 60_000 : 45_000 });
   const remote = parseRemoteOutput(sshResult.stdout);
   const classification = mode === "verify"
     ? classifyVerify({ host, user, sshResult, remote })
-    : classifyBackup({ host, user, sshResult, remote, confirm: args.confirm });
+    : mode === "restore-test"
+      ? classifyRestoreTest({ host, user, sshResult, remote, keepTemp: args.keepTemp })
+      : classifyBackup({ host, user, sshResult, remote, confirm: args.confirm });
   const report = buildReport({ mode, confirm: args.confirm, target, sshResult, remote, classification });
   const paths = writeReports(report);
   printReport(report, paths);
 
-  if (report.status === "NOT_READY" || report.status === "BACKUP_FAILED") process.exitCode = 1;
+  if (report.status === "NOT_READY" || report.status === "BACKUP_FAILED" || report.status === "RESTORE_TEST_FAILED") process.exitCode = 1;
 }
 
 main();

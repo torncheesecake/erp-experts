@@ -327,11 +327,14 @@ After the canonical DB migration, use the Pi-specific backup workflow for `/srv/
 ```bash
 npm run platform:pi:backup:verify
 npm run platform:pi:backup
+npm run platform:pi:backup:restore:test
 ```
 
 `platform:pi:backup:verify` is read-only. It confirms the Pi `.env` points `PLATFORM_DB_PATH` and `PLATFORM_BACKUP_PATH` at the canonical paths, checks SQLite integrity, confirms `/srv/sentinel/data/seo-ops/backups` is writable by the SSH user and lists recent backup files if any exist.
 
 `platform:pi:backup` is dry-run by default. Confirmed mode requires `--confirm` and writes a timestamped backup such as `/srv/sentinel/data/seo-ops/backups/platform.db.backup-20260518-090000`. It does not stop `sentinel-api.service`, enable timers, expose the API, delete old backups or touch the repo-local fallback DB.
+
+`platform:pi:backup:restore:test` validates recovery confidence without touching the live DB. It copies the latest Pi backup to a timestamped temporary restore-test DB, checks integrity and expected tables, removes the temporary DB unless `-- --keep-temp` is supplied and never overwrites `/srv/sentinel/data/seo-ops/platform.db`.
 
 ## Deployment readiness gate
 
