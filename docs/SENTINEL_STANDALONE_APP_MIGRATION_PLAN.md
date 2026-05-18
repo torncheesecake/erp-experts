@@ -211,6 +211,21 @@ Prototype behaviour:
 
 This is still a prototype. It is not a separate build target yet and it has not been deployed to `sentinel.artifexa.co.uk`.
 
+## Standalone UX Direction
+
+The `/sentinel` prototype now has a dedicated design direction that is separate from the ERP Experts website shell and the legacy `/seo-roadmap` dashboard layout.
+
+Design principles:
+
+- Content Workbench is the dominant operating surface.
+- Infrastructure, diagnostics, pipelines, cadence and governance are support systems rather than the first visual priority.
+- The top rail is compact and status-led, showing health, authority, runtime and cadence without large dashboard cards.
+- Navigation is calmer and workbench-first, with Content Workbench, Inbox and Opportunities ahead of infrastructure sections.
+- The layout uses a wider dark workspace, subtle depth, slimmer rails and fewer equal-weight boxes.
+- ERP Experts remains visible only as active tenant context, not as app branding.
+
+This design pass does not remove operator functionality, change scoring, deploy the standalone app or expose the Pi API. It is a same-repo layout and hierarchy refactor for local operator use.
+
 ## Branding Plan
 
 The standalone app should use Sentinel and Artifexa identity:

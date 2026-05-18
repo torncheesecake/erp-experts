@@ -16,6 +16,8 @@ The current model keeps application code under Git and persistent operational st
 
 The planned next ownership boundary is a standalone Sentinel operator frontend at `sentinel.artifexa.co.uk`. A local prototype route now exists at `/sentinel`; it uses Artifexa/Sentinel branding, keeps ERP Experts as tenant context only, removes ERP Experts public website chrome from the operator experience and opens with Content Workbench as the primary work surface. The migration plan is documented in `docs/SENTINEL_STANDALONE_APP_MIGRATION_PLAN.md`.
 
+The current standalone UX direction is workflow-first rather than infrastructure-first. `/sentinel` uses a wider dark operational workspace, compact status rail, slimmer navigation and a more prominent Content Workbench. Existing orchestration, pipelines, governance, activity, authority, workspaces and diagnostics remain available as supporting systems.
+
 ## Local Platform State
 
 Local Sentinel remains healthy for the ERP Experts tenant:
@@ -116,6 +118,14 @@ Current route separation:
 The stakeholder page must not expose Sentinel internals, operator controls, commands, diagnostics, API details, database details, approvals, pipelines or implementation roadmap content.
 
 The `/sentinel` prototype keeps its local browser session preferences under `sentinel.operatorSession.standalone.v1` so its Content Workbench-first default does not change `/seo-roadmap` behaviour.
+
+The `/sentinel` visual hierarchy now prioritises content operations:
+
+- Compact operational rail for health, authority, runtime and cadence.
+- Content Workbench-first navigation order.
+- Larger main work surface for article status lanes and selected item detail.
+- Workspace and help controls placed after the active work surface so they do not compete with the editorial queue.
+- Infrastructure sections remain accessible but visually secondary.
 
 Local Pi-backed `/sentinel` testing is documented in `docs/SENTINEL_LOCAL_OPERATOR_LAUNCH.md`. It uses an SSH tunnel to reach the Pi API through local `127.0.0.1:4317`, then launches Vite with `VITE_SENTINEL_API_BASE_URL=http://127.0.0.1:4317`. `npm run sentinel:launch -- --tunnel` can start the tunnel in the foreground when explicitly requested. This does not expose the Pi API publicly.
 
