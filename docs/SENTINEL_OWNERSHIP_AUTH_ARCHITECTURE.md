@@ -29,6 +29,12 @@ Private operator Control Centre.
 
 Today it works locally for Matthew and production builds redirect it to `/seo-progress`. In the future, the page should only unlock operator controls when it can authenticate against Matthew's Sentinel API/server.
 
+### `sentinel.artifexa.co.uk`
+
+Planned standalone Sentinel operator frontend.
+
+The preferred migration path is to move the private operator app out of the ERP Experts website shell and into an Artifexa-owned Sentinel domain. ERP Experts remains the first active tenant, but the operator app should use Sentinel/Artifexa branding, remove ERP Experts public chrome and require Matthew-controlled authority before serious use. See `docs/SENTINEL_STANDALONE_APP_MIGRATION_PLAN.md`.
+
 ### Sentinel API
 
 Private authority and key source for operator access.
@@ -110,7 +116,7 @@ Target model:
 - Raspberry Pi or another Matthew-controlled server runs the Sentinel API.
 - API remains private or protected behind a strict reverse proxy.
 - Client websites receive stakeholder-safe outputs only.
-- Operator dashboard connects to the Sentinel API only when configured and authorised.
+- Operator dashboard runs from `sentinel.artifexa.co.uk` or another Matthew-controlled Sentinel frontend, then connects to the Sentinel API only when configured and authorised.
 - Controlled actions, execution pipelines, cadence, approvals and operational reports remain governed by Matthew-controlled infrastructure.
 - Future tenant dashboards should authenticate against Sentinel rather than becoming standalone public control panels.
 

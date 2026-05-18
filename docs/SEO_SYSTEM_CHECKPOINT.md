@@ -8,6 +8,10 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 
 `docs/SENTINEL_V1_OPERATIONAL_BASELINE.md` records the current stable operating state: Pi service active, API localhost-only, canonical DB active at `/srv/sentinel/data/seo-ops/platform.db`, first Pi backup verified, restore simulation passed, stakeholder page safe, operator route protected in production and remote authority scaffold present but disabled.
 
+## Standalone Sentinel operator app plan
+
+`docs/SENTINEL_STANDALONE_APP_MIGRATION_PLAN.md` documents the planned migration from the private `/seo-roadmap` operator UI inside the ERP Experts shell to a standalone Artifexa-owned Sentinel frontend at `sentinel.artifexa.co.uk`. The recommended path is same repo, separate build mode first, with `/seo-progress` staying on `erpexperts.co.uk` and the Pi API remaining localhost-only until authority enforcement is ready.
+
 
 ## Current commands
 
@@ -74,6 +78,7 @@ Sentinel is the working name for the SEO/content operations platform. The existi
 
 - `/seo-progress` is the stakeholder-facing SEO and content progress view.
 - `/seo-roadmap` is the Sentinel operator dashboard for local/internal use only.
+- `sentinel.artifexa.co.uk` is the planned future standalone operator app domain, not deployed yet.
 - Production builds redirect `/seo-roadmap` to `/seo-progress` until real authentication exists.
 - Do not expose operator commands, prompts, diagnostics, tenant state, approval gates or generated report internals on public ERP Experts pages.
 - Future operator controls should depend on Matthew-controlled Sentinel API authority before any production exposure.

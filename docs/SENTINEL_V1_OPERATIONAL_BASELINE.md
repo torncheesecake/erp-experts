@@ -14,6 +14,8 @@ Sentinel now has three separated operating surfaces:
 
 The current model keeps application code under Git and persistent operational state outside the repo on the Pi. The Pi API remains bound to localhost only and is not exposed through a reverse proxy.
 
+The planned next ownership boundary is a standalone Sentinel operator frontend at `sentinel.artifexa.co.uk`. That future app should use Artifexa/Sentinel branding, keep ERP Experts as tenant context only and remove ERP Experts public website chrome from the operator experience. The migration plan is documented in `docs/SENTINEL_STANDALONE_APP_MIGRATION_PLAN.md`.
+
 ## Local Platform State
 
 Local Sentinel remains healthy for the ERP Experts tenant:
@@ -108,6 +110,7 @@ Current route separation:
 - `/seo-progress`: stakeholder-safe progress page, live and plain-English
 - `/reports`: points stakeholders to `/seo-progress`
 - `/seo-roadmap`: private operator route, protected in production
+- `sentinel.artifexa.co.uk`: planned standalone operator app, not deployed yet
 
 The stakeholder page must not expose Sentinel internals, operator controls, commands, diagnostics, API details, database details, approvals, pipelines or implementation roadmap content.
 
@@ -162,8 +165,9 @@ Recommended next phases, in order:
 
 1. Keep collecting operational evidence from the Pi node with the current localhost-only service.
 2. Add remote authority enforcement and token handling before any public transport is considered.
-3. Add a controlled service restart/deploy policy for Pi updates, still without exposing the API.
-4. Define backup retention and restore runbook policy before enabling timers.
-5. Consider cadence timers only after auth, backup retention and restore runbooks are reviewed.
+3. Scaffold a same-repo, separate-build Sentinel operator frontend for `sentinel.artifexa.co.uk`, without deploying it publicly yet.
+4. Add a controlled service restart/deploy policy for Pi updates, still without exposing the API.
+5. Define backup retention and restore runbook policy before enabling timers.
+6. Consider cadence timers only after auth, backup retention and restore runbooks are reviewed.
 
 Do not expose the Pi API publicly or enable timers until remote authority, backup policy and service rollback procedures are in place.
