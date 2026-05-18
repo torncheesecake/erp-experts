@@ -43,6 +43,8 @@ Each action includes:
 - optional allowlisted action ID
 - optional manual copy template or source
 - expected result
+- suggested next action
+- produced artefacts
 - recovery note
 
 ## Execution Modes
@@ -88,6 +90,26 @@ In `/sentinel` and `/seo-roadmap`, selected content items now show:
 - local workflow action history
 
 The article cards also surface the next workflow action directly, so operators can progress items without opening the raw command console.
+
+## Action Outputs
+
+Every workflow action now produces a visible result record for the selected item.
+
+The result includes:
+
+- action label
+- content item title
+- previous status
+- new status when changed
+- result state: success, warning, failed or manual step
+- result summary
+- produced artefacts where known
+- suggested next action
+- timestamp
+
+The selected item detail panel shows the latest output immediately after the action runs. Local transitions show the status change and browser-local workflow state. Manual-copy actions show the terminal command and expected report output. If browser clipboard access is unavailable, Sentinel keeps the command visible and records a warning instead of hiding the next step. Allowlisted actions show the API execution summary and keep detailed output collapsed.
+
+The Workbench also shows the latest five workflow outputs so the operator can see what just moved, what failed and what to do next.
 
 ## Safety Boundaries
 

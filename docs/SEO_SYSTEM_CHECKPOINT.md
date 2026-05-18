@@ -618,6 +618,10 @@ Sentinel now resolves runtime paths from environment variables while preserving 
 
 The first Sentinel authority gate is implemented but disabled by default. `GET /authority/status` reports non-secret authority state, and mutation endpoints such as `POST /action`, `POST /pipeline/run`, `POST /feedback` and `POST /feedback/triage` can require `X-Sentinel-Operator-Token` when `SENTINEL_AUTHORITY_MODE=enabled`. The Control Centre shows Authority State and disables Run controls if authority is required but not verified. `/seo-progress` is unaffected. The Pi API remains localhost-only.
 
+## Workflow Action Outputs
+
+Sentinel workflow actions now produce visible operator outputs in the Content Workbench. The selected item panel shows the latest result, status change, generated or expected artefact, manual command and suggested next step. A compact Workbench history shows the latest five workflow outputs. Local transitions remain browser-local, manual-copy actions expose the command even if clipboard permission is unavailable, and allowlisted actions surface the capped API execution summary with detailed output collapsed.
+
 ## Pi Service Verifier Canonical DB State
 
 `npm run platform:pi:service:verify` and `npm run platform:pi:repo:verify` now report `Active DB: canonical` once `PLATFORM_DB_PATH=/srv/sentinel/data/seo-ops/platform.db`, the canonical DB exists and `platform:runtime:paths` is `READY`. In that state the repo-local DB is reported as `present as fallback`, not a warning. Remote auth remains the only expected warning while the API is localhost-only and no public exposure exists.

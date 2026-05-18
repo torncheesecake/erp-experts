@@ -89,6 +89,23 @@ Raw status controls, linked plan commands and brief prompts remain available, bu
 
 It does not auto-generate articles, auto-publish, run arbitrary commands or expose deploy/restore/cleanup actions.
 
+## Action Outputs
+
+Workbench actions now leave visible operational feedback.
+
+The selected item panel shows the latest action output with:
+
+- result state
+- summary of what happened
+- status change when relevant
+- suggested next action
+- produced artefacts or pending output paths
+- copied or fallback manual command where relevant
+
+Recent workflow outputs appear above the content lanes and show the latest five actions across the Workbench. This keeps the editorial flow clear after a status move, manual handoff or allowlisted diagnostic action.
+
+Artefact awareness is deliberately conservative. Sentinel marks committed or already-present local reports as available. If a linked report does not exist yet, the UI states that the output will appear after the linked command is run. It does not invent files.
+
 ## Persistence
 
 Status changes persist in browser local storage under:

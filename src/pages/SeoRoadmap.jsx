@@ -83,6 +83,18 @@ const SENTINEL_WORKFLOW_ACTION_HISTORY_KEY = "sentinel.workflowActions.v1";
 const SENTINEL_CONTENT_WORKFLOW_ACTION_LIST = Array.isArray(sentinelContentWorkflowActions?.actions)
   ? sentinelContentWorkflowActions.actions
   : [];
+const SENTINEL_WORKFLOW_ARTIFACT_MODULES = {
+  ...sentinelDoctorModules,
+  ...sentinelRoadmapModules,
+  ...sentinelRoadmapPlanModules,
+  ...sentinelRoadmapApprovalModules,
+  ...sentinelImplementationBriefModules,
+  ...sentinelWorkPackageModules,
+  ...sentinelWorkPackageReviewModules,
+};
+const SENTINEL_WORKFLOW_ARTIFACT_PATHS = new Set(
+  Object.keys(SENTINEL_WORKFLOW_ARTIFACT_MODULES).map((key) => key.replace(/^\.\.\/\.\.\//, "")),
+);
 const SENTINEL_OPERATOR_SESSION_DEFAULTS = {
   activeWorkspaceId: SENTINEL_DEFAULT_WORKSPACE_ID,
   activeSection: "overview",
@@ -194,7 +206,7 @@ function parseSnapshotLabel(snapshotDir = "") {
   return { key, label: `${d}/${mo} ${h}:${mi}`, iso: `${y}-${mo}-${d}T${h}:${mi}:00Z` };
 }
 
-async function copyText(text, label = "copy payload") {
+async function copyText(text) {
   const value = String(text || "");
   if (!value) return false;
 
@@ -203,10 +215,8 @@ async function copyText(text, label = "copy payload") {
       await navigator.clipboard.writeText(value);
       return true;
     }
-  } catch (err) {
-    if (import.meta.env.DEV) {
-      console.warn(`Clipboard API failed for ${label}:`, err);
-    }
+  } catch {
+    // Clipboard permission can be unavailable in embedded browsers; the UI still shows the command.
   }
 
   try {
@@ -224,10 +234,7 @@ async function copyText(text, label = "copy payload") {
     const success = document.execCommand("copy");
     document.body.removeChild(textarea);
     return Boolean(success);
-  } catch (err) {
-    if (import.meta.env.DEV) {
-      console.warn(`execCommand copy failed for ${label}:`, err);
-    }
+  } catch {
     return false;
   }
 }
@@ -559,9 +566,15 @@ function normaliseWorkflowActionHistory(state = {}) {
         actionLabel: entry.actionLabel || formatStateLabel(entry.actionId),
         executionMode: entry.executionMode || "local_transition",
         status: normaliseExecutionStatus(entry.status || "success"),
+        resultStatus: entry.resultStatus || normaliseExecutionStatus(entry.status || "success"),
         fromStatus: entry.fromStatus || "",
         toStatus: entry.toStatus || "",
         message: entry.message || "",
+        resultSummary: entry.resultSummary || entry.message || "",
+        producedArtifacts: Array.isArray(entry.producedArtifacts) ? entry.producedArtifacts : [],
+        suggestedNextAction: entry.suggestedNextAction || "",
+        copiedCommand: entry.copiedCommand || "",
+        outputExcerpt: entry.outputExcerpt || "",
         recovery: entry.recovery || "",
         createdAt: entry.createdAt || new Date().toISOString(),
       })),
@@ -619,6 +632,24 @@ function getWorkflowManualCopyValue(action = {}, item = {}) {
   return "";
 }
 
+function getWorkflowProducedArtifacts(action = {}, item = {}) {
+  const artifacts = Array.isArray(action.producedArtifacts) ? action.producedArtifacts : [];
+  return artifacts.map((artifact) => {
+    const path = hydrateWorkflowTemplate(artifact.path || "", item);
+    const exists = path
+      ? path === "clipboard" || path.startsWith("sentinel.") || SENTINEL_WORKFLOW_ARTIFACT_PATHS.has(path)
+      : false;
+    return {
+      label: artifact.label || "Workflow output",
+      path,
+      type: artifact.type || "local_output",
+      description: artifact.description || "",
+      exists,
+      statusLabel: exists ? "Available" : "Pending",
+    };
+  });
+}
+
 function isWorkflowActionAvailable(action = {}, item = {}) {
   if (!action?.id || !item?.id) return false;
   const validStatuses = Array.isArray(action.validStatuses) ? action.validStatuses : [];
@@ -662,6 +693,21 @@ function workflowActionModeLabel(action = {}) {
   if (action.executionMode === "allowlisted_pipeline") return "Runs safe workflow";
   if (action.executionMode === "manual_copy") return "Copies next step";
   return "Updates workflow";
+}
+
+function workflowResultLabel(status = "") {
+  if (status === "running" || status === "queued") return "Running";
+  if (status === "manual") return "Manual step";
+  if (status === "warning") return "Warning";
+  if (status === "failed") return "Failed";
+  return "Success";
+}
+
+function workflowResultBadgeClass(status = "") {
+  if (status === "running" || status === "queued") return "bg-blue-100 text-blue-800 ring-blue-200";
+  if (status === "failed") return "bg-rose-100 text-rose-800 ring-rose-200";
+  if (status === "manual" || status === "warning") return "bg-amber-100 text-amber-900 ring-amber-200";
+  return "bg-emerald-100 text-emerald-800 ring-emerald-200";
 }
 
 function workflowActionButtonClass(action = {}, active = false) {
@@ -783,6 +829,7 @@ function actionStatusBadgeClass(status = "") {
   if (normalisedStatus === "running") return "bg-blue-50 text-blue-700 ring-blue-100";
   if (normalisedStatus === "queued") return "bg-slate-50 text-slate-700 ring-slate-100";
   if (normalisedStatus === "cancelled") return "bg-amber-50 text-amber-800 ring-amber-100";
+  if (normalisedStatus === "manual" || normalisedStatus === "warning") return "bg-amber-50 text-amber-800 ring-amber-100";
   return "bg-rose-50 text-rose-700 ring-rose-100";
 }
 
@@ -7668,6 +7715,11 @@ function ContentWorkbenchPanel({
     setWorkflowActionStates((current) => ({
       ...current,
       [workflowActionKey(item, action)]: {
+        itemId: item?.id || "",
+        itemTitle: item?.title || "Untitled content item",
+        actionId: action?.id || "",
+        actionLabel: action?.label || "",
+        executionMode: action?.executionMode || "",
         ...current[workflowActionKey(item, action)],
         ...state,
       },
@@ -7698,13 +7750,42 @@ function ContentWorkbenchPanel({
       startedAt,
     });
 
-    const finishAction = async ({ status, message, outputExcerpt = "", toStatus = "", recovery = action.recovery || "" }) => {
+    const finishAction = async ({
+      status,
+      message,
+      outputExcerpt = "",
+      toStatus = "",
+      recovery = action.recovery || "",
+      copiedCommand = "",
+      executionId = "",
+    }) => {
+      const resultStatus = status === "success" && action.executionMode === "manual_copy" ? "manual" : status;
+      const producedArtifacts = getWorkflowProducedArtifacts(action, item);
+      const projectedItem = toStatus ? { ...item, status: toStatus } : item;
+      const nextWorkflowAction = getPrimaryWorkflowActionForItem(projectedItem);
+      const suggestedNextAction = action.suggestedNextAction
+        || nextWorkflowAction?.label
+        || recovery
+        || "Review the selected item before moving it forward.";
+      const changedStatus = Boolean(toStatus && toStatus !== item.status);
+      const resultSummary = message || action.expectedResult || `${action.label} completed.`;
+      const finishedAt = new Date().toISOString();
+
       setWorkflowActionState(item, action, {
-        status,
-        message,
+        status: resultStatus,
+        resultStatus,
+        message: resultSummary,
+        resultSummary,
         outputExcerpt,
+        copiedCommand,
+        producedArtifacts,
+        suggestedNextAction,
+        fromStatus: item.status,
+        toStatus,
+        changedStatus,
         recovery,
-        finishedAt: new Date().toISOString(),
+        executionId,
+        finishedAt,
       });
       recordWorkflowAction({
         itemId: item.id,
@@ -7712,11 +7793,18 @@ function ContentWorkbenchPanel({
         actionId: action.id,
         actionLabel: action.label,
         executionMode: action.executionMode,
-        status,
+        status: resultStatus,
+        resultStatus,
         fromStatus: item.status,
         toStatus,
-        message,
+        message: resultSummary,
+        resultSummary,
+        producedArtifacts,
+        suggestedNextAction,
+        copiedCommand,
+        outputExcerpt,
         recovery,
+        createdAt: finishedAt,
       });
       if (typeof onWorkflowActionComplete === "function") {
         await onWorkflowActionComplete();
@@ -7737,13 +7825,14 @@ function ContentWorkbenchPanel({
 
     if (action.executionMode === "manual_copy") {
       const copyValueForAction = getWorkflowManualCopyValue(action, item);
-      const ok = await copyText(copyValueForAction, `workflow action ${action.id}`);
+      const ok = await copyText(copyValueForAction);
       await finishAction({
-        status: ok ? "success" : "failed",
+        status: ok ? "success" : "warning",
         message: ok
-          ? action.expectedResult || `${action.label} copied.`
-          : "Could not copy the workflow step.",
+          ? "Copied command. Run it in your local terminal when ready."
+          : "Clipboard copy was unavailable. The command is shown below for manual use.",
         outputExcerpt: copyValueForAction,
+        copiedCommand: copyValueForAction,
       });
       return;
     }
@@ -7813,6 +7902,7 @@ function ContentWorkbenchPanel({
           message: finalExecution?.summary || (succeeded ? action.expectedResult : `${action.label} failed.`),
           outputExcerpt: finalExecution?.outputExcerpt || "",
           toStatus: succeeded ? action.nextStatus || "" : "",
+          executionId: finalExecution?.executionId || payload.executionId,
         });
       } catch (error) {
         await finishAction({
@@ -7851,6 +7941,13 @@ function ContentWorkbenchPanel({
   const latestWorkflowActionState = selectedItem && latestWorkflowAction
     ? workflowActionStates[workflowActionKey(selectedItem, latestWorkflowAction)]
     : null;
+  const selectedWorkflowResult = selectedItem
+    ? [
+      ...Object.values(workflowActionStates).filter((entry) => entry?.itemId === selectedItem.id && (entry.finishedAt || entry.startedAt)),
+      ...selectedWorkflowHistory,
+    ].sort((a, b) => new Date(b.finishedAt || b.createdAt || b.startedAt || 0).getTime() - new Date(a.finishedAt || a.createdAt || a.startedAt || 0).getTime())[0] || null
+    : null;
+  const recentWorkflowHistory = (workflowHistory?.entries || []).slice(0, 5);
 
   const renderWorkflowActionButton = (action, item, primary = false) => {
     const state = workflowActionStates[workflowActionKey(item, action)] || {};
@@ -7873,6 +7970,113 @@ function ContentWorkbenchPanel({
           {workflowActionModeLabel(action)}
         </span>
       </button>
+    );
+  };
+
+  const renderWorkflowResultBox = (result) => {
+    if (!result) return null;
+    const resultStatus = result.resultStatus || result.status || "success";
+    const artifacts = Array.isArray(result.producedArtifacts) ? result.producedArtifacts : [];
+    const timestamp = result.finishedAt || result.createdAt || result.startedAt;
+    const statusChanged = result.toStatus && result.toStatus !== result.fromStatus;
+
+    return (
+      <section className="rounded-2xl bg-white/10 p-3 text-sm text-slate-200 ring-1 ring-white/10">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold ring-1 ${workflowResultBadgeClass(resultStatus)}`}>
+              {workflowResultLabel(resultStatus)}
+            </p>
+            <h4 className="text-base font-semibold text-white" style={{ marginTop: "8px" }}>
+              {result.actionLabel || "Workflow action"}
+            </h4>
+          </div>
+          <span className="text-xs text-slate-500">{formatDateTime(timestamp)}</span>
+        </div>
+
+        <p className="leading-6" style={{ marginTop: "8px" }}>
+          {result.resultSummary || result.message || "Workflow action completed."}
+        </p>
+
+        {statusChanged ? (
+          <p className="text-xs text-slate-400" style={{ marginTop: "8px" }}>
+            Status changed from {CONTENT_STATUS_META[result.fromStatus]?.label || formatStateLabel(result.fromStatus)} to {CONTENT_STATUS_META[result.toStatus]?.label || formatStateLabel(result.toStatus)}.
+          </p>
+        ) : null}
+
+        {result.suggestedNextAction ? (
+          <div className="rounded-xl bg-cyan-200/10 px-3 py-2 text-xs text-cyan-100" style={{ marginTop: "10px" }}>
+            <span className="font-semibold">Next: </span>{result.suggestedNextAction}
+          </div>
+        ) : null}
+
+        {artifacts.length ? (
+          <div className="grid gap-2" style={{ marginTop: "10px" }}>
+            {artifacts.map((artifact) => (
+              <div key={`${artifact.label}-${artifact.path}`} className="rounded-xl bg-white/8 px-3 py-2 text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="font-semibold text-slate-100">{artifact.label}</span>
+                  <span className={artifact.exists ? "text-emerald-200" : "text-amber-200"}>
+                    {artifact.exists ? "Available" : "Pending"}
+                  </span>
+                </div>
+                <p className="font-mono text-[11px] text-slate-400" style={{ marginTop: "4px" }}>{artifact.path}</p>
+                <p className="text-slate-400" style={{ marginTop: "4px" }}>
+                  {artifact.exists ? artifact.description : "Output will appear after running the linked command."}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : null}
+
+        {result.copiedCommand ? (
+          <div className="rounded-xl bg-amber-200/10 px-3 py-2 text-xs text-amber-100" style={{ marginTop: "10px" }}>
+            <p className="font-semibold">{resultStatus === "manual" ? "Copied command" : "Command to run"}</p>
+            <p className="font-mono text-[11px] text-amber-50" style={{ marginTop: "4px" }}>{result.copiedCommand}</p>
+            <p style={{ marginTop: "4px" }}>Run this in the local terminal when the manual review is complete.</p>
+          </div>
+        ) : null}
+
+        {result.outputExcerpt && !result.copiedCommand ? (
+          <details className="rounded-xl bg-white/8 px-3 py-2 text-xs" style={{ marginTop: "10px" }}>
+            <summary className="cursor-pointer font-semibold text-slate-200">View output</summary>
+            <pre className="whitespace-pre-wrap break-words text-slate-400" style={{ marginTop: "8px" }}>{result.outputExcerpt}</pre>
+          </details>
+        ) : null}
+      </section>
+    );
+  };
+
+  const renderRecentWorkflowHistoryPanel = (dark = false) => {
+    if (!recentWorkflowHistory.length) return null;
+    return (
+      <section className={dark ? "rounded-2xl bg-white/8 p-3 text-sm text-slate-200 ring-1 ring-white/10" : "rounded-2xl border border-slate-200/80 bg-white/70 p-3 text-sm text-slate-700"}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h3 className={dark ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>Recent workflow outputs</h3>
+          <span className={dark ? "text-xs text-slate-500" : "text-xs text-slate-500"}>Latest 5</span>
+        </div>
+        <div className="grid gap-2" style={{ marginTop: "10px" }}>
+          {recentWorkflowHistory.map((entry) => (
+            <div key={entry.id} className={dark ? "rounded-xl bg-white/8 px-3 py-2" : "rounded-xl bg-slate-50 px-3 py-2"}>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className={dark ? "font-semibold text-slate-100" : "font-semibold text-slate-900"}>
+                  {entry.actionLabel} <span className={dark ? "font-normal text-slate-400" : "font-normal text-slate-500"}>on {entry.itemTitle}</span>
+                </p>
+                <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ${actionStatusBadgeClass(entry.resultStatus || entry.status)}`}>
+                  {workflowResultLabel(entry.resultStatus || entry.status)}
+                </span>
+              </div>
+              <p className={dark ? "text-xs text-slate-400" : "text-xs text-slate-600"} style={{ marginTop: "4px" }}>
+                {entry.resultSummary || entry.message || "Workflow action recorded."}
+              </p>
+              <div className={dark ? "flex flex-wrap gap-3 text-[11px] text-slate-500" : "flex flex-wrap gap-3 text-[11px] text-slate-500"} style={{ marginTop: "4px" }}>
+                <span>{formatDateTime(entry.createdAt)}</span>
+                {entry.suggestedNextAction ? <span>Next: {entry.suggestedNextAction}</span> : null}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     );
   };
 
@@ -7977,6 +8181,12 @@ function ContentWorkbenchPanel({
               </select>
             </label>
           </div>
+
+          {recentWorkflowHistory.length ? (
+            <div style={{ marginTop: "16px" }}>
+              {renderRecentWorkflowHistoryPanel(false)}
+            </div>
+          ) : null}
 
           {loading ? (
             <p className="text-sm text-slate-500" style={{ marginTop: "18px" }}>Loading content workflow signals...</p>
@@ -8145,6 +8355,13 @@ function ContentWorkbenchPanel({
                         </section>
                       ) : null}
                     </div>
+
+                    {selectedWorkflowResult ? (
+                      <div className="grid gap-2" style={{ marginTop: "18px" }}>
+                        <h4 className="text-sm font-semibold text-white">Latest action output</h4>
+                        {renderWorkflowResultBox(selectedWorkflowResult)}
+                      </div>
+                    ) : null}
 
                     <div className="grid gap-4" style={{ marginTop: "18px" }}>
                       <section>
@@ -8345,6 +8562,12 @@ function ContentWorkbenchPanel({
         </div>
       ) : null}
 
+      {recentWorkflowHistory.length ? (
+        <div style={{ marginTop: "16px" }}>
+          {renderRecentWorkflowHistoryPanel(standaloneMode)}
+        </div>
+      ) : null}
+
       <div className="grid gap-3 lg:grid-cols-5" style={{ marginTop: "16px" }}>
         <label className="grid gap-1 text-xs font-semibold text-slate-600">
           Status
@@ -8509,6 +8732,13 @@ function ContentWorkbenchPanel({
                     </section>
                   ) : null}
                 </div>
+
+                {selectedWorkflowResult ? (
+                  <div className="grid gap-2" style={{ marginTop: "14px" }}>
+                    <h4 className="text-sm font-semibold text-white">Latest action output</h4>
+                    {renderWorkflowResultBox(selectedWorkflowResult)}
+                  </div>
+                ) : null}
 
                 <div className="grid grid-cols-2 gap-2 text-xs" style={{ marginTop: "14px" }}>
                   <div className="rounded-xl bg-white/10 p-2">

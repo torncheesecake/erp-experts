@@ -12,6 +12,15 @@
       "executionMode": "local_transition",
       "safety": "local_safe",
       "expectedResult": "Opportunity reviewed and marked approved locally.",
+      "suggestedNextAction": "Start research or approve the linked plan.",
+      "producedArtifacts": [
+        {
+          "label": "Local workflow state",
+          "path": "sentinel.contentWorkbench.v1",
+          "type": "browser_storage",
+          "description": "Browser-local Workbench status state is updated immediately."
+        }
+      ],
       "recovery": "Leave it discovered if the rationale is not strong enough yet."
     },
     {
@@ -26,6 +35,15 @@
       "requiresPlan": true,
       "manualTemplate": "npm run seo:plan:approve -- {planId}",
       "expectedResult": "Plan approval command copied for manual review.",
+      "suggestedNextAction": "Run the copied command in the terminal after reviewing the plan.",
+      "producedArtifacts": [
+        {
+          "label": "Plan approval report",
+          "path": "reports/seo-plan-approvals.json",
+          "type": "local_report",
+          "description": "Created or updated after the copied approval command runs."
+        }
+      ],
       "recovery": "Run or review the copied command only after checking the linked plan scope."
     },
     {
@@ -38,6 +56,15 @@
       "executionMode": "local_transition",
       "safety": "local_safe",
       "expectedResult": "Research started locally.",
+      "suggestedNextAction": "Generate the brief once search intent and source material are clear.",
+      "producedArtifacts": [
+        {
+          "label": "Local workflow state",
+          "path": "sentinel.contentWorkbench.v1",
+          "type": "browser_storage",
+          "description": "Browser-local Workbench status state is updated immediately."
+        }
+      ],
       "recovery": "Move it back to approved if the brief is not ready for research."
     },
     {
@@ -52,6 +79,21 @@
       "manualSource": "briefCommand",
       "fallbackTemplate": "npm run seo:plan:run -- {planId}",
       "expectedResult": "Brief preparation command copied.",
+      "suggestedNextAction": "Run the copied brief command, then move the item towards drafting or work package preparation.",
+      "producedArtifacts": [
+        {
+          "label": "Active plan runbook",
+          "path": "reports/seo-active-plan.md",
+          "type": "local_report",
+          "description": "Created or updated after the copied plan run command executes."
+        },
+        {
+          "label": "Plan status report",
+          "path": "reports/seo-plan-status.json",
+          "type": "local_report",
+          "description": "Updated by plan workflow commands."
+        }
+      ],
       "recovery": "If no linked plan exists, review the opportunity and create or refresh an execution plan first."
     },
     {
@@ -65,6 +107,15 @@
       "safety": "manual_review",
       "manualSource": "briefPrompt",
       "expectedResult": "Brief context copied for handoff.",
+      "suggestedNextAction": "Use the copied context to prepare the article handoff, then move the item to review.",
+      "producedArtifacts": [
+        {
+          "label": "Brief context",
+          "path": "clipboard",
+          "type": "clipboard",
+          "description": "Copied to clipboard for manual handoff."
+        }
+      ],
       "recovery": "If there is no prompt yet, generate or review the brief before moving into review."
     },
     {
@@ -77,6 +128,15 @@
       "executionMode": "local_transition",
       "safety": "local_safe",
       "expectedResult": "Item moved into review locally.",
+      "suggestedNextAction": "Complete editorial review, then mark ready when the work has passed.",
+      "producedArtifacts": [
+        {
+          "label": "Local workflow state",
+          "path": "sentinel.contentWorkbench.v1",
+          "type": "browser_storage",
+          "description": "Browser-local Workbench status state is updated immediately."
+        }
+      ],
       "recovery": "Move it back to drafting if more content work is needed."
     },
     {
@@ -89,6 +149,15 @@
       "executionMode": "local_transition",
       "safety": "local_safe",
       "expectedResult": "Item marked ready locally.",
+      "suggestedNextAction": "Publish through the controlled editorial process outside Sentinel, then mark published.",
+      "producedArtifacts": [
+        {
+          "label": "Local workflow state",
+          "path": "sentinel.contentWorkbench.v1",
+          "type": "browser_storage",
+          "description": "Browser-local Workbench status state is updated immediately."
+        }
+      ],
       "recovery": "Move it back to review if QA or editorial issues remain."
     },
     {
@@ -101,6 +170,15 @@
       "executionMode": "local_transition",
       "safety": "manual_review",
       "expectedResult": "Item marked published locally. This does not publish content.",
+      "suggestedNextAction": "Refresh monitoring to confirm QA and content health after publication.",
+      "producedArtifacts": [
+        {
+          "label": "Local workflow state",
+          "path": "sentinel.contentWorkbench.v1",
+          "type": "browser_storage",
+          "description": "Browser-local Workbench status state is updated immediately."
+        }
+      ],
       "recovery": "Move it back to ready if publication has not actually happened."
     },
     {
@@ -114,6 +192,15 @@
       "safety": "safe_allowlisted",
       "actionId": "seo:monitor",
       "expectedResult": "SEO monitor completed and workflow moved into monitoring.",
+      "suggestedNextAction": "Review the monitor summary. If healthy, continue weekly monitoring.",
+      "producedArtifacts": [
+        {
+          "label": "Resource QA report",
+          "path": "reports/resource-qa-report.json",
+          "type": "local_report",
+          "description": "Updated by the SEO monitor command."
+        }
+      ],
       "recovery": "Run diagnostics if monitoring fails or the API is unavailable."
     },
     {
@@ -126,6 +213,15 @@
       "safety": "safe_allowlisted",
       "actionId": "platform:doctor",
       "expectedResult": "Diagnostics completed through the safe action API.",
+      "suggestedNextAction": "Review the diagnostic summary and resolve any warnings before progressing blocked work.",
+      "producedArtifacts": [
+        {
+          "label": "Sentinel doctor report",
+          "path": "reports/sentinel-doctor.json",
+          "type": "local_report",
+          "description": "Updated by the doctor diagnostic command."
+        }
+      ],
       "recovery": "Check the Operator Console history for details if diagnostics fail."
     },
     {
@@ -138,6 +234,21 @@
       "safety": "safe_allowlisted",
       "actionId": "platform:roadmap",
       "expectedResult": "Roadmap intelligence refreshed through the safe action API.",
+      "suggestedNextAction": "Review the roadmap intelligence panel for the next improvement candidate.",
+      "producedArtifacts": [
+        {
+          "label": "Roadmap intelligence JSON",
+          "path": "reports/sentinel-roadmap.json",
+          "type": "local_report",
+          "description": "Updated by the roadmap command."
+        },
+        {
+          "label": "Roadmap intelligence summary",
+          "path": "reports/sentinel-roadmap.md",
+          "type": "local_report",
+          "description": "Updated by the roadmap command."
+        }
+      ],
       "recovery": "Use feedback backlog review if the roadmap refresh fails."
     }
   ]
