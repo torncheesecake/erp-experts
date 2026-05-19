@@ -426,3 +426,9 @@ This plan does not:
 Create a future work package for Phase 1: same repo, separate Sentinel operator build mode.
 
 That implementation should introduce a standalone Sentinel app shell without ERP Experts chrome, keep `/seo-progress` in the ERP Experts build, preserve `/seo-roadmap` production safety, and avoid API exposure until the authority gate is ready.
+
+## Draft Workspace Update
+
+The standalone `/sentinel` shell now includes the first Draft Workspace layer. This reinforces the target product direction for `sentinel.artifexa.co.uk`: a private editorial operations application rather than an infrastructure dashboard.
+
+Drafts are editable local artefacts with edit, preview and review modes. ERP Experts remains the active tenant context only. Drafting and review stay inside the private operator shell and are not exposed on the stakeholder ERP Experts site.

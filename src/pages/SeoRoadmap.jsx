@@ -81,6 +81,15 @@ const CONTENT_STATUS_GROUPS = [
   { id: "review", label: "Review", statuses: ["review", "ready"] },
   { id: "live", label: "Live", statuses: ["published", "monitoring"] },
 ];
+const CONTENT_DRAFT_STATUSES = [
+  "outline",
+  "drafting",
+  "review",
+  "approved",
+  "revision_requested",
+  "ready_to_publish",
+];
+const CONTENT_DRAFT_VIEW_MODES = ["edit", "preview", "review"];
 const CONTENT_PRIORITY_ORDER = { critical: 0, high: 1, medium: 2, low: 3, monitor: 4 };
 const SENTINEL_WORKFLOW_ACTION_HISTORY_KEY = "sentinel.workflowActions.v1";
 const SENTINEL_CONTENT_WORKFLOW_ACTION_LIST = Array.isArray(sentinelContentWorkflowActions?.actions)
@@ -575,12 +584,98 @@ function contentArtefactId(workItemId = "", type = "") {
   return `${safeWorkItemId}:${safeType}`;
 }
 
+function normaliseDraftStatus(status = "") {
+  const value = String(status || "").toLowerCase();
+  return CONTENT_DRAFT_STATUSES.includes(value) ? value : "outline";
+}
+
+function buildDraftSectionsForItem(item = {}) {
+  const topic = item.targetTopic || item.title || "Selected content item";
+  return [
+    {
+      id: "section-context",
+      heading: `Why ${topic} matters`,
+      body: "Draft the operational problem in plain English. Explain why the reader should care now and what decision they are trying to make.",
+    },
+    {
+      id: "section-review",
+      heading: "What to review first",
+      body: "Turn the brief into practical checkpoints. Focus on criteria, risks and useful examples rather than broad claims.",
+    },
+    {
+      id: "section-process",
+      heading: "A controlled way forward",
+      body: "Describe the sensible next steps. Keep the advice specific to this article and avoid widening the scope.",
+    },
+  ];
+}
+
+function normaliseDraftSections(sections = [], item = {}) {
+  const source = Array.isArray(sections) && sections.length ? sections : buildDraftSectionsForItem(item);
+  return source.slice(0, 12).map((section, index) => ({
+    id: String(section?.id || `section-${index + 1}`),
+    heading: String(section?.heading || `Section ${index + 1}`).trim(),
+    body: String(section?.body || "").trim(),
+  }));
+}
+
+function buildDraftFieldsForItem(item = {}, timestamp = new Date().toISOString()) {
+  const topic = item.targetTopic || item.title || "Selected content item";
+  const title = item.title || topic;
+  return {
+    draftStatus: "outline",
+    draftTitle: title,
+    draftIntro: `This is a working draft for ${topic}. It should turn the approved brief into a useful, practical article without pretending the final article is complete yet.`,
+    draftSections: buildDraftSectionsForItem(item),
+    draftCta: item.recommendedCTA || "Invite the reader to take the next controlled review step.",
+    draftNotes: "Starter draft created from the reviewed brief. Replace placeholders with article copy, examples and final editorial judgement.",
+    lastEditedAt: timestamp,
+  };
+}
+
+function draftArtefactToMarkdown(artefact = {}) {
+  const sections = normaliseDraftSections(artefact.draftSections);
+  return [
+    "## Working title",
+    artefact.draftTitle || artefact.title || "Untitled draft",
+    "",
+    "## Intro",
+    artefact.draftIntro || "",
+    "",
+    ...sections.flatMap((section) => [
+      `## ${section.heading || "Draft section"}`,
+      section.body || "",
+      "",
+    ]),
+    "## CTA",
+    artefact.draftCta || "",
+    "",
+    "## Draft notes",
+    artefact.draftNotes || "",
+  ].join("\n").trim();
+}
+
 function normaliseContentArtefact(artefact = {}) {
   const relatedWorkItemId = String(artefact.relatedWorkItemId || artefact.workItemId || "").trim();
   const type = normaliseContentArtefactType(artefact.type || artefact.id);
   if (!relatedWorkItemId || !type) return null;
   const id = String(artefact.id || contentArtefactId(relatedWorkItemId, type));
   const now = new Date().toISOString();
+  const defaultDraftFields = type === "draft"
+    ? buildDraftFieldsForItem({ title: artefact.title }, artefact.updatedAt || now)
+    : {};
+  const draftFields = type === "draft"
+    ? {
+      ...defaultDraftFields,
+      draftStatus: normaliseDraftStatus(artefact.draftStatus || artefact.status),
+      draftTitle: artefact.draftTitle || artefact.title || "Untitled draft",
+      draftIntro: artefact.draftIntro || defaultDraftFields.draftIntro || "",
+      draftSections: normaliseDraftSections(artefact.draftSections || defaultDraftFields.draftSections, { title: artefact.title }),
+      draftCta: artefact.draftCta || defaultDraftFields.draftCta || "",
+      draftNotes: artefact.draftNotes || defaultDraftFields.draftNotes || "",
+      lastEditedAt: artefact.lastEditedAt || artefact.updatedAt || artefact.createdAt || now,
+    }
+    : {};
 
   return {
     id,
@@ -594,6 +689,7 @@ function normaliseContentArtefact(artefact = {}) {
     body: artefact.body || "",
     generatedBy: artefact.generatedBy || "Sentinel Workbench",
     nextStep: artefact.nextStep || "",
+    ...draftFields,
   };
 }
 
@@ -841,6 +937,19 @@ function buildWorkflowArtifactPreview(artifactId = "", item = {}) {
     };
   }
 
+  if (/draft/.test(id)) {
+    return {
+      title: "Draft preview",
+      summary: "An editable article draft will appear here after the brief is reviewed.",
+      bullets: [
+        `Working title: ${item.title}`,
+        `Draft goal: ${goal}`,
+        "Editable blocks: title, intro, sections, CTA and notes",
+      ],
+      reviewPrompt: "Create the draft, then edit and preview it before moving to review.",
+    };
+  }
+
   if (/package|handoff/.test(id)) {
     return {
       title: "Work package preview",
@@ -982,31 +1091,29 @@ function contentArtefactBodyForType(type = "", item = {}) {
       `Linked plan: ${item.relatedPlanId || "none yet"}.`,
       "",
       "## Next step",
-      "Review this brief, then prepare the work package before drafting starts.",
+      "Review this brief, then create the first editable draft.",
     ].join("\n");
   }
 
   if (normalisedType === "draft") {
+    const draftFields = buildDraftFieldsForItem(item);
     return [
-      "## Draft workspace",
-      `Use this package to start drafting ${title} without broadening the scope.`,
-      "",
       "## Working title",
-      title,
+      draftFields.draftTitle,
       "",
-      "## Opening promise",
-      `Explain ${topic} in a way that helps the reader make a practical decision.`,
+      "## Intro",
+      draftFields.draftIntro,
       "",
-      "## Core sections",
-      "- Problem and context",
-      "- Decision criteria",
-      "- Practical process",
-      "- Risks and checks",
-      "- Controlled next step",
+      ...draftFields.draftSections.flatMap((section) => [
+        `## ${section.heading}`,
+        section.body,
+        "",
+      ]),
+      "## CTA",
+      draftFields.draftCta,
       "",
-      "## Internal links",
-      `- Primary target: ${slug}.`,
-      "- Add only links that help the reader continue the same journey.",
+      "## Draft notes",
+      draftFields.draftNotes,
       "",
       "## Validation",
       "- Check factual accuracy.",
@@ -1069,12 +1176,12 @@ function contentArtefactMetaForType(type = "", item = {}) {
     brief: {
       title: `Editorial brief: ${topic}`,
       summary: "Article goal, target reader, structure, headings, tone guidance and CTA direction are ready to review.",
-      nextStep: "Review the brief, then prepare the work package.",
+      nextStep: "Review the brief, then create the first editable draft.",
     },
     draft: {
-      title: `Draft package: ${topic}`,
-      summary: "Draft scope, section plan, internal links and validation checks are ready for controlled drafting.",
-      nextStep: "Draft against the package, then move the item to review.",
+      title: `Draft: ${topic}`,
+      summary: "Editable title, intro, sections, CTA and draft notes are ready to work inside Sentinel.",
+      nextStep: "Edit the draft, preview it, then move the item to review.",
     },
     review: {
       title: `Review checklist: ${topic}`,
@@ -1095,6 +1202,7 @@ function buildContentArtefact(type = "", item = {}, action = {}, timestamp = new
   const normalisedType = normaliseContentArtefactType(type);
   if (!normalisedType || !item?.id) return null;
   const meta = contentArtefactMetaForType(normalisedType, item);
+  const draftFields = normalisedType === "draft" ? buildDraftFieldsForItem(item, timestamp) : {};
   return normaliseContentArtefact({
     id: contentArtefactId(item.id, normalisedType),
     relatedWorkItemId: item.id,
@@ -1102,11 +1210,12 @@ function buildContentArtefact(type = "", item = {}, action = {}, timestamp = new
     title: meta.title,
     createdAt: timestamp,
     updatedAt: timestamp,
-    status: action?.id === "mark-ready" ? "approved" : "reviewable",
+    status: normalisedType === "draft" ? "drafting" : action?.id === "mark-ready" ? "approved" : "reviewable",
     summary: meta.summary,
     body: contentArtefactBodyForType(normalisedType, item),
     generatedBy: action?.label ? `Workflow action: ${action.label}` : "Sentinel Workbench",
     nextStep: action?.suggestedNextAction || meta.nextStep,
+    ...draftFields,
   });
 }
 
@@ -1125,6 +1234,7 @@ function buildContentArtefactsForAction(action = {}, item = {}, timestamp = new 
     if (action.nextStatus === "published" || action.nextStatus === "monitoring") types.add("monitoring");
   }
   if (action.id === "generate-brief") types.add("brief");
+  if (action.id === "create-draft") types.add("draft");
   if (action.id === "prepare-work-package") types.add("draft");
 
   return [...types]
@@ -1242,14 +1352,14 @@ function buildContentWorkbenchArtifacts(item = {}, historyEntries = [], artefact
     {
       id: "implementation-package",
       type: "draft",
-      label: "Package",
+      label: "Draft",
       status: draftArtefact || reached("drafting") ? "available" : "upcoming",
       createdAt: draftArtefact?.updatedAt || getContentArtifactTimestamp(historyEntries, "implementation-package"),
       summary: draftArtefact?.summary || (reached("drafting")
-        ? "Drafting package is available as the current work scope."
-        : "Prepare a package once the brief is accepted."),
-      nextAction: draftArtefact?.nextStep || (reached("drafting") ? "Move to review when drafting is complete." : "Prepare work package"),
-      preview: buildWorkflowArtifactPreview("implementation-package", item),
+        ? "Editable draft is available for writing, preview and review."
+        : "Create a draft once the brief is accepted."),
+      nextAction: draftArtefact?.nextStep || (reached("drafting") ? "Move to review when drafting is complete." : "Create draft"),
+      preview: buildWorkflowArtifactPreview("draft-content", item),
       contentArtefact: draftArtefact,
     },
     {
@@ -8279,6 +8389,7 @@ function ContentWorkbenchPanel({
   const [copyTarget, setCopyTarget] = useState("");
   const [copyState, setCopyState] = useState("idle");
   const [selectedArtifactId, setSelectedArtifactId] = useState("research-summary");
+  const [draftViewMode, setDraftViewMode] = useState("edit");
   const [workflowActionStates, setWorkflowActionStates] = useState({});
   const [workflowHistory, setWorkflowHistory] = useState(() => readWorkflowActionHistory());
   const [contentArtefacts, setContentArtefacts] = useState(() => readContentArtefactState());
@@ -8636,6 +8747,12 @@ function ContentWorkbenchPanel({
     ))
     : [];
 
+  useEffect(() => {
+    if (selectedArtifactType !== "draft" && draftViewMode !== "edit") {
+      setDraftViewMode("edit");
+    }
+  }, [selectedArtifactType, draftViewMode]);
+
   const addReviewNote = () => {
     const body = reviewNoteDraft.trim();
     if (!selectedItem?.id || !body) return;
@@ -8660,11 +8777,246 @@ function ContentWorkbenchPanel({
     setReviewNoteDraft("");
   };
 
+  const updateContentArtefact = (artefactId, updater) => {
+    if (!artefactId) return;
+    const timestamp = new Date().toISOString();
+    setContentArtefacts((current) => {
+      const currentArtefact = current?.artefacts?.[artefactId];
+      if (!currentArtefact) return current;
+      const patch = typeof updater === "function" ? updater(currentArtefact) : updater;
+      const nextArtefact = normaliseContentArtefact({
+        ...currentArtefact,
+        ...patch,
+        id: artefactId,
+        updatedAt: timestamp,
+        lastEditedAt: timestamp,
+      });
+      const next = normaliseContentArtefactState({
+        artefacts: {
+          ...(current?.artefacts || {}),
+          [artefactId]: nextArtefact,
+        },
+      });
+      writeContentArtefactState(next);
+      return next;
+    });
+  };
+
+  const updateDraftSection = (artefact, sectionIndex, patch) => {
+    const sections = normaliseDraftSections(artefact?.draftSections);
+    const nextSections = sections.map((section, index) => (
+      index === sectionIndex ? { ...section, ...patch } : section
+    ));
+    updateContentArtefact(artefact.id, {
+      draftSections: nextSections,
+      body: draftArtefactToMarkdown({ ...artefact, draftSections: nextSections }),
+    });
+  };
+
+  const renderDraftWorkspace = (artifact) => {
+    const draft = artifact?.contentArtefact;
+    if (!draft) return null;
+    const sections = normaliseDraftSections(draft.draftSections);
+    const draftStatus = normaliseDraftStatus(draft.draftStatus);
+
+    const updateDraft = (patch) => {
+      updateContentArtefact(draft.id, (currentDraft) => {
+        const nextDraft = { ...currentDraft, ...patch };
+        return {
+          ...patch,
+          body: draftArtefactToMarkdown(nextDraft),
+        };
+      });
+    };
+
+    return (
+      <div className="grid gap-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[22px] bg-white/[0.045] px-4 py-3 ring-1 ring-white/10">
+          <div>
+            <p className="text-xs font-semibold text-slate-500">Draft workspace</p>
+            <p className="text-sm font-semibold text-white" style={{ marginTop: "2px" }}>
+              {formatStateLabel(draftStatus)} · Last edited {formatDateTime(draft.lastEditedAt || draft.updatedAt)}
+            </p>
+          </div>
+          <div className="relative z-20 flex rounded-full bg-black/20 p-1 ring-1 ring-white/10">
+            {CONTENT_DRAFT_VIEW_MODES.map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                aria-label={`Draft ${mode} mode`}
+                onClick={() => setDraftViewMode(mode)}
+                className={`relative z-30 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+                  draftViewMode === mode ? "bg-cyan-200 text-slate-950" : "text-slate-400 hover:text-white"
+                }`}
+              >
+                {formatStateLabel(mode)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {draftViewMode === "edit" ? (
+          <div className="grid gap-4">
+            <label className="grid gap-2 text-sm font-semibold text-slate-300">
+              Title
+              <input
+                value={draft.draftTitle || ""}
+                onChange={(event) => updateDraft({ draftTitle: event.target.value })}
+                className="rounded-[20px] border border-white/10 bg-[#07101d] px-4 py-3 text-xl font-semibold leading-tight text-white outline-none transition-colors placeholder:text-slate-600 focus:border-cyan-200/50"
+                placeholder="Working article title"
+              />
+            </label>
+
+            <label className="grid gap-2 text-sm font-semibold text-slate-300">
+              Intro
+              <textarea
+                value={draft.draftIntro || ""}
+                onChange={(event) => updateDraft({ draftIntro: event.target.value })}
+                rows={5}
+                className="min-h-[150px] rounded-[22px] border border-white/10 bg-[#07101d] px-4 py-3 text-base leading-8 text-slate-100 outline-none transition-colors placeholder:text-slate-600 focus:border-cyan-200/50"
+                placeholder="Draft the opening problem and reader promise..."
+              />
+            </label>
+
+            <div className="grid gap-4">
+              {sections.map((section, index) => (
+                <section key={section.id} className="rounded-[24px] bg-white/[0.035] p-4 ring-1 ring-white/10">
+                  <label className="grid gap-2 text-sm font-semibold text-slate-300">
+                    Section heading
+                    <input
+                      value={section.heading}
+                      onChange={(event) => updateDraftSection(draft, index, { heading: event.target.value })}
+                      className="rounded-2xl border border-white/10 bg-[#07101d] px-3 py-2 text-lg font-semibold text-white outline-none focus:border-cyan-200/50"
+                    />
+                  </label>
+                  <label className="grid gap-2 text-sm font-semibold text-slate-300" style={{ marginTop: "12px" }}>
+                    Section copy
+                    <textarea
+                      value={section.body}
+                      onChange={(event) => updateDraftSection(draft, index, { body: event.target.value })}
+                      rows={6}
+                      className="min-h-[170px] rounded-2xl border border-white/10 bg-[#07101d] px-3 py-3 text-sm leading-7 text-slate-100 outline-none focus:border-cyan-200/50"
+                    />
+                  </label>
+                </section>
+              ))}
+            </div>
+
+            <label className="grid gap-2 text-sm font-semibold text-slate-300">
+              CTA
+              <textarea
+                value={draft.draftCta || ""}
+                onChange={(event) => updateDraft({ draftCta: event.target.value })}
+                rows={3}
+                className="rounded-[20px] border border-white/10 bg-[#07101d] px-4 py-3 text-sm leading-7 text-slate-100 outline-none focus:border-cyan-200/50"
+                placeholder="Define the next reader step..."
+              />
+            </label>
+
+            <label className="grid gap-2 text-sm font-semibold text-slate-300">
+              Draft notes
+              <textarea
+                value={draft.draftNotes || ""}
+                onChange={(event) => updateDraft({ draftNotes: event.target.value })}
+                rows={4}
+                className="rounded-[20px] border border-white/10 bg-[#07101d] px-4 py-3 text-sm leading-7 text-slate-100 outline-none focus:border-cyan-200/50"
+                placeholder="Keep reminders, unresolved questions and revision notes here..."
+              />
+            </label>
+          </div>
+        ) : null}
+
+        {draftViewMode === "preview" ? (
+          <article className="rounded-[28px] bg-[#f4efe4] px-6 py-7 text-slate-950 shadow-2xl shadow-slate-950/20 md:px-8 md:py-9">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Article preview</p>
+            <h1 className="max-w-3xl text-4xl font-semibold leading-[0.98] tracking-[-0.055em] md:text-5xl" style={{ marginTop: "14px" }}>
+              {draft.draftTitle || "Untitled draft"}
+            </h1>
+            <p className="max-w-3xl text-lg leading-8 text-slate-700" style={{ marginTop: "20px" }}>
+              {draft.draftIntro || "Draft intro will appear here."}
+            </p>
+            <div className="grid gap-7" style={{ marginTop: "32px" }}>
+              {sections.map((section) => (
+                <section key={section.id}>
+                  <h2 className="text-2xl font-semibold tracking-[-0.035em] text-slate-950">{section.heading}</h2>
+                  <p className="text-base leading-8 text-slate-700" style={{ marginTop: "10px" }}>
+                    {section.body}
+                  </p>
+                </section>
+              ))}
+            </div>
+            <div className="rounded-[24px] bg-slate-950 px-5 py-4 text-white" style={{ marginTop: "32px" }}>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-200">Next step</p>
+              <p className="text-base leading-7" style={{ marginTop: "8px" }}>{draft.draftCta || "CTA guidance will appear here."}</p>
+            </div>
+          </article>
+        ) : null}
+
+        {draftViewMode === "review" ? (
+          <div className="grid gap-4">
+            <div className="rounded-[24px] bg-cyan-300/[0.08] p-4 ring-1 ring-cyan-200/15">
+              <p className="text-sm font-semibold text-cyan-100">Review decision</p>
+              <p className="text-sm leading-6 text-slate-300" style={{ marginTop: "6px" }}>
+                Decide whether the current draft should keep moving, needs revision or is ready for controlled publishing preparation.
+              </p>
+              <div className="flex flex-wrap gap-2" style={{ marginTop: "12px" }}>
+                {CONTENT_DRAFT_STATUSES.map((status) => (
+                  <button
+                    key={status}
+                    type="button"
+                    onClick={() => updateDraft({ draftStatus: status, status })}
+                    className={`rounded-full px-3 py-2 text-xs font-semibold transition-colors ${
+                      draftStatus === status
+                        ? "bg-cyan-200 text-slate-950"
+                        : "bg-white/[0.07] text-slate-300 ring-1 ring-white/10 hover:bg-white/[0.12]"
+                    }`}
+                  >
+                    {formatStateLabel(status)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-3">
+              {[
+                "Opening problem is specific and useful.",
+                "Sections follow the approved brief and do not broaden scope.",
+                "Examples, claims and review advice are accurate.",
+                "CTA matches the reader intent.",
+                "Revision notes are captured before moving to review.",
+              ].map((check) => (
+                <div key={check} className="flex items-start gap-3 rounded-2xl bg-white/[0.045] px-4 py-3 text-sm leading-6 text-slate-300 ring-1 ring-white/10">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-cyan-200" />
+                  <span>{check}</span>
+                </div>
+              ))}
+            </div>
+
+            <label className="grid gap-2 text-sm font-semibold text-slate-300">
+              Review notes
+              <textarea
+                value={draft.draftNotes || ""}
+                onChange={(event) => updateDraft({ draftNotes: event.target.value })}
+                rows={5}
+                className="rounded-[20px] border border-white/10 bg-[#07101d] px-4 py-3 text-sm leading-7 text-slate-100 outline-none focus:border-cyan-200/50"
+                placeholder="Record revision requests or approval notes..."
+              />
+            </label>
+          </div>
+        ) : null}
+      </div>
+    );
+  };
+
   const renderArtefactDocumentBody = (artifact) => {
     const contentArtefact = artifact?.contentArtefact;
     const body = contentArtefact?.body || "";
     const artefactType = normaliseContentArtefactType(artifact?.type || artifact?.id);
     const documentTone = artefactType === "brief" ? "Editorial brief" : artefactType === "research" ? "Research analysis" : "Workspace preview";
+
+    if (artefactType === "draft" && contentArtefact) {
+      return renderDraftWorkspace(artifact);
+    }
 
     if (!body) {
       return (

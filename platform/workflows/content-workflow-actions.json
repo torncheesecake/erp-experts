@@ -84,7 +84,7 @@
       "executionMode": "local_artifact",
       "safety": "local_safe",
       "expectedResult": "Editorial brief created for review in the Workbench.",
-      "suggestedNextAction": "Review the brief, then prepare the work package.",
+      "suggestedNextAction": "Review the brief, then create the first draft.",
       "producedArtifacts": [
         {
           "id": "editorial-brief",
@@ -93,17 +93,41 @@
           "type": "workbench_artifact",
           "description": "Structured brief preview is now visible in the item panel.",
           "summary": "Intent, suggested structure, target angle and CTA guidance are ready to review.",
-          "nextAction": "Prepare work package."
+          "nextAction": "Create draft."
         }
       ],
       "recovery": "If no linked plan exists, review the opportunity and create or refresh an execution plan first."
+    },
+    {
+      "id": "create-draft",
+      "label": "Create draft",
+      "description": "Create an editable starter draft from the reviewed brief so the article can be worked inside Sentinel.",
+      "validStatuses": ["planning", "drafting"],
+      "primaryStatuses": ["planning"],
+      "nextStatus": "drafting",
+      "executionMode": "local_artifact",
+      "safety": "local_safe",
+      "expectedResult": "Editable starter draft created in the Workbench.",
+      "suggestedNextAction": "Edit the draft, preview it, then move it to review.",
+      "producedArtifacts": [
+        {
+          "id": "draft-content",
+          "label": "Editable draft",
+          "path": "workbench:draft-content:{itemId}",
+          "type": "workbench_artifact",
+          "description": "A structured draft with editable title, intro, sections, CTA and notes is visible in the draft workspace.",
+          "summary": "The article is now available as an editable work-in-progress draft.",
+          "nextAction": "Edit and preview the draft before moving to review."
+        }
+      ],
+      "recovery": "If the brief is not strong enough, keep the item in planning and add review notes before creating the draft."
     },
     {
       "id": "prepare-work-package",
       "label": "Prepare work package",
       "description": "Create a scoped implementation package that defines the drafting work and review checklist.",
       "validStatuses": ["planning", "drafting"],
-      "primaryStatuses": ["planning"],
+      "primaryStatuses": [],
       "nextStatus": "drafting",
       "executionMode": "local_artifact",
       "safety": "local_safe",

@@ -643,3 +643,11 @@ The standalone layout has also moved away from a capped boxed dashboard canvas. 
 ## Pi Service Verifier Canonical DB State
 
 `npm run platform:pi:service:verify` and `npm run platform:pi:repo:verify` now report `Active DB: canonical` once `PLATFORM_DB_PATH=/srv/sentinel/data/seo-ops/platform.db`, the canonical DB exists and `platform:runtime:paths` is `READY`. In that state the repo-local DB is reported as `present as fallback`, not a warning. Remote auth remains the only expected warning while the API is localhost-only and no public exposure exists.
+
+## Sentinel Draft Workspace
+
+Sentinel now includes a first draft production layer in the private `/sentinel` Workbench. The `Create draft` workflow action creates an editable draft artefact from the selected work item and reviewed brief context.
+
+Draft artefacts support editable title, intro, section blocks, CTA and notes, plus edit, preview and review modes. Draft statuses include outline, drafting, review, approved, revision requested and ready to publish.
+
+This is private operator UX only. It does not auto-publish, write article source files, call external AI generation, change SEO scoring or expose draft content on `/seo-progress`.

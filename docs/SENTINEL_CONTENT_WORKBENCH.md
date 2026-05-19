@@ -178,3 +178,11 @@ The Workbench is now the primary editorial/operator surface for content work.
 ## Stakeholder Safety
 
 The workbench is private to `/seo-roadmap` and is not exposed on `/seo-progress`. It contains operator workflow context, linked plans and internal status labels that should not appear on stakeholder pages.
+
+## Draft Workspace
+
+The Workbench now includes a true drafting surface.
+
+After research and brief review, the `Create draft` action creates an editable draft artefact for the selected work item. The centre workspace can switch between edit, preview and review modes so operators can write, inspect and make editorial decisions without leaving Sentinel.
+
+The draft surface is still local-only and private to the operator browser. It does not write article source files, publish content, call external AI systems or change SEO scoring.

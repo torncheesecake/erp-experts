@@ -168,3 +168,24 @@ Likely next improvements:
 - authenticated Pi-backed artefact storage
 - richer draft preview and review annotation
 - controlled export from brief to implementation package
+
+## Draft Workspace Artefacts
+
+Sentinel now treats draft content as a first-class artefact type rather than only a package or status.
+
+The `Create draft` workflow action creates an editable draft artefact with title, intro, structured sections, CTA and notes. Drafts support edit, preview and review modes inside the centre document workspace.
+
+Draft-specific state includes `draftStatus`, `draftTitle`, `draftIntro`, `draftSections`, `draftCta`, `draftNotes` and `lastEditedAt`.
+
+Draft statuses are:
+
+- outline
+- drafting
+- review
+- approved
+- revision_requested
+- ready_to_publish
+
+The draft is intentionally a work-in-progress surface. Sentinel does not auto-publish or present the draft as a finished article.
+
+See `docs/SENTINEL_DRAFT_WORKSPACE.md` for the draft workflow model.

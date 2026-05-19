@@ -186,3 +186,13 @@ Next safe improvements:
 - add richer item notes if workflow friction appears in daily use
 - connect Workbench actions to future authenticated Sentinel API mutations
 - keep publishing and deploy flows approval-gated
+
+## Draft Workflow Actions
+
+`Create draft` is now the primary workflow action after a brief has been generated and reviewed.
+
+It creates an editable draft artefact instead of exposing a raw command or asking the operator to work outside the Workbench. The resulting draft contains editable title, intro, section blocks, CTA and notes.
+
+`Prepare work package` remains available as a secondary support action, but the main operator path is now brief review followed by draft creation.
+
+Draft actions remain local and safe. They do not publish content, write source files, run arbitrary commands or call external AI generation.

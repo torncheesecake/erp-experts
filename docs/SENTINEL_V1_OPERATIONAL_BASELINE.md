@@ -195,3 +195,11 @@ Recommended next phases, in order:
 6. Consider cadence timers only after auth, backup retention and restore runbooks are reviewed.
 
 Do not expose the Pi API publicly or enable timers until remote authority, backup policy and service rollback procedures are in place.
+
+## Draft Workspace Layer
+
+Sentinel now includes a browser-local Draft Workspace inside `/sentinel`.
+
+The `Create draft` action creates editable draft artefacts from brief context. Operators can edit draft title, intro, sections, CTA and notes, preview the article-like reading flow, and set draft review status.
+
+This layer is private local operator state. It does not publish content, write article files, expose drafts on `/seo-progress`, change SEO scoring or alter the Pi API exposure model.

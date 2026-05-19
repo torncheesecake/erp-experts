@@ -727,3 +727,11 @@ Repo-local DB: present as fallback
 ```
 
 This avoids false repo/service warnings after migration. The verifiers still warn if the canonical DB is missing, runtime paths are not `READY`, runtime paths point at the repo-local DB, or the API cannot return `/state`.
+
+### Sentinel Draft Workspace
+
+The private Sentinel Workbench now supports editable draft artefacts. The `Create draft` workflow action creates a browser-local draft with editable title, intro, sections, CTA and notes, then exposes edit, preview and review modes in the centre document workspace.
+
+Draft statuses include outline, drafting, review, approved, revision requested and ready to publish. This is an editorial production surface only. It does not publish content, write article source files, call external AI generation, change SEO scoring or expose drafts on `/seo-progress`.
+
+See `docs/SENTINEL_DRAFT_WORKSPACE.md`.
