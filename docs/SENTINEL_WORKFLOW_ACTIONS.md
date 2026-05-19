@@ -89,6 +89,8 @@ In `/sentinel` and `/seo-roadmap`, selected content items now show:
 - guided next-step recommendation
 - artefact views for Research, Brief, Package, Review and Monitoring
 - a focused central artefact document panel in the standalone shell
+- contextual next-step guidance inside the document workspace
+- local review notes for comments, concerns, questions and draft reminders
 - primary workflow actions
 - secondary support actions
 - collapsed advanced manual controls
@@ -167,12 +169,20 @@ sentinel.contentArtefacts.v1
 
 They store the reviewable research, brief, draft package, review and monitoring bodies created from Workbench context. They do not store secrets or publish content.
 
+Review notes are browser-local:
+
+```text
+sentinel.reviewNotes.v1
+```
+
+They capture operator comments and questions around the selected artefact. They do not change article files or publish content.
+
 ## Future Work
 
 Next safe improvements:
 
 - promote proven artefacts into SQLite only after review
-- add editable review notes and approvals to item-scoped artefacts
+- add approvals to item-scoped artefacts after review behaviour stabilises
 - add richer item notes if workflow friction appears in daily use
 - connect Workbench actions to future authenticated Sentinel API mutations
 - keep publishing and deploy flows approval-gated

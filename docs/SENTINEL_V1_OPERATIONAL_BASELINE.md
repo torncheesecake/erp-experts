@@ -134,6 +134,8 @@ Workflow action history is local browser state under `sentinel.workflowActions.v
 
 Content artefacts are local browser state under `sentinel.contentArtefacts.v1`. They store private operator research, brief, draft package, review and monitoring documents created from Workbench item context. They are shown in the standalone `/sentinel` centre document workspace and are not exposed on `/seo-progress`.
 
+Review notes are local browser state under `sentinel.reviewNotes.v1`. They capture operator comments, concerns, questions and draft reminders against the selected artefact. They are private review context and do not publish content.
+
 Local Pi-backed `/sentinel` testing is documented in `docs/SENTINEL_LOCAL_OPERATOR_LAUNCH.md`. It uses an SSH tunnel to reach the Pi API through local `127.0.0.1:4317`, then launches Vite with `VITE_SENTINEL_API_BASE_URL=http://127.0.0.1:4317`. `npm run sentinel:launch -- --tunnel` can start the tunnel in the foreground when explicitly requested. This does not expose the Pi API publicly.
 
 ## Security And Auth Status

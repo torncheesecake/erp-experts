@@ -99,6 +99,28 @@ The centre panel is the main editorial workspace. It shows research, brief, draf
 
 If an artefact has not been generated yet, Sentinel shows a preview and the action needed to create it.
 
+The review surface now treats generated content as a document. Research uses an analytical section rhythm, while briefs use an editorial review rhythm with stronger next-step emphasis.
+
+## Review Notes
+
+Operators can add local notes against the selected work item and artefact.
+
+Supported note types:
+
+- operator note
+- review comment
+- concern
+- question
+- draft reminder
+
+Browser-local storage key:
+
+```text
+sentinel.reviewNotes.v1
+```
+
+Notes are private operator review context. They are not published, are not exposed on `/seo-progress` and do not change article content.
+
 ## Workflow Progression
 
 The intended progression is:
@@ -117,6 +139,7 @@ Every step should answer:
 - what was created
 - where to review it
 - what to do next
+- what questions or reminders have been captured
 
 Raw commands remain secondary and collapsed behind advanced controls.
 
@@ -131,6 +154,7 @@ Content artefacts do not:
 - change SEO scoring
 - add arbitrary shell execution
 - bypass approval or authority gates
+- publish review notes
 
 The current artefacts are operational guidance and review surfaces for Matthew's private Sentinel workspace.
 

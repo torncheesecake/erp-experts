@@ -63,7 +63,7 @@ Each content work card now prioritises:
 - priority
 - enough rationale to choose what to open next
 
-The focused working surface now splits the standalone Workbench into queue, document and context areas. The queue shows what can move next, the centre document area shows the active research or brief artefact, and the right panel keeps actions, latest output and item context close to the work.
+The focused working surface now splits the standalone Workbench into queue, document and context areas. The queue shows what can move next, the centre document area shows the active research or brief artefact, and the right panel keeps actions, review notes, latest output and item context close to the work.
 
 The standalone view also includes a calmer stage ribbon for:
 
@@ -111,7 +111,7 @@ The Workbench is now artefact-led. A selected content item can show reviewable a
 - Review
 - Monitoring
 
-Each artefact view shows whether it is available, ready to create or upcoming, then points to the next operational action. Opening an artefact shows either a generated document body or a structured preview.
+Each artefact view shows whether it is available, ready to create or upcoming, then points to the next operational action. Opening an artefact shows either a generated document body or a structured preview. The document area is the dominant surface in `/sentinel`, with research presented as analysis and briefs presented as editorial instructions.
 
 Workbench-local artefacts are not fake generated files. They are structured operator surfaces created from existing item context and action history, then stored locally under `sentinel.contentArtefacts.v1`. If a future action depends on a real local report, Sentinel states whether that report exists and where to review it.
 
@@ -154,7 +154,13 @@ Generated Workbench artefacts persist in browser local storage under:
 sentinel.contentArtefacts.v1
 ```
 
-This is deliberately local-only for the first release. It avoids a database migration while the workflow model is still being shaped. No secrets, API payloads or stakeholder data are stored. Artefact bodies are private operator review content and are not exposed on `/seo-progress`.
+Review notes persist in browser local storage under:
+
+```text
+sentinel.reviewNotes.v1
+```
+
+This is deliberately local-only for the first release. It avoids a database migration while the workflow model is still being shaped. No secrets, API payloads or stakeholder data are stored. Artefact bodies and review notes are private operator review content and are not exposed on `/seo-progress`.
 
 A future version can promote stable workflow state into SQLite after the lifecycle and operational rules prove useful.
 

@@ -50,6 +50,7 @@ const SENTINEL_STANDALONE_OPERATOR_SESSION_KEY = "sentinel.operatorSession.stand
 const SENTINEL_OPERATOR_WORKSPACES_KEY = "sentinel.operatorWorkspaces.v1";
 const SENTINEL_CONTENT_WORKBENCH_KEY = "sentinel.contentWorkbench.v1";
 const SENTINEL_CONTENT_ARTEFACTS_KEY = "sentinel.contentArtefacts.v1";
+const SENTINEL_REVIEW_NOTES_KEY = "sentinel.reviewNotes.v1";
 const SENTINEL_DEFAULT_WORKSPACE_ID = "monitoring";
 const SENTINEL_WORKSPACE_PANEL_KEYS = ["supportingIntelligence", "articleWorkbench", "advancedDiagnostics"];
 const SENTINEL_TERMINAL_EXECUTION_STATES = new Set(["success", "failed", "failure", "cancelled"]);
@@ -633,6 +634,66 @@ function writeContentArtefactState(state) {
     window.localStorage.setItem(SENTINEL_CONTENT_ARTEFACTS_KEY, JSON.stringify(normalised));
   } catch {
     // Local artefact persistence is optional.
+  }
+}
+
+function normaliseReviewNoteKind(kind = "") {
+  const value = String(kind || "").toLowerCase();
+  if (value.includes("concern")) return "concern";
+  if (value.includes("question")) return "question";
+  if (value.includes("draft")) return "draft_reminder";
+  if (value.includes("comment")) return "comment";
+  return "note";
+}
+
+function normaliseReviewNoteState(state = {}) {
+  const source = state?.notes && typeof state.notes === "object" ? state.notes : {};
+  const notes = Object.entries(source).reduce((acc, [itemId, entries]) => {
+    const itemNotes = Array.isArray(entries) ? entries : [];
+    const normalised = itemNotes
+      .filter((entry) => entry?.id && entry?.body)
+      .slice(0, 30)
+      .map((entry) => ({
+        id: String(entry.id),
+        itemId: String(entry.itemId || itemId),
+        artefactType: normaliseContentArtefactType(entry.artefactType) || "general",
+        kind: normaliseReviewNoteKind(entry.kind),
+        body: String(entry.body || "").trim(),
+        createdAt: entry.createdAt || new Date().toISOString(),
+      }));
+    if (normalised.length) acc[itemId] = normalised;
+    return acc;
+  }, {});
+
+  return {
+    version: 1,
+    notes,
+  };
+}
+
+function readReviewNoteState() {
+  if (typeof window === "undefined") return normaliseReviewNoteState();
+
+  try {
+    const raw = window.localStorage.getItem(SENTINEL_REVIEW_NOTES_KEY);
+    return normaliseReviewNoteState(raw ? JSON.parse(raw) : {});
+  } catch {
+    return normaliseReviewNoteState();
+  }
+}
+
+function writeReviewNoteState(state) {
+  if (typeof window === "undefined") return;
+
+  try {
+    const normalised = normaliseReviewNoteState(state);
+    if (!Object.keys(normalised.notes).length) {
+      window.localStorage.removeItem(SENTINEL_REVIEW_NOTES_KEY);
+      return;
+    }
+    window.localStorage.setItem(SENTINEL_REVIEW_NOTES_KEY, JSON.stringify(normalised));
+  } catch {
+    // Local review notes are optional.
   }
 }
 
@@ -8221,6 +8282,9 @@ function ContentWorkbenchPanel({
   const [workflowActionStates, setWorkflowActionStates] = useState({});
   const [workflowHistory, setWorkflowHistory] = useState(() => readWorkflowActionHistory());
   const [contentArtefacts, setContentArtefacts] = useState(() => readContentArtefactState());
+  const [reviewNotes, setReviewNotes] = useState(() => readReviewNoteState());
+  const [reviewNoteKind, setReviewNoteKind] = useState("note");
+  const [reviewNoteDraft, setReviewNoteDraft] = useState("");
   const actions = useMemo(() => (
     Array.isArray(actionRegistry?.actions) ? actionRegistry.actions : []
   ), [actionRegistry]);
@@ -8565,59 +8629,113 @@ function ContentWorkbenchPanel({
     ].sort((a, b) => new Date(b.finishedAt || b.createdAt || b.startedAt || 0).getTime() - new Date(a.finishedAt || a.createdAt || a.startedAt || 0).getTime())[0] || null
     : null;
   const recentWorkflowHistory = (workflowHistory?.entries || []).slice(0, 5);
+  const selectedArtifactType = normaliseContentArtefactType(selectedArtifact?.type || selectedArtifact?.id) || "general";
+  const selectedReviewNotes = selectedItem
+    ? (reviewNotes?.notes?.[selectedItem.id] || []).filter((note) => (
+      note.artefactType === "general" || note.artefactType === selectedArtifactType
+    ))
+    : [];
+
+  const addReviewNote = () => {
+    const body = reviewNoteDraft.trim();
+    if (!selectedItem?.id || !body) return;
+    const note = {
+      id: `review-note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      itemId: selectedItem.id,
+      artefactType: selectedArtifactType,
+      kind: reviewNoteKind,
+      body,
+      createdAt: new Date().toISOString(),
+    };
+    setReviewNotes((current) => {
+      const next = normaliseReviewNoteState({
+        notes: {
+          ...(current?.notes || {}),
+          [selectedItem.id]: [note, ...(current?.notes?.[selectedItem.id] || [])],
+        },
+      });
+      writeReviewNoteState(next);
+      return next;
+    });
+    setReviewNoteDraft("");
+  };
 
   const renderArtefactDocumentBody = (artifact) => {
     const contentArtefact = artifact?.contentArtefact;
     const body = contentArtefact?.body || "";
+    const artefactType = normaliseContentArtefactType(artifact?.type || artifact?.id);
+    const documentTone = artefactType === "brief" ? "Editorial brief" : artefactType === "research" ? "Research analysis" : "Workspace preview";
 
     if (!body) {
       return (
-        <div className="grid gap-4">
-          <p className="text-lg leading-8 text-slate-300">
-            {artifact?.preview?.summary || artifact?.summary || "This artefact will become a reviewable document after the linked workflow action runs."}
-          </p>
+        <div className="grid gap-5">
+          <div className="rounded-[26px] bg-white/[0.04] p-5 ring-1 ring-white/10">
+            <p className="text-xs font-semibold text-cyan-100">{documentTone}</p>
+            <p className="text-lg leading-8 text-slate-200" style={{ marginTop: "8px" }}>
+              {artifact?.preview?.summary || artifact?.summary || "This artefact will become a reviewable document after the linked workflow action runs."}
+            </p>
+          </div>
           {artifact?.preview?.bullets?.length ? (
-            <div className="grid gap-3">
+            <div className="grid gap-2">
               {artifact.preview.bullets.map((bullet) => (
-                <div key={bullet} className="rounded-2xl bg-white/[0.045] px-4 py-3 text-sm leading-6 text-slate-300 ring-1 ring-white/10">
+                <div key={bullet} className="border-l border-cyan-200/35 bg-white/[0.025] px-4 py-3 text-sm leading-6 text-slate-300">
                   {bullet}
                 </div>
               ))}
             </div>
           ) : null}
-          <div className="rounded-2xl bg-cyan-300/[0.08] px-4 py-3 text-sm leading-6 text-cyan-100 ring-1 ring-cyan-200/15">
+          <div className="rounded-[24px] bg-cyan-300/[0.08] px-5 py-4 text-sm leading-6 text-cyan-100 ring-1 ring-cyan-200/15">
             {artifact?.preview?.reviewPrompt || artifact?.nextAction || "Run the recommended workflow action to create the document."}
           </div>
         </div>
       );
     }
 
+    const sections = body.split(/\n(?=##\s+)/).map((section, index) => {
+      const lines = section.split("\n").map((line) => line.trim()).filter(Boolean);
+      const heading = lines[0]?.replace(/^##\s+/, "") || `Section ${index + 1}`;
+      const content = lines.slice(lines[0]?.startsWith("## ") ? 1 : 0);
+      return { heading, content };
+    });
+
     return (
-      <div className="grid gap-4">
-        {body.split("\n").map((line, index) => {
-          const trimmed = line.trim();
-          if (!trimmed) return <div key={`space-${index}`} className="h-1" />;
-          if (trimmed.startsWith("## ")) {
-            return (
-              <h4 key={`heading-${index}`} className="pt-4 text-xl font-semibold tracking-[-0.025em] text-white first:pt-0">
-                {trimmed.replace(/^##\s+/, "")}
-              </h4>
-            );
-          }
-          if (trimmed.startsWith("- ")) {
-            return (
-              <p key={`bullet-${index}`} className="rounded-2xl bg-white/[0.045] px-4 py-3 text-sm leading-6 text-slate-300 ring-1 ring-white/10">
-                <span className="mr-2 text-cyan-200">•</span>
-                {trimmed.replace(/^-\s+/, "")}
-              </p>
-            );
-          }
-          return (
-            <p key={`paragraph-${index}`} className="text-base leading-8 text-slate-300">
-              {trimmed}
-            </p>
-          );
-        })}
+      <div className="grid gap-7">
+        {sections.map((section, sectionIndex) => (
+          <section
+            key={`${section.heading}-${sectionIndex}`}
+            className={`relative ${
+              artefactType === "brief"
+                ? "border-l border-cyan-200/35 pl-5"
+                : "border-l border-white/10 pl-5"
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              <span className={`mt-2 h-2 w-2 rounded-full ${artefactType === "brief" ? "bg-cyan-200" : "bg-slate-500"}`} />
+              <div className="min-w-0 flex-1">
+                <h4 className="text-2xl font-semibold tracking-[-0.035em] text-white">
+                  {section.heading}
+                </h4>
+                <div className="grid gap-3" style={{ marginTop: "12px" }}>
+                  {section.content.map((line, lineIndex) => {
+                    if (line.startsWith("- ")) {
+                      return (
+                        <p key={`${section.heading}-bullet-${lineIndex}`} className="rounded-2xl bg-white/[0.04] px-4 py-3 text-sm leading-6 text-slate-300 ring-1 ring-white/10">
+                          <span className="mr-2 text-cyan-200">•</span>
+                          {line.replace(/^-\s+/, "")}
+                        </p>
+                      );
+                    }
+                    return (
+                      <p key={`${section.heading}-line-${lineIndex}`} className="text-base leading-8 text-slate-300">
+                        {line}
+                      </p>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </section>
+        ))}
       </div>
     );
   };
@@ -9019,6 +9137,18 @@ function ContentWorkbenchPanel({
                       })}
                     </div>
 
+                    <div className="rounded-[24px] bg-cyan-300/[0.08] px-5 py-4 text-sm leading-6 text-cyan-50 ring-1 ring-cyan-200/15" style={{ marginTop: "16px" }}>
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <p className="text-xs font-semibold text-cyan-100/70">What to do next</p>
+                          <p className="text-base font-semibold text-white" style={{ marginTop: "4px" }}>
+                            {selectedArtifact.contentArtefact?.nextStep || selectedArtifact.nextAction || guidedNextStep?.actionLabel || "Review this artefact and choose the next workflow step."}
+                          </p>
+                        </div>
+                        {latestWorkflowAction ? renderWorkflowActionButton(latestWorkflowAction, selectedItem, true) : null}
+                      </div>
+                    </div>
+
                     <div className="min-h-0 flex-1 overflow-y-auto pr-1" style={{ marginTop: "18px" }}>
                       <article className="mx-auto max-w-3xl">
                         <div className="grid grid-cols-1 gap-3 border-b border-white/10 pb-4 text-xs text-slate-500 sm:grid-cols-3">
@@ -9076,7 +9206,7 @@ function ContentWorkbenchPanel({
 
                     {guidedNextStep ? (
                       <div className="rounded-2xl border border-white/10 bg-white/[0.055] p-4" style={{ marginTop: "18px" }}>
-                        <p className="text-xs font-semibold text-slate-500">Guided next step</p>
+                        <p className="text-xs font-semibold text-slate-500">Next decision</p>
                         <h4 className="text-base font-semibold text-white" style={{ marginTop: "5px" }}>{guidedNextStep.title}</h4>
                         <p className="text-sm leading-6 text-slate-300" style={{ marginTop: "6px" }}>{guidedNextStep.summary}</p>
                         {guidedNextStep.artifactLabel ? (
@@ -9088,7 +9218,7 @@ function ContentWorkbenchPanel({
                     ) : null}
 
                     <div className="rounded-2xl border border-cyan-200/20 bg-cyan-300/[0.12] p-4 text-cyan-50 shadow-lg shadow-cyan-950/10" style={{ marginTop: "18px" }}>
-                      <p className="text-xs font-semibold text-cyan-100/70">Next workflow action</p>
+                      <p className="text-xs font-semibold text-cyan-100/70">Next action</p>
                       <div className="flex flex-wrap items-center justify-between gap-3" style={{ marginTop: "5px" }}>
                         <p className="text-base font-semibold leading-6">
                           {latestWorkflowAction?.label || selectedItem.nextAction}
@@ -9124,7 +9254,7 @@ function ContentWorkbenchPanel({
 
                       {selectedWorkflowGroups.secondary.length ? (
                         <section className="grid gap-2">
-                          <h4 className="text-sm font-semibold text-slate-200">Secondary actions</h4>
+                          <h4 className="text-sm font-semibold text-slate-200">More actions</h4>
                           <div className="flex flex-wrap gap-2">
                             {selectedWorkflowGroups.secondary.map((action) => renderWorkflowActionButton(action, selectedItem))}
                           </div>
@@ -9133,13 +9263,73 @@ function ContentWorkbenchPanel({
 
                       {selectedWorkflowGroups.manual.length ? (
                         <section className="grid gap-2">
-                          <h4 className="text-sm font-semibold text-slate-200">Manual handoff</h4>
+                          <h4 className="text-sm font-semibold text-slate-200">Advanced handoff</h4>
                           <div className="flex flex-wrap gap-2">
                             {selectedWorkflowGroups.manual.map((action) => renderWorkflowActionButton(action, selectedItem))}
                           </div>
                         </section>
                       ) : null}
                     </div>
+
+                    <section className="rounded-[24px] bg-white/[0.055] p-4 ring-1 ring-white/10" style={{ marginTop: "18px" }}>
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <h4 className="text-sm font-semibold text-white">Review notes</h4>
+                          <p className="text-xs text-slate-500" style={{ marginTop: "3px" }}>
+                            Capture questions, concerns and reminders for this artefact.
+                          </p>
+                        </div>
+                        <span className="rounded-full bg-white/[0.07] px-2.5 py-1 text-xs font-semibold text-slate-300 ring-1 ring-white/10">
+                          {selectedReviewNotes.length}
+                        </span>
+                      </div>
+                      <div className="grid gap-2" style={{ marginTop: "12px" }}>
+                        <select
+                          value={reviewNoteKind}
+                          onChange={(event) => setReviewNoteKind(event.target.value)}
+                          className="rounded-2xl border border-white/10 bg-[#07101d] px-3 py-2 text-xs font-semibold text-slate-200"
+                          aria-label="Review note type"
+                        >
+                          <option value="note">Operator note</option>
+                          <option value="comment">Review comment</option>
+                          <option value="concern">Concern</option>
+                          <option value="question">Question</option>
+                          <option value="draft_reminder">Draft reminder</option>
+                        </select>
+                        <textarea
+                          value={reviewNoteDraft}
+                          onChange={(event) => setReviewNoteDraft(event.target.value)}
+                          rows={4}
+                          className="min-h-[104px] rounded-2xl border border-white/10 bg-[#07101d] px-3 py-3 text-sm leading-6 text-slate-100 outline-none placeholder:text-slate-600 focus:border-cyan-200/50"
+                          placeholder="Add a note for this artefact..."
+                        />
+                        <button
+                          type="button"
+                          onClick={addReviewNote}
+                          disabled={!reviewNoteDraft.trim()}
+                          className="rounded-full bg-cyan-200 px-4 py-2 text-xs font-semibold text-slate-950 transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-45"
+                        >
+                          Add note
+                        </button>
+                      </div>
+                      {selectedReviewNotes.length ? (
+                        <div className="grid gap-2" style={{ marginTop: "14px" }}>
+                          {selectedReviewNotes.slice(0, 5).map((note) => (
+                            <div key={note.id} className="rounded-2xl bg-black/15 px-3 py-3 text-xs leading-5 text-slate-300 ring-1 ring-white/10">
+                              <div className="flex flex-wrap items-center justify-between gap-2">
+                                <span className="font-semibold text-cyan-100">{formatStateLabel(note.kind)}</span>
+                                <span className="text-slate-500">{formatDateTime(note.createdAt)}</span>
+                              </div>
+                              <p style={{ marginTop: "6px" }}>{note.body}</p>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs leading-5 text-slate-500" style={{ marginTop: "12px" }}>
+                          No notes yet. Use this for review comments, concerns, questions or draft reminders.
+                        </p>
+                      )}
+                    </section>
 
                     {selectedWorkflowResult ? (
                       <div className="grid gap-2" style={{ marginTop: "18px" }}>
@@ -9248,7 +9438,7 @@ function ContentWorkbenchPanel({
                     </details>
 
                     <div className="border-t border-white/10 pt-4 text-xs text-slate-400" style={{ marginTop: "18px" }}>
-                      <p className="font-semibold text-slate-200">Workflow notes</p>
+                      <p className="font-semibold text-slate-200">Work history</p>
                       <p style={{ marginTop: "5px" }}>
                         Current status is {CONTENT_STATUS_META[selectedItem.status]?.label || formatStateLabel(selectedItem.status)}.
                         {selectedItem.statusUpdatedAt ? ` Last changed ${formatDateTime(selectedItem.statusUpdatedAt)}.` : " No local status change recorded yet."}

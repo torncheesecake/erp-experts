@@ -231,6 +231,7 @@ Design principles:
 - Workflow actions now sit above raw commands. The operator chooses tasks such as start research, generate brief, move to review or refresh monitoring, while manual commands remain collapsed for advanced use.
 - The operator journey is now artefact-led rather than command-led. Research, Brief, Package, Review and Monitoring outputs appear as reviewable Workbench surfaces with guided next-step recommendations.
 - The first content artefact system is browser-local under `sentinel.contentArtefacts.v1`. Start research creates a research document, Generate brief creates an editorial brief, and the standalone shell shows the active artefact in a central document workspace.
+- The editorial workspace now supports browser-local review notes under `sentinel.reviewNotes.v1`, plus persistent next-step guidance beside the active artefact. This keeps `/sentinel` moving toward an editorial operations tool rather than a command dashboard.
 - The unified design system is dark-first. It uses deep navy and graphite shell surfaces, softer elevated work surfaces, cyan as the primary accent, and muted green, amber and red only for semantic state.
 - Bright white slabs have been removed from the standalone Workbench. Queue lanes, cards, filters, recent outputs and the working panel now share one operational surface language.
 - Infrastructure context is deliberately quieter. The top rail now presents Healthy, Private, Connected and Operational state before implementation detail.
