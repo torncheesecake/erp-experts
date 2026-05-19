@@ -18,6 +18,8 @@ The standalone design-system direction has shifted from boxed infrastructure das
 
 Sentinel now includes a workflow action layer for content operations. `platform/workflows/content-workflow-actions.json` maps operator intent to local lifecycle transitions, copy-only manual guidance or existing allowlisted actions. The Workbench now surfaces primary actions such as start research, generate brief, move to review, mark ready and refresh monitoring, while raw commands and manual status controls sit behind collapsed advanced controls. The layer does not add arbitrary execution, publish content, change SEO scoring or expose anything on `/seo-progress`.
 
+Sentinel now includes a browser-local content artefact layer. Start research creates a visible research document, Generate brief creates a visible editorial brief, and later workflow steps create package, review or monitoring artefacts. The standalone `/sentinel` Workbench uses a queue, centre document and right action-context layout so operators can review actual work instead of only reading statuses.
+
 `docs/SENTINEL_LOCAL_OPERATOR_LAUNCH.md` documents the local Pi-backed launch workflow. `npm run sentinel:launch` prints the SSH tunnel and Vite instructions, checks local `4317` and `5173` reachability, and does not start processes or mutate the Pi. `npm run sentinel:launch -- --tunnel` can start the localhost-only SSH tunnel in the foreground when explicitly requested; it still does not start Vite or expose the Pi API.
 
 
@@ -625,6 +627,8 @@ Sentinel workflow actions now produce visible operator outputs in the Content Wo
 ## Operator Journey Reassessment
 
 `docs/SENTINEL_OPERATOR_JOURNEY_REASSESSMENT.md` defines the content journey from discovery through research, planning, drafting, review, ready, published and monitoring. The Workbench now exposes Research, Brief, Package, Review and Monitoring artefact cards for the selected item, plus a guided next-step panel so the operator sees what happened, what was created, what to review and which operational action is next. This first pass deliberately avoids a new database schema and keeps artefact state local to the Workbench.
+
+`docs/SENTINEL_CONTENT_ARTEFACTS.md` documents the first artefact system. Browser-local `sentinel.contentArtefacts.v1` stores private research, brief, draft package, review and monitoring bodies generated from existing Workbench item context. It does not call external research APIs, publish content, expose stakeholder data or change SEO scoring.
 
 ## Sentinel Unified Design System
 

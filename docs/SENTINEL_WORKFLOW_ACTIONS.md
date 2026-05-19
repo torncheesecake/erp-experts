@@ -56,7 +56,7 @@ Updates browser-local content workflow status. It does not edit article files, p
 
 `local_artifact`
 
-Creates a visible Workbench artefact surface from existing item context and records the result in local workflow history. This is used for outputs such as the editorial brief or implementation package before a persistent artefact store exists.
+Creates a visible Workbench artefact from existing item context and records the result in local workflow history. Research, brief, package, review and monitoring artefacts now have browser-local document bodies under `sentinel.contentArtefacts.v1`.
 
 `allowlisted_action`
 
@@ -87,8 +87,8 @@ Actions that imply editorial judgement, content generation or publishing remain 
 In `/sentinel` and `/seo-roadmap`, selected content items now show:
 
 - guided next-step recommendation
-- artefact cards for Research, Brief, Package, Review and Monitoring
-- focused artefact preview panel
+- artefact views for Research, Brief, Package, Review and Monitoring
+- a focused central artefact document panel in the standalone shell
 - primary workflow actions
 - secondary support actions
 - collapsed advanced manual controls
@@ -128,7 +128,7 @@ The first visible artefacts are:
 - Review: editorial judgement, QA context and readiness decision.
 - Monitoring: post-publication health and follow-up monitoring guidance.
 
-These artefacts are intentionally lightweight. Some are Workbench-local previews; some point to existing local reports created by allowlisted actions. Future versions can persist the artefacts in SQLite once the model has proved useful.
+These artefacts are intentionally lightweight. Workbench-created artefacts now persist locally in the browser under `sentinel.contentArtefacts.v1`; allowlisted report outputs still point to their existing generated files. Future versions can promote stable artefacts into SQLite once the model has proved useful.
 
 ## Safety Boundaries
 
@@ -159,12 +159,20 @@ sentinel.workflowActions.v1
 
 This is intentionally lightweight. It records operator workflow decisions and execution outcomes without adding a new database dependency.
 
+Content artefacts are also browser-local:
+
+```text
+sentinel.contentArtefacts.v1
+```
+
+They store the reviewable research, brief, draft package, review and monitoring bodies created from Workbench context. They do not store secrets or publish content.
+
 ## Future Work
 
 Next safe improvements:
 
 - promote proven artefacts into SQLite only after review
-- add item-scoped generated Markdown artefacts when the plan ID and item context are unambiguous
+- add editable review notes and approvals to item-scoped artefacts
 - add richer item notes if workflow friction appears in daily use
 - connect Workbench actions to future authenticated Sentinel API mutations
 - keep publishing and deploy flows approval-gated
