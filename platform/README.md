@@ -741,3 +741,9 @@ See `docs/SENTINEL_DRAFT_WORKSPACE.md`.
 `/sentinel` is now treated as the standalone Sentinel operator application shell rather than an ERP Experts website page. The route stays outside the ERP Experts layout, uses Sentinel product identity, presents ERP Experts only as active tenant context and runs a fluid app-style workspace with a compact operator header, persistent navigation rail and dark-first work surfaces.
 
 `/seo-roadmap` remains the legacy embedded compatibility surface. `/seo-progress` remains stakeholder-safe. See `docs/SENTINEL_APPLICATION_SHELL_REFACTOR.md`.
+
+### Sentinel Design System
+
+`docs/SENTINEL_DESIGN_SYSTEM.md` defines the design rules for the standalone operator workspace.
+
+The current `/sentinel` layout uses a slim app bar, compact navigation, left work queue, central artefact review document and contextual actions/notes column. It intentionally removes the extra hero strip, repeated Workbench headings and dashboard-style box stacking from the standalone route.

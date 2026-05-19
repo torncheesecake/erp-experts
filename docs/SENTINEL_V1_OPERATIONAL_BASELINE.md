@@ -211,3 +211,11 @@ This layer is private local operator state. It does not publish content, write a
 The shell removes ERP Experts marketing chrome from the standalone operator route, keeps Sentinel as the host product identity, presents ERP Experts only as tenant context and uses a fluid app workspace rather than a centred website page container.
 
 `/seo-roadmap` remains a legacy embedded compatibility route. `/seo-progress` remains the stakeholder-safe ERP Experts route.
+
+## Sentinel Design System
+
+The standalone route now has a dedicated design guide in `docs/SENTINEL_DESIGN_SYSTEM.md`.
+
+The current `/sentinel` baseline is a cleaner editorial operations workspace with a slim app bar, compact navigation, work queue, central artefact review surface and contextual action/notes column. The selected research, brief, draft or review document is now visually central.
+
+This is still local/private operator UX. It does not expose the operator app publicly or change `/seo-progress`.

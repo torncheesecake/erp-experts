@@ -659,3 +659,11 @@ This is private operator UX only. It does not auto-publish, write article source
 `/sentinel` is now the primary local Sentinel application shell. It renders outside ERP Experts chrome, uses Sentinel as the host product identity, keeps ERP Experts as tenant context only and uses a fluid full-width app layout with app-style navigation.
 
 `/seo-roadmap` remains a legacy embedded compatibility surface. `/seo-progress` remains stakeholder-safe and unchanged.
+
+## Sentinel Design Reset
+
+`docs/SENTINEL_DESIGN_SYSTEM.md` defines the standalone Sentinel visual and layout rules.
+
+The `/sentinel` workspace now uses one slim app bar, compact navigation, a left work queue, a central artefact/document review surface and a contextual right action/notes area. The previous stacked hero strip and repeated Workbench headings have been removed from the standalone route.
+
+This reset is scoped to `/sentinel`. `/seo-progress` remains stakeholder-safe and `/seo-roadmap` remains a legacy embedded compatibility surface.

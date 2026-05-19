@@ -2376,6 +2376,58 @@ function SentinelAppHeader({
     },
   ];
 
+  if (standaloneMode) {
+    return (
+      <header
+        className="sticky top-0 z-30 border-b border-slate-700/40 bg-[#0b1422]/88 text-white backdrop-blur-xl"
+        style={{
+          boxShadow: "0 16px 60px rgba(2, 6, 17, 0.22)",
+        }}
+      >
+        <div className="box-border flex w-full flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-5 lg:px-7 2xl:px-10">
+          <div className="flex min-w-0 items-center gap-3">
+            <SentinelLogoMark className="h-8 w-8 shrink-0" compact />
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-baseline gap-2">
+                <h1 className="text-xl font-semibold leading-none tracking-[-0.04em] text-white">Sentinel</h1>
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">by Artifexa</span>
+              </div>
+              <p className="truncate text-xs text-slate-400" style={{ marginTop: "3px" }}>
+                Tenant: <strong className="font-semibold text-slate-200">{activeTenant?.name || "ERP Experts"}</strong>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex min-w-0 flex-wrap items-center gap-2 text-xs text-slate-400">
+            <span className="inline-flex items-center gap-2 rounded-full bg-slate-800/80 px-2.5 py-1 ring-1 ring-slate-700/80">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
+              Healthy
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full bg-slate-800/80 px-2.5 py-1 ring-1 ring-slate-700/80">
+              <span className="h-1.5 w-1.5 rounded-full bg-cyan-300" />
+              {connectionValue}
+            </span>
+            <span className="hidden rounded-full bg-slate-800/80 px-2.5 py-1 ring-1 ring-slate-700/80 sm:inline-flex">
+              {summaryGate.pass} pass
+            </span>
+            <button
+              onClick={() => onCompactViewChange(!compactView)}
+              className="rounded-full bg-slate-800/80 px-2.5 py-1 font-semibold text-slate-200 ring-1 ring-slate-700/80 transition-colors hover:bg-slate-700"
+            >
+              {compactView ? "Expanded" : "Compact"}
+            </button>
+            <button
+              onClick={onResetWorkspace}
+              className="rounded-full bg-slate-800/80 px-2.5 py-1 font-semibold text-slate-200 ring-1 ring-slate-700/80 transition-colors hover:bg-slate-700"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header className={headerClass} style={headerStyle}>
       <div className={containerClass} style={{ paddingTop: standaloneMode ? "14px" : "var(--space-md)", paddingBottom: standaloneMode ? "14px" : "var(--space-md)" }}>
@@ -2619,87 +2671,6 @@ function SectionIntro({ eyebrow, title, description, standaloneMode = false }) {
       <h2 className={standaloneMode ? "text-2xl font-semibold tracking-[-0.02em] text-white" : "text-xl font-semibold text-slate-950"}>{title}</h2>
       {description ? <p className={standaloneMode ? "max-w-3xl text-sm text-slate-400" : "text-sm text-slate-600"}>{description}</p> : null}
     </div>
-  );
-}
-
-function SentinelStandaloneFocusSurface({
-  activeTenant,
-  nextBestAction,
-  contentWorkbenchItems,
-  standaloneRuntimeLabel,
-  onOpenContent,
-}) {
-  const stageCounts = CONTENT_STATUS_GROUPS.map((group) => ({
-    ...group,
-    count: contentWorkbenchItems.filter((item) => group.statuses.includes(item.status)).length,
-  }));
-  const priorityQueue = [...contentWorkbenchItems]
-    .filter((item) => !["published", "monitoring"].includes(item.status))
-    .sort((a, b) => {
-      const priorityDelta = (CONTENT_PRIORITY_ORDER[a.priority] ?? 9) - (CONTENT_PRIORITY_ORDER[b.priority] ?? 9);
-      if (priorityDelta !== 0) return priorityDelta;
-      return CONTENT_LIFECYCLE_STATUSES.indexOf(a.status) - CONTENT_LIFECYCLE_STATUSES.indexOf(b.status);
-    })
-    .slice(0, 4);
-  const liveQueue = priorityQueue.length ? priorityQueue : contentWorkbenchItems.slice(0, 4);
-  const leadItem = liveQueue[0] || null;
-  const leadWorkflowAction = getPrimaryWorkflowActionForItem(leadItem);
-  const leadActionLabel = leadWorkflowAction?.label || "Open Workbench";
-
-  return (
-    <section
-      className="relative isolate overflow-hidden rounded-[28px] border border-cyan-100/10 bg-[#07101d]/72 px-4 py-4 shadow-2xl shadow-slate-950/20 backdrop-blur-xl md:px-5"
-      style={{ marginBottom: "18px" }}
-      aria-label="Sentinel standalone work surface"
-    >
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(circle at 8% 0%, rgba(45, 212, 191, 0.14), transparent 30%), radial-gradient(circle at 72% 20%, rgba(34, 211, 238, 0.08), transparent 28%), linear-gradient(100deg, rgba(255,255,255,0.04), transparent 52%)",
-        }}
-        aria-hidden="true"
-      />
-      <div className="relative grid gap-4 xl:grid-cols-[minmax(0,1.05fr)_minmax(430px,0.75fr)] xl:items-center">
-        <div className="flex min-w-0 items-start gap-3">
-          <SentinelLogoMark className="h-9 w-9 shrink-0 drop-shadow-[0_0_24px_rgba(34,211,238,0.2)]" compact />
-          <div className="min-w-0">
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-200/70">Primary work surface</p>
-            <h2 className="text-xl font-semibold tracking-[-0.035em] text-white md:text-2xl">
-              What should I work on next?
-            </h2>
-            <p className="max-w-3xl text-sm leading-6 text-slate-400" style={{ marginTop: "6px" }}>
-              {leadWorkflowAction
-                ? `${leadItem?.title || nextBestAction.title}. ${leadWorkflowAction.label}: ${leadWorkflowAction.description}`
-                : leadItem?.nextAction || nextBestAction.why}
-            </p>
-          </div>
-        </div>
-
-        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
-          <div className="grid grid-cols-4 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06]">
-            {stageCounts.map((stage) => (
-              <div key={stage.id} className="bg-[#07101d]/75 px-3 py-2">
-                <p className="text-xs font-semibold text-slate-300">{stage.label}</p>
-                <p className="font-mono text-[11px] text-slate-500">{stage.count} items</p>
-              </div>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={onOpenContent}
-            className="group inline-flex items-center justify-center gap-2 rounded-full bg-cyan-200 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-950/20 transition-colors hover:bg-white"
-          >
-            {leadActionLabel}
-            <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
-          </button>
-        </div>
-
-        <div className="sr-only">
-          Tenant {activeTenant?.name || "ERP Experts"}. Runtime {standaloneRuntimeLabel}. Access private.
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -7290,7 +7261,6 @@ function AdminView({ onPreview, standaloneMode = false }) {
   const sentinelState = sentinelStateSnapshot.state;
   const sentinelStateSource = sentinelStateSnapshot.source;
   const { activeTenant } = resolveTenantRegistrySnapshot(tenantRegistrySnapshot);
-  const standaloneRuntimeLabel = sentinelStateSource === "api" ? "Pi-backed Sentinel node" : "local report fallback";
   const activeRow = selectedSlug ? selectedRow : (filteredRows[0] || articleRows[0] || null);
 
   if (!loaded) return (
@@ -7535,13 +7505,13 @@ function AdminView({ onPreview, standaloneMode = false }) {
   };
 
   return (
-    <div className={standaloneMode ? "sentinel-standalone-app relative min-h-screen overflow-x-hidden bg-[#020611] text-slate-100" : "min-h-screen bg-slate-50"}>
+    <div className={standaloneMode ? "sentinel-standalone-app relative min-h-screen overflow-x-hidden bg-[#07111f] text-slate-100" : "min-h-screen bg-slate-50"}>
       {standaloneMode ? (
         <div
           className="pointer-events-none fixed inset-0 opacity-95"
           style={{
             background:
-              "radial-gradient(circle at 12% 6%, rgba(34, 211, 238, 0.16), transparent 28%), radial-gradient(circle at 88% 0%, rgba(45, 212, 191, 0.1), transparent 24%), linear-gradient(140deg, rgba(2, 6, 17, 0.98), rgba(5, 13, 28, 0.96) 48%, rgba(2, 6, 17, 1))",
+              "radial-gradient(circle at 12% 4%, rgba(141, 233, 245, 0.1), transparent 26%), linear-gradient(140deg, #07111f 0%, #0b1625 48%, #07111f 100%)",
           }}
           aria-hidden="true"
         />
@@ -7566,20 +7536,8 @@ function AdminView({ onPreview, standaloneMode = false }) {
         className={standaloneMode
           ? "relative z-10 box-border w-full px-4 sm:px-5 lg:px-7 2xl:px-10"
           : "container"}
-        style={{ paddingTop: standaloneMode ? "18px" : "var(--space-xl)", paddingBottom: standaloneMode ? "28px" : "var(--space-2xl)" }}
+        style={{ paddingTop: standaloneMode ? "16px" : "var(--space-xl)", paddingBottom: standaloneMode ? "28px" : "var(--space-2xl)" }}
       >
-        {standaloneMode ? (
-          <SentinelStandaloneFocusSurface
-            activeTenant={activeTenant}
-            nextBestAction={nextBestAction}
-            contentWorkbenchItems={contentWorkbenchItems}
-            standaloneRuntimeLabel={standaloneRuntimeLabel}
-            onOpenContent={() => {
-              const contentItem = navItems.find((item) => item.key === "content");
-              if (contentItem) handleSidebarNav(contentItem);
-            }}
-          />
-        ) : null}
         <div className={`grid min-w-0 ${standaloneMode ? (compactView ? "gap-4" : "gap-5") : (compactView ? "gap-lg" : "gap-xl")} ${standaloneMode ? (sidebarCollapsed ? "lg:grid-cols-[72px_minmax(0,1fr)]" : "lg:grid-cols-[minmax(210px,0.16fr)_minmax(0,1fr)] 2xl:grid-cols-[minmax(230px,0.14fr)_minmax(0,1fr)]") : (sidebarCollapsed ? "lg:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]" : "lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)]")}`}>
           <SentinelNavigationRail
             navItems={navItems}
@@ -7734,12 +7692,14 @@ function AdminView({ onPreview, standaloneMode = false }) {
 
             {isMonitorMode && showContentWorkbenchTab ? (
               <section ref={contentWorkbenchRef} className="grid gap-lg">
-                <SectionIntro
-                  eyebrow="Content Workbench"
-                  title="Article workflow"
-                  description="Editorial operating view for discovered topics, active briefs, article reviews and live monitoring."
-                  standaloneMode={standaloneMode}
-                />
+                {!standaloneMode ? (
+                  <SectionIntro
+                    eyebrow="Content Workbench"
+                    title="Article workflow"
+                    description="Editorial operating view for discovered topics, active briefs, article reviews and live monitoring."
+                    standaloneMode={standaloneMode}
+                  />
+                ) : null}
                 <ContentWorkbenchPanel
                   items={contentWorkbenchItems}
                   loading={qaLoading || opportunityLoading || plansLoading || actionInboxLoading}
@@ -8741,9 +8701,6 @@ function ContentWorkbenchPanel({
     || null;
   const guidedNextStep = selectedItem ? getContentGuidedNextStep(selectedItem, selectedArtifacts) : null;
   const latestWorkflowAction = selectedItem ? getPrimaryWorkflowActionForItem(selectedItem) : null;
-  const latestWorkflowActionState = selectedItem && latestWorkflowAction
-    ? workflowActionStates[workflowActionKey(selectedItem, latestWorkflowAction)]
-    : null;
   const selectedWorkflowResult = selectedItem
     ? [
       ...Object.values(workflowActionStates).filter((entry) => entry?.itemId === selectedItem.id && (entry.finishedAt || entry.startedAt)),
@@ -9032,22 +8989,22 @@ function ContentWorkbenchPanel({
     if (!body) {
       return (
         <div className="grid gap-5">
-          <div className="rounded-[26px] bg-white/[0.04] p-5 ring-1 ring-white/10">
-            <p className="text-xs font-semibold text-cyan-100">{documentTone}</p>
-            <p className="text-lg leading-8 text-slate-200" style={{ marginTop: "8px" }}>
+          <div className="rounded-[24px] bg-white/70 p-5 ring-1 ring-slate-300/70">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{documentTone}</p>
+            <p className="text-lg leading-8 text-slate-800" style={{ marginTop: "8px" }}>
               {artifact?.preview?.summary || artifact?.summary || "This artefact will become a reviewable document after the linked workflow action runs."}
             </p>
           </div>
           {artifact?.preview?.bullets?.length ? (
             <div className="grid gap-2">
               {artifact.preview.bullets.map((bullet) => (
-                <div key={bullet} className="border-l border-cyan-200/35 bg-white/[0.025] px-4 py-3 text-sm leading-6 text-slate-300">
-                  {bullet}
+                <div key={bullet} className="border-l border-slate-300 bg-white/55 px-4 py-3 text-sm leading-6 text-slate-700">
+                  <span className="mr-2 text-slate-400">•</span>{bullet}
                 </div>
               ))}
             </div>
           ) : null}
-          <div className="rounded-[24px] bg-cyan-300/[0.08] px-5 py-4 text-sm leading-6 text-cyan-100 ring-1 ring-cyan-200/15">
+          <div className="rounded-[22px] bg-slate-950 px-5 py-4 text-sm leading-6 text-white">
             {artifact?.preview?.reviewPrompt || artifact?.nextAction || "Run the recommended workflow action to create the document."}
           </div>
         </div>
@@ -9068,28 +9025,28 @@ function ContentWorkbenchPanel({
             key={`${section.heading}-${sectionIndex}`}
             className={`relative ${
               artefactType === "brief"
-                ? "border-l border-cyan-200/35 pl-5"
-                : "border-l border-white/10 pl-5"
+                ? "border-l border-slate-400/50 pl-5"
+                : "border-l border-slate-300 pl-5"
             }`}
           >
             <div className="flex items-start gap-3">
-              <span className={`mt-2 h-2 w-2 rounded-full ${artefactType === "brief" ? "bg-cyan-200" : "bg-slate-500"}`} />
+              <span className={`mt-2 h-2 w-2 rounded-full ${artefactType === "brief" ? "bg-slate-950" : "bg-slate-400"}`} />
               <div className="min-w-0 flex-1">
-                <h4 className="text-2xl font-semibold tracking-[-0.035em] text-white">
+                <h4 className="text-2xl font-semibold tracking-[-0.035em] text-slate-950">
                   {section.heading}
                 </h4>
                 <div className="grid gap-3" style={{ marginTop: "12px" }}>
                   {section.content.map((line, lineIndex) => {
                     if (line.startsWith("- ")) {
                       return (
-                        <p key={`${section.heading}-bullet-${lineIndex}`} className="rounded-2xl bg-white/[0.04] px-4 py-3 text-sm leading-6 text-slate-300 ring-1 ring-white/10">
-                          <span className="mr-2 text-cyan-200">•</span>
+                        <p key={`${section.heading}-bullet-${lineIndex}`} className="rounded-2xl bg-white/65 px-4 py-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-300/60">
+                          <span className="mr-2 text-slate-400">•</span>
                           {line.replace(/^-\s+/, "")}
                         </p>
                       );
                     }
                     return (
-                      <p key={`${section.heading}-line-${lineIndex}`} className="text-base leading-8 text-slate-300">
+                      <p key={`${section.heading}-line-${lineIndex}`} className="text-base leading-8 text-slate-700">
                         {line}
                       </p>
                     );
@@ -9243,600 +9200,349 @@ function ContentWorkbenchPanel({
     const selectedStage = selectedItem ? stageForItem(selectedItem) : null;
 
     return (
-      <section className="relative overflow-visible text-slate-100">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_14%_0%,rgba(20,184,166,0.14),transparent_34%),radial-gradient(circle_at_88%_10%,rgba(34,211,238,0.08),transparent_30%)]" aria-hidden="true" />
-        <div className="relative">
-          <div className="grid gap-4 border-b border-white/10 pb-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
-            <div className="max-w-3xl">
-              <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-200/75">Editorial operations</p>
-              <h2 className="font-heading text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">Content Workbench</h2>
-              <p className="max-w-2xl text-sm leading-6 text-slate-400" style={{ marginTop: "8px" }}>
-                Select one work item, move it through the lifecycle and keep the next editorial action visible.
-              </p>
-            </div>
-            <div className="grid min-w-[250px] grid-cols-3 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06] text-sm">
-              <div className="bg-[#07101d]/75 px-3 py-2">
-                <p className="text-slate-500">Queue</p>
-                <p className="text-xl font-semibold tracking-[-0.04em] text-white">{items.length}</p>
+      <section className="min-w-0 text-slate-100" aria-label="Sentinel editorial workspace">
+        <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(245px,0.34fr)_minmax(0,0.66fr)] 2xl:grid-cols-[minmax(300px,0.25fr)_minmax(680px,1fr)_minmax(360px,0.3fr)]">
+          <aside className="min-w-0 rounded-[24px] bg-[#111c2b]/88 p-3 ring-1 ring-slate-700/50 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
+            <div className="flex items-center justify-between gap-3 px-1">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Work</p>
+                <h2 className="text-xl font-semibold tracking-[-0.035em] text-white">Queue</h2>
               </div>
-              <div className="bg-[#07101d]/75 px-3 py-2">
-                <p className="text-slate-500">Review</p>
-                <p className="text-xl font-semibold tracking-[-0.04em] text-amber-200">{(statusCounts.review || 0) + (statusCounts.ready || 0)}</p>
-              </div>
-              <div className="bg-[#07101d]/75 px-3 py-2">
-                <p className="text-slate-500">Live</p>
-                <p className="text-xl font-semibold tracking-[-0.04em] text-emerald-200">{(statusCounts.published || 0) + (statusCounts.monitoring || 0)}</p>
+              <div className="text-right text-xs text-slate-500">
+                <p className="font-semibold text-slate-200">{items.length}</p>
+                <p>items</p>
               </div>
             </div>
-          </div>
 
-          <div className="grid gap-3 sm:grid-cols-4" style={{ marginTop: "22px" }} aria-label="Content workflow stages">
-            {stageCounts.map((stage) => {
-              const active = selectedStage?.id === stage.id;
-              return (
-                <div
-                  key={stage.id}
-                  className={`border-b px-1 pb-3 transition-colors ${
-                    active
-                      ? "border-cyan-200/70"
-                      : "border-white/10 hover:border-cyan-100/30"
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-semibold text-slate-100">{stage.label}</p>
-                    <span className={active ? "text-sm font-semibold text-cyan-100" : "text-sm font-semibold text-slate-500"}>{stage.count}</span>
-                  </div>
-                  <div className="h-1 rounded-full bg-white/10" style={{ marginTop: "10px" }}>
-                    <div
-                      className={`h-1 rounded-full ${active ? "bg-cyan-300" : "bg-slate-600"}`}
-                      style={{ width: `${Math.min(100, Math.max(9, stage.count * 16))}%` }}
-                    />
-                  </div>
-                  <p className="text-xs leading-5 text-slate-500" style={{ marginTop: "8px" }}>
-                    {stage.statuses.map((status) => CONTENT_STATUS_META[status]?.label || formatStateLabel(status)).join(" / ")}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
+            <div className="grid grid-cols-4 gap-1" style={{ marginTop: "14px" }} aria-label="Content workflow stages">
+              {stageCounts.map((stage) => {
+                const active = selectedStage?.id === stage.id;
+                return (
+                  <button
+                    key={stage.id}
+                    type="button"
+                    className={`rounded-2xl px-2 py-2 text-left transition-colors ${
+                      active ? "bg-cyan-100 text-slate-950" : "bg-slate-900/55 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                    }`}
+                    onClick={() => {
+                      const stageItem = standaloneQueue.find((item) => stage.statuses.includes(item.status));
+                      if (stageItem) setSelectedId(stageItem.id);
+                    }}
+                  >
+                    <span className="block text-[11px] font-semibold">{stage.label}</span>
+                    <span className="block text-lg font-semibold leading-none" style={{ marginTop: "5px" }}>{stage.count}</span>
+                  </button>
+                );
+              })}
+            </div>
 
-          <div className="flex flex-wrap items-center gap-2 border-b border-white/10 pb-4" style={{ marginTop: "16px" }}>
-            {[
-              ["Status", statusFilter, setStatusFilter, ["all", ...CONTENT_LIFECYCLE_STATUSES]],
-              ["Priority", priorityFilter, setPriorityFilter, ["all", ...priorities]],
-              ["Category", categoryFilter, setCategoryFilter, ["all", ...categories]],
-            ].map(([label, value, setter, options]) => (
-              <label key={label} className="flex items-center gap-2 rounded-full bg-white/[0.045] px-3 py-1.5 text-xs text-slate-500 ring-1 ring-white/10">
-                {label}
-                <select
-                  value={value}
-                  onChange={(event) => setter(event.target.value)}
-                  className="bg-[#07101d] text-sm font-semibold text-slate-100 outline-none"
-                >
-                  {options.map((option) => (
-                    <option key={option} value={option}>
-                      {option === "all"
-                        ? "All"
-                        : CONTENT_STATUS_META[option]?.label || contentCategoryLabel(option)}
-                    </option>
-                  ))}
+            <div className="grid gap-2 border-y border-slate-700/50 py-3" style={{ marginTop: "14px" }}>
+              {[
+                ["Status", statusFilter, setStatusFilter, ["all", ...CONTENT_LIFECYCLE_STATUSES]],
+                ["Priority", priorityFilter, setPriorityFilter, ["all", ...priorities]],
+                ["Category", categoryFilter, setCategoryFilter, ["all", ...categories]],
+              ].map(([label, value, setter, options]) => (
+                <label key={label} className="flex items-center justify-between gap-3 text-xs text-slate-500">
+                  {label}
+                  <select
+                    value={value}
+                    onChange={(event) => setter(event.target.value)}
+                    className="max-w-[170px] rounded-full bg-slate-950/70 px-3 py-1.5 text-xs font-semibold text-slate-100 outline-none ring-1 ring-slate-700/80"
+                  >
+                    {options.map((option) => (
+                      <option key={option} value={option}>
+                        {option === "all" ? "All" : CONTENT_STATUS_META[option]?.label || contentCategoryLabel(option)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ))}
+              <label className="flex items-center justify-between gap-3 text-xs text-slate-500">
+                Publication
+                <select value={publishedFilter} onChange={(event) => setPublishedFilter(event.target.value)} className="max-w-[170px] rounded-full bg-slate-950/70 px-3 py-1.5 text-xs font-semibold text-slate-100 outline-none ring-1 ring-slate-700/80">
+                  <option value="all">All</option>
+                  <option value="published">Published</option>
+                  <option value="unpublished">Not published</option>
                 </select>
               </label>
-            ))}
-            <label className="flex items-center gap-2 rounded-full bg-white/[0.045] px-3 py-1.5 text-xs text-slate-500 ring-1 ring-white/10">
-              Publication
-              <select value={publishedFilter} onChange={(event) => setPublishedFilter(event.target.value)} className="bg-[#07101d] text-sm font-semibold text-slate-100 outline-none">
-                <option value="all">All</option>
-                <option value="published">Published</option>
-                <option value="unpublished">Not published</option>
-              </select>
-            </label>
-            <label className="flex items-center gap-2 rounded-full bg-white/[0.045] px-3 py-1.5 text-xs text-slate-500 ring-1 ring-white/10">
-              Owner
-              <select value={ownershipFilter} onChange={(event) => setOwnershipFilter(event.target.value)} className="bg-[#07101d] text-sm font-semibold text-slate-100 outline-none">
-                <option value="all">All</option>
-                <option value="assigned">Assigned</option>
-                <option value="unassigned">Unassigned</option>
-              </select>
-            </label>
-          </div>
-
-          {recentWorkflowHistory.length ? (
-            <div style={{ marginTop: "16px" }}>
-              {renderRecentWorkflowHistoryPanel(true)}
             </div>
-          ) : null}
 
-          {loading ? (
-            <p className="text-sm text-slate-500" style={{ marginTop: "18px" }}>Loading content workflow signals...</p>
-          ) : !items.length ? (
-            <div className="rounded-2xl border border-dashed border-cyan-100/20 bg-white/[0.04] p-5 text-sm text-slate-400" style={{ marginTop: "18px" }}>
-              Content workflow data is not available yet. Run the SEO reports to populate opportunities, plans and QA signals.
-            </div>
-          ) : (
-            <div className="grid gap-5 xl:grid-cols-[minmax(300px,0.42fr)_minmax(460px,0.78fr)_minmax(330px,0.36fr)] 2xl:grid-cols-[minmax(340px,0.4fr)_minmax(620px,0.84fr)_minmax(390px,0.34fr)]" style={{ marginTop: "20px" }}>
-              <div className="grid gap-5">
-                {CONTENT_STATUS_GROUPS.map((stage) => {
-                  const stageItems = standaloneQueue.filter((item) => stage.statuses.includes(item.status));
-                  if (!stageItems.length) return null;
+            {loading ? (
+              <p className="px-1 py-4 text-sm text-slate-500">Loading content workflow signals...</p>
+            ) : !items.length ? (
+              <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/45 p-4 text-sm text-slate-400" style={{ marginTop: "14px" }}>
+                Content workflow data is not available yet. Run the SEO reports to populate opportunities, plans and QA signals.
+              </div>
+            ) : (
+              <div className="grid gap-3" style={{ marginTop: "14px" }}>
+                {standaloneQueue.map((item) => {
+                  const active = selectedItem?.id === item.id;
+                  const itemStage = stageForItem(item);
+                  const cardWorkflowAction = getPrimaryWorkflowActionForItem(item);
+                  const cardActionState = cardWorkflowAction ? workflowActionStates[workflowActionKey(item, cardWorkflowAction)] : null;
+                  const cardActionStatus = cardActionState?.status ? normaliseExecutionStatus(cardActionState.status) : "";
+                  const cardActionRunning = ["queued", "running"].includes(cardActionStatus);
+                  const cardActionLocked = cardWorkflowAction
+                    && (cardWorkflowAction.executionMode === "allowlisted_action" || cardWorkflowAction.executionMode === "allowlisted_pipeline")
+                    && !authorityAllowsExecution;
                   return (
-                    <section key={stage.id} className="grid gap-3 border-b border-white/10 pb-5">
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-3">
-                          <span className="h-px w-8 bg-cyan-200/30" />
-                          <h3 className="text-sm font-semibold text-slate-200">{stage.label}</h3>
+                    <article
+                      key={item.id}
+                      tabIndex={0}
+                      role="button"
+                      aria-pressed={active}
+                      onClick={() => setSelectedId(item.id)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          setSelectedId(item.id);
+                        }
+                      }}
+                      className={`cursor-pointer rounded-[18px] px-3 py-3 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-300/45 ${
+                        active ? "bg-cyan-100 text-slate-950" : "bg-slate-950/35 text-slate-200 hover:bg-slate-900"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className={`text-[11px] font-semibold ${active ? "text-slate-600" : "text-slate-500"}`}>{itemStage.label} · {CONTENT_STATUS_META[item.status]?.label || formatStateLabel(item.status)}</p>
+                          <h3 className="text-sm font-semibold leading-snug" style={{ marginTop: "6px" }}>{item.title}</h3>
                         </div>
-                        <span className="text-xs text-slate-500">{stageItems.length} active</span>
+                        <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${active ? "bg-slate-950/10 text-slate-700" : "bg-white/[0.06] text-slate-400"}`}>
+                          {formatStateLabel(item.priority)}
+                        </span>
                       </div>
-                      <div className="grid gap-3">
-                        {stageItems.map((item) => {
-                          const active = selectedItem?.id === item.id;
-                          const itemStage = stageForItem(item);
-                          const cardWorkflowAction = getPrimaryWorkflowActionForItem(item);
-                          const cardActionState = cardWorkflowAction ? workflowActionStates[workflowActionKey(item, cardWorkflowAction)] : null;
-                          const cardActionStatus = cardActionState?.status ? normaliseExecutionStatus(cardActionState.status) : "";
-                          const cardActionRunning = ["queued", "running"].includes(cardActionStatus);
-                          const cardActionLocked = cardWorkflowAction
-                            && (cardWorkflowAction.executionMode === "allowlisted_action" || cardWorkflowAction.executionMode === "allowlisted_pipeline")
-                            && !authorityAllowsExecution;
-                          return (
-                            <article
-                              key={item.id}
-                              tabIndex={0}
-                              role="button"
-                              aria-pressed={active}
-                              onClick={() => setSelectedId(item.id)}
-                              onKeyDown={(event) => {
-                                if (event.key === "Enter" || event.key === " ") {
-                                  event.preventDefault();
-                                  setSelectedId(item.id);
-                                }
-                              }}
-                              className={`group cursor-pointer rounded-[20px] border p-4 text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-300/50 ${
-                                active
-                                  ? "border-cyan-200/50 bg-cyan-300/[0.1] ring-1 ring-cyan-200/25"
-                                  : "border-white/10 bg-white/[0.035] hover:-translate-y-0.5 hover:border-cyan-100/25 hover:bg-white/[0.06]"
-                              }`}
-                            >
-                              <div className="flex items-start justify-between gap-4">
-                                <div className="min-w-0">
-                                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                                    <span className={`h-2 w-2 rounded-full ${active ? "bg-cyan-300" : "bg-slate-600"}`} />
-                                    <span>{itemStage.label}</span>
-                                    <span>{CONTENT_STATUS_META[item.status]?.label || formatStateLabel(item.status)}</span>
-                                  </div>
-                                  <h4 className="text-lg font-semibold leading-snug tracking-[-0.025em] text-white" style={{ marginTop: "8px" }}>
-                                    {item.title}
-                                  </h4>
-                                </div>
-                                <span className="shrink-0 rounded-full bg-white/[0.07] px-2.5 py-1 text-xs font-semibold text-slate-300 ring-1 ring-white/10">
-                                  {formatStateLabel(item.priority)}
-                                </span>
-                              </div>
-                              <p className="line-clamp-2 text-sm leading-6 text-slate-400" style={{ marginTop: "10px" }}>
-                                {item.nextAction || item.summary}
-                              </p>
-                              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-3" style={{ marginTop: "14px" }}>
-                                <p className="text-xs text-slate-500">
-                                  {item.categoryLabel || contentCategoryLabel(item.category)}
-                                  {item.targetSlug ? ` · ${item.targetSlug}` : ""}
-                                </p>
-                                {cardWorkflowAction ? (
-                                  <button
-                                    type="button"
-                                    onClick={(event) => {
-                                      event.stopPropagation();
-                                      setSelectedId(item.id);
-                                      executeWorkflowAction(cardWorkflowAction, item);
-                                    }}
-                                    disabled={cardActionRunning || cardActionLocked}
-                                    className="rounded-full bg-cyan-200 px-3 py-1.5 text-xs font-semibold text-slate-950 transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
-                                    title={cardActionLocked ? authorityMessage : cardWorkflowAction.description}
-                                  >
-                                    {cardActionRunning ? "Running" : cardWorkflowAction.label}
-                                  </button>
-                                ) : (
-                                  <span className="rounded-full bg-white/[0.07] px-3 py-1.5 text-xs font-semibold text-slate-500 ring-1 ring-white/10">No action</span>
-                                )}
-                              </div>
-                            </article>
-                          );
-                        })}
+                      <p className={`line-clamp-2 text-xs leading-5 ${active ? "text-slate-700" : "text-slate-500"}`} style={{ marginTop: "8px" }}>
+                        {item.nextAction || item.summary}
+                      </p>
+                      <div className="flex items-center justify-between gap-2" style={{ marginTop: "10px" }}>
+                        <span className={`truncate text-[11px] ${active ? "text-slate-600" : "text-slate-600"}`}>{item.categoryLabel || contentCategoryLabel(item.category)}</span>
+                        {cardWorkflowAction ? (
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setSelectedId(item.id);
+                              executeWorkflowAction(cardWorkflowAction, item);
+                            }}
+                            disabled={cardActionRunning || cardActionLocked}
+                            className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                              active ? "bg-slate-950 text-white" : "bg-cyan-100 text-slate-950 hover:bg-white"
+                            }`}
+                            title={cardActionLocked ? authorityMessage : cardWorkflowAction.description}
+                          >
+                            {cardActionRunning ? "Running" : cardWorkflowAction.label}
+                          </button>
+                        ) : null}
                       </div>
-                    </section>
+                    </article>
                   );
                 })}
               </div>
+            )}
+          </aside>
 
-              <section className="min-h-[680px] rounded-[30px] border border-white/10 bg-[#0b1422]/82 p-5 text-white shadow-2xl shadow-slate-950/20 ring-1 ring-white/5 xl:sticky xl:top-24 xl:max-h-[calc(100vh-7rem)] xl:overflow-hidden">
-                {selectedItem && selectedArtifact ? (
-                  <div className="flex h-full min-h-0 flex-col">
-                    <div className="flex flex-wrap items-start justify-between gap-4 border-b border-white/10 pb-4">
-                      <div className="min-w-0">
-                        <p className="text-sm text-cyan-200">Active artefact</p>
-                        <h3 className="text-3xl font-semibold leading-tight tracking-[-0.045em]" style={{ marginTop: "6px" }}>
-                          {selectedArtifact.contentArtefact?.title || selectedArtifact.preview?.title || selectedArtifact.label}
-                        </h3>
-                        <p className="max-w-2xl text-sm leading-6 text-slate-400" style={{ marginTop: "8px" }}>
-                          {selectedArtifact.contentArtefact?.summary || selectedArtifact.summary}
-                        </p>
-                      </div>
-                      <div className="flex flex-wrap gap-2 text-xs">
-                        <span className="rounded-full bg-white/[0.07] px-3 py-1.5 font-semibold text-slate-300 ring-1 ring-white/10">
-                          {formatStateLabel(selectedArtifact.type || selectedArtifact.id)}
-                        </span>
-                        <span className={`rounded-full px-3 py-1.5 font-semibold ring-1 ${
-                          selectedArtifact.status === "available"
-                            ? "bg-emerald-300/10 text-emerald-100 ring-emerald-200/20"
-                            : selectedArtifact.status === "ready"
-                              ? "bg-cyan-300/10 text-cyan-100 ring-cyan-200/20"
-                              : "bg-white/[0.06] text-slate-400 ring-white/10"
-                        }`}>
-                          {selectedArtifact.status === "available" ? "Reviewable" : selectedArtifact.status === "ready" ? "Ready to create" : "Upcoming"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2 overflow-x-auto border-b border-white/10 py-3" aria-label="Artefact views">
-                      {selectedArtifacts.map((artifact) => {
-                        const activeArtifact = selectedArtifact?.id === artifact.id;
-                        const available = artifact.status === "available";
-                        return (
-                          <button
-                            key={artifact.id}
-                            type="button"
-                            onClick={() => setSelectedArtifactId(artifact.id)}
-                            className={`shrink-0 rounded-full px-3 py-2 text-xs font-semibold transition-colors ${
-                              activeArtifact
-                                ? "bg-cyan-200 text-slate-950"
-                                : available
-                                  ? "bg-white/[0.08] text-slate-100 ring-1 ring-white/10 hover:bg-white/[0.12]"
-                                  : "bg-white/[0.04] text-slate-500 ring-1 ring-white/10 hover:text-slate-300"
-                            }`}
-                          >
-                            {artifact.label}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    <div className="rounded-[24px] bg-cyan-300/[0.08] px-5 py-4 text-sm leading-6 text-cyan-50 ring-1 ring-cyan-200/15" style={{ marginTop: "16px" }}>
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                          <p className="text-xs font-semibold text-cyan-100/70">What to do next</p>
-                          <p className="text-base font-semibold text-white" style={{ marginTop: "4px" }}>
-                            {selectedArtifact.contentArtefact?.nextStep || selectedArtifact.nextAction || guidedNextStep?.actionLabel || "Review this artefact and choose the next workflow step."}
-                          </p>
-                        </div>
-                        {latestWorkflowAction ? renderWorkflowActionButton(latestWorkflowAction, selectedItem, true) : null}
-                      </div>
-                    </div>
-
-                    <div className="min-h-0 flex-1 overflow-y-auto pr-1" style={{ marginTop: "18px" }}>
-                      <article className="mx-auto max-w-3xl">
-                        <div className="grid grid-cols-1 gap-3 border-b border-white/10 pb-4 text-xs text-slate-500 sm:grid-cols-3">
-                          <div>
-                            <p>Generated by</p>
-                            <p className="font-semibold text-slate-200" style={{ marginTop: "4px" }}>
-                              {selectedArtifact.contentArtefact?.generatedBy || "Workbench preview"}
-                            </p>
-                          </div>
-                          <div>
-                            <p>Updated</p>
-                            <p className="font-semibold text-slate-200" style={{ marginTop: "4px" }}>
-                              {selectedArtifact.createdAt ? formatDateTime(selectedArtifact.createdAt) : "Not generated yet"}
-                            </p>
-                          </div>
-                          <div>
-                            <p>Next decision</p>
-                            <p className="font-semibold text-cyan-100" style={{ marginTop: "4px" }}>
-                              {selectedArtifact.contentArtefact?.nextStep || selectedArtifact.nextAction}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div style={{ marginTop: "20px" }}>
-                          {renderArtefactDocumentBody(selectedArtifact)}
-                        </div>
-                      </article>
-                    </div>
+          <section className="min-w-0 rounded-[26px] bg-[#f4efe4] p-4 text-slate-950 shadow-2xl shadow-slate-950/20 lg:min-h-[calc(100vh-7rem)] xl:p-6">
+            {selectedItem && selectedArtifact ? (
+              <div className="flex h-full min-h-0 flex-col">
+                <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-300/70 pb-4">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Artefact review</p>
+                    <h2 className="max-w-4xl text-3xl font-semibold leading-[1.04] tracking-[-0.055em] text-slate-950 md:text-4xl" style={{ marginTop: "8px" }}>
+                      {selectedArtifact.contentArtefact?.title || selectedArtifact.preview?.title || selectedArtifact.label}
+                    </h2>
+                    <p className="max-w-3xl text-base leading-7 text-slate-700" style={{ marginTop: "12px" }}>
+                      {selectedArtifact.contentArtefact?.summary || selectedArtifact.summary}
+                    </p>
                   </div>
-                ) : (
-                  <div className="flex min-h-[420px] items-center justify-center rounded-[24px] border border-dashed border-white/10 bg-white/[0.03] p-8 text-center">
-                    <div>
-                      <p className="text-lg font-semibold text-white">Select a content item</p>
-                      <p className="max-w-md text-sm leading-6 text-slate-400" style={{ marginTop: "8px" }}>
-                        Research, brief, draft, review and monitoring artefacts will appear here as reviewable content.
-                      </p>
-                    </div>
+                  <div className="rounded-2xl bg-white/70 px-3 py-2 text-xs text-slate-600 ring-1 ring-slate-300/70">
+                    <p className="font-semibold text-slate-950">{selectedItem.title}</p>
+                    <p style={{ marginTop: "3px" }}>{CONTENT_STATUS_META[selectedItem.status]?.label || formatStateLabel(selectedItem.status)}</p>
                   </div>
-                )}
-              </section>
+                </div>
 
-              <aside className="h-fit rounded-[28px] border border-cyan-100/10 bg-[#08111f]/90 p-5 text-white ring-1 ring-white/5 xl:sticky xl:top-24 xl:rounded-none xl:border-y-0 xl:border-r-0 xl:bg-transparent xl:pl-6 xl:shadow-none xl:ring-0">
-                {selectedItem ? (
-                  <>
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="text-sm text-cyan-200">Working on</p>
-                        <h3 className="text-2xl font-semibold leading-tight tracking-[-0.035em]" style={{ marginTop: "6px" }}>{selectedItem.title}</h3>
-                        <p className="text-sm text-slate-400" style={{ marginTop: "8px" }}>{selectedItem.targetTopic || selectedItem.categoryLabel}</p>
+                <div className="flex gap-2 overflow-x-auto border-b border-slate-300/70 py-3" aria-label="Artefact views">
+                  {selectedArtifacts.map((artifact) => {
+                    const activeArtifact = selectedArtifact?.id === artifact.id;
+                    const available = artifact.status === "available";
+                    return (
+                      <button
+                        key={artifact.id}
+                        type="button"
+                        onClick={() => setSelectedArtifactId(artifact.id)}
+                        className={`shrink-0 rounded-full px-3 py-2 text-xs font-semibold transition-colors ${
+                          activeArtifact
+                            ? "bg-slate-950 text-white"
+                            : available
+                              ? "bg-white/75 text-slate-700 ring-1 ring-slate-300/70 hover:bg-white"
+                              : "bg-slate-200/70 text-slate-500 ring-1 ring-slate-300/50 hover:text-slate-700"
+                        }`}
+                      >
+                        {artifact.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="rounded-[22px] bg-white/70 px-4 py-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-300/70" style={{ marginTop: "16px" }}>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Next review decision</p>
+                  <div className="flex flex-wrap items-center justify-between gap-3" style={{ marginTop: "6px" }}>
+                    <p className="text-base font-semibold text-slate-950">
+                      {selectedArtifact.contentArtefact?.nextStep || selectedArtifact.nextAction || guidedNextStep?.actionLabel || "Review this artefact and choose the next workflow step."}
+                    </p>
+                    {latestWorkflowAction ? renderWorkflowActionButton(latestWorkflowAction, selectedItem, true) : null}
+                  </div>
+                </div>
+
+                <div className="min-h-0 flex-1 overflow-y-auto pr-1" style={{ marginTop: "22px" }}>
+                  <article className="mx-auto max-w-4xl">
+                    {renderArtefactDocumentBody(selectedArtifact)}
+                  </article>
+                </div>
+              </div>
+            ) : (
+              <div className="flex min-h-[520px] items-center justify-center rounded-[24px] border border-dashed border-slate-300 bg-white/45 p-8 text-center">
+                <div>
+                  <p className="text-xl font-semibold text-slate-950">Select a content item</p>
+                  <p className="max-w-md text-sm leading-6 text-slate-600" style={{ marginTop: "8px" }}>
+                    Research, brief, draft, review and monitoring artefacts will appear here as reviewable work.
+                  </p>
+                </div>
+              </div>
+            )}
+          </section>
+
+          <aside className="min-w-0 rounded-[24px] bg-[#111c2b]/88 p-4 text-white ring-1 ring-slate-700/50 lg:col-span-2 2xl:col-span-1 2xl:sticky 2xl:top-20 2xl:max-h-[calc(100vh-6rem)] 2xl:overflow-y-auto">
+            {selectedItem ? (
+              <>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Actions</p>
+                  <h2 className="text-xl font-semibold tracking-[-0.035em] text-white" style={{ marginTop: "6px" }}>Move this forward</h2>
+                  <p className="text-sm leading-6 text-slate-400" style={{ marginTop: "8px" }}>{selectedItem.targetTopic || selectedItem.categoryLabel}</p>
+                </div>
+
+                {guidedNextStep ? (
+                  <div className="rounded-2xl bg-slate-950/35 p-4 ring-1 ring-slate-700/60" style={{ marginTop: "16px" }}>
+                    <p className="text-xs font-semibold text-slate-500">Next decision</p>
+                    <h3 className="text-base font-semibold text-white" style={{ marginTop: "5px" }}>{guidedNextStep.title}</h3>
+                    <p className="text-sm leading-6 text-slate-400" style={{ marginTop: "6px" }}>{guidedNextStep.summary}</p>
+                  </div>
+                ) : null}
+
+                <div className="rounded-2xl bg-cyan-100 p-4 text-slate-950" style={{ marginTop: "16px" }}>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Primary action</p>
+                  <p className="text-base font-semibold leading-6" style={{ marginTop: "6px" }}>{latestWorkflowAction?.label || selectedItem.nextAction}</p>
+                  <div style={{ marginTop: "12px" }}>
+                    {latestWorkflowAction ? renderWorkflowActionButton(latestWorkflowAction, selectedItem, true) : null}
+                  </div>
+                </div>
+
+                <div className="grid gap-3" style={{ marginTop: "16px" }}>
+                  {selectedWorkflowGroups.secondary.length ? (
+                    <section className="grid gap-2">
+                      <h3 className="text-sm font-semibold text-slate-200">Secondary actions</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedWorkflowGroups.secondary.slice(0, 4).map((action) => renderWorkflowActionButton(action, selectedItem))}
                       </div>
-                      <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-slate-200">
-                        {formatStateLabel(selectedItem.priority)}
-                      </span>
-                    </div>
-
-                    {guidedNextStep ? (
-                      <div className="rounded-2xl border border-white/10 bg-white/[0.055] p-4" style={{ marginTop: "18px" }}>
-                        <p className="text-xs font-semibold text-slate-500">Next decision</p>
-                        <h4 className="text-base font-semibold text-white" style={{ marginTop: "5px" }}>{guidedNextStep.title}</h4>
-                        <p className="text-sm leading-6 text-slate-300" style={{ marginTop: "6px" }}>{guidedNextStep.summary}</p>
-                        {guidedNextStep.artifactLabel ? (
-                          <p className="text-xs text-cyan-100" style={{ marginTop: "8px" }}>
-                            Review: {guidedNextStep.artifactLabel}
-                          </p>
-                        ) : null}
-                      </div>
-                    ) : null}
-
-                    <div className="rounded-2xl border border-cyan-200/20 bg-cyan-300/[0.12] p-4 text-cyan-50 shadow-lg shadow-cyan-950/10" style={{ marginTop: "18px" }}>
-                      <p className="text-xs font-semibold text-cyan-100/70">Next action</p>
-                      <div className="flex flex-wrap items-center justify-between gap-3" style={{ marginTop: "5px" }}>
-                        <p className="text-base font-semibold leading-6">
-                          {latestWorkflowAction?.label || selectedItem.nextAction}
-                        </p>
-                        {latestWorkflowAction ? renderWorkflowActionButton(latestWorkflowAction, selectedItem, true) : null}
-                      </div>
-                      <p className="text-sm leading-6 text-cyan-100/75" style={{ marginTop: "6px" }}>
-                        {latestWorkflowAction?.description || selectedItem.nextAction}
-                      </p>
-                      {latestWorkflowActionState?.message ? (
-                        <p className={`rounded-xl px-3 py-2 text-xs font-semibold ${
-                          normaliseExecutionStatus(latestWorkflowActionState.status) === "failed"
-                            ? "bg-rose-300/15 text-rose-100 ring-1 ring-rose-200/20"
-                            : "bg-white/[0.08] text-cyan-50 ring-1 ring-white/10"
-                        }`} style={{ marginTop: "10px" }}>
-                          {latestWorkflowActionState.message}
-                        </p>
-                      ) : null}
-                    </div>
-
-                    <div className="grid gap-3" style={{ marginTop: "16px" }}>
-                      {selectedWorkflowGroups.primary.length ? (
-                        <section className="grid gap-2">
-                          <div className="flex items-center justify-between gap-3">
-                            <h4 className="text-sm font-semibold text-white">Primary actions</h4>
-                            <span className="text-xs text-slate-500">Task first</span>
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            {selectedWorkflowGroups.primary.map((action) => renderWorkflowActionButton(action, selectedItem, true))}
-                          </div>
-                        </section>
-                      ) : null}
-
-                      {selectedWorkflowGroups.secondary.length ? (
-                        <section className="grid gap-2">
-                          <h4 className="text-sm font-semibold text-slate-200">More actions</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {selectedWorkflowGroups.secondary.map((action) => renderWorkflowActionButton(action, selectedItem))}
-                          </div>
-                        </section>
-                      ) : null}
-
-                      {selectedWorkflowGroups.manual.length ? (
-                        <section className="grid gap-2">
-                          <h4 className="text-sm font-semibold text-slate-200">Advanced handoff</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {selectedWorkflowGroups.manual.map((action) => renderWorkflowActionButton(action, selectedItem))}
-                          </div>
-                        </section>
-                      ) : null}
-                    </div>
-
-                    <section className="rounded-[24px] bg-white/[0.055] p-4 ring-1 ring-white/10" style={{ marginTop: "18px" }}>
-                      <div className="flex items-center justify-between gap-3">
-                        <div>
-                          <h4 className="text-sm font-semibold text-white">Review notes</h4>
-                          <p className="text-xs text-slate-500" style={{ marginTop: "3px" }}>
-                            Capture questions, concerns and reminders for this artefact.
-                          </p>
-                        </div>
-                        <span className="rounded-full bg-white/[0.07] px-2.5 py-1 text-xs font-semibold text-slate-300 ring-1 ring-white/10">
-                          {selectedReviewNotes.length}
-                        </span>
-                      </div>
-                      <div className="grid gap-2" style={{ marginTop: "12px" }}>
-                        <select
-                          value={reviewNoteKind}
-                          onChange={(event) => setReviewNoteKind(event.target.value)}
-                          className="rounded-2xl border border-white/10 bg-[#07101d] px-3 py-2 text-xs font-semibold text-slate-200"
-                          aria-label="Review note type"
-                        >
-                          <option value="note">Operator note</option>
-                          <option value="comment">Review comment</option>
-                          <option value="concern">Concern</option>
-                          <option value="question">Question</option>
-                          <option value="draft_reminder">Draft reminder</option>
-                        </select>
-                        <textarea
-                          value={reviewNoteDraft}
-                          onChange={(event) => setReviewNoteDraft(event.target.value)}
-                          rows={4}
-                          className="min-h-[104px] rounded-2xl border border-white/10 bg-[#07101d] px-3 py-3 text-sm leading-6 text-slate-100 outline-none placeholder:text-slate-600 focus:border-cyan-200/50"
-                          placeholder="Add a note for this artefact..."
-                        />
-                        <button
-                          type="button"
-                          onClick={addReviewNote}
-                          disabled={!reviewNoteDraft.trim()}
-                          className="rounded-full bg-cyan-200 px-4 py-2 text-xs font-semibold text-slate-950 transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-45"
-                        >
-                          Add note
-                        </button>
-                      </div>
-                      {selectedReviewNotes.length ? (
-                        <div className="grid gap-2" style={{ marginTop: "14px" }}>
-                          {selectedReviewNotes.slice(0, 5).map((note) => (
-                            <div key={note.id} className="rounded-2xl bg-black/15 px-3 py-3 text-xs leading-5 text-slate-300 ring-1 ring-white/10">
-                              <div className="flex flex-wrap items-center justify-between gap-2">
-                                <span className="font-semibold text-cyan-100">{formatStateLabel(note.kind)}</span>
-                                <span className="text-slate-500">{formatDateTime(note.createdAt)}</span>
-                              </div>
-                              <p style={{ marginTop: "6px" }}>{note.body}</p>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-xs leading-5 text-slate-500" style={{ marginTop: "12px" }}>
-                          No notes yet. Use this for review comments, concerns, questions or draft reminders.
-                        </p>
-                      )}
                     </section>
-
-                    {selectedWorkflowResult ? (
-                      <div className="grid gap-2" style={{ marginTop: "18px" }}>
-                        <h4 className="text-sm font-semibold text-white">Latest action output</h4>
-                        {renderWorkflowResultBox(selectedWorkflowResult)}
-                      </div>
-                    ) : null}
-
-                    <div className="grid gap-4" style={{ marginTop: "18px" }}>
-                      <section>
-                        <h4 className="text-sm font-semibold text-white">Why this matters</h4>
-                        <p className="text-sm leading-6 text-slate-300" style={{ marginTop: "6px" }}>{selectedItem.summary}</p>
-                      </section>
-                      <section>
-                        <h4 className="text-sm font-semibold text-white">Content goal</h4>
-                        <p className="text-sm leading-6 text-slate-300" style={{ marginTop: "6px" }}>{selectedItem.contentGoal}</p>
-                      </section>
-                      {selectedItem.suggestedAngle ? (
-                        <section>
-                          <h4 className="text-sm font-semibold text-white">Suggested angle</h4>
-                          <p className="text-sm leading-6 text-slate-300" style={{ marginTop: "6px" }}>{selectedItem.suggestedAngle}</p>
-                        </section>
-                      ) : null}
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2 text-xs" style={{ marginTop: "18px" }}>
-                      <div className="rounded-2xl bg-white/[0.06] p-3 ring-1 ring-white/10">
-                        <p className="text-slate-500">Opportunity</p>
-                        <p className="font-semibold text-slate-100">{selectedItem.relatedOpportunityId || "none"}</p>
-                      </div>
-                      <div className="rounded-2xl bg-white/[0.06] p-3 ring-1 ring-white/10">
-                        <p className="text-slate-500">Plan</p>
-                        <p className="font-semibold text-slate-100">{selectedItem.relatedPlanId || "none"}</p>
-                      </div>
-                      <div className="rounded-2xl bg-white/[0.06] p-3 ring-1 ring-white/10">
-                        <p className="text-slate-500">Article QA</p>
-                        <p className="font-semibold text-slate-100">{selectedItem.articleGate || "not checked"}{selectedItem.articleScore !== null ? ` · ${selectedItem.articleScore}` : ""}</p>
-                      </div>
-                      <div className="rounded-2xl bg-white/[0.06] p-3 ring-1 ring-white/10">
-                        <p className="text-slate-500">Owner</p>
-                        <p className="font-semibold text-slate-100">{selectedItem.owner || "unassigned"}</p>
-                      </div>
-                    </div>
-
-                    <details className="rounded-2xl bg-white/[0.06] p-3 text-sm text-slate-300 ring-1 ring-white/10" style={{ marginTop: "18px" }}>
-                      <summary className="cursor-pointer font-semibold text-slate-100">Advanced manual controls</summary>
-                      <div className="grid gap-3" style={{ marginTop: "12px" }}>
-                        <label className="grid gap-2 text-sm text-slate-300">
-                          Workflow status
-                          <select
-                            value={selectedItem.status}
-                            onChange={(event) => onStatusChange(selectedItem.id, event.target.value)}
-                            className="rounded-2xl border border-white/10 bg-[#07101d] px-3 py-2 text-sm font-semibold text-white"
-                          >
-                            {CONTENT_LIFECYCLE_STATUSES.map((status) => (
-                              <option key={status} value={status}>{CONTENT_STATUS_META[status]?.label || formatStateLabel(status)}</option>
-                            ))}
-                          </select>
-                        </label>
-                        <div className="flex flex-wrap gap-2">
-                          <button
-                            type="button"
-                            onClick={() => moveStatus(selectedItem, -1)}
-                            disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) <= 0}
-                              className="rounded-full bg-white/[0.07] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/[0.12] disabled:cursor-not-allowed disabled:opacity-40"
-                          >
-                            Move back
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => moveStatus(selectedItem, 1)}
-                            disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) >= CONTENT_LIFECYCLE_STATUSES.length - 1}
-                            className="rounded-full bg-white/[0.07] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/[0.12] disabled:cursor-not-allowed disabled:opacity-40"
-                          >
-                            Move forward
-                          </button>
-                          {selectedItem.briefCommand ? (
-                            <button
-                              type="button"
-                              onClick={() => copyValue(selectedItem.briefCommand, `${selectedItem.id}-command`)}
-                              className="rounded-full bg-white/[0.07] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/[0.12]"
-                            >
-                              {copyLabel(`${selectedItem.id}-command`, "Copy raw command")}
-                            </button>
-                          ) : null}
-                          {selectedItem.briefPrompt ? (
-                            <button
-                              type="button"
-                              onClick={() => copyValue(selectedItem.briefPrompt, `${selectedItem.id}-brief`)}
-                              className="rounded-full bg-white/[0.07] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/[0.12]"
-                            >
-                              {copyLabel(`${selectedItem.id}-brief`, "Copy brief prompt")}
-                            </button>
-                          ) : null}
-                          {selectedItem.targetSlug ? (
-                            <button
-                              type="button"
-                              onClick={() => onOpenArticle(selectedItem.targetSlug)}
-                              className="rounded-full bg-white/[0.07] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/[0.12]"
-                            >
-                              Open QA planner
-                            </button>
-                          ) : null}
-                        </div>
+                  ) : null}
+                  {selectedWorkflowGroups.manual.length ? (
+                    <details className="rounded-2xl bg-slate-950/35 p-3 text-sm text-slate-400 ring-1 ring-slate-700/60">
+                      <summary className="cursor-pointer font-semibold text-slate-200">Advanced handoff</summary>
+                      <div className="flex flex-wrap gap-2" style={{ marginTop: "10px" }}>
+                        {selectedWorkflowGroups.manual.map((action) => renderWorkflowActionButton(action, selectedItem))}
                       </div>
                     </details>
+                  ) : null}
+                </div>
 
-                    <div className="border-t border-white/10 pt-4 text-xs text-slate-400" style={{ marginTop: "18px" }}>
-                      <p className="font-semibold text-slate-200">Work history</p>
-                      <p style={{ marginTop: "5px" }}>
-                        Current status is {CONTENT_STATUS_META[selectedItem.status]?.label || formatStateLabel(selectedItem.status)}.
-                        {selectedItem.statusUpdatedAt ? ` Last changed ${formatDateTime(selectedItem.statusUpdatedAt)}.` : " No local status change recorded yet."}
-                      </p>
-                      {selectedWorkflowHistory.length ? (
-                        <div className="grid gap-2" style={{ marginTop: "10px" }}>
-                          {selectedWorkflowHistory.map((entry) => (
-                            <div key={entry.id} className="rounded-xl bg-white/[0.06] p-2 ring-1 ring-white/10">
-                              <div className="flex items-center justify-between gap-2">
-                                <span className="font-semibold text-slate-200">{entry.actionLabel}</span>
-                                <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ${actionStatusBadgeClass(entry.status)}`}>
-                                  {formatStateLabel(entry.status)}
-                                </span>
-                              </div>
-                              <p style={{ marginTop: "3px" }}>{entry.message || "Workflow action recorded."}</p>
-                              <p className="text-slate-500" style={{ marginTop: "3px" }}>{formatDateTime(entry.createdAt)}</p>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p style={{ marginTop: "8px" }}>No workflow action history recorded for this item yet.</p>
-                      )}
+                <section className="border-t border-slate-700/60 pt-4" style={{ marginTop: "18px" }}>
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <h3 className="text-sm font-semibold text-white">Notes</h3>
+                      <p className="text-xs text-slate-500" style={{ marginTop: "3px" }}>Questions, concerns and reminders.</p>
                     </div>
-                  </>
-                ) : (
-                  <p className="text-sm text-slate-300">Select a content item to start working.</p>
-                )}
-              </aside>
-            </div>
-          )}
+                    <span className="rounded-full bg-slate-950/45 px-2.5 py-1 text-xs font-semibold text-slate-300 ring-1 ring-slate-700/60">{selectedReviewNotes.length}</span>
+                  </div>
+                  <div className="grid gap-2" style={{ marginTop: "12px" }}>
+                    <select
+                      value={reviewNoteKind}
+                      onChange={(event) => setReviewNoteKind(event.target.value)}
+                      className="rounded-2xl border border-slate-700 bg-slate-950/60 px-3 py-2 text-xs font-semibold text-slate-200"
+                      aria-label="Review note type"
+                    >
+                      <option value="note">Operator note</option>
+                      <option value="comment">Review comment</option>
+                      <option value="concern">Concern</option>
+                      <option value="question">Question</option>
+                      <option value="draft_reminder">Draft reminder</option>
+                    </select>
+                    <textarea
+                      value={reviewNoteDraft}
+                      onChange={(event) => setReviewNoteDraft(event.target.value)}
+                      rows={4}
+                      className="min-h-[104px] rounded-2xl border border-slate-700 bg-slate-950/60 px-3 py-3 text-sm leading-6 text-slate-100 outline-none placeholder:text-slate-600 focus:border-cyan-200/50"
+                      placeholder="Add a review note..."
+                    />
+                    <button
+                      type="button"
+                      onClick={addReviewNote}
+                      disabled={!reviewNoteDraft.trim()}
+                      className="rounded-full bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-950 transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-45"
+                    >
+                      Add note
+                    </button>
+                  </div>
+                  {selectedReviewNotes.length ? (
+                    <div className="grid gap-2" style={{ marginTop: "14px" }}>
+                      {selectedReviewNotes.slice(0, 4).map((note) => (
+                        <div key={note.id} className="rounded-2xl bg-slate-950/35 px-3 py-3 text-xs leading-5 text-slate-300 ring-1 ring-slate-700/60">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="font-semibold text-cyan-100">{formatStateLabel(note.kind)}</span>
+                            <span className="text-slate-500">{formatDateTime(note.createdAt)}</span>
+                          </div>
+                          <p style={{ marginTop: "6px" }}>{note.body}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </section>
+
+                {selectedWorkflowResult ? (
+                  <section className="border-t border-slate-700/60 pt-4" style={{ marginTop: "18px" }}>
+                    <h3 className="text-sm font-semibold text-white">Latest output</h3>
+                    <div style={{ marginTop: "10px" }}>{renderWorkflowResultBox(selectedWorkflowResult)}</div>
+                  </section>
+                ) : null}
+
+                <section className="border-t border-slate-700/60 pt-4" style={{ marginTop: "18px" }}>
+                  <h3 className="text-sm font-semibold text-white">History</h3>
+                  {selectedWorkflowHistory.length ? (
+                    <div className="grid gap-2" style={{ marginTop: "10px" }}>
+                      {selectedWorkflowHistory.slice(0, 4).map((entry) => (
+                        <div key={entry.id} className="rounded-xl bg-slate-950/35 p-2 text-xs text-slate-400 ring-1 ring-slate-700/60">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-semibold text-slate-200">{entry.actionLabel}</span>
+                            <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ${actionStatusBadgeClass(entry.status)}`}>
+                              {formatStateLabel(entry.status)}
+                            </span>
+                          </div>
+                          <p style={{ marginTop: "4px" }}>{entry.message || "Workflow action recorded."}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs leading-5 text-slate-500" style={{ marginTop: "8px" }}>No workflow history yet.</p>
+                  )}
+                </section>
+              </>
+            ) : (
+              <p className="text-sm text-slate-400">Select a content item to see actions and notes.</p>
+            )}
+          </aside>
         </div>
       </section>
     );
   }
-
   const shellClass = standaloneMode
     ? "overflow-hidden rounded-[30px] border border-white/10 bg-[#07101d]/84 p-4 text-slate-100 shadow-2xl shadow-slate-950/25 backdrop-blur-xl md:p-5"
     : "rounded-[28px] bg-white/90 p-5 shadow-sm ring-1 ring-slate-100/80";

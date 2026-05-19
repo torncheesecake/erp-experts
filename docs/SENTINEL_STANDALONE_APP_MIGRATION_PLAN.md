@@ -440,3 +440,11 @@ Drafts are editable local artefacts with edit, preview and review modes. ERP Exp
 `/sentinel` is now treated as the host operator application rather than an ERP Experts website page. The route remains outside the ERP Experts layout, uses a compact Sentinel product header, an app-style navigation rail, fluid full-width workspace gutters and dark-first operational surfaces.
 
 ERP Experts appears only as the active tenant. `/seo-roadmap` remains the legacy embedded compatibility surface, and `/seo-progress` remains the stakeholder-safe ERP Experts page.
+
+## Design System Reset
+
+The next `/sentinel` pass is documented in `docs/SENTINEL_DESIGN_SYSTEM.md`.
+
+The standalone operator workspace now prioritises the selected artefact and document review surface. The previous stacked hero/work-next strip has been removed from `/sentinel`, the app bar is slimmer and the Workbench is organised into Work, Artefacts, Actions, Notes and History.
+
+This remains a local/private operator UX change only. It does not deploy `sentinel.artifexa.co.uk`, expose the Pi API or change stakeholder pages.

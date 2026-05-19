@@ -81,3 +81,17 @@ The Raspberry Pi API remains localhost-only. Remote authority/auth remains the e
 - Freeze `/seo-roadmap` as compatibility unless a safety fix is required.
 - Add a separate build/deploy mode before serving `sentinel.artifexa.co.uk`.
 - Enable remote authority authentication before exposing any operator route publicly.
+
+## Design Reset Update
+
+`docs/SENTINEL_DESIGN_SYSTEM.md` now defines the Sentinel workspace design rules.
+
+The `/sentinel` route has moved away from incremental dashboard polish toward a clearer editorial application layout:
+
+- one slim app bar
+- compact navigation
+- work queue on the left of the workspace
+- selected artefact and document review in the centre
+- actions, notes and history as contextual support
+
+The reset removes the extra hero/work-next strip and repeated Workbench headings so the selected content artefact becomes the first meaningful work surface.
