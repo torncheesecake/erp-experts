@@ -248,6 +248,296 @@ export const articles = {
       "This guide is based on practical NetSuite close experience and Oracle NetSuite Help Center guidance on Accounting Period Close, Closing Tasks and Their Dependencies, Accounting Book Period Close Management, and Setting Up Accounting Periods for a Year. Always validate feature availability, permissions, and local accounting requirements for your own account before making final close decisions.",
   },
 
+  "erp-consultants-for-it-and-software-companies": {
+    title: "ERP Consultants for IT and Software Companies",
+    subtitle: "How Small UK Technology Firms Should Choose the Right Partner",
+    cardDescription:
+      "A practical guide for small IT, SaaS, software, and technology services firms choosing an ERP consultant who understands projects, subscriptions, billing, and growth.",
+    metaDescription:
+      "Choose the right ERP consultant for a small UK IT or software company. Compare partner types, delivery risks, NetSuite fit, project billing, subscriptions, and support.",
+    keywords:
+      "ERP consultants for software companies, ERP consultants UK, ERP consultants for IT services, independent ERP consultants, NetSuite software companies, technology ERP consultant",
+    date: "May 2026",
+    publishedAt: "2026-05-19T09:35:00+01:00",
+    modifiedAt: "2026-05-19T09:35:00+01:00",
+    isNew: true,
+    newUntil: "2026-06-02",
+    readTime: "7 min read",
+    type: "Guide",
+    layoutVariant: 8,
+    heroAlignment: "center",
+    heroAccent: "brand-marker",
+    heroImage: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1400&q=80",
+    featureImage: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80",
+    ctaText:
+      "If your IT, SaaS, or software services business is outgrowing spreadsheets and disconnected billing, book an ERP fit review before choosing a partner.",
+    ctaLabel: "Book an ERP fit review",
+    ctaTo: "/implementation",
+    ctaTrackingName: "resource_article_software_erp_consultant_review",
+
+    intro:
+      "Small IT and software development companies rarely need a generic ERP sales process. They need a consultant who understands project delivery, subscription billing, support contracts, deferred revenue, resource utilisation, and the pressure to keep delivery teams moving while finance controls improve. The best ERP consultant is not simply the largest firm or the cheapest independent adviser. It is the partner who can translate your operating model into a controlled implementation plan, challenge weak assumptions, and leave your team able to run the system after go-live.",
+
+    overviewHeading:
+      'Choosing an ERP Consultant for <span class="text-primary">Technology Firms</span>',
+    overviewSubtext:
+      "For software and IT services firms, ERP decisions usually fail when the partner treats the business like a standard finance migration. Your consultant should understand how work is sold, delivered, billed, recognised, renewed, and supported. That means testing fit across finance, projects, CRM, integrations, reporting, and post-go-live optimisation before any build begins.",
+    takeaways: [
+      "Prioritise consultants with technology services and SaaS billing experience",
+      "Check project accounting, resource utilisation, and revenue recognition depth",
+      "Avoid partners who scope software before understanding delivery operations",
+      "Demand a clear data, integration, and support plan from day one",
+      "Choose delivery discipline over brand size or headline day rate",
+    ],
+
+    tipsHeading:
+      'How to Compare <span class="text-primary">ERP Consultant Options</span>',
+    comparison: {
+      heading:
+        'ERP Consultant Types for <span class="text-primary">Small Technology Firms</span>',
+      intro:
+        "Use this matrix to compare the real trade-offs between specialist ERP partners, independent advisers, and generic implementation firms.",
+      recommendedColumn: 0,
+      columns: ["Specialist NetSuite Partner", "Independent ERP Adviser", "Generic ERP Implementer"],
+      rows: [
+        {
+          criterion: "Fit for IT and software business models",
+          values: [
+            {
+              text: "Strongest when the partner can evidence software, SaaS, project billing, and support contract experience.",
+              tone: "positive",
+            },
+            {
+              text: "Useful for neutral selection and challenge, but delivery detail depends on the adviser's hands-on ERP depth.",
+              tone: "warning",
+            },
+            {
+              text: "Can miss subscription, project, and revenue details if the method is designed around generic finance processes.",
+              tone: "negative",
+            },
+          ],
+        },
+        {
+          criterion: "Implementation accountability",
+          values: [
+            {
+              text: "One team can own design, configuration, data, training, and post-go-live support when scope is well controlled.",
+              tone: "positive",
+            },
+            {
+              text: "Can improve governance, but another delivery partner still needs to own configuration and outcomes.",
+              tone: "warning",
+            },
+            {
+              text: "Delivery may be process-heavy without enough challenge around technology-sector edge cases.",
+              tone: "warning",
+            },
+          ],
+        },
+        {
+          criterion: "Project billing and resource utilisation",
+          values: [
+            {
+              text: "Best fit where consultants understand timesheets, milestones, fixed-fee work, margin reporting, and resource planning.",
+              tone: "positive",
+            },
+            {
+              text: "Good for requirements validation, but may not configure PSA or project accounting directly.",
+              tone: "warning",
+            },
+            {
+              text: "Risky if project accounting is treated as an optional add-on rather than a core operating control.",
+              tone: "negative",
+            },
+          ],
+        },
+        {
+          criterion: "Subscription and recurring revenue controls",
+          values: [
+            {
+              text: "Can connect CRM, contracts, billing, renewals, revenue recognition, and reporting into one operating model.",
+              tone: "positive",
+            },
+            {
+              text: "Can help test vendors, but implementation evidence still needs to come from the chosen delivery team.",
+              tone: "warning",
+            },
+            {
+              text: "Higher risk if recurring revenue is reduced to invoice scheduling without controls for renewals and recognition.",
+              tone: "negative",
+            },
+          ],
+        },
+        {
+          criterion: "Integration and customisation judgement",
+          values: [
+            {
+              text: "Strong when the partner can explain when to configure, integrate, customise, or leave a process alone.",
+              tone: "positive",
+            },
+            {
+              text: "Helpful for independent challenge, but technical design decisions need implementation-level proof.",
+              tone: "warning",
+            },
+            {
+              text: "Can create avoidable complexity if every gap becomes a custom build or every risk is deferred.",
+              tone: "negative",
+            },
+          ],
+        },
+        {
+          criterion: "Long-term support fit",
+          values: [
+            {
+              text: "Best when the same team can support optimisation, reporting, training, and controlled change after go-live.",
+              tone: "positive",
+            },
+            {
+              text: "Good for periodic governance reviews, but day-to-day support will usually sit elsewhere.",
+              tone: "warning",
+            },
+            {
+              text: "Support can become fragmented if delivery, development, and finance ownership sit with separate suppliers.",
+              tone: "negative",
+            },
+          ],
+        },
+      ],
+      recommendationTitle: "Best Starting Point",
+      recommendationText:
+        "For most small UK IT and software companies, start with a specialist ERP or NetSuite partner that can prove technology-sector delivery experience, then use independent challenge where procurement, board assurance, or vendor comparison needs extra neutrality.",
+    },
+
+    tips: [
+      {
+        number: "01",
+        icon: Cpu,
+        title: "Test Whether They Understand Your Revenue Model",
+        content:
+          "A software or IT services business may combine subscriptions, project work, retainers, support contracts, licences, usage fees, and implementation services. Your ERP consultant should be able to discuss how each stream is quoted, billed, recognised, reported, and renewed before proposing a system design.",
+        actions: [
+          "Ask them to map order-to-cash for your main revenue streams",
+          "Check how they handle subscriptions, milestones, time and materials, and fixed-fee work",
+          "Reject vague answers that treat billing as a finance-only configuration task",
+        ],
+      },
+      {
+        number: "02",
+        icon: LineChart,
+        title: "Look for Project Margin and Utilisation Discipline",
+        content:
+          "Technology firms need live visibility over utilisation, project margin, scope change, work in progress, and billing leakage. The right consultant should know how project accounting connects to resource planning, revenue, and cash, not just how to migrate a chart of accounts.",
+        actions: [
+          "Ask which project KPIs they would put in the first finance dashboard",
+          "Confirm how they would capture approved hours, expenses, and scope changes",
+          "Check whether delivery managers and finance both get usable reporting",
+        ],
+      },
+      {
+        number: "03",
+        icon: Puzzle,
+        title: "Pressure-Test Integration and Customisation Judgement",
+        content:
+          "Small technology companies often have a product platform, support desk, CRM, billing tools, and development workflow already in place. A good ERP consultant will not try to replace everything at once. They will decide where ERP should lead, where integrations are justified, and where existing tools should stay in place.",
+        actions: [
+          "List the systems that must stay, change, or retire",
+          "Ask for the principle they use before recommending customisation",
+          "Confirm who owns integration monitoring after go-live",
+        ],
+      },
+      {
+        number: "04",
+        icon: Shield,
+        title: "Check Their Data and Control Plan",
+        content:
+          "The best implementation plan will fail if customer records, contract dates, project codes, product items, billing rules, and finance balances are not clean enough to trust. Your consultant should make data readiness visible early and explain how controls will stop the same problems returning.",
+        actions: [
+          "Ask for a data readiness checklist before design sign-off",
+          "Confirm which fields are mandatory for reporting and billing",
+          "Agree how exceptions will be found, owned, and corrected",
+        ],
+      },
+      {
+        number: "05",
+        icon: Users,
+        title: "Insist on Training for Finance and Delivery Teams",
+        content:
+          "ERP success in an IT or software company depends on more than the finance team. Project managers, delivery leads, account managers, and support owners may all touch the data that finance relies on. Your consultant should design training around real workflows, not generic system navigation.",
+        actions: [
+          "Ask for role-based training examples for finance, delivery, and sales",
+          "Confirm how users will practise quote-to-cash and project-to-cash scenarios",
+          "Make support ownership clear before go-live",
+        ],
+      },
+      {
+        number: "06",
+        icon: Rocket,
+        title: "Choose a Partner Who Will Challenge Scope",
+        content:
+          "Small firms cannot afford an ERP programme that grows without discipline. A strong consultant will push back on unnecessary customisation, sequence delivery sensibly, and explain what should wait until the business has stable reporting and adoption.",
+        actions: [
+          "Ask what they would deliberately leave out of phase one",
+          "Look for evidence of controlled go-live support and optimisation",
+          "Prefer a clear staged plan over a long wish list",
+        ],
+      },
+    ],
+
+    bonusTips: [
+      {
+        icon: Search,
+        title: "Ask for Comparable References",
+        content:
+          "References from another software, IT services, SaaS, or project-led business are more useful than broad mid-market credentials.",
+      },
+      {
+        icon: ClipboardCheck,
+        title: "Review the Discovery Outputs",
+        content:
+          "A good discovery should produce process maps, risk decisions, data actions, and a delivery plan, not just a licence estimate.",
+      },
+      {
+        icon: Database,
+        title: "Do Not Hide Data Quality",
+        content:
+          "Poor contract, customer, item, or project data will surface during billing and reporting. Make it part of the plan early.",
+      },
+      {
+        icon: Handshake,
+        title: "Plan the Support Model",
+        content:
+          "Clarify whether support sits with the implementation partner, internal admins, a managed service, or a mixed model.",
+      },
+    ],
+
+    resourceLinks: [
+      {
+        label: "Implementation approach",
+        description: "See how ERP Experts structures NetSuite implementation work.",
+        to: "/implementation",
+        trackingName: "software_erp_consultant_implementation_link",
+      },
+      {
+        label: "Support and optimisation",
+        description: "Plan what happens after go-live and who owns change.",
+        to: "/support",
+        trackingName: "software_erp_consultant_support_link",
+      },
+      {
+        label: "ERP consultant guide",
+        description: "Compare this sector guide with the broader consultant checklist.",
+        to: "/resources/how-to-choose-the-right-erp-consultant",
+        trackingName: "software_erp_consultant_related_guide_link",
+      },
+    ],
+
+    conclusion:
+      "The right ERP consultant for a small IT or software development company is the one who understands how revenue, projects, delivery teams, support obligations, and finance controls interact. Start with business model fit, then test project accounting, billing, data, integrations, training, and support. If a partner cannot explain those trade-offs clearly before you buy, they are unlikely to manage them well during implementation.",
+
+    disclaimer:
+      "This guide is based on ERP Experts implementation experience and primary Oracle NetSuite materials for Software Companies, Consulting and IT Services, SuiteProjects, SuiteCloud, and NetSuite ERP, reviewed in May 2026. Validate product availability, commercial terms, and feature fit for your own account before making final selection decisions.",
+  },
+
   "is-netsuite-right-for-your-business": {
     title: "Is NetSuite Right for Your Business?",
     subtitle: "A Practical Evaluation Guide for Growing Organisations",
@@ -4923,6 +5213,8 @@ export const typeIcons = { Guide: BookOpen, Article: FileText, Assessment: Asses
 
 // Listing page card image mapping (some articles use different images for cards vs hero)
 const cardImages = {
+  "erp-consultants-for-it-and-software-companies":
+    "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&q=80",
   "optimise-end-of-year-accounting-with-netsuite":
     "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=600&q=80",
   "is-netsuite-right-for-your-business":
@@ -4978,6 +5270,7 @@ const cardImages = {
 
 // Ordered list of article slugs for the listing page
 const articleOrder = [
+  "erp-consultants-for-it-and-software-companies",
   "optimise-end-of-year-accounting-with-netsuite",
   "why-netsuite-aftercare-is-essential",
   "netsuite-next-ai-ui-overhaul",

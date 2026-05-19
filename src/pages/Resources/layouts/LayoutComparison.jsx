@@ -4,10 +4,11 @@
  * Best for: buyer guides, partner evaluations, and option trade-offs.
  */
 
-import { CheckCircle } from "lucide-react";
+import { ArrowRight, CheckCircle } from "lucide-react";
 import SharedHero from "./SharedHero";
 import SharedCTA from "./SharedCTA";
 import SharedBonusTips from "./SharedBonusTips";
+import TrackedLink from "../../../components/ui/TrackedLink";
 
 const toneClasses = {
   positive: {
@@ -349,6 +350,39 @@ export default function LayoutComparison({ article, slug }) {
           </div>
         </div>
       </section>
+
+      {article.resourceLinks?.length > 0 && (
+        <section className="section-padding border-t border-(--color-text)/10">
+          <div className="container">
+            <div className="grid gap-xl lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-2xl items-start">
+              <div>
+                <p className="text-label text-primary mb-md">Related Resources</p>
+                <h2>
+                  Keep the Evaluation <span className="text-primary">Grounded</span>
+                </h2>
+              </div>
+
+              <div className="grid gap-md md:grid-cols-3">
+                {article.resourceLinks.map((link, i) => (
+                  <TrackedLink
+                    key={`${link.to}-${i}`}
+                    to={link.to}
+                    trackingName={link.trackingName || "resource_comparison_internal_link"}
+                    trackingPage={slug}
+                    className="group rounded-[1.05rem] border border-(--color-text)/10 bg-white p-lg shadow-[0_12px_26px_rgba(26,26,26,0.035)] transition-colors hover:border-primary/20"
+                  >
+                    <span className="resource-fine font-bold text-primary">{link.label}</span>
+                    <span className="mt-sm flex items-center gap-sm resource-body text-(--color-text)">
+                      {link.description}
+                      <ArrowRight className="h-4 w-4 shrink-0 text-primary transition-transform group-hover:translate-x-1" />
+                    </span>
+                  </TrackedLink>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Recommendation + conclusion */}
       <section className="section-padding border-t border-(--color-text)/10 relative overflow-hidden">
