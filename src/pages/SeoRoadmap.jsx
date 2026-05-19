@@ -712,12 +712,12 @@ function workflowResultBadgeClass(status = "") {
 
 function workflowActionButtonClass(action = {}, active = false) {
   const base = "inline-flex items-center justify-center gap-2 rounded-full px-3 py-2 text-xs font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-50";
-  if (active) return `${base} bg-white text-slate-950 shadow-lg shadow-cyan-950/20 hover:bg-cyan-100`;
-  if (action.executionMode === "manual_copy") return `${base} bg-white/10 text-white hover:bg-white/15`;
+  if (active) return `${base} bg-cyan-200 text-slate-950 shadow-lg shadow-cyan-950/25 hover:bg-white`;
+  if (action.executionMode === "manual_copy") return `${base} bg-white/[0.07] text-slate-100 ring-1 ring-white/10 hover:bg-white/[0.12]`;
   if (action.executionMode === "allowlisted_action" || action.executionMode === "allowlisted_pipeline") {
-    return `${base} bg-blue-300/15 text-blue-100 ring-1 ring-blue-200/20 hover:bg-blue-300/25`;
+    return `${base} bg-cyan-300/10 text-cyan-100 ring-1 ring-cyan-200/20 hover:bg-cyan-300/20`;
   }
-  return `${base} bg-white text-slate-950 hover:bg-cyan-100`;
+  return `${base} bg-white/[0.08] text-slate-100 ring-1 ring-white/10 hover:bg-cyan-300/[0.14] hover:text-cyan-50`;
 }
 
 function resolveTenantRegistrySnapshot(tenantRegistrySnapshot) {
@@ -1560,20 +1560,20 @@ function SentinelAppHeader({
   const cadenceLabel = cadenceSummary?.ranAt ? formatDateTime(cadenceSummary.ranAt) : "Not recorded";
   const readinessStatus = readinessSummary?.overallStatus || "Not checked";
   const headerClass = standaloneMode
-    ? "relative z-10 border-b border-cyan-100/10 bg-[#030611]/92 text-white shadow-2xl shadow-slate-950/30 backdrop-blur"
+    ? "relative z-10 border-b border-cyan-100/10 bg-[#030711]/90 text-white shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-xl"
     : "border-b border-slate-200 bg-white/90 backdrop-blur";
   const eyebrowClass = standaloneMode
-    ? "text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-200/80"
+    ? "text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-200/80"
     : "text-xs font-semibold uppercase tracking-[0.18em] text-pink-600";
   const titleClass = standaloneMode ? "font-heading text-white" : "font-heading text-slate-950";
-  const descriptionClass = standaloneMode ? "text-sm text-slate-400" : "text-sm text-slate-600";
+  const descriptionClass = standaloneMode ? "max-w-2xl text-sm leading-6 text-slate-400" : "text-sm text-slate-600";
   const metaClass = standaloneMode ? "text-xs text-slate-300" : "text-xs text-slate-500";
   const pillClass = standaloneMode
-    ? "rounded-full bg-white/[0.045] px-2.5 py-1 ring-1 ring-white/10"
+    ? "rounded-full bg-white/[0.055] px-2.5 py-1 ring-1 ring-white/10"
     : "rounded-full bg-slate-50 px-2.5 py-1 ring-1 ring-slate-100";
   const strongClass = standaloneMode ? "text-white" : "text-slate-800";
   const statusCardClass = standaloneMode
-    ? "rounded-xl bg-white/8 px-3 py-2 ring-1 ring-white/10"
+    ? "rounded-xl bg-white/[0.08] px-3 py-2 ring-1 ring-white/10"
     : "rounded-xl bg-slate-50/70 px-3 py-2 ring-1 ring-slate-100";
   const statusGridClass = standaloneMode
     ? "grid gap-2 sm:grid-cols-2 2xl:grid-cols-4"
@@ -1584,52 +1584,55 @@ function SentinelAppHeader({
   const statusValueClass = standaloneMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950";
   const statusDetailClass = standaloneMode ? "text-[11px] text-slate-400" : "text-[11px] text-slate-500";
   const buttonClass = standaloneMode
-    ? "inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/[0.045] px-3 py-1.5 text-xs font-semibold text-slate-200 hover:border-cyan-200/30 hover:bg-white/[0.09] transition-colors cursor-pointer"
+    ? "inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.045] px-3 py-1.5 text-xs font-semibold text-slate-200 transition-colors cursor-pointer hover:border-cyan-200/40 hover:bg-white/[0.09] focus:outline-none focus:ring-2 focus:ring-cyan-200/30"
     : "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer";
   const containerClass = standaloneMode
-    ? "mx-auto box-border w-full max-w-[1540px] px-[var(--space-lg)] md:px-[var(--space-xl)] 2xl:px-[var(--space-2xl)]"
+    ? "mx-auto box-border w-full max-w-[1680px] px-[var(--space-lg)] md:px-[var(--space-xl)] 2xl:px-[var(--space-2xl)]"
     : "container";
   const headerStyle = standaloneMode
     ? {
       background:
-        "radial-gradient(circle at 10% 0%, rgba(34, 211, 238, 0.18), transparent 28%), radial-gradient(circle at 84% 12%, rgba(59, 130, 246, 0.12), transparent 32%), #050914",
+        "radial-gradient(circle at 10% 0%, rgba(34, 211, 238, 0.15), transparent 28%), radial-gradient(circle at 86% 4%, rgba(20, 184, 166, 0.1), transparent 30%), linear-gradient(180deg, rgba(3, 7, 17, 0.96), rgba(4, 10, 22, 0.92))",
     }
     : undefined;
+  const healthValue = dashboardMode.stateLabel === "HEALTHY" ? "Healthy" : formatStateLabel(dashboardMode.stateLabel);
+  const connectionValue = sentinelStateSource === "api" ? "Connected" : "Local";
+  const cadenceValue = cadenceSummary?.mode ? "Operational" : "Pending";
   const statusChips = [
     {
       label: "Health",
-      value: dashboardMode.stateLabel,
+      value: healthValue,
       detail: `${summaryGate.pass} pass`,
       tone: "bg-emerald-300",
     },
     {
-      label: "Authority",
-      value: sentinelAuthorityMode === "enabled" ? "required" : "local bypass",
-      detail: "operator gate",
+      label: "Access",
+      value: sentinelAuthorityMode === "enabled" ? "Gated" : "Private",
+      detail: "operator workspace",
       tone: sentinelAuthorityMode === "enabled" ? "bg-amber-300" : "bg-cyan-300",
     },
     {
-      label: "Runtime",
-      value: sentinelStateSource === "api" ? "Pi node" : "local fallback",
-      detail: sentinelStateSource || "state",
+      label: "Connection",
+      value: connectionValue,
+      detail: sentinelStateSource === "api" ? "runtime linked" : "local state",
       tone: sentinelStateSource === "api" ? "bg-cyan-300" : "bg-slate-400",
     },
     {
       label: "Cadence",
-      value: cadenceSummary?.mode ? formatStateLabel(cadenceSummary.mode) : "not recorded",
-      detail: cadenceSummary?.ranAt ? "latest run" : "pending",
-      tone: cadenceSummary?.mode ? "bg-blue-300" : "bg-slate-400",
+      value: cadenceValue,
+      detail: cadenceSummary?.ranAt ? "latest run" : "awaiting run",
+      tone: cadenceSummary?.mode ? "bg-teal-300" : "bg-slate-400",
     },
   ];
 
   return (
     <header className={headerClass} style={headerStyle}>
-      <div className={containerClass} style={{ paddingTop: "var(--space-md)", paddingBottom: "var(--space-md)" }}>
-        <div className={standaloneMode ? "grid gap-4" : "flex items-center justify-between gap-lg flex-wrap"}>
+      <div className={containerClass} style={{ paddingTop: standaloneMode ? "18px" : "var(--space-md)", paddingBottom: standaloneMode ? "18px" : "var(--space-md)" }}>
+        <div className={standaloneMode ? "grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center" : "flex items-center justify-between gap-lg flex-wrap"}>
           <div className="min-w-0">
             <div className="flex items-center gap-3">
               {standaloneMode ? (
-                <SentinelLogoMark className="h-14 w-14 shrink-0" />
+                <SentinelLogoMark className="h-12 w-12 shrink-0 drop-shadow-[0_0_28px_rgba(34,211,238,0.18)]" />
               ) : (
                 <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-pink-50 text-pink-600 ring-1 ring-pink-100">
                   <Zap size={17} />
@@ -1637,28 +1640,28 @@ function SentinelAppHeader({
               )}
               <div>
                 <p className={eyebrowClass}>{standaloneMode ? "Sentinel by Artifexa" : "Sentinel"}</p>
-                <h1 className={titleClass} style={{ fontSize: standaloneMode ? "clamp(1.35rem, 2.4vw, 1.9rem)" : "clamp(1.65rem, 3vw, 2.2rem)", lineHeight: 1.02 }}>
-                  {standaloneMode ? "Sentinel" : "Control Centre"}
+                <h1 className={titleClass} style={{ fontSize: standaloneMode ? "clamp(1.7rem, 3vw, 2.55rem)" : "clamp(1.65rem, 3vw, 2.2rem)", lineHeight: 0.98 }}>
+                  {standaloneMode ? "Operator Workspace" : "Control Centre"}
                 </h1>
               </div>
             </div>
             <p className={descriptionClass} style={{ marginTop: "8px" }}>
               {standaloneMode
-                ? "Private content operations workspace. ERP Experts is the active tenant, not the app brand."
+                ? "Mission control for focused content operations, editorial workflow and safe operational handoffs."
                 : "Private operator app shell for state, cadence, actions, tenants and diagnostics."}
             </p>
             <div className={`flex flex-wrap items-center gap-2 ${metaClass}`} style={{ marginTop: "8px" }}>
               <span className={pillClass}>
-                Tenant: <strong className={strongClass}>{activeTenant?.name || "ERP Experts"}</strong>
+                Client: <strong className={strongClass}>{activeTenant?.name || "ERP Experts"}</strong>
               </span>
               {standaloneMode ? (
                 <span className={pillClass}>
-                  Operator space: <strong className={strongClass}>Artifexa-owned</strong>
+                  Access: <strong className={strongClass}>Private workspace</strong>
                 </span>
               ) : null}
               {standaloneMode ? (
                 <span className={pillClass}>
-                  Authority: <strong className={strongClass}>{sentinelAuthorityMode === "enabled" ? "required" : "local bypass"}</strong>
+                  Status: <strong className={strongClass}>{connectionValue}</strong>
                 </span>
               ) : null}
               <span className={pillClass}>
@@ -1668,10 +1671,10 @@ function SentinelAppHeader({
           </div>
 
           {standaloneMode ? (
-            <div className="min-w-0 flex flex-1 flex-col items-start gap-3">
-              <div className="flex w-full flex-wrap items-center justify-start gap-2" aria-label="Sentinel operational status">
+            <div className="min-w-0 flex flex-col items-start gap-3 xl:items-end">
+              <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-start xl:justify-end" aria-label="Sentinel operational status">
                 {statusChips.map((item) => (
-                  <span key={item.label} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5 text-xs text-slate-300 shadow-sm shadow-slate-950/10">
+                  <span key={item.label} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-slate-300 shadow-sm shadow-slate-950/10">
                     <span className={`h-1.5 w-1.5 rounded-full ${item.tone}`} />
                     <span className="font-semibold text-slate-100">{item.label}</span>
                     <span>{item.value}</span>
@@ -1679,29 +1682,29 @@ function SentinelAppHeader({
                   </span>
                 ))}
               </div>
-              <div className="flex flex-wrap items-center justify-start gap-2">
+              <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-start xl:justify-end">
                 <button
                   onClick={() => onCompactViewChange(!compactView)}
-                  className={buttonClass}
+                  className={`${buttonClass} shrink-0`}
                 >
                   {compactView ? "Expanded view" : "Compact view"}
                 </button>
                 <button
                   onClick={onResetWorkspace}
-                  className={buttonClass}
+                  className={`${buttonClass} shrink-0`}
                 >
                   Reset workspace
                 </button>
                 <button
                   onClick={() => window.location.reload()}
-                  className={buttonClass}
+                  className={`${buttonClass} shrink-0`}
                 >
                   <CheckCircle2 size={14} />
                   Refresh
                 </button>
                 <button
                   onClick={onPreview}
-                  className={buttonClass}
+                  className={`${buttonClass} shrink-0`}
                 >
                   <Eye size={14} />
                   Preview
@@ -1791,13 +1794,13 @@ function SentinelNavigationRail({
     diagnostics: Wrench,
   };
   const asideClass = standaloneMode
-    ? "h-fit border-l border-white/10 pl-3 lg:sticky lg:top-24"
+    ? "h-fit rounded-[28px] border border-cyan-100/10 bg-[#07101d]/70 p-3 shadow-2xl shadow-slate-950/20 backdrop-blur-xl lg:sticky lg:top-24"
     : "rounded-[28px] bg-white/85 p-4 shadow-sm ring-1 ring-slate-100/80 h-fit lg:sticky lg:top-24";
   const introClass = standaloneMode
-    ? "px-2 py-1"
+    ? "rounded-2xl bg-white/[0.035] p-3 ring-1 ring-white/10"
     : "rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100";
   const eyebrowClass = standaloneMode
-    ? "text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-200"
+    ? "text-[10px] font-semibold uppercase tracking-[0.22em] text-cyan-200/75"
     : "text-xs font-semibold uppercase tracking-[0.16em] text-pink-600";
   const titleClass = standaloneMode ? "text-sm font-semibold text-white" : "text-lg font-semibold text-slate-950";
   const mutedClass = standaloneMode ? "text-xs text-slate-400" : "text-xs text-slate-500";
@@ -1809,9 +1812,9 @@ function SentinelNavigationRail({
       <div className={introClass}>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className={eyebrowClass}>{standaloneMode ? "Workspace" : "App Shell"}</p>
+            <p className={eyebrowClass}>{standaloneMode ? "Operate" : "App Shell"}</p>
             <p className={titleClass}>Sentinel</p>
-            {collapsed ? null : <p className={mutedClass}>{activeTenant?.name || "ERP Experts"}</p>}
+            {collapsed ? null : <p className={mutedClass}>{activeTenant?.name || "ERP Experts"} content workspace</p>}
           </div>
           <button
             type="button"
@@ -1828,8 +1831,8 @@ function SentinelNavigationRail({
           const Icon = navIconMap[item.key] || Circle;
           const active = activeNav === item.key;
           const standaloneButtonClass = active
-            ? "text-cyan-50"
-            : "text-slate-500 hover:text-slate-200";
+            ? "bg-white/[0.065] text-cyan-50 ring-1 ring-cyan-100/10"
+            : "text-slate-500 hover:bg-white/[0.035] hover:text-slate-200";
           const standardButtonClass = active
             ? "bg-pink-50 text-pink-700 ring-1 ring-pink-100"
             : "text-slate-700 hover:bg-slate-50";
@@ -1837,18 +1840,18 @@ function SentinelNavigationRail({
             <button
               key={item.key}
               onClick={() => onNavigate(item)}
-              className={`group relative flex items-center gap-3 text-left transition-colors cursor-pointer ${standaloneMode ? `rounded-none px-2 py-2.5 ${standaloneButtonClass}` : `rounded-2xl px-3 py-3 ${standardButtonClass}`} ${collapsed ? "justify-center" : ""}`}
+              className={`group relative flex items-center gap-3 text-left transition-all cursor-pointer ${standaloneMode ? `rounded-2xl px-2.5 py-2.5 ${standaloneButtonClass}` : `rounded-2xl px-3 py-3 ${standardButtonClass}`} ${collapsed ? "justify-center" : ""}`}
             >
               {standaloneMode ? (
-                <span className={`absolute -left-3 top-2 bottom-2 w-px rounded-full ${active ? "bg-cyan-200 shadow-[0_0_18px_rgba(103,232,249,0.75)]" : "bg-transparent"}`} aria-hidden="true" />
+                <span className={`absolute left-0 top-3 bottom-3 w-px rounded-full ${active ? "bg-cyan-200 shadow-[0_0_18px_rgba(103,232,249,0.75)]" : "bg-transparent"}`} aria-hidden="true" />
               ) : null}
-              <span className={`inline-flex h-8 w-8 shrink-0 items-center justify-center ${standaloneMode ? (active ? "text-cyan-100" : "text-slate-500 group-hover:text-slate-200") : "rounded-xl bg-white/70 text-current ring-1 ring-slate-100"}`}>
+              <span className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${standaloneMode ? (active ? "bg-cyan-300/10 text-cyan-100" : "text-slate-500 group-hover:text-slate-200") : "bg-white/70 text-current ring-1 ring-slate-100"}`}>
                 <Icon size={15} />
               </span>
               {collapsed ? null : (
                 <span className="min-w-0">
                   <span className={`block text-sm font-semibold ${standaloneMode ? "tracking-[-0.01em]" : ""}`}>{item.label}</span>
-                  <span className={`block text-xs ${standaloneMode ? "text-slate-600 group-hover:text-slate-400" : "text-slate-500"}`} style={{ marginTop: "2px" }}>{item.description}</span>
+                  <span className={`block text-xs ${standaloneMode ? "text-slate-500 group-hover:text-slate-400" : "text-slate-500"}`} style={{ marginTop: "2px" }}>{item.description}</span>
                 </span>
               )}
             </button>
@@ -1856,10 +1859,10 @@ function SentinelNavigationRail({
         })}
       </nav>
 
-      <div className={standaloneMode ? "border-t border-white/10 px-2 py-4" : "rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100"} style={{ marginTop: "16px" }}>
-        <p className={standaloneMode ? "text-xs text-slate-500" : "text-xs text-slate-500"}>Health</p>
-        <p className={standaloneMode ? "text-sm font-semibold text-emerald-300" : "text-sm font-semibold text-emerald-600"}>{dashboardMode.stateLabel}</p>
-        {collapsed ? null : <p className={standaloneMode ? "text-xs text-slate-500" : "text-xs text-slate-600"}>pass {summaryGate.pass} · blocked {summaryGate.blocked}</p>}
+      <div className={standaloneMode ? "rounded-2xl border border-white/10 bg-white/[0.035] px-3 py-4" : "rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100"} style={{ marginTop: "16px" }}>
+        <p className={standaloneMode ? "text-xs text-slate-500" : "text-xs text-slate-500"}>Workspace state</p>
+        <p className={standaloneMode ? "text-sm font-semibold text-emerald-300" : "text-sm font-semibold text-emerald-600"}>{dashboardMode.stateLabel === "HEALTHY" ? "Healthy" : dashboardMode.stateLabel}</p>
+        {collapsed ? null : <p className={standaloneMode ? "text-xs text-slate-500" : "text-xs text-slate-600"}>{summaryGate.pass} pass, {summaryGate.blocked} blocked</p>}
       </div>
     </aside>
   );
@@ -1901,7 +1904,7 @@ function SentinelStandaloneFocusSurface({
 
   return (
     <section
-      className="relative isolate overflow-hidden border-b border-white/10 py-3 md:py-4"
+      className="relative isolate overflow-hidden rounded-[32px] border border-cyan-100/10 bg-[#07101d]/80 p-4 shadow-2xl shadow-slate-950/20 ring-1 ring-white/5 backdrop-blur-xl md:p-5"
       style={{ marginBottom: "var(--space-md)" }}
       aria-label="Sentinel standalone command surface"
     >
@@ -1909,32 +1912,32 @@ function SentinelStandaloneFocusSurface({
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(circle at 8% 0%, rgba(45, 212, 191, 0.16), transparent 28%), linear-gradient(100deg, rgba(255,255,255,0.04), transparent 48%)",
+            "radial-gradient(circle at 8% 0%, rgba(45, 212, 191, 0.14), transparent 30%), radial-gradient(circle at 72% 20%, rgba(34, 211, 238, 0.08), transparent 28%), linear-gradient(100deg, rgba(255,255,255,0.04), transparent 52%)",
         }}
         aria-hidden="true"
       />
-      <div className="relative grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(420px,0.8fr)] xl:items-center">
+      <div className="relative grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(440px,0.72fr)] xl:items-center">
         <div className="flex min-w-0 items-start gap-3">
-          <SentinelLogoMark className="h-10 w-10 shrink-0" />
+          <SentinelLogoMark className="h-11 w-11 shrink-0 drop-shadow-[0_0_24px_rgba(34,211,238,0.2)]" compact />
           <div className="min-w-0">
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-200/85">Work next</p>
-            <h2 className="truncate text-xl font-semibold tracking-[-0.035em] text-white md:text-2xl">
-              {leadItem?.title || nextBestAction.title}
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-cyan-200/80">Primary workspace</p>
+            <h2 className="text-2xl font-semibold tracking-[-0.045em] text-white md:text-3xl">
+              What should I work on next?
             </h2>
-            <p className="max-w-3xl truncate text-sm text-slate-400" style={{ marginTop: "4px" }}>
+            <p className="max-w-3xl text-sm leading-6 text-slate-400" style={{ marginTop: "8px" }}>
               {leadWorkflowAction
-                ? `${leadWorkflowAction.label}: ${leadWorkflowAction.description}`
+                ? `${leadItem?.title || nextBestAction.title}. ${leadWorkflowAction.label}: ${leadWorkflowAction.description}`
                 : leadItem?.nextAction || nextBestAction.why}
             </p>
           </div>
         </div>
 
         <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-4 gap-2 rounded-2xl border border-white/10 bg-black/10 p-2">
             {stageCounts.map((stage) => (
-              <div key={stage.id} className="border-l border-white/10 pl-3">
+              <div key={stage.id} className="rounded-xl px-2 py-2">
                 <p className="text-xs font-semibold text-slate-300">{stage.label}</p>
-                <p className="font-mono text-[11px] text-slate-600">{stage.count} items</p>
+                <p className="font-mono text-[11px] text-slate-500">{stage.count} items</p>
               </div>
             ))}
           </div>
@@ -1948,10 +1951,10 @@ function SentinelStandaloneFocusSurface({
           </button>
         </div>
 
-        <div className="flex flex-wrap gap-3 text-xs text-slate-500 xl:col-span-2">
-          <span>Tenant: <strong className="text-slate-300">{activeTenant?.name || "ERP Experts"}</strong></span>
-          <span>Runtime: <strong className="text-slate-300">{standaloneRuntimeLabel}</strong></span>
-          <span>Access: <strong className="text-slate-300">private workspace</strong></span>
+        <div className="flex flex-wrap gap-2 text-xs text-slate-500 xl:col-span-2">
+          <span className="rounded-full bg-white/[0.045] px-2.5 py-1 ring-1 ring-white/10">Client: <strong className="text-slate-300">{activeTenant?.name || "ERP Experts"}</strong></span>
+          <span className="rounded-full bg-white/[0.045] px-2.5 py-1 ring-1 ring-white/10">Connection: <strong className="text-slate-300">{standaloneRuntimeLabel === "Pi-backed Sentinel node" ? "Connected" : standaloneRuntimeLabel}</strong></span>
+          <span className="rounded-full bg-white/[0.045] px-2.5 py-1 ring-1 ring-white/10">Access: <strong className="text-slate-300">Private</strong></span>
         </div>
       </div>
     </section>
@@ -2395,15 +2398,15 @@ function AuthorityStatePanel({ authoritySnapshot }) {
         </span>
       </div>
       <div className="grid gap-3 md:grid-cols-3" style={{ marginTop: "16px" }}>
-        <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+        <div className="rounded-2xl bg-white/[0.08] p-3 ring-1 ring-white/10">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Mode</p>
           <p className="text-sm font-semibold text-white">{formatStateLabel(mode)}</p>
         </div>
-        <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+        <div className="rounded-2xl bg-white/[0.08] p-3 ring-1 ring-white/10">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Controls</p>
           <p className="text-sm font-semibold text-white">{controlsUnlocked ? "Unlocked for current mode" : "Locked until verified"}</p>
         </div>
-        <div className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+        <div className="rounded-2xl bg-white/[0.08] p-3 ring-1 ring-white/10">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Local bypass</p>
           <p className="text-sm font-semibold text-white">{authoritySnapshot?.localBypass ? "Allowed" : "Disabled"}</p>
         </div>
@@ -3725,7 +3728,7 @@ function OperatorConsolePanel({ actionRegistry, history, authoritySnapshot, onAc
       ) : null}
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]" style={{ marginTop: "18px" }}>
-        <div className="rounded-[24px] bg-white/8 p-4 ring-1 ring-white/10">
+        <div className="rounded-[24px] bg-white/[0.08] p-4 ring-1 ring-white/10">
           <label className="grid gap-2 text-sm font-semibold text-slate-100">
             Selected action
             <select
@@ -3840,14 +3843,14 @@ function OperatorConsolePanel({ actionRegistry, history, authoritySnapshot, onAc
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.7fr)]" style={{ marginTop: "18px" }}>
-        <div className="rounded-[24px] bg-white/8 p-4 ring-1 ring-white/10">
+        <div className="rounded-[24px] bg-white/[0.08] p-4 ring-1 ring-white/10">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-pink-200">Console history</p>
               <p className="text-xs text-slate-400">Last five local console executions from API history, with in-session runs first.</p>
             </div>
             {historyLoading ? (
-              <span className="rounded-full bg-white/8 px-2.5 py-1 text-xs font-semibold text-slate-300 ring-1 ring-white/10">loading</span>
+              <span className="rounded-full bg-white/[0.08] px-2.5 py-1 text-xs font-semibold text-slate-300 ring-1 ring-white/10">loading</span>
             ) : null}
           </div>
           <div className="grid gap-2" style={{ marginTop: "12px" }}>
@@ -3857,7 +3860,7 @@ function OperatorConsolePanel({ actionRegistry, history, authoritySnapshot, onAc
               </div>
             ) : null}
             {latestExecutions.length ? latestExecutions.map((execution) => (
-              <div key={execution.executionId} className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+              <div key={execution.executionId} className="rounded-2xl bg-white/[0.08] p-3 ring-1 ring-white/10">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="break-all text-sm font-semibold text-white">{execution.label || execution.action}</p>
@@ -3887,7 +3890,7 @@ function OperatorConsolePanel({ actionRegistry, history, authoritySnapshot, onAc
                 ) : null}
               </div>
             )) : (
-              <div className="rounded-2xl bg-white/8 p-3 text-sm text-slate-300 ring-1 ring-white/10">
+              <div className="rounded-2xl bg-white/[0.08] p-3 text-sm text-slate-300 ring-1 ring-white/10">
                 No console executions recorded in this browser session yet.
               </div>
             )}
@@ -4158,7 +4161,7 @@ function ExecutionPipelinesPanel({ pipelineSnapshot, authoritySnapshot, onRefres
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-pink-200">Pipeline history</p>
         <div className="grid gap-2" style={{ marginTop: "12px" }}>
           {combinedHistory.length ? combinedHistory.map((execution) => (
-            <div key={execution.executionId} className="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+            <div key={execution.executionId} className="rounded-2xl bg-white/[0.08] p-3 ring-1 ring-white/10">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-white">{execution.label || formatStateLabel(execution.pipeline)}</p>
@@ -4180,7 +4183,7 @@ function ExecutionPipelinesPanel({ pipelineSnapshot, authoritySnapshot, onRefres
               ) : null}
             </div>
           )) : (
-            <div className="rounded-2xl bg-white/8 p-3 text-sm text-slate-300 ring-1 ring-white/10">
+            <div className="rounded-2xl bg-white/[0.08] p-3 text-sm text-slate-300 ring-1 ring-white/10">
               No pipeline executions recorded yet.
             </div>
           )}
@@ -6793,7 +6796,7 @@ function AdminView({ onPreview, standaloneMode = false }) {
           className="pointer-events-none fixed inset-0 opacity-90"
           style={{
             background:
-              "radial-gradient(circle at 18% 8%, rgba(34, 211, 238, 0.18), transparent 28%), radial-gradient(circle at 82% 6%, rgba(37, 99, 235, 0.14), transparent 30%), linear-gradient(180deg, #050914 0%, #08111f 52%, #050914 100%)",
+              "radial-gradient(circle at 14% 6%, rgba(34, 211, 238, 0.18), transparent 30%), radial-gradient(circle at 86% 4%, rgba(20, 184, 166, 0.1), transparent 28%), radial-gradient(circle at 50% 70%, rgba(15, 23, 42, 0.55), transparent 42%), linear-gradient(180deg, #030711 0%, #07101d 48%, #030711 100%)",
           }}
           aria-hidden="true"
         />
@@ -6816,9 +6819,9 @@ function AdminView({ onPreview, standaloneMode = false }) {
 
       <main
         className={standaloneMode
-          ? "relative z-10 mx-auto box-border w-full max-w-[1540px] px-[var(--space-lg)] md:px-[var(--space-xl)] 2xl:px-[var(--space-2xl)]"
+          ? "relative z-10 mx-auto box-border w-full max-w-[1680px] px-[var(--space-lg)] md:px-[var(--space-xl)] 2xl:px-[var(--space-2xl)]"
           : "container"}
-        style={{ paddingTop: standaloneMode ? "var(--space-lg)" : "var(--space-xl)", paddingBottom: "var(--space-2xl)" }}
+        style={{ paddingTop: standaloneMode ? "var(--space-md)" : "var(--space-xl)", paddingBottom: "var(--space-2xl)" }}
       >
         {standaloneMode ? (
           <SentinelStandaloneFocusSurface
@@ -6832,7 +6835,7 @@ function AdminView({ onPreview, standaloneMode = false }) {
             }}
           />
         ) : null}
-        <div className={`grid min-w-0 ${standaloneMode ? (compactView ? "gap-5" : "gap-7") : (compactView ? "gap-lg" : "gap-xl")} ${standaloneMode ? (sidebarCollapsed ? "lg:grid-cols-[86px_minmax(0,1fr)]" : "lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[236px_minmax(0,1fr)]") : (sidebarCollapsed ? "lg:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]" : "lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)]")}`}>
+        <div className={`grid min-w-0 ${standaloneMode ? (compactView ? "gap-5" : "gap-7") : (compactView ? "gap-lg" : "gap-xl")} ${standaloneMode ? (sidebarCollapsed ? "lg:grid-cols-[86px_minmax(0,1fr)]" : "lg:grid-cols-[210px_minmax(0,1fr)] xl:grid-cols-[224px_minmax(0,1fr)]") : (sidebarCollapsed ? "lg:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]" : "lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)]")}`}>
           <SentinelNavigationRail
             navItems={navItems}
             activeNav={activeNav}
@@ -8013,7 +8016,7 @@ function ContentWorkbenchPanel({
         {artifacts.length ? (
           <div className="grid gap-2" style={{ marginTop: "10px" }}>
             {artifacts.map((artifact) => (
-              <div key={`${artifact.label}-${artifact.path}`} className="rounded-xl bg-white/8 px-3 py-2 text-xs">
+              <div key={`${artifact.label}-${artifact.path}`} className="rounded-xl bg-white/[0.08] px-3 py-2 text-xs">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="font-semibold text-slate-100">{artifact.label}</span>
                   <span className={artifact.exists ? "text-emerald-200" : "text-amber-200"}>
@@ -8038,7 +8041,7 @@ function ContentWorkbenchPanel({
         ) : null}
 
         {result.outputExcerpt && !result.copiedCommand ? (
-          <details className="rounded-xl bg-white/8 px-3 py-2 text-xs" style={{ marginTop: "10px" }}>
+          <details className="rounded-xl bg-white/[0.08] px-3 py-2 text-xs" style={{ marginTop: "10px" }}>
             <summary className="cursor-pointer font-semibold text-slate-200">View output</summary>
             <pre className="whitespace-pre-wrap break-words text-slate-400" style={{ marginTop: "8px" }}>{result.outputExcerpt}</pre>
           </details>
@@ -8050,14 +8053,14 @@ function ContentWorkbenchPanel({
   const renderRecentWorkflowHistoryPanel = (dark = false) => {
     if (!recentWorkflowHistory.length) return null;
     return (
-      <section className={dark ? "rounded-2xl bg-white/8 p-3 text-sm text-slate-200 ring-1 ring-white/10" : "rounded-2xl border border-slate-200/80 bg-white/70 p-3 text-sm text-slate-700"}>
+      <section className={dark ? "rounded-2xl bg-white/[0.06] p-3 text-sm text-slate-200 ring-1 ring-white/10" : "rounded-2xl border border-slate-200/80 bg-white/70 p-3 text-sm text-slate-700"}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className={dark ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>Recent workflow outputs</h3>
           <span className={dark ? "text-xs text-slate-500" : "text-xs text-slate-500"}>Latest 5</span>
         </div>
         <div className="grid gap-2" style={{ marginTop: "10px" }}>
           {recentWorkflowHistory.map((entry) => (
-            <div key={entry.id} className={dark ? "rounded-xl bg-white/8 px-3 py-2" : "rounded-xl bg-slate-50 px-3 py-2"}>
+            <div key={entry.id} className={dark ? "rounded-xl bg-white/[0.06] px-3 py-2 ring-1 ring-white/10" : "rounded-xl bg-slate-50 px-3 py-2"}>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className={dark ? "font-semibold text-slate-100" : "font-semibold text-slate-900"}>
                   {entry.actionLabel} <span className={dark ? "font-normal text-slate-400" : "font-normal text-slate-500"}>on {entry.itemTitle}</span>
@@ -8084,34 +8087,34 @@ function ContentWorkbenchPanel({
     const selectedStage = selectedItem ? stageForItem(selectedItem) : null;
 
     return (
-      <section className="relative overflow-hidden rounded-[30px] bg-[#eef4f4] p-4 text-slate-950 shadow-2xl shadow-slate-950/25 ring-1 ring-white/20 md:p-5">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_18%_0%,rgba(20,184,166,0.2),transparent_34%),linear-gradient(180deg,rgba(15,23,42,0.08),transparent)]" aria-hidden="true" />
+      <section className="relative overflow-hidden rounded-[34px] border border-cyan-100/10 bg-[#07101d]/90 p-4 text-slate-100 shadow-2xl shadow-slate-950/30 ring-1 ring-white/5 backdrop-blur-xl md:p-5">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_0%,rgba(20,184,166,0.16),transparent_34%),radial-gradient(circle_at_88%_10%,rgba(34,211,238,0.08),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_26%)]" aria-hidden="true" />
         <div className="relative">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div className="max-w-3xl">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-cyan-800/70">Editorial workspace</p>
-              <h2 className="font-heading text-3xl font-semibold tracking-[-0.045em] text-slate-950 md:text-4xl">Content Workbench</h2>
-              <p className="max-w-2xl text-sm leading-6 text-slate-600" style={{ marginTop: "6px" }}>
-                Pick one article, move the status, then use the detail panel to keep the next step clear.
+              <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-200/75">Editorial operations</p>
+              <h2 className="font-heading text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">Content Workbench</h2>
+              <p className="max-w-2xl text-sm leading-6 text-slate-400" style={{ marginTop: "8px" }}>
+                Select one work item, move it through the lifecycle and keep the next editorial action visible.
               </p>
             </div>
-            <div className="grid min-w-[240px] grid-cols-3 gap-3 border-l border-slate-200 pl-4 text-sm">
-              <div>
-                <p className="text-slate-500">Total</p>
-                <p className="text-xl font-semibold tracking-[-0.04em] text-slate-950">{items.length}</p>
+            <div className="grid min-w-[250px] grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-white/[0.045] p-2 text-sm">
+              <div className="rounded-xl bg-black/10 px-3 py-2">
+                <p className="text-slate-500">Queue</p>
+                <p className="text-xl font-semibold tracking-[-0.04em] text-white">{items.length}</p>
               </div>
-              <div>
+              <div className="rounded-xl bg-black/10 px-3 py-2">
                 <p className="text-slate-500">Review</p>
-                <p className="text-xl font-semibold tracking-[-0.04em] text-amber-700">{(statusCounts.review || 0) + (statusCounts.ready || 0)}</p>
+                <p className="text-xl font-semibold tracking-[-0.04em] text-amber-200">{(statusCounts.review || 0) + (statusCounts.ready || 0)}</p>
               </div>
-              <div>
+              <div className="rounded-xl bg-black/10 px-3 py-2">
                 <p className="text-slate-500">Live</p>
-                <p className="text-xl font-semibold tracking-[-0.04em] text-emerald-700">{(statusCounts.published || 0) + (statusCounts.monitoring || 0)}</p>
+                <p className="text-xl font-semibold tracking-[-0.04em] text-emerald-200">{(statusCounts.published || 0) + (statusCounts.monitoring || 0)}</p>
               </div>
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-4" style={{ marginTop: "20px" }} aria-label="Content workflow stages">
+          <div className="grid gap-3 sm:grid-cols-4" style={{ marginTop: "22px" }} aria-label="Content workflow stages">
             {stageCounts.map((stage) => {
               const active = selectedStage?.id === stage.id;
               return (
@@ -8119,21 +8122,21 @@ function ContentWorkbenchPanel({
                   key={stage.id}
                   className={`rounded-2xl border px-4 py-3 transition-colors ${
                     active
-                      ? "border-cyan-300 bg-white shadow-lg shadow-cyan-900/5"
-                      : "border-slate-200/80 bg-white/55"
+                      ? "border-cyan-200/40 bg-cyan-300/[0.12] shadow-lg shadow-cyan-950/10"
+                      : "border-white/10 bg-white/[0.04] hover:border-cyan-100/20"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-semibold text-slate-950">{stage.label}</p>
-                    <span className={active ? "text-sm font-semibold text-cyan-700" : "text-sm font-semibold text-slate-500"}>{stage.count}</span>
+                    <p className="text-sm font-semibold text-slate-100">{stage.label}</p>
+                    <span className={active ? "text-sm font-semibold text-cyan-100" : "text-sm font-semibold text-slate-500"}>{stage.count}</span>
                   </div>
-                  <div className="h-1 rounded-full bg-slate-200" style={{ marginTop: "10px" }}>
+                  <div className="h-1 rounded-full bg-white/10" style={{ marginTop: "10px" }}>
                     <div
-                      className={`h-1 rounded-full ${active ? "bg-cyan-500" : "bg-slate-400"}`}
+                      className={`h-1 rounded-full ${active ? "bg-cyan-300" : "bg-slate-600"}`}
                       style={{ width: `${Math.min(100, Math.max(9, stage.count * 16))}%` }}
                     />
                   </div>
-                  <p className="text-xs text-slate-500" style={{ marginTop: "8px" }}>
+                  <p className="text-xs leading-5 text-slate-500" style={{ marginTop: "8px" }}>
                     {stage.statuses.map((status) => CONTENT_STATUS_META[status]?.label || formatStateLabel(status)).join(" / ")}
                   </p>
                 </div>
@@ -8141,18 +8144,18 @@ function ContentWorkbenchPanel({
             })}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200/80 bg-white/60 p-2" style={{ marginTop: "16px" }}>
+          <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-black/10 p-2" style={{ marginTop: "16px" }}>
             {[
               ["Status", statusFilter, setStatusFilter, ["all", ...CONTENT_LIFECYCLE_STATUSES]],
               ["Priority", priorityFilter, setPriorityFilter, ["all", ...priorities]],
               ["Category", categoryFilter, setCategoryFilter, ["all", ...categories]],
             ].map(([label, value, setter, options]) => (
-              <label key={label} className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs text-slate-500 ring-1 ring-slate-100">
+              <label key={label} className="flex items-center gap-2 rounded-full bg-white/[0.055] px-3 py-1.5 text-xs text-slate-500 ring-1 ring-white/10">
                 {label}
                 <select
                   value={value}
                   onChange={(event) => setter(event.target.value)}
-                  className="bg-transparent text-sm font-semibold text-slate-800 outline-none"
+                  className="bg-[#07101d] text-sm font-semibold text-slate-100 outline-none"
                 >
                   {options.map((option) => (
                     <option key={option} value={option}>
@@ -8164,17 +8167,17 @@ function ContentWorkbenchPanel({
                 </select>
               </label>
             ))}
-            <label className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs text-slate-500 ring-1 ring-slate-100">
+            <label className="flex items-center gap-2 rounded-full bg-white/[0.055] px-3 py-1.5 text-xs text-slate-500 ring-1 ring-white/10">
               Publication
-              <select value={publishedFilter} onChange={(event) => setPublishedFilter(event.target.value)} className="bg-transparent text-sm font-semibold text-slate-800 outline-none">
+              <select value={publishedFilter} onChange={(event) => setPublishedFilter(event.target.value)} className="bg-[#07101d] text-sm font-semibold text-slate-100 outline-none">
                 <option value="all">All</option>
                 <option value="published">Published</option>
                 <option value="unpublished">Not published</option>
               </select>
             </label>
-            <label className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs text-slate-500 ring-1 ring-slate-100">
+            <label className="flex items-center gap-2 rounded-full bg-white/[0.055] px-3 py-1.5 text-xs text-slate-500 ring-1 ring-white/10">
               Owner
-              <select value={ownershipFilter} onChange={(event) => setOwnershipFilter(event.target.value)} className="bg-transparent text-sm font-semibold text-slate-800 outline-none">
+              <select value={ownershipFilter} onChange={(event) => setOwnershipFilter(event.target.value)} className="bg-[#07101d] text-sm font-semibold text-slate-100 outline-none">
                 <option value="all">All</option>
                 <option value="assigned">Assigned</option>
                 <option value="unassigned">Unassigned</option>
@@ -8184,32 +8187,32 @@ function ContentWorkbenchPanel({
 
           {recentWorkflowHistory.length ? (
             <div style={{ marginTop: "16px" }}>
-              {renderRecentWorkflowHistoryPanel(false)}
+              {renderRecentWorkflowHistoryPanel(true)}
             </div>
           ) : null}
 
           {loading ? (
             <p className="text-sm text-slate-500" style={{ marginTop: "18px" }}>Loading content workflow signals...</p>
           ) : !items.length ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-white/70 p-5 text-sm text-slate-600" style={{ marginTop: "18px" }}>
+            <div className="rounded-2xl border border-dashed border-cyan-100/20 bg-white/[0.04] p-5 text-sm text-slate-400" style={{ marginTop: "18px" }}>
               Content workflow data is not available yet. Run the SEO reports to populate opportunities, plans and QA signals.
             </div>
           ) : (
-            <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(360px,0.42fr)]" style={{ marginTop: "18px" }}>
+            <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(390px,0.4fr)] 2xl:grid-cols-[minmax(0,1fr)_minmax(440px,0.36fr)]" style={{ marginTop: "18px" }}>
               <div className="grid gap-5">
                 {CONTENT_STATUS_GROUPS.map((stage) => {
                   const stageItems = standaloneQueue.filter((item) => stage.statuses.includes(item.status));
                   if (!stageItems.length) return null;
                   return (
-                    <section key={stage.id} className="grid gap-3">
+                    <section key={stage.id} className="grid gap-3 rounded-[28px] border border-white/10 bg-black/[0.12] p-3">
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
-                          <span className="h-px w-8 bg-slate-300" />
-                          <h3 className="text-sm font-semibold text-slate-700">{stage.label}</h3>
+                          <span className="h-px w-8 bg-cyan-200/30" />
+                          <h3 className="text-sm font-semibold text-slate-200">{stage.label}</h3>
                         </div>
                         <span className="text-xs text-slate-500">{stageItems.length} active</span>
                       </div>
-                      <div className="grid gap-3 lg:grid-cols-2">
+                      <div className="grid gap-3 lg:grid-cols-2 2xl:grid-cols-3">
                         {stageItems.map((item) => {
                           const active = selectedItem?.id === item.id;
                           const itemStage = stageForItem(item);
@@ -8233,31 +8236,31 @@ function ContentWorkbenchPanel({
                                   setSelectedId(item.id);
                                 }
                               }}
-                              className={`group cursor-pointer rounded-[24px] border bg-white p-4 text-left shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-300 ${
+                              className={`group cursor-pointer rounded-[24px] border p-4 text-left shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-300/50 ${
                                 active
-                                  ? "border-cyan-300 shadow-xl shadow-cyan-900/10 ring-1 ring-cyan-200"
-                                  : "border-slate-200/80 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-900/5"
+                                  ? "border-cyan-200/50 bg-cyan-300/[0.11] shadow-xl shadow-cyan-950/10 ring-1 ring-cyan-200/25"
+                                  : "border-white/10 bg-white/[0.045] hover:-translate-y-0.5 hover:border-cyan-100/25 hover:bg-white/[0.07] hover:shadow-lg hover:shadow-slate-950/10"
                               }`}
                             >
                               <div className="flex items-start justify-between gap-4">
                                 <div className="min-w-0">
-                                  <div className="flex items-center gap-2 text-xs text-slate-500">
-                                    <span className={`h-2 w-2 rounded-full ${active ? "bg-cyan-500" : "bg-slate-300"}`} />
+                                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                                    <span className={`h-2 w-2 rounded-full ${active ? "bg-cyan-300" : "bg-slate-600"}`} />
                                     <span>{itemStage.label}</span>
                                     <span>{CONTENT_STATUS_META[item.status]?.label || formatStateLabel(item.status)}</span>
                                   </div>
-                                  <h4 className="text-lg font-semibold leading-snug tracking-[-0.025em] text-slate-950" style={{ marginTop: "8px" }}>
+                                  <h4 className="text-lg font-semibold leading-snug tracking-[-0.025em] text-white" style={{ marginTop: "8px" }}>
                                     {item.title}
                                   </h4>
                                 </div>
-                                <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
+                                <span className="shrink-0 rounded-full bg-white/[0.07] px-2.5 py-1 text-xs font-semibold text-slate-300 ring-1 ring-white/10">
                                   {formatStateLabel(item.priority)}
                                 </span>
                               </div>
-                              <p className="line-clamp-2 text-sm leading-6 text-slate-600" style={{ marginTop: "10px" }}>
+                              <p className="line-clamp-2 text-sm leading-6 text-slate-400" style={{ marginTop: "10px" }}>
                                 {item.nextAction || item.summary}
                               </p>
-                              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3" style={{ marginTop: "14px" }}>
+                              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-3" style={{ marginTop: "14px" }}>
                                 <p className="text-xs text-slate-500">
                                   {item.categoryLabel || contentCategoryLabel(item.category)}
                                   {item.targetSlug ? ` · ${item.targetSlug}` : ""}
@@ -8270,13 +8273,13 @@ function ContentWorkbenchPanel({
                                       executeWorkflowAction(cardWorkflowAction, item);
                                     }}
                                     disabled={cardActionRunning || cardActionLocked}
-                                    className="rounded-full bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-cyan-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="rounded-full bg-cyan-200 px-3 py-1.5 text-xs font-semibold text-slate-950 transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
                                     title={cardActionLocked ? authorityMessage : cardWorkflowAction.description}
                                   >
                                     {cardActionRunning ? "Running" : cardWorkflowAction.label}
                                   </button>
                                 ) : (
-                                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-500">No action</span>
+                                  <span className="rounded-full bg-white/[0.07] px-3 py-1.5 text-xs font-semibold text-slate-500 ring-1 ring-white/10">No action</span>
                                 )}
                               </div>
                             </article>
@@ -8288,7 +8291,7 @@ function ContentWorkbenchPanel({
                 })}
               </div>
 
-              <aside className="h-fit rounded-[28px] bg-slate-950 p-5 text-white shadow-2xl shadow-slate-950/25 xl:sticky xl:top-24">
+              <aside className="h-fit rounded-[30px] border border-cyan-100/10 bg-[#08111f]/95 p-5 text-white shadow-2xl shadow-slate-950/30 ring-1 ring-white/5 xl:sticky xl:top-24">
                 {selectedItem ? (
                   <>
                     <div className="flex items-start justify-between gap-3">
@@ -8302,22 +8305,22 @@ function ContentWorkbenchPanel({
                       </span>
                     </div>
 
-                    <div className="rounded-2xl bg-cyan-200 p-4 text-slate-950" style={{ marginTop: "18px" }}>
-                      <p className="text-xs font-semibold text-cyan-950/70">Next workflow action</p>
+                    <div className="rounded-2xl border border-cyan-200/20 bg-cyan-300/[0.12] p-4 text-cyan-50 shadow-lg shadow-cyan-950/10" style={{ marginTop: "18px" }}>
+                      <p className="text-xs font-semibold text-cyan-100/70">Next workflow action</p>
                       <div className="flex flex-wrap items-center justify-between gap-3" style={{ marginTop: "5px" }}>
                         <p className="text-base font-semibold leading-6">
                           {latestWorkflowAction?.label || selectedItem.nextAction}
                         </p>
                         {latestWorkflowAction ? renderWorkflowActionButton(latestWorkflowAction, selectedItem, true) : null}
                       </div>
-                      <p className="text-sm leading-6 text-cyan-950/75" style={{ marginTop: "6px" }}>
+                      <p className="text-sm leading-6 text-cyan-100/75" style={{ marginTop: "6px" }}>
                         {latestWorkflowAction?.description || selectedItem.nextAction}
                       </p>
                       {latestWorkflowActionState?.message ? (
                         <p className={`rounded-xl px-3 py-2 text-xs font-semibold ${
                           normaliseExecutionStatus(latestWorkflowActionState.status) === "failed"
-                            ? "bg-rose-100 text-rose-800"
-                            : "bg-white/65 text-cyan-950"
+                            ? "bg-rose-300/15 text-rose-100 ring-1 ring-rose-200/20"
+                            : "bg-white/[0.08] text-cyan-50 ring-1 ring-white/10"
                         }`} style={{ marginTop: "10px" }}>
                           {latestWorkflowActionState.message}
                         </p>
@@ -8381,25 +8384,25 @@ function ContentWorkbenchPanel({
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 text-xs" style={{ marginTop: "18px" }}>
-                      <div className="rounded-2xl bg-white/8 p-3">
+                      <div className="rounded-2xl bg-white/[0.06] p-3 ring-1 ring-white/10">
                         <p className="text-slate-500">Opportunity</p>
                         <p className="font-semibold text-slate-100">{selectedItem.relatedOpportunityId || "none"}</p>
                       </div>
-                      <div className="rounded-2xl bg-white/8 p-3">
+                      <div className="rounded-2xl bg-white/[0.06] p-3 ring-1 ring-white/10">
                         <p className="text-slate-500">Plan</p>
                         <p className="font-semibold text-slate-100">{selectedItem.relatedPlanId || "none"}</p>
                       </div>
-                      <div className="rounded-2xl bg-white/8 p-3">
+                      <div className="rounded-2xl bg-white/[0.06] p-3 ring-1 ring-white/10">
                         <p className="text-slate-500">Article QA</p>
                         <p className="font-semibold text-slate-100">{selectedItem.articleGate || "not checked"}{selectedItem.articleScore !== null ? ` · ${selectedItem.articleScore}` : ""}</p>
                       </div>
-                      <div className="rounded-2xl bg-white/8 p-3">
+                      <div className="rounded-2xl bg-white/[0.06] p-3 ring-1 ring-white/10">
                         <p className="text-slate-500">Owner</p>
                         <p className="font-semibold text-slate-100">{selectedItem.owner || "unassigned"}</p>
                       </div>
                     </div>
 
-                    <details className="rounded-2xl bg-white/8 p-3 text-sm text-slate-300" style={{ marginTop: "18px" }}>
+                    <details className="rounded-2xl bg-white/[0.06] p-3 text-sm text-slate-300 ring-1 ring-white/10" style={{ marginTop: "18px" }}>
                       <summary className="cursor-pointer font-semibold text-slate-100">Advanced manual controls</summary>
                       <div className="grid gap-3" style={{ marginTop: "12px" }}>
                         <label className="grid gap-2 text-sm text-slate-300">
@@ -8407,7 +8410,7 @@ function ContentWorkbenchPanel({
                           <select
                             value={selectedItem.status}
                             onChange={(event) => onStatusChange(selectedItem.id, event.target.value)}
-                            className="rounded-2xl border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold text-white"
+                            className="rounded-2xl border border-white/10 bg-[#07101d] px-3 py-2 text-sm font-semibold text-white"
                           >
                             {CONTENT_LIFECYCLE_STATUSES.map((status) => (
                               <option key={status} value={status}>{CONTENT_STATUS_META[status]?.label || formatStateLabel(status)}</option>
@@ -8419,7 +8422,7 @@ function ContentWorkbenchPanel({
                             type="button"
                             onClick={() => moveStatus(selectedItem, -1)}
                             disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) <= 0}
-                            className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-40"
+                              className="rounded-full bg-white/[0.07] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/[0.12] disabled:cursor-not-allowed disabled:opacity-40"
                           >
                             Move back
                           </button>
@@ -8427,7 +8430,7 @@ function ContentWorkbenchPanel({
                             type="button"
                             onClick={() => moveStatus(selectedItem, 1)}
                             disabled={CONTENT_LIFECYCLE_STATUSES.indexOf(selectedItem.status) >= CONTENT_LIFECYCLE_STATUSES.length - 1}
-                            className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-40"
+                            className="rounded-full bg-white/[0.07] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/[0.12] disabled:cursor-not-allowed disabled:opacity-40"
                           >
                             Move forward
                           </button>
@@ -8435,7 +8438,7 @@ function ContentWorkbenchPanel({
                             <button
                               type="button"
                               onClick={() => copyValue(selectedItem.briefCommand, `${selectedItem.id}-command`)}
-                              className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
+                              className="rounded-full bg-white/[0.07] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/[0.12]"
                             >
                               {copyLabel(`${selectedItem.id}-command`, "Copy raw command")}
                             </button>
@@ -8444,7 +8447,7 @@ function ContentWorkbenchPanel({
                             <button
                               type="button"
                               onClick={() => copyValue(selectedItem.briefPrompt, `${selectedItem.id}-brief`)}
-                              className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
+                              className="rounded-full bg-white/[0.07] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/[0.12]"
                             >
                               {copyLabel(`${selectedItem.id}-brief`, "Copy brief prompt")}
                             </button>
@@ -8453,7 +8456,7 @@ function ContentWorkbenchPanel({
                             <button
                               type="button"
                               onClick={() => onOpenArticle(selectedItem.targetSlug)}
-                              className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
+                              className="rounded-full bg-white/[0.07] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/[0.12]"
                             >
                               Open QA planner
                             </button>
@@ -8471,7 +8474,7 @@ function ContentWorkbenchPanel({
                       {selectedWorkflowHistory.length ? (
                         <div className="grid gap-2" style={{ marginTop: "10px" }}>
                           {selectedWorkflowHistory.map((entry) => (
-                            <div key={entry.id} className="rounded-xl bg-white/8 p-2">
+                            <div key={entry.id} className="rounded-xl bg-white/[0.06] p-2 ring-1 ring-white/10">
                               <div className="flex items-center justify-between gap-2">
                                 <span className="font-semibold text-slate-200">{entry.actionLabel}</span>
                                 <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ${actionStatusBadgeClass(entry.status)}`}>

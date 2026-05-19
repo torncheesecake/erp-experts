@@ -43,6 +43,14 @@ These statuses are workflow labels for the operator. They do not publish content
 
 The standalone Sentinel shell now treats the workbench as a focused editorial workspace rather than a compact dashboard list. The top shell provides a short work-next strip, then the workbench becomes the main surface.
 
+The current standalone design system is dark-first and workflow-led. It removes the previous pale dashboard slab from `/sentinel` and uses one coherent surface system:
+
+- deep navy and graphite shell background
+- elevated dark workspace panels
+- cyan for primary action and selection state
+- muted green, amber and red for health and risk only
+- softer lane separation instead of repeated heavy cards
+
 Each content work card now prioritises:
 
 - title

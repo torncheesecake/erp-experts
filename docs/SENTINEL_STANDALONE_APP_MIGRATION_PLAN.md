@@ -228,6 +228,9 @@ Design principles:
 - The latest interaction pass reduces the hero treatment further into a compact work-next strip so the Content Workbench itself becomes the main surface.
 - Content items behave as focused editorial work cards with a persistent working panel for rationale, goal, next action, status and safe helpers.
 - Workflow actions now sit above raw commands. The operator chooses tasks such as start research, generate brief, move to review or refresh monitoring, while manual commands remain collapsed for advanced use.
+- The unified design system is dark-first. It uses deep navy and graphite shell surfaces, softer elevated work surfaces, cyan as the primary accent, and muted green, amber and red only for semantic state.
+- Bright white slabs have been removed from the standalone Workbench. Queue lanes, cards, filters, recent outputs and the working panel now share one operational surface language.
+- Infrastructure context is deliberately quieter. The top rail now presents Healthy, Private, Connected and Operational state before implementation detail.
 
 This design pass does not remove operator functionality, change scoring, deploy the standalone app or expose the Pi API. It is a same-repo layout and hierarchy refactor for local operator use.
 
