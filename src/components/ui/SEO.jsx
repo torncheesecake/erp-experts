@@ -89,10 +89,28 @@ export default function SEO({
     ensureMeta('meta[property="og:title"]', { property: "og:title", content: fullTitle });
     ensureMeta('meta[property="og:description"]', { property: "og:description", content: description });
     ensureMeta('meta[property="og:image"]', { property: "og:image", content: fullImage });
+    ensureMeta('meta[property="og:image:width"]', { property: "og:image:width", content: "1200" });
+    ensureMeta('meta[property="og:image:height"]', { property: "og:image:height", content: "630" });
+    ensureMeta('meta[property="og:site_name"]', {
+      property: "og:site_name",
+      content: DEFAULTS.siteName,
+    });
+    ensureMeta('meta[property="og:locale"]', { property: "og:locale", content: DEFAULTS.locale });
+    ensureMeta('meta[name="twitter:card"]', { name: "twitter:card", content: "summary_large_image" });
     ensureMeta('meta[name="twitter:url"]', { name: "twitter:url", content: url });
     ensureMeta('meta[name="twitter:title"]', { name: "twitter:title", content: fullTitle });
     ensureMeta('meta[name="twitter:description"]', { name: "twitter:description", content: description });
     ensureMeta('meta[name="twitter:image"]', { name: "twitter:image", content: fullImage });
+    if (DEFAULTS.twitterHandle) {
+      ensureMeta('meta[name="twitter:site"]', { name: "twitter:site", content: DEFAULTS.twitterHandle });
+    }
+    ensureMeta('meta[name="language"]', { name: "language", content: "English" });
+    ensureMeta('meta[name="geo.region"]', { name: "geo.region", content: "GB-STS" });
+    ensureMeta('meta[name="geo.placename"]', { name: "geo.placename", content: "Stafford" });
+    ensureMeta('meta[http-equiv="content-language"]', {
+      "http-equiv": "content-language",
+      content: "en-GB",
+    });
 
     document.head
       .querySelectorAll('script[type="application/ld+json"][data-seo-managed="true"]')
@@ -107,44 +125,5 @@ export default function SEO({
     });
   }, [description, fullImage, fullTitle, keywords, noIndex, structuredDataItems, type, url]);
 
-  return (
-    <>
-      {/* Primary Meta Tags */}
-      <title>{fullTitle}</title>
-      <meta name="title" content={fullTitle} />
-      <meta name="description" content={description} />
-      {keywords && <meta name="keywords" content={keywords} />}
-      {noIndex && <meta name="robots" content="noindex, nofollow" />}
-
-      {/* Canonical URL */}
-      <link rel="canonical" href={url} />
-
-      {/* Open Graph / Facebook */}
-      <meta property="og:type" content={type} />
-      <meta property="og:url" content={url} />
-      <meta property="og:title" content={fullTitle} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={fullImage} />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
-      <meta property="og:site_name" content={DEFAULTS.siteName} />
-      <meta property="og:locale" content={DEFAULTS.locale} />
-
-      {/* Twitter */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:url" content={url} />
-      <meta name="twitter:title" content={fullTitle} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={fullImage} />
-      {DEFAULTS.twitterHandle && <meta name="twitter:site" content={DEFAULTS.twitterHandle} />}
-
-      {/* Additional SEO Meta Tags */}
-      <meta name="language" content="English" />
-      <meta name="geo.region" content="GB-STS" />
-      <meta name="geo.placename" content="Stafford" />
-      <meta httpEquiv="content-language" content="en-GB" />
-
-      {/* JSON-LD is managed in the effect above so it stays in document.head. */}
-    </>
-  );
+  return null;
 }
