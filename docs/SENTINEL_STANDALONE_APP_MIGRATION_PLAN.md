@@ -432,3 +432,11 @@ That implementation should introduce a standalone Sentinel app shell without ERP
 The standalone `/sentinel` shell now includes the first Draft Workspace layer. This reinforces the target product direction for `sentinel.artifexa.co.uk`: a private editorial operations application rather than an infrastructure dashboard.
 
 Drafts are editable local artefacts with edit, preview and review modes. ERP Experts remains the active tenant context only. Drafting and review stay inside the private operator shell and are not exposed on the stakeholder ERP Experts site.
+
+## Application Shell Separation Update
+
+`docs/SENTINEL_APPLICATION_SHELL_REFACTOR.md` records the first full application-shell separation pass.
+
+`/sentinel` is now treated as the host operator application rather than an ERP Experts website page. The route remains outside the ERP Experts layout, uses a compact Sentinel product header, an app-style navigation rail, fluid full-width workspace gutters and dark-first operational surfaces.
+
+ERP Experts appears only as the active tenant. `/seo-roadmap` remains the legacy embedded compatibility surface, and `/seo-progress` remains the stakeholder-safe ERP Experts page.

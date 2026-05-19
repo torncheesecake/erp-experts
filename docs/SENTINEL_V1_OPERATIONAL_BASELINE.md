@@ -203,3 +203,11 @@ Sentinel now includes a browser-local Draft Workspace inside `/sentinel`.
 The `Create draft` action creates editable draft artefacts from brief context. Operators can edit draft title, intro, sections, CTA and notes, preview the article-like reading flow, and set draft review status.
 
 This layer is private local operator state. It does not publish content, write article files, expose drafts on `/seo-progress`, change SEO scoring or alter the Pi API exposure model.
+
+## Standalone Application Shell
+
+`/sentinel` now has a dedicated application-shell treatment documented in `docs/SENTINEL_APPLICATION_SHELL_REFACTOR.md`.
+
+The shell removes ERP Experts marketing chrome from the standalone operator route, keeps Sentinel as the host product identity, presents ERP Experts only as tenant context and uses a fluid app workspace rather than a centred website page container.
+
+`/seo-roadmap` remains a legacy embedded compatibility route. `/seo-progress` remains the stakeholder-safe ERP Experts route.

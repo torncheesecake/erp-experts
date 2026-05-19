@@ -735,3 +735,9 @@ The private Sentinel Workbench now supports editable draft artefacts. The `Creat
 Draft statuses include outline, drafting, review, approved, revision requested and ready to publish. This is an editorial production surface only. It does not publish content, write article source files, call external AI generation, change SEO scoring or expose drafts on `/seo-progress`.
 
 See `docs/SENTINEL_DRAFT_WORKSPACE.md`.
+
+### Sentinel Standalone Application Shell
+
+`/sentinel` is now treated as the standalone Sentinel operator application shell rather than an ERP Experts website page. The route stays outside the ERP Experts layout, uses Sentinel product identity, presents ERP Experts only as active tenant context and runs a fluid app-style workspace with a compact operator header, persistent navigation rail and dark-first work surfaces.
+
+`/seo-roadmap` remains the legacy embedded compatibility surface. `/seo-progress` remains stakeholder-safe. See `docs/SENTINEL_APPLICATION_SHELL_REFACTOR.md`.

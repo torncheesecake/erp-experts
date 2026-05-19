@@ -651,3 +651,11 @@ Sentinel now includes a first draft production layer in the private `/sentinel` 
 Draft artefacts support editable title, intro, section blocks, CTA and notes, plus edit, preview and review modes. Draft statuses include outline, drafting, review, approved, revision requested and ready to publish.
 
 This is private operator UX only. It does not auto-publish, write article source files, call external AI generation, change SEO scoring or expose draft content on `/seo-progress`.
+
+## Sentinel Application Shell Separation
+
+`docs/SENTINEL_APPLICATION_SHELL_REFACTOR.md` documents the first full standalone shell separation.
+
+`/sentinel` is now the primary local Sentinel application shell. It renders outside ERP Experts chrome, uses Sentinel as the host product identity, keeps ERP Experts as tenant context only and uses a fluid full-width app layout with app-style navigation.
+
+`/seo-roadmap` remains a legacy embedded compatibility surface. `/seo-progress` remains stakeholder-safe and unchanged.

@@ -21,6 +21,11 @@ import {
   Wrench,
   Eye,
   BarChart3,
+  ClipboardList,
+  FileText,
+  Monitor,
+  PenLine,
+  Settings,
 } from "lucide-react";
 import reportData from "../data/reports.json";
 import sentinelCommandRegistry from "../../platform/commands/commands.json";
@@ -81,6 +86,17 @@ const CONTENT_STATUS_GROUPS = [
   { id: "review", label: "Review", statuses: ["review", "ready"] },
   { id: "live", label: "Live", statuses: ["published", "monitoring"] },
 ];
+const SENTINEL_STANDALONE_NAV_COPY = {
+  content: { label: "Workbench", description: "Draft, review and move content" },
+  inbox: { label: "Queue", description: "Items needing attention" },
+  opportunities: { label: "Planning", description: "Priorities and editorial plans" },
+  overview: { label: "Command", description: "Operating picture" },
+  actions: { label: "Operations", description: "Controlled execution" },
+  cadence: { label: "Rhythm", description: "Review cycle and digests" },
+  state: { label: "Runtime", description: "Health and state" },
+  tenants: { label: "Tenant", description: "Client context" },
+  diagnostics: { label: "Settings", description: "Checks and support tools" },
+};
 const CONTENT_DRAFT_STATUSES = [
   "outline",
   "drafting",
@@ -2295,13 +2311,13 @@ function SentinelAppHeader({
   const cadenceLabel = cadenceSummary?.ranAt ? formatDateTime(cadenceSummary.ranAt) : "Not recorded";
   const readinessStatus = readinessSummary?.overallStatus || "Not checked";
   const headerClass = standaloneMode
-    ? "relative z-10 border-b border-cyan-100/10 bg-[#030711]/90 text-white shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-xl"
+    ? "relative z-20 border-b border-cyan-100/10 bg-[#020611]/88 text-white shadow-[0_18px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl"
     : "border-b border-slate-200 bg-white/90 backdrop-blur";
   const eyebrowClass = standaloneMode
-    ? "text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-200/80"
+    ? "text-[10px] font-semibold uppercase tracking-[0.28em] text-cyan-200/70"
     : "text-xs font-semibold uppercase tracking-[0.18em] text-pink-600";
   const titleClass = standaloneMode ? "font-heading text-white" : "font-heading text-slate-950";
-  const descriptionClass = standaloneMode ? "max-w-2xl text-sm leading-6 text-slate-400" : "text-sm text-slate-600";
+  const descriptionClass = standaloneMode ? "max-w-3xl text-sm leading-6 text-slate-400" : "text-sm text-slate-600";
   const metaClass = standaloneMode ? "text-xs text-slate-300" : "text-xs text-slate-500";
   const pillClass = standaloneMode
     ? "rounded-full bg-white/[0.055] px-2.5 py-1 ring-1 ring-white/10"
@@ -2319,10 +2335,10 @@ function SentinelAppHeader({
   const statusValueClass = standaloneMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950";
   const statusDetailClass = standaloneMode ? "text-[11px] text-slate-400" : "text-[11px] text-slate-500";
   const buttonClass = standaloneMode
-    ? "inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.045] px-3 py-1.5 text-xs font-semibold text-slate-200 transition-colors cursor-pointer hover:border-cyan-200/40 hover:bg-white/[0.09] focus:outline-none focus:ring-2 focus:ring-cyan-200/30"
+    ? "inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-slate-200 transition-colors cursor-pointer hover:border-cyan-200/40 hover:bg-white/[0.085] focus:outline-none focus:ring-2 focus:ring-cyan-200/30"
     : "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer";
   const containerClass = standaloneMode
-    ? "box-border w-full px-4 sm:px-5 lg:px-6 2xl:px-8"
+    ? "box-border w-full px-4 sm:px-5 lg:px-7 2xl:px-10"
     : "container";
   const headerStyle = standaloneMode
     ? {
@@ -2362,36 +2378,36 @@ function SentinelAppHeader({
 
   return (
     <header className={headerClass} style={headerStyle}>
-      <div className={containerClass} style={{ paddingTop: standaloneMode ? "18px" : "var(--space-md)", paddingBottom: standaloneMode ? "18px" : "var(--space-md)" }}>
+      <div className={containerClass} style={{ paddingTop: standaloneMode ? "14px" : "var(--space-md)", paddingBottom: standaloneMode ? "14px" : "var(--space-md)" }}>
         <div className={standaloneMode ? "grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center" : "flex items-center justify-between gap-lg flex-wrap"}>
           <div className="min-w-0">
             <div className="flex items-center gap-3">
               {standaloneMode ? (
-                <SentinelLogoMark className="h-12 w-12 shrink-0 drop-shadow-[0_0_28px_rgba(34,211,238,0.18)]" />
+                <SentinelLogoMark className="h-10 w-10 shrink-0 drop-shadow-[0_0_28px_rgba(34,211,238,0.2)]" />
               ) : (
                 <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-pink-50 text-pink-600 ring-1 ring-pink-100">
                   <Zap size={17} />
                 </span>
               )}
               <div>
-                <p className={eyebrowClass}>{standaloneMode ? "Sentinel by Artifexa" : "Sentinel"}</p>
-                <h1 className={titleClass} style={{ fontSize: standaloneMode ? "clamp(1.7rem, 3vw, 2.55rem)" : "clamp(1.65rem, 3vw, 2.2rem)", lineHeight: 0.98 }}>
-                  {standaloneMode ? "Operator Workspace" : "Control Centre"}
+                <p className={eyebrowClass}>{standaloneMode ? "Artifexa operator platform" : "Sentinel"}</p>
+                <h1 className={titleClass} style={{ fontSize: standaloneMode ? "clamp(1.55rem, 2.6vw, 2.2rem)" : "clamp(1.65rem, 3vw, 2.2rem)", lineHeight: 0.98 }}>
+                  {standaloneMode ? "Sentinel" : "Control Centre"}
                 </h1>
               </div>
             </div>
             <p className={descriptionClass} style={{ marginTop: "8px" }}>
               {standaloneMode
-                ? "Mission control for focused content operations, editorial workflow and safe operational handoffs."
+                ? "Private editorial operations workspace for planning, drafting, review and controlled handoff."
                 : "Private operator app shell for state, cadence, actions, tenants and diagnostics."}
             </p>
             <div className={`flex flex-wrap items-center gap-2 ${metaClass}`} style={{ marginTop: "8px" }}>
               <span className={pillClass}>
-                Client: <strong className={strongClass}>{activeTenant?.name || "ERP Experts"}</strong>
+                Tenant: <strong className={strongClass}>{activeTenant?.name || "ERP Experts"}</strong>
               </span>
               {standaloneMode ? (
                 <span className={pillClass}>
-                  Access: <strong className={strongClass}>Private workspace</strong>
+                  Access: <strong className={strongClass}>Private</strong>
                 </span>
               ) : null}
               {standaloneMode ? (
@@ -2422,13 +2438,13 @@ function SentinelAppHeader({
                   onClick={() => onCompactViewChange(!compactView)}
                   className={`${buttonClass} shrink-0`}
                 >
-                  {compactView ? "Expanded view" : "Compact view"}
+                  {compactView ? "Expanded" : "Compact"}
                 </button>
                 <button
                   onClick={onResetWorkspace}
                   className={`${buttonClass} shrink-0`}
                 >
-                  Reset workspace
+                  Reset
                 </button>
                 <button
                   onClick={() => window.location.reload()}
@@ -2436,13 +2452,6 @@ function SentinelAppHeader({
                 >
                   <CheckCircle2 size={14} />
                   Refresh
-                </button>
-                <button
-                  onClick={onPreview}
-                  className={`${buttonClass} shrink-0`}
-                >
-                  <Eye size={14} />
-                  Preview
                 </button>
               </div>
             </div>
@@ -2519,20 +2528,20 @@ function SentinelNavigationRail({
 }) {
   const navIconMap = {
     overview: BarChart3,
-    state: Layers,
-    inbox: Circle,
-    content: Target,
-    opportunities: TrendingUp,
+    state: Monitor,
+    inbox: ClipboardList,
+    content: PenLine,
+    opportunities: FileText,
     actions: Zap,
     cadence: Clock,
     tenants: Lock,
-    diagnostics: Wrench,
+    diagnostics: Settings,
   };
   const asideClass = standaloneMode
-    ? "h-fit rounded-[28px] border border-cyan-100/10 bg-[#07101d]/70 p-3 shadow-2xl shadow-slate-950/20 backdrop-blur-xl lg:sticky lg:top-24"
+    ? "h-fit rounded-[26px] border border-cyan-100/10 bg-[#050b16]/78 p-2.5 shadow-2xl shadow-slate-950/25 backdrop-blur-xl lg:sticky lg:top-24"
     : "rounded-[28px] bg-white/85 p-4 shadow-sm ring-1 ring-slate-100/80 h-fit lg:sticky lg:top-24";
   const introClass = standaloneMode
-    ? "rounded-2xl bg-white/[0.035] p-3 ring-1 ring-white/10"
+    ? "rounded-[22px] bg-white/[0.035] p-3 ring-1 ring-white/10"
     : "rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100";
   const eyebrowClass = standaloneMode
     ? "text-[10px] font-semibold uppercase tracking-[0.22em] text-cyan-200/75"
@@ -2547,9 +2556,9 @@ function SentinelNavigationRail({
       <div className={introClass}>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className={eyebrowClass}>{standaloneMode ? "Operate" : "App Shell"}</p>
+            <p className={eyebrowClass}>{standaloneMode ? "Workspace" : "App Shell"}</p>
             <p className={titleClass}>Sentinel</p>
-            {collapsed ? null : <p className={mutedClass}>{activeTenant?.name || "ERP Experts"} content workspace</p>}
+            {collapsed ? null : <p className={mutedClass}>Tenant: {activeTenant?.name || "ERP Experts"}</p>}
           </div>
           <button
             type="button"
@@ -2594,8 +2603,8 @@ function SentinelNavigationRail({
         })}
       </nav>
 
-      <div className={standaloneMode ? "rounded-2xl border border-white/10 bg-white/[0.035] px-3 py-4" : "rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100"} style={{ marginTop: "16px" }}>
-        <p className={standaloneMode ? "text-xs text-slate-500" : "text-xs text-slate-500"}>Workspace state</p>
+      <div className={standaloneMode ? "rounded-[22px] border border-white/10 bg-white/[0.03] px-3 py-4" : "rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100"} style={{ marginTop: "16px" }}>
+        <p className={standaloneMode ? "text-xs text-slate-500" : "text-xs text-slate-500"}>Operating state</p>
         <p className={standaloneMode ? "text-sm font-semibold text-emerald-300" : "text-sm font-semibold text-emerald-600"}>{dashboardMode.stateLabel === "HEALTHY" ? "Healthy" : dashboardMode.stateLabel}</p>
         {collapsed ? null : <p className={standaloneMode ? "text-xs text-slate-500" : "text-xs text-slate-600"}>{summaryGate.pass} pass, {summaryGate.blocked} blocked</p>}
       </div>
@@ -2639,9 +2648,9 @@ function SentinelStandaloneFocusSurface({
 
   return (
     <section
-      className="relative isolate overflow-hidden border-y border-cyan-100/10 bg-white/[0.025] px-1 py-5 backdrop-blur-xl md:px-2 md:py-6"
-      style={{ marginBottom: "var(--space-lg)" }}
-      aria-label="Sentinel standalone command surface"
+      className="relative isolate overflow-hidden rounded-[28px] border border-cyan-100/10 bg-[#07101d]/72 px-4 py-4 shadow-2xl shadow-slate-950/20 backdrop-blur-xl md:px-5"
+      style={{ marginBottom: "18px" }}
+      aria-label="Sentinel standalone work surface"
     >
       <div
         className="pointer-events-none absolute inset-0"
@@ -2651,15 +2660,15 @@ function SentinelStandaloneFocusSurface({
         }}
         aria-hidden="true"
       />
-      <div className="relative grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.7fr)] xl:items-center">
+      <div className="relative grid gap-4 xl:grid-cols-[minmax(0,1.05fr)_minmax(430px,0.75fr)] xl:items-center">
         <div className="flex min-w-0 items-start gap-3">
-          <SentinelLogoMark className="h-11 w-11 shrink-0 drop-shadow-[0_0_24px_rgba(34,211,238,0.2)]" compact />
+          <SentinelLogoMark className="h-9 w-9 shrink-0 drop-shadow-[0_0_24px_rgba(34,211,238,0.2)]" compact />
           <div className="min-w-0">
-            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-cyan-200/80">Primary workspace</p>
-            <h2 className="text-2xl font-semibold tracking-[-0.045em] text-white md:text-3xl">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-200/70">Primary work surface</p>
+            <h2 className="text-xl font-semibold tracking-[-0.035em] text-white md:text-2xl">
               What should I work on next?
             </h2>
-            <p className="max-w-3xl text-sm leading-6 text-slate-400" style={{ marginTop: "8px" }}>
+            <p className="max-w-3xl text-sm leading-6 text-slate-400" style={{ marginTop: "6px" }}>
               {leadWorkflowAction
                 ? `${leadItem?.title || nextBestAction.title}. ${leadWorkflowAction.label}: ${leadWorkflowAction.description}`
                 : leadItem?.nextAction || nextBestAction.why}
@@ -2686,10 +2695,8 @@ function SentinelStandaloneFocusSurface({
           </button>
         </div>
 
-        <div className="flex flex-wrap gap-2 text-xs text-slate-500 xl:col-span-2">
-          <span className="rounded-full bg-white/[0.045] px-2.5 py-1 ring-1 ring-white/10">Client: <strong className="text-slate-300">{activeTenant?.name || "ERP Experts"}</strong></span>
-          <span className="rounded-full bg-white/[0.045] px-2.5 py-1 ring-1 ring-white/10">Connection: <strong className="text-slate-300">{standaloneRuntimeLabel === "Pi-backed Sentinel node" ? "Connected" : standaloneRuntimeLabel}</strong></span>
-          <span className="rounded-full bg-white/[0.045] px-2.5 py-1 ring-1 ring-white/10">Access: <strong className="text-slate-300">Private</strong></span>
+        <div className="sr-only">
+          Tenant {activeTenant?.name || "ERP Experts"}. Runtime {standaloneRuntimeLabel}. Access private.
         </div>
       </div>
     </section>
@@ -7317,7 +7324,10 @@ function AdminView({ onPreview, standaloneMode = false }) {
   ];
   const navItems = standaloneMode
     ? ["content", "inbox", "opportunities", "overview", "actions", "cadence", "state", "tenants", "diagnostics"]
-      .map((key) => baseNavItems.find((item) => item.key === key))
+      .map((key) => {
+        const item = baseNavItems.find((entry) => entry.key === key);
+        return item ? { ...item, ...(SENTINEL_STANDALONE_NAV_COPY[key] || {}) } : null;
+      })
       .filter(Boolean)
     : baseNavItems;
   const activeWorkspace = operatorWorkspaces.find((workspace) => workspace.id === activeWorkspaceId)
@@ -7525,13 +7535,13 @@ function AdminView({ onPreview, standaloneMode = false }) {
   };
 
   return (
-    <div className={standaloneMode ? "relative min-h-screen overflow-x-hidden bg-[#050914] text-slate-100" : "min-h-screen bg-slate-50"}>
+    <div className={standaloneMode ? "sentinel-standalone-app relative min-h-screen overflow-x-hidden bg-[#020611] text-slate-100" : "min-h-screen bg-slate-50"}>
       {standaloneMode ? (
         <div
-          className="pointer-events-none fixed inset-0 opacity-90"
+          className="pointer-events-none fixed inset-0 opacity-95"
           style={{
             background:
-              "radial-gradient(circle at 14% 6%, rgba(34, 211, 238, 0.18), transparent 30%), radial-gradient(circle at 86% 4%, rgba(20, 184, 166, 0.1), transparent 28%), radial-gradient(circle at 50% 70%, rgba(15, 23, 42, 0.55), transparent 42%), linear-gradient(180deg, #030711 0%, #07101d 48%, #030711 100%)",
+              "radial-gradient(circle at 12% 6%, rgba(34, 211, 238, 0.16), transparent 28%), radial-gradient(circle at 88% 0%, rgba(45, 212, 191, 0.1), transparent 24%), linear-gradient(140deg, rgba(2, 6, 17, 0.98), rgba(5, 13, 28, 0.96) 48%, rgba(2, 6, 17, 1))",
           }}
           aria-hidden="true"
         />
@@ -7554,9 +7564,9 @@ function AdminView({ onPreview, standaloneMode = false }) {
 
       <main
         className={standaloneMode
-          ? "relative z-10 box-border w-full px-4 sm:px-5 lg:px-6 2xl:px-8"
+          ? "relative z-10 box-border w-full px-4 sm:px-5 lg:px-7 2xl:px-10"
           : "container"}
-        style={{ paddingTop: standaloneMode ? "var(--space-lg)" : "var(--space-xl)", paddingBottom: "var(--space-2xl)" }}
+        style={{ paddingTop: standaloneMode ? "18px" : "var(--space-xl)", paddingBottom: standaloneMode ? "28px" : "var(--space-2xl)" }}
       >
         {standaloneMode ? (
           <SentinelStandaloneFocusSurface
@@ -7570,7 +7580,7 @@ function AdminView({ onPreview, standaloneMode = false }) {
             }}
           />
         ) : null}
-        <div className={`grid min-w-0 ${standaloneMode ? (compactView ? "gap-4" : "gap-5") : (compactView ? "gap-lg" : "gap-xl")} ${standaloneMode ? (sidebarCollapsed ? "lg:grid-cols-[74px_minmax(0,1fr)]" : "lg:grid-cols-[minmax(176px,0.14fr)_minmax(0,1fr)] 2xl:grid-cols-[minmax(190px,0.12fr)_minmax(0,1fr)]") : (sidebarCollapsed ? "lg:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]" : "lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)]")}`}>
+        <div className={`grid min-w-0 ${standaloneMode ? (compactView ? "gap-4" : "gap-5") : (compactView ? "gap-lg" : "gap-xl")} ${standaloneMode ? (sidebarCollapsed ? "lg:grid-cols-[72px_minmax(0,1fr)]" : "lg:grid-cols-[minmax(210px,0.16fr)_minmax(0,1fr)] 2xl:grid-cols-[minmax(230px,0.14fr)_minmax(0,1fr)]") : (sidebarCollapsed ? "lg:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]" : "lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)]")}`}>
           <SentinelNavigationRail
             navItems={navItems}
             activeNav={activeNav}
@@ -7583,7 +7593,7 @@ function AdminView({ onPreview, standaloneMode = false }) {
             standaloneMode={standaloneMode}
           />
 
-          <div className={`grid min-w-0 ${compactView ? "gap-md" : "gap-lg"}`}>
+          <div className={`grid min-w-0 ${standaloneMode ? (compactView ? "gap-4" : "gap-5") : (compactView ? "gap-md" : "gap-lg")}`}>
             {sessionResetNotice ? (
               <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 ring-1 ring-emerald-100">
                 {sessionResetNotice}
@@ -7951,17 +7961,17 @@ function AdminView({ onPreview, standaloneMode = false }) {
       </main>
 
       {(!isMonitorMode || showDiagnosticsTab) ? (
-      <section className="bg-slate-50 border-b border-slate-200">
-        <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
+      <section className={standaloneMode ? "relative z-10 border-y border-white/10 bg-[#050b16]/72" : "bg-slate-50 border-b border-slate-200"}>
+        <div className={standaloneMode ? "box-border w-full px-4 py-6 sm:px-5 lg:px-7 2xl:px-10" : "container"} style={standaloneMode ? undefined : { paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
           {isMonitorMode ? (
             <details
               open={articleWorkbenchOpen}
               onToggle={(event) => setArticleWorkbenchOpen(event.currentTarget.open)}
-              className="rounded-xl border border-slate-200 bg-white/85"
+              className={standaloneMode ? "rounded-[24px] border border-white/10 bg-white/[0.04] text-slate-200" : "rounded-xl border border-slate-200 bg-white/85"}
               style={{ padding: "var(--space-md)" }}
             >
-              <summary className="cursor-pointer text-sm font-semibold text-slate-700">Article QA planner and operator tools</summary>
-              <p className="text-sm text-slate-600" style={{ marginTop: "var(--space-sm)", marginBottom: "var(--space-lg)" }}>
+              <summary className={standaloneMode ? "cursor-pointer text-sm font-semibold text-slate-100" : "cursor-pointer text-sm font-semibold text-slate-700"}>Article QA planner and operator tools</summary>
+              <p className={standaloneMode ? "text-sm text-slate-400" : "text-sm text-slate-600"} style={{ marginTop: "var(--space-sm)", marginBottom: "var(--space-lg)" }}>
                 Expand when you need manual article-level QA prompts.
               </p>
               {!qaReport ? (
@@ -8014,15 +8024,15 @@ function AdminView({ onPreview, standaloneMode = false }) {
       ) : null}
 
       {(!isMonitorMode || showDiagnosticsTab) ? (
-      <section className="bg-white border-b border-slate-200">
-        <div className="container" style={{ paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
+      <section className={standaloneMode ? "relative z-10 border-b border-white/10 bg-[#020611]/82" : "bg-white border-b border-slate-200"}>
+        <div className={standaloneMode ? "box-border w-full px-4 py-6 sm:px-5 lg:px-7 2xl:px-10" : "container"} style={standaloneMode ? undefined : { paddingTop: "var(--space-xl)", paddingBottom: "var(--space-xl)" }}>
           <details
             open={advancedDiagnosticsOpen}
             onToggle={(event) => setAdvancedDiagnosticsOpen(event.currentTarget.open)}
-            className="rounded-xl border border-slate-200 bg-slate-50"
+            className={standaloneMode ? "rounded-[24px] border border-white/10 bg-white/[0.035] text-slate-200" : "rounded-xl border border-slate-200 bg-slate-50"}
             style={{ padding: "var(--space-md)" }}
           >
-            <summary className="cursor-pointer text-sm font-semibold text-slate-700">Advanced diagnostics</summary>
+            <summary className={standaloneMode ? "cursor-pointer text-sm font-semibold text-slate-100" : "cursor-pointer text-sm font-semibold text-slate-700"}>Advanced diagnostics</summary>
             <div style={{ marginTop: "var(--space-md)" }}>
               <WeeklySummarySection summary={weeklySummary} loading={summaryLoading} />
               <PipelineSummarySection summary={pipelineSummary} loading={pipelineLoading} />
@@ -8040,12 +8050,13 @@ function AdminView({ onPreview, standaloneMode = false }) {
       </section>
       ) : null}
 
-      {/* ── Footer ── */}
-      <div className={standaloneMode ? "relative z-10 mx-auto box-border w-full max-w-[1480px] px-[var(--space-lg)] text-center md:px-[var(--space-xl)] 2xl:px-[var(--space-2xl)]" : "container text-center"} style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-2xl)" }}>
-        <p className={standaloneMode ? "text-xs text-slate-500" : "text-xs text-slate-500"}>
-          {standaloneMode ? "Private Sentinel workspace. Content workflow stays primary; infrastructure systems remain controlled support layers." : "Front-end planner only. Copy prompt for Codex, then run seo:after-edit to validate."}
-        </p>
-      </div>
+      {!standaloneMode ? (
+        <div className="container text-center" style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-2xl)" }}>
+          <p className="text-xs text-slate-500">
+            Front-end planner only. Copy prompt for Codex, then run seo:after-edit to validate.
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -9827,51 +9838,53 @@ function ContentWorkbenchPanel({
   }
 
   const shellClass = standaloneMode
-    ? "overflow-hidden rounded-[34px] bg-slate-100/95 p-5 text-slate-950 shadow-2xl shadow-slate-950/20 ring-1 ring-white/20 md:p-6"
+    ? "overflow-hidden rounded-[30px] border border-white/10 bg-[#07101d]/84 p-4 text-slate-100 shadow-2xl shadow-slate-950/25 backdrop-blur-xl md:p-5"
     : "rounded-[28px] bg-white/90 p-5 shadow-sm ring-1 ring-slate-100/80";
   const summaryClass = standaloneMode
-    ? "grid gap-2 border-l border-slate-200 pl-4 text-sm sm:min-w-[300px]"
+    ? "grid gap-2 rounded-[22px] border border-white/10 bg-white/[0.035] px-4 py-3 text-sm sm:min-w-[300px]"
     : "grid gap-2 rounded-2xl bg-slate-50/80 p-3 text-sm ring-1 ring-slate-100 sm:min-w-[260px]";
   const focusClass = standaloneMode
-    ? "rounded-[24px] bg-slate-950 p-5 text-white shadow-xl shadow-slate-950/10"
+    ? "rounded-[24px] bg-[#020611] p-5 text-white shadow-xl shadow-slate-950/20 ring-1 ring-cyan-100/10"
     : "rounded-2xl bg-pink-50/70 p-4 ring-1 ring-pink-100";
   const filterSelectClass = standaloneMode
-    ? "rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm"
+    ? "rounded-full border border-white/10 bg-white/[0.055] px-3 py-2 text-sm font-semibold text-slate-100 shadow-sm outline-none focus:border-cyan-200/50 focus:ring-2 focus:ring-cyan-200/15"
     : "rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800";
   const laneClass = standaloneMode
-    ? "rounded-[24px] bg-white/75 p-3 ring-1 ring-slate-200/70"
+    ? "rounded-[24px] border border-white/10 bg-white/[0.035] p-3"
     : "rounded-2xl bg-slate-50/80 p-3 ring-1 ring-slate-100";
-  const itemClass = (item) => `rounded-[20px] border bg-white p-3 shadow-sm transition-colors ${
+  const itemClass = (item) => `rounded-[20px] border p-3 shadow-sm transition-colors ${
     selectedItem?.id === item.id
       ? standaloneMode
-        ? "border-cyan-300 ring-2 ring-cyan-100"
+        ? "border-cyan-200/70 bg-cyan-200/[0.08] ring-2 ring-cyan-200/15"
         : "border-pink-200 ring-2 ring-pink-100"
-      : "border-slate-100 hover:border-slate-200"
+      : standaloneMode
+        ? "border-white/10 bg-[#0b1422]/86 hover:border-cyan-200/30 hover:bg-[#0d1828]"
+        : "border-slate-100 hover:border-slate-200"
   }`;
 
   return (
     <section className={shellClass}>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-3xl">
-          <p className={standaloneMode ? "text-xs font-semibold uppercase tracking-[0.16em] text-cyan-700" : "text-xs font-semibold uppercase tracking-[0.16em] text-pink-600"}>Editorial Operations</p>
-          <h2 className={standaloneMode ? "text-3xl font-semibold tracking-[-0.03em] text-slate-950" : "text-2xl font-semibold text-slate-950"}>Content Workbench</h2>
-          <p className={standaloneMode ? "max-w-2xl text-sm leading-6 text-slate-600" : "text-sm text-slate-600"}>
+          <p className={standaloneMode ? "text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-200/75" : "text-xs font-semibold uppercase tracking-[0.16em] text-pink-600"}>Editorial Operations</p>
+          <h2 className={standaloneMode ? "text-2xl font-semibold tracking-[-0.03em] text-white md:text-3xl" : "text-2xl font-semibold text-slate-950"}>Content Workbench</h2>
+          <p className={standaloneMode ? "max-w-2xl text-sm leading-6 text-slate-400" : "text-sm text-slate-600"}>
             Article-level workflow built from opportunities, execution plans, action inbox items and QA signals.
             Infrastructure controls remain in Actions and Diagnostics.
           </p>
         </div>
         <div className={summaryClass}>
           <div className="flex items-center justify-between gap-3">
-            <span className="font-medium text-slate-600">Items</span>
-            <span className="font-semibold text-slate-950">{items.length}</span>
+            <span className={standaloneMode ? "font-medium text-slate-400" : "font-medium text-slate-600"}>Items</span>
+            <span className={standaloneMode ? "font-semibold text-white" : "font-semibold text-slate-950"}>{items.length}</span>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <span className="font-medium text-slate-600">Review/ready</span>
-            <span className="font-semibold text-amber-700">{(statusCounts.review || 0) + (statusCounts.ready || 0)}</span>
+            <span className={standaloneMode ? "font-medium text-slate-400" : "font-medium text-slate-600"}>Review/ready</span>
+            <span className={standaloneMode ? "font-semibold text-amber-200" : "font-semibold text-amber-700"}>{(statusCounts.review || 0) + (statusCounts.ready || 0)}</span>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <span className="font-medium text-slate-600">Live/monitoring</span>
-            <span className="font-semibold text-emerald-700">{(statusCounts.published || 0) + (statusCounts.monitoring || 0)}</span>
+            <span className={standaloneMode ? "font-medium text-slate-400" : "font-medium text-slate-600"}>Live/monitoring</span>
+            <span className={standaloneMode ? "font-semibold text-emerald-200" : "font-semibold text-emerald-700"}>{(statusCounts.published || 0) + (statusCounts.monitoring || 0)}</span>
           </div>
         </div>
       </div>
@@ -9896,7 +9909,7 @@ function ContentWorkbenchPanel({
       ) : null}
 
       <div className="grid gap-3 lg:grid-cols-5" style={{ marginTop: "16px" }}>
-        <label className="grid gap-1 text-xs font-semibold text-slate-600">
+        <label className={`grid gap-1 text-xs font-semibold ${standaloneMode ? "text-slate-400" : "text-slate-600"}`}>
           Status
           <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className={filterSelectClass}>
             <option value="all">All statuses</option>
@@ -9905,21 +9918,21 @@ function ContentWorkbenchPanel({
             ))}
           </select>
         </label>
-        <label className="grid gap-1 text-xs font-semibold text-slate-600">
+        <label className={`grid gap-1 text-xs font-semibold ${standaloneMode ? "text-slate-400" : "text-slate-600"}`}>
           Priority
           <select value={priorityFilter} onChange={(event) => setPriorityFilter(event.target.value)} className={filterSelectClass}>
             <option value="all">All priorities</option>
             {priorities.map((priority) => <option key={priority} value={priority}>{formatStateLabel(priority)}</option>)}
           </select>
         </label>
-        <label className="grid gap-1 text-xs font-semibold text-slate-600">
+        <label className={`grid gap-1 text-xs font-semibold ${standaloneMode ? "text-slate-400" : "text-slate-600"}`}>
           Category
           <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)} className={filterSelectClass}>
             <option value="all">All categories</option>
             {categories.map((category) => <option key={category} value={category}>{contentCategoryLabel(category)}</option>)}
           </select>
         </label>
-        <label className="grid gap-1 text-xs font-semibold text-slate-600">
+        <label className={`grid gap-1 text-xs font-semibold ${standaloneMode ? "text-slate-400" : "text-slate-600"}`}>
           Publication
           <select value={publishedFilter} onChange={(event) => setPublishedFilter(event.target.value)} className={filterSelectClass}>
             <option value="all">Published and planned</option>
@@ -9927,7 +9940,7 @@ function ContentWorkbenchPanel({
             <option value="unpublished">Not published</option>
           </select>
         </label>
-        <label className="grid gap-1 text-xs font-semibold text-slate-600">
+        <label className={`grid gap-1 text-xs font-semibold ${standaloneMode ? "text-slate-400" : "text-slate-600"}`}>
           Owner
           <select value={ownershipFilter} onChange={(event) => setOwnershipFilter(event.target.value)} className={filterSelectClass}>
             <option value="all">Assigned and unassigned</option>
@@ -9951,8 +9964,8 @@ function ContentWorkbenchPanel({
               return (
                 <div key={group.id} className={laneClass}>
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-semibold text-slate-900">{group.label}</p>
-                    <span className="rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-500 ring-1 ring-slate-100">{groupItems.length}</span>
+                    <p className={standaloneMode ? "text-sm font-semibold text-slate-100" : "text-sm font-semibold text-slate-900"}>{group.label}</p>
+                    <span className={standaloneMode ? "rounded-full bg-white/[0.07] px-2 py-0.5 text-xs font-semibold text-slate-300 ring-1 ring-white/10" : "rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-500 ring-1 ring-slate-100"}>{groupItems.length}</span>
                   </div>
                   <div className="grid gap-2" style={{ marginTop: "10px" }}>
                     {groupItems.length ? groupItems.map((item) => (
@@ -9962,8 +9975,8 @@ function ContentWorkbenchPanel({
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <p className="text-sm font-semibold leading-snug text-slate-950">{item.title}</p>
-                            <p className="text-xs text-slate-500" style={{ marginTop: "4px" }}>
+                            <p className={standaloneMode ? "text-sm font-semibold leading-snug text-slate-100" : "text-sm font-semibold leading-snug text-slate-950"}>{item.title}</p>
+                            <p className={standaloneMode ? "text-xs text-slate-500" : "text-xs text-slate-500"} style={{ marginTop: "4px" }}>
                               {item.targetSlug || "New resource"} · {item.categoryLabel}
                             </p>
                           </div>
@@ -9971,24 +9984,24 @@ function ContentWorkbenchPanel({
                             {CONTENT_STATUS_META[item.status]?.label || formatStateLabel(item.status)}
                           </span>
                         </div>
-                        <p className="line-clamp-2 text-xs text-slate-600" style={{ marginTop: "8px" }}>{item.summary}</p>
+                        <p className={standaloneMode ? "line-clamp-2 text-xs text-slate-400" : "line-clamp-2 text-xs text-slate-600"} style={{ marginTop: "8px" }}>{item.summary}</p>
                         <div className="flex flex-wrap gap-1.5" style={{ marginTop: "8px" }}>
-                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">{formatStateLabel(item.priority)}</span>
-                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">{item.published ? "published" : "not published"}</span>
-                          {item.relatedPlanId ? <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">plan linked</span> : null}
+                          <span className={standaloneMode ? "rounded-full bg-white/[0.06] px-2 py-0.5 text-[11px] font-semibold text-slate-300 ring-1 ring-white/10" : "rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600"}>{formatStateLabel(item.priority)}</span>
+                          <span className={standaloneMode ? "rounded-full bg-white/[0.06] px-2 py-0.5 text-[11px] font-semibold text-slate-300 ring-1 ring-white/10" : "rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600"}>{item.published ? "published" : "not published"}</span>
+                          {item.relatedPlanId ? <span className={standaloneMode ? "rounded-full bg-white/[0.06] px-2 py-0.5 text-[11px] font-semibold text-slate-300 ring-1 ring-white/10" : "rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600"}>plan linked</span> : null}
                         </div>
                         <div className="flex flex-wrap items-center gap-2" style={{ marginTop: "10px" }}>
                           <button
                             type="button"
                             onClick={() => setSelectedId(item.id)}
-                            className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                            className={standaloneMode ? "rounded-lg border border-white/10 bg-white/[0.055] px-2.5 py-1.5 text-xs font-semibold text-slate-200 hover:bg-white/[0.1]" : "rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"}
                           >
                             Open details
                           </button>
                           <select
                             value={item.status}
                             onChange={(event) => onStatusChange(item.id, event.target.value)}
-                            className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700"
+                            className={standaloneMode ? "rounded-lg border border-white/10 bg-white/[0.055] px-2.5 py-1.5 text-xs font-semibold text-slate-200" : "rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700"}
                             aria-label={`Set workflow status for ${item.title}`}
                           >
                             {CONTENT_LIFECYCLE_STATUSES.map((status) => (
@@ -9998,7 +10011,7 @@ function ContentWorkbenchPanel({
                         </div>
                       </article>
                     )) : (
-                      <p className="rounded-xl bg-white p-3 text-xs text-slate-500 ring-1 ring-slate-100">No matching items in this lane.</p>
+                      <p className={standaloneMode ? "rounded-xl bg-white/[0.045] p-3 text-xs text-slate-500 ring-1 ring-white/10" : "rounded-xl bg-white p-3 text-xs text-slate-500 ring-1 ring-slate-100"}>No matching items in this lane.</p>
                     )}
                   </div>
                 </div>
