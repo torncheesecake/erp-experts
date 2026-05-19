@@ -1,97 +1,99 @@
 {
   "version": 1,
-  "description": "Task-oriented Sentinel content workflow actions. These map operator intent to local lifecycle transitions, copy-only manual guidance or existing allowlisted execution.",
+  "description": "Task-oriented Sentinel content workflow actions. These map operator intent to local lifecycle transitions, visible operational artefacts or existing allowlisted execution.",
   "actions": [
     {
       "id": "review-opportunity",
       "label": "Review opportunity",
-      "description": "Confirm the content opportunity is worth moving into the planned queue.",
+      "description": "Confirm the content opportunity is worth moving into the research queue.",
       "validStatuses": ["discovered"],
       "primaryStatuses": ["discovered"],
-      "nextStatus": "approved",
+      "nextStatus": "researching",
       "executionMode": "local_transition",
       "safety": "local_safe",
-      "expectedResult": "Opportunity reviewed and marked approved locally.",
-      "suggestedNextAction": "Start research or approve the linked plan.",
+      "expectedResult": "Opportunity accepted into the research queue.",
+      "suggestedNextAction": "Review the research summary and generate an editorial brief.",
       "producedArtifacts": [
         {
-          "label": "Local workflow state",
-          "path": "sentinel.contentWorkbench.v1",
-          "type": "browser_storage",
-          "description": "Browser-local Workbench status state is updated immediately."
+          "id": "research-summary",
+          "label": "Research summary",
+          "path": "workbench:research-summary:{itemId}",
+          "type": "workbench_artifact",
+          "description": "Visible research context is prepared in the Workbench.",
+          "summary": "Opportunity rationale, search intent and suggested angle are now ready to review.",
+          "nextAction": "Generate the editorial brief."
         }
       ],
       "recovery": "Leave it discovered if the rationale is not strong enough yet."
     },
     {
       "id": "approve-plan",
-      "label": "Approve plan",
-      "description": "Copy the existing plan approval command for the linked execution plan.",
-      "validStatuses": ["discovered", "approved", "researching"],
-      "primaryStatuses": ["discovered", "approved"],
-      "nextStatus": "approved",
-      "executionMode": "manual_copy",
-      "safety": "manual_review",
-      "requiresPlan": true,
-      "manualTemplate": "npm run seo:plan:approve -- {planId}",
-      "expectedResult": "Plan approval command copied for manual review.",
-      "suggestedNextAction": "Run the copied command in the terminal after reviewing the plan.",
+      "label": "Move to planning",
+      "description": "Record that the opportunity has enough context to become a planned content item.",
+      "validStatuses": ["discovered", "researching"],
+      "primaryStatuses": [],
+      "nextStatus": "planning",
+      "executionMode": "local_transition",
+      "safety": "local_safe",
+      "expectedResult": "Content item moved into planning with a visible planning decision.",
+      "suggestedNextAction": "Generate or review the editorial brief.",
       "producedArtifacts": [
         {
-          "label": "Plan approval report",
-          "path": "reports/seo-plan-approvals.json",
-          "type": "local_report",
-          "description": "Created or updated after the copied approval command runs."
+          "id": "editorial-brief",
+          "label": "Planning decision",
+          "path": "workbench:planning-decision:{itemId}",
+          "type": "workbench_artifact",
+          "description": "The item is now visible as planned work in the Workbench.",
+          "summary": "The opportunity is ready for brief review and package preparation.",
+          "nextAction": "Generate the editorial brief."
         }
       ],
-      "recovery": "Run or review the copied command only after checking the linked plan scope."
+      "recovery": "Keep it in research if the scope is not clear enough for planning yet."
     },
     {
       "id": "start-research",
       "label": "Start research",
       "description": "Move the item into research so source material, search intent and angle can be clarified.",
-      "validStatuses": ["discovered", "approved"],
-      "primaryStatuses": ["discovered", "approved"],
+      "validStatuses": ["discovered", "planning"],
+      "primaryStatuses": ["discovered"],
       "nextStatus": "researching",
       "executionMode": "local_transition",
       "safety": "local_safe",
-      "expectedResult": "Research started locally.",
-      "suggestedNextAction": "Generate the brief once search intent and source material are clear.",
+      "expectedResult": "Research summary prepared in the Workbench.",
+      "suggestedNextAction": "Review the research summary, then generate the editorial brief.",
       "producedArtifacts": [
         {
-          "label": "Local workflow state",
-          "path": "sentinel.contentWorkbench.v1",
-          "type": "browser_storage",
-          "description": "Browser-local Workbench status state is updated immediately."
+          "id": "research-summary",
+          "label": "Research summary",
+          "path": "workbench:research-summary:{itemId}",
+          "type": "workbench_artifact",
+          "description": "Search intent, source signals and suggested angle are visible in the item panel.",
+          "summary": "Research context is ready for brief generation.",
+          "nextAction": "Generate editorial brief."
         }
       ],
-      "recovery": "Move it back to approved if the brief is not ready for research."
+      "recovery": "Move it back to planning if the brief is not ready for research."
     },
     {
       "id": "generate-brief",
       "label": "Generate brief",
-      "description": "Copy the linked brief or plan command so the brief can be prepared through the existing planning workflow.",
-      "validStatuses": ["approved", "researching", "drafting"],
+      "description": "Create a visible editorial brief object for review before any drafting starts.",
+      "validStatuses": ["researching", "planning", "drafting"],
       "primaryStatuses": ["researching"],
-      "nextStatus": "drafting",
-      "executionMode": "manual_copy",
-      "safety": "manual_review",
-      "manualSource": "briefCommand",
-      "fallbackTemplate": "npm run seo:plan:run -- {planId}",
-      "expectedResult": "Brief preparation command copied.",
-      "suggestedNextAction": "Run the copied brief command, then move the item towards drafting or work package preparation.",
+      "nextStatus": "planning",
+      "executionMode": "local_artifact",
+      "safety": "local_safe",
+      "expectedResult": "Editorial brief created for review in the Workbench.",
+      "suggestedNextAction": "Review the brief, then prepare the work package.",
       "producedArtifacts": [
         {
-          "label": "Active plan runbook",
-          "path": "reports/seo-active-plan.md",
-          "type": "local_report",
-          "description": "Created or updated after the copied plan run command executes."
-        },
-        {
-          "label": "Plan status report",
-          "path": "reports/seo-plan-status.json",
-          "type": "local_report",
-          "description": "Updated by plan workflow commands."
+          "id": "editorial-brief",
+          "label": "Editorial brief",
+          "path": "workbench:editorial-brief:{itemId}",
+          "type": "workbench_artifact",
+          "description": "Structured brief preview is now visible in the item panel.",
+          "summary": "Intent, suggested structure, target angle and CTA guidance are ready to review.",
+          "nextAction": "Prepare work package."
         }
       ],
       "recovery": "If no linked plan exists, review the opportunity and create or refresh an execution plan first."
@@ -99,21 +101,23 @@
     {
       "id": "prepare-work-package",
       "label": "Prepare work package",
-      "description": "Copy the planning prompt or brief context so the article work can be handed off safely.",
-      "validStatuses": ["researching", "drafting"],
-      "primaryStatuses": ["drafting"],
-      "nextStatus": "review",
-      "executionMode": "manual_copy",
-      "safety": "manual_review",
-      "manualSource": "briefPrompt",
-      "expectedResult": "Brief context copied for handoff.",
-      "suggestedNextAction": "Use the copied context to prepare the article handoff, then move the item to review.",
+      "description": "Create a scoped implementation package that defines the drafting work and review checklist.",
+      "validStatuses": ["planning", "drafting"],
+      "primaryStatuses": ["planning"],
+      "nextStatus": "drafting",
+      "executionMode": "local_artifact",
+      "safety": "local_safe",
+      "expectedResult": "Implementation package prepared for drafting.",
+      "suggestedNextAction": "Start drafting against the package, then move the item to review.",
       "producedArtifacts": [
         {
-          "label": "Brief context",
-          "path": "clipboard",
-          "type": "clipboard",
-          "description": "Copied to clipboard for manual handoff."
+          "id": "implementation-package",
+          "label": "Implementation package",
+          "path": "workbench:implementation-package:{itemId}",
+          "type": "workbench_artifact",
+          "description": "Scope, task list and safety constraints are visible in the item panel.",
+          "summary": "Drafting scope and review criteria are ready.",
+          "nextAction": "Move to review after drafting."
         }
       ],
       "recovery": "If there is no prompt yet, generate or review the brief before moving into review."
@@ -122,19 +126,22 @@
       "id": "move-to-review",
       "label": "Move to review",
       "description": "Mark the article work as ready for editorial judgement.",
-      "validStatuses": ["researching", "drafting"],
+      "validStatuses": ["drafting"],
       "primaryStatuses": ["drafting"],
       "nextStatus": "review",
       "executionMode": "local_transition",
       "safety": "local_safe",
-      "expectedResult": "Item moved into review locally.",
+      "expectedResult": "Item moved into editorial review.",
       "suggestedNextAction": "Complete editorial review, then mark ready when the work has passed.",
       "producedArtifacts": [
         {
-          "label": "Local workflow state",
-          "path": "sentinel.contentWorkbench.v1",
-          "type": "browser_storage",
-          "description": "Browser-local Workbench status state is updated immediately."
+          "id": "editorial-review",
+          "label": "Review checklist",
+          "path": "workbench:editorial-review:{itemId}",
+          "type": "workbench_artifact",
+          "description": "Review criteria and QA context are visible in the item panel.",
+          "summary": "The item is ready for editorial judgement.",
+          "nextAction": "Mark ready when review passes."
         }
       ],
       "recovery": "Move it back to drafting if more content work is needed."
@@ -152,10 +159,13 @@
       "suggestedNextAction": "Publish through the controlled editorial process outside Sentinel, then mark published.",
       "producedArtifacts": [
         {
-          "label": "Local workflow state",
-          "path": "sentinel.contentWorkbench.v1",
-          "type": "browser_storage",
-          "description": "Browser-local Workbench status state is updated immediately."
+          "id": "editorial-review",
+          "label": "Readiness decision",
+          "path": "workbench:readiness-decision:{itemId}",
+          "type": "workbench_artifact",
+          "description": "The review decision is visible in the item panel.",
+          "summary": "The item has passed review and is ready for the controlled publishing step.",
+          "nextAction": "Mark published after publishing happens outside Sentinel."
         }
       ],
       "recovery": "Move it back to review if QA or editorial issues remain."
@@ -173,10 +183,13 @@
       "suggestedNextAction": "Refresh monitoring to confirm QA and content health after publication.",
       "producedArtifacts": [
         {
-          "label": "Local workflow state",
-          "path": "sentinel.contentWorkbench.v1",
-          "type": "browser_storage",
-          "description": "Browser-local Workbench status state is updated immediately."
+          "id": "monitoring-check",
+          "label": "Publication record",
+          "path": "workbench:publication-record:{itemId}",
+          "type": "workbench_artifact",
+          "description": "The item is recorded as published in the local Workbench lifecycle.",
+          "summary": "Publication has been recorded locally. Sentinel has not published content.",
+          "nextAction": "Refresh monitoring."
         }
       ],
       "recovery": "Move it back to ready if publication has not actually happened."
@@ -195,10 +208,13 @@
       "suggestedNextAction": "Review the monitor summary. If healthy, continue weekly monitoring.",
       "producedArtifacts": [
         {
+          "id": "monitoring-check",
           "label": "Resource QA report",
           "path": "reports/resource-qa-report.json",
           "type": "local_report",
-          "description": "Updated by the SEO monitor command."
+          "description": "Updated by the safe monitor action.",
+          "summary": "Post-publication content health is ready to review.",
+          "nextAction": "Continue weekly monitoring if healthy."
         }
       ],
       "recovery": "Run diagnostics if monitoring fails or the API is unavailable."
@@ -207,7 +223,7 @@
       "id": "open-diagnostics",
       "label": "Open diagnostics",
       "description": "Run the allowlisted doctor check when an item needs platform context before work continues.",
-      "validStatuses": ["discovered", "approved", "researching", "drafting", "review", "ready", "published", "monitoring"],
+      "validStatuses": ["discovered", "researching", "planning", "drafting", "review", "ready", "published", "monitoring"],
       "primaryStatuses": [],
       "executionMode": "allowlisted_action",
       "safety": "safe_allowlisted",
@@ -219,7 +235,7 @@
           "label": "Sentinel doctor report",
           "path": "reports/sentinel-doctor.json",
           "type": "local_report",
-          "description": "Updated by the doctor diagnostic command."
+          "description": "Updated by the safe diagnostic action."
         }
       ],
       "recovery": "Check the Operator Console history for details if diagnostics fail."
@@ -228,7 +244,7 @@
       "id": "generate-roadmap-update",
       "label": "Generate roadmap update",
       "description": "Refresh Sentinel roadmap intelligence when repeated content friction should influence future improvements.",
-      "validStatuses": ["discovered", "approved", "researching", "drafting", "review", "ready", "published", "monitoring"],
+      "validStatuses": ["discovered", "researching", "planning", "drafting", "review", "ready", "published", "monitoring"],
       "primaryStatuses": [],
       "executionMode": "allowlisted_action",
       "safety": "safe_allowlisted",
@@ -240,7 +256,7 @@
           "label": "Roadmap intelligence JSON",
           "path": "reports/sentinel-roadmap.json",
           "type": "local_report",
-          "description": "Updated by the roadmap command."
+          "description": "Updated by the safe roadmap action."
         },
         {
           "label": "Roadmap intelligence summary",

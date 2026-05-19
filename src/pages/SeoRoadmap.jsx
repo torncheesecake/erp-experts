@@ -54,8 +54,8 @@ const SENTINEL_WORKSPACE_PANEL_KEYS = ["supportingIntelligence", "articleWorkben
 const SENTINEL_TERMINAL_EXECUTION_STATES = new Set(["success", "failed", "failure", "cancelled"]);
 const CONTENT_LIFECYCLE_STATUSES = [
   "discovered",
-  "approved",
   "researching",
+  "planning",
   "drafting",
   "review",
   "ready",
@@ -64,8 +64,9 @@ const CONTENT_LIFECYCLE_STATUSES = [
 ];
 const CONTENT_STATUS_META = {
   discovered: { label: "Discovered", tone: "bg-slate-50 text-slate-700 ring-slate-200" },
-  approved: { label: "Approved", tone: "bg-blue-50 text-blue-700 ring-blue-100" },
+  approved: { label: "Planning", tone: "bg-blue-50 text-blue-700 ring-blue-100" },
   researching: { label: "Researching", tone: "bg-cyan-50 text-cyan-700 ring-cyan-100" },
+  planning: { label: "Planning", tone: "bg-blue-50 text-blue-700 ring-blue-100" },
   drafting: { label: "Drafting", tone: "bg-indigo-50 text-indigo-700 ring-indigo-100" },
   review: { label: "Review", tone: "bg-amber-50 text-amber-800 ring-amber-100" },
   ready: { label: "Ready", tone: "bg-emerald-50 text-emerald-700 ring-emerald-100" },
@@ -73,8 +74,8 @@ const CONTENT_STATUS_META = {
   monitoring: { label: "Monitoring", tone: "bg-purple-50 text-purple-700 ring-purple-100" },
 };
 const CONTENT_STATUS_GROUPS = [
-  { id: "intake", label: "Intake", statuses: ["discovered", "approved"] },
-  { id: "making", label: "Making", statuses: ["researching", "drafting"] },
+  { id: "intake", label: "Intake", statuses: ["discovered"] },
+  { id: "making", label: "Making", statuses: ["researching", "planning", "drafting"] },
   { id: "review", label: "Review", statuses: ["review", "ready"] },
   { id: "live", label: "Live", statuses: ["published", "monitoring"] },
 ];
@@ -506,10 +507,15 @@ function clearOperatorSessionState(standaloneMode = false) {
   }
 }
 
+function normaliseContentStatus(status = "") {
+  if (status === "approved") return "planning";
+  return CONTENT_LIFECYCLE_STATUSES.includes(status) ? status : "";
+}
+
 function normaliseContentWorkbenchState(state = {}) {
   const sourceItems = state?.items && typeof state.items === "object" ? state.items : {};
   const items = Object.entries(sourceItems).reduce((acc, [id, item]) => {
-    const status = CONTENT_LIFECYCLE_STATUSES.includes(item?.status) ? item.status : "";
+    const status = normaliseContentStatus(item?.status);
     if (!id || !status) return acc;
     acc[id] = {
       status,
@@ -619,17 +625,127 @@ function hydrateWorkflowTemplate(template = "", item = {}) {
   return String(template).replace(/\{([a-zA-Z0-9_]+)\}/g, (_, key) => values[key] || "");
 }
 
+function hydrateWorkflowTemplateStrict(template = "", item = {}) {
+  const values = {
+    itemId: item.id || "",
+    title: item.title || "",
+    slug: item.targetSlug || "",
+    planId: item.relatedPlanId || "",
+    opportunityId: item.relatedOpportunityId || "",
+  };
+  let missingValue = false;
+  const hydrated = String(template).replace(/\{([a-zA-Z0-9_]+)\}/g, (_, key) => {
+    if (!values[key]) missingValue = true;
+    return values[key] || "";
+  }).trim();
+
+  if (missingValue || /\{\w+\}/.test(hydrated) || /--\s*$/.test(hydrated)) return "";
+  return hydrated;
+}
+
 function getWorkflowManualCopyValue(action = {}, item = {}) {
   if (!action || !item) return "";
   if (action.manualSource === "briefCommand") {
-    return item.briefCommand || hydrateWorkflowTemplate(action.fallbackTemplate, item);
+    return item.briefCommand || hydrateWorkflowTemplateStrict(action.fallbackTemplate, item);
   }
   if (action.manualSource === "briefPrompt") {
-    return item.briefPrompt || item.briefCommand || hydrateWorkflowTemplate(action.fallbackTemplate, item);
+    return item.briefPrompt || item.briefCommand || hydrateWorkflowTemplateStrict(action.fallbackTemplate, item);
   }
-  if (action.manualTemplate) return hydrateWorkflowTemplate(action.manualTemplate, item);
-  if (action.fallbackTemplate) return hydrateWorkflowTemplate(action.fallbackTemplate, item);
+  if (action.manualTemplate) return hydrateWorkflowTemplateStrict(action.manualTemplate, item);
+  if (action.fallbackTemplate) return hydrateWorkflowTemplateStrict(action.fallbackTemplate, item);
   return "";
+}
+
+function contentStatusIndex(status = "") {
+  const normalised = normaliseContentStatus(status);
+  const index = CONTENT_LIFECYCLE_STATUSES.indexOf(normalised);
+  return index >= 0 ? index : -1;
+}
+
+function contentHasReachedStatus(item = {}, status = "") {
+  const currentIndex = contentStatusIndex(item.status);
+  const targetIndex = contentStatusIndex(status);
+  return currentIndex >= 0 && targetIndex >= 0 && currentIndex >= targetIndex;
+}
+
+function buildWorkflowArtifactPreview(artifactId = "", item = {}) {
+  const id = String(artifactId || "").toLowerCase();
+  const topic = item.targetTopic || item.title || "Selected content item";
+  const angle = item.suggestedAngle || item.nextAction || "Clarify the strongest angle before drafting.";
+  const goal = item.contentGoal || "Move this content item through the next editorial step.";
+
+  if (/research/.test(id)) {
+    return {
+      title: "Research preview",
+      summary: `Research should validate search intent around ${topic}.`,
+      bullets: [
+        `Primary topic: ${topic}`,
+        `Suggested angle: ${angle}`,
+        `Signals: ${(item.sourceSignals || []).slice(0, 3).join(", ") || "Opportunity, plan and QA context"}`,
+      ],
+      reviewPrompt: "Check whether the angle is worth turning into an editorial brief.",
+    };
+  }
+
+  if (/brief/.test(id)) {
+    return {
+      title: "Editorial brief preview",
+      summary: goal,
+      bullets: [
+        `Working title: ${item.title}`,
+        `Intent summary: ${topic}`,
+        `Suggested structure: problem, evaluation criteria, practical guidance, next commercial step`,
+        `CTA guidance: keep the next step specific to the article intent.`,
+      ],
+      reviewPrompt: "Review the brief before moving into package or drafting work.",
+    };
+  }
+
+  if (/package|handoff/.test(id)) {
+    return {
+      title: "Work package preview",
+      summary: "A safe handoff should define the edit scope before any article work starts.",
+      bullets: [
+        `Scope: ${goal}`,
+        "Tasks: draft or update article sections, check internal links, align CTA, rerun validation",
+        "Constraint: do not broaden the topic or publish automatically.",
+      ],
+      reviewPrompt: "Use the package to start drafting, then move the item to review.",
+    };
+  }
+
+  if (/review/.test(id)) {
+    return {
+      title: "Review preview",
+      summary: "Editorial review should prove the work is clear, useful and ready for controlled publishing.",
+      bullets: [
+        `Article QA: ${item.articleGate || "not checked"}${item.articleScore !== null ? `, score ${item.articleScore}` : ""}`,
+        "Review clarity, factual support, internal links and CTA relevance.",
+        "Only mark ready after the content has passed editorial judgement.",
+      ],
+      reviewPrompt: "Mark ready when the work has passed review.",
+    };
+  }
+
+  if (/monitor/.test(id)) {
+    return {
+      title: "Monitoring preview",
+      summary: "Monitoring confirms content health after publishing or review.",
+      bullets: [
+        `Current gate: ${item.articleGate || "not checked"}`,
+        "Run the safe monitor action and review the summary.",
+        "Keep the item in monitoring once the post-publication check is healthy.",
+      ],
+      reviewPrompt: "Review monitor output before closing the loop.",
+    };
+  }
+
+  return {
+    title: "Workflow output preview",
+    summary: "This action creates or updates operational context for the selected content item.",
+    bullets: [goal, angle],
+    reviewPrompt: "Review the output before selecting the next action.",
+  };
 }
 
 function getWorkflowProducedArtifacts(action = {}, item = {}) {
@@ -637,15 +753,19 @@ function getWorkflowProducedArtifacts(action = {}, item = {}) {
   return artifacts.map((artifact) => {
     const path = hydrateWorkflowTemplate(artifact.path || "", item);
     const exists = path
-      ? path === "clipboard" || path.startsWith("sentinel.") || SENTINEL_WORKFLOW_ARTIFACT_PATHS.has(path)
+      ? path === "clipboard" || path.startsWith("sentinel.") || path.startsWith("workbench:") || SENTINEL_WORKFLOW_ARTIFACT_PATHS.has(path)
       : false;
     return {
+      id: artifact.id || titleToSlug(artifact.label || "workflow-output"),
       label: artifact.label || "Workflow output",
       path,
       type: artifact.type || "local_output",
       description: artifact.description || "",
+      summary: artifact.summary || "",
+      nextAction: artifact.nextAction || "",
       exists,
       statusLabel: exists ? "Available" : "Pending",
+      preview: buildWorkflowArtifactPreview(artifact.id || artifact.type || artifact.label, item),
     };
   });
 }
@@ -682,6 +802,101 @@ function getPrimaryWorkflowActionForItem(item) {
   return primary[0] || secondary[0] || manual[0] || null;
 }
 
+function getContentArtifactTimestamp(historyEntries = [], artifactId = "") {
+  const entry = historyEntries.find((historyEntry) => (
+    Array.isArray(historyEntry.producedArtifacts)
+    && historyEntry.producedArtifacts.some((artifact) => artifact.id === artifactId)
+  ));
+  return entry?.createdAt || entry?.finishedAt || "";
+}
+
+function buildContentWorkbenchArtifacts(item = {}, historyEntries = []) {
+  if (!item?.id) return [];
+  const reached = (status) => contentHasReachedStatus(item, status);
+  const artifactDefinitions = [
+    {
+      id: "research-summary",
+      label: "Research",
+      status: reached("researching") ? "available" : "ready",
+      createdAt: getContentArtifactTimestamp(historyEntries, "research-summary"),
+      summary: reached("researching")
+        ? "Search intent, source signals and angle are ready to review."
+        : "Start research to create a reviewable research summary.",
+      nextAction: reached("researching") ? "Review research, then generate the editorial brief." : "Start research",
+      preview: buildWorkflowArtifactPreview("research-summary", item),
+    },
+    {
+      id: "editorial-brief",
+      label: "Brief",
+      status: reached("planning") || item.briefPrompt || item.relatedPlanId ? "available" : "upcoming",
+      createdAt: getContentArtifactTimestamp(historyEntries, "editorial-brief"),
+      summary: reached("planning") || item.briefPrompt || item.relatedPlanId
+        ? "Brief context is available for review before drafting."
+        : "Generate the brief after research has been reviewed.",
+      nextAction: reached("planning") ? "Prepare work package." : "Generate editorial brief",
+      preview: buildWorkflowArtifactPreview("editorial-brief", item),
+    },
+    {
+      id: "implementation-package",
+      label: "Package",
+      status: reached("drafting") ? "available" : "upcoming",
+      createdAt: getContentArtifactTimestamp(historyEntries, "implementation-package"),
+      summary: reached("drafting")
+        ? "Drafting package is available as the current work scope."
+        : "Prepare a package once the brief is accepted.",
+      nextAction: reached("drafting") ? "Move to review when drafting is complete." : "Prepare work package",
+      preview: buildWorkflowArtifactPreview("implementation-package", item),
+    },
+    {
+      id: "editorial-review",
+      label: "Review",
+      status: reached("review") ? "available" : "upcoming",
+      createdAt: getContentArtifactTimestamp(historyEntries, "editorial-review"),
+      summary: reached("review") ? "Review checklist is active for this item." : "Review opens after drafting work is complete.",
+      nextAction: reached("review") ? "Mark ready after editorial judgement." : "Move to review",
+      preview: buildWorkflowArtifactPreview("editorial-review", item),
+    },
+    {
+      id: "monitoring-check",
+      label: "Monitoring",
+      status: reached("monitoring") ? "available" : reached("published") ? "ready" : "upcoming",
+      createdAt: getContentArtifactTimestamp(historyEntries, "monitoring-check"),
+      summary: reached("monitoring")
+        ? "Monitoring context is active."
+        : reached("published")
+          ? "Run monitoring after publication."
+          : "Monitoring starts after publication.",
+      nextAction: reached("monitoring") ? "Continue scheduled monitoring." : "Refresh monitoring",
+      preview: buildWorkflowArtifactPreview("monitoring-check", item),
+    },
+  ];
+
+  return artifactDefinitions;
+}
+
+function getContentGuidedNextStep(item = {}, artifacts = []) {
+  const primaryAction = getPrimaryWorkflowActionForItem(item);
+  const currentStage = CONTENT_STATUS_META[item.status]?.label || formatStateLabel(item.status);
+  const availableArtifact = artifacts.find((artifact) => artifact.status === "available");
+  const readyArtifact = artifacts.find((artifact) => artifact.status === "ready");
+
+  if (primaryAction) {
+    return {
+      title: `${currentStage}: ${primaryAction.label}`,
+      summary: primaryAction.description || item.nextAction || "Select the next workflow action.",
+      actionLabel: primaryAction.label,
+      artifactLabel: readyArtifact?.label || availableArtifact?.label || "",
+    };
+  }
+
+  return {
+    title: `${currentStage}: review progress`,
+    summary: item.nextAction || "Review the visible artefacts and decide whether this item should move forward.",
+    actionLabel: "Review item",
+    artifactLabel: availableArtifact?.label || "",
+  };
+}
+
 function workflowActionSafetyLabel(action = {}) {
   if (action.safety === "safe_allowlisted") return "Allowlisted";
   if (action.safety === "manual_review") return "Manual review";
@@ -692,6 +907,7 @@ function workflowActionModeLabel(action = {}) {
   if (action.executionMode === "allowlisted_action") return "Runs safe action";
   if (action.executionMode === "allowlisted_pipeline") return "Runs safe workflow";
   if (action.executionMode === "manual_copy") return "Copies next step";
+  if (action.executionMode === "local_artifact") return "Creates artefact";
   return "Updates workflow";
 }
 
@@ -1587,7 +1803,7 @@ function SentinelAppHeader({
     ? "inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.045] px-3 py-1.5 text-xs font-semibold text-slate-200 transition-colors cursor-pointer hover:border-cyan-200/40 hover:bg-white/[0.09] focus:outline-none focus:ring-2 focus:ring-cyan-200/30"
     : "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer";
   const containerClass = standaloneMode
-    ? "mx-auto box-border w-full max-w-[1680px] px-[var(--space-lg)] md:px-[var(--space-xl)] 2xl:px-[var(--space-2xl)]"
+    ? "box-border w-full px-4 sm:px-5 lg:px-6 2xl:px-8"
     : "container";
   const headerStyle = standaloneMode
     ? {
@@ -1904,8 +2120,8 @@ function SentinelStandaloneFocusSurface({
 
   return (
     <section
-      className="relative isolate overflow-hidden rounded-[32px] border border-cyan-100/10 bg-[#07101d]/80 p-4 shadow-2xl shadow-slate-950/20 ring-1 ring-white/5 backdrop-blur-xl md:p-5"
-      style={{ marginBottom: "var(--space-md)" }}
+      className="relative isolate overflow-hidden border-y border-cyan-100/10 bg-white/[0.025] px-1 py-5 backdrop-blur-xl md:px-2 md:py-6"
+      style={{ marginBottom: "var(--space-lg)" }}
       aria-label="Sentinel standalone command surface"
     >
       <div
@@ -1916,7 +2132,7 @@ function SentinelStandaloneFocusSurface({
         }}
         aria-hidden="true"
       />
-      <div className="relative grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(440px,0.72fr)] xl:items-center">
+      <div className="relative grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.7fr)] xl:items-center">
         <div className="flex min-w-0 items-start gap-3">
           <SentinelLogoMark className="h-11 w-11 shrink-0 drop-shadow-[0_0_24px_rgba(34,211,238,0.2)]" compact />
           <div className="min-w-0">
@@ -1933,9 +2149,9 @@ function SentinelStandaloneFocusSurface({
         </div>
 
         <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
-          <div className="grid grid-cols-4 gap-2 rounded-2xl border border-white/10 bg-black/10 p-2">
+          <div className="grid grid-cols-4 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06]">
             {stageCounts.map((stage) => (
-              <div key={stage.id} className="rounded-xl px-2 py-2">
+              <div key={stage.id} className="bg-[#07101d]/75 px-3 py-2">
                 <p className="text-xs font-semibold text-slate-300">{stage.label}</p>
                 <p className="font-mono text-[11px] text-slate-500">{stage.count} items</p>
               </div>
@@ -4885,7 +5101,7 @@ function defaultContentStatus({ opportunity, recommendation, plan, inboxItem }) 
   if (recommendation?.type === "improve_existing") return "review";
   if (recommendation?.type === "monitor") return "monitoring";
   if (plan?.targetSlug && plan?.recommendedWorkflow?.nextCommand) return "review";
-  if (plan && !plan.targetSlug) return "approved";
+  if (plan && !plan.targetSlug) return "planning";
   if (opportunity?.targetSlug && opportunity?.actionTheme === "content_creation") return "published";
   if (opportunity?.targetSlug) return "review";
   if (recommendation?.type === "create_new") return "discovered";
@@ -6489,7 +6705,7 @@ function AdminView({ onPreview, standaloneMode = false }) {
     workflowState: sentinelStateSnapshot.state?.workflow?.state || "unknown",
   }).map((item) => {
     const persisted = contentWorkbenchState.items[item.id];
-    const status = persisted?.status || item.defaultStatus;
+    const status = normaliseContentStatus(persisted?.status || item.defaultStatus) || "discovered";
     return {
       ...item,
       status,
@@ -6819,9 +7035,9 @@ function AdminView({ onPreview, standaloneMode = false }) {
 
       <main
         className={standaloneMode
-          ? "relative z-10 mx-auto box-border w-full max-w-[1680px] px-[var(--space-lg)] md:px-[var(--space-xl)] 2xl:px-[var(--space-2xl)]"
+          ? "relative z-10 box-border w-full px-4 sm:px-5 lg:px-6 2xl:px-8"
           : "container"}
-        style={{ paddingTop: standaloneMode ? "var(--space-md)" : "var(--space-xl)", paddingBottom: "var(--space-2xl)" }}
+        style={{ paddingTop: standaloneMode ? "var(--space-lg)" : "var(--space-xl)", paddingBottom: "var(--space-2xl)" }}
       >
         {standaloneMode ? (
           <SentinelStandaloneFocusSurface
@@ -6835,7 +7051,7 @@ function AdminView({ onPreview, standaloneMode = false }) {
             }}
           />
         ) : null}
-        <div className={`grid min-w-0 ${standaloneMode ? (compactView ? "gap-5" : "gap-7") : (compactView ? "gap-lg" : "gap-xl")} ${standaloneMode ? (sidebarCollapsed ? "lg:grid-cols-[86px_minmax(0,1fr)]" : "lg:grid-cols-[210px_minmax(0,1fr)] xl:grid-cols-[224px_minmax(0,1fr)]") : (sidebarCollapsed ? "lg:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]" : "lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)]")}`}>
+        <div className={`grid min-w-0 ${standaloneMode ? (compactView ? "gap-4" : "gap-5") : (compactView ? "gap-lg" : "gap-xl")} ${standaloneMode ? (sidebarCollapsed ? "lg:grid-cols-[74px_minmax(0,1fr)]" : "lg:grid-cols-[minmax(176px,0.14fr)_minmax(0,1fr)] 2xl:grid-cols-[minmax(190px,0.12fr)_minmax(0,1fr)]") : (sidebarCollapsed ? "lg:grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[170px_minmax(0,1fr)]" : "lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)]")}`}>
           <SentinelNavigationRail
             navItems={navItems}
             activeNav={activeNav}
@@ -7653,6 +7869,7 @@ function ContentWorkbenchPanel({
   const [ownershipFilter, setOwnershipFilter] = useState("all");
   const [copyTarget, setCopyTarget] = useState("");
   const [copyState, setCopyState] = useState("idle");
+  const [selectedArtifactId, setSelectedArtifactId] = useState("research-summary");
   const [workflowActionStates, setWorkflowActionStates] = useState({});
   const [workflowHistory, setWorkflowHistory] = useState(() => readWorkflowActionHistory());
   const actions = useMemo(() => (
@@ -7685,7 +7902,7 @@ function ContentWorkbenchPanel({
     ...acc,
     [status]: items.filter((item) => item.status === status).length,
   }), {});
-  const topNextItem = items.find((item) => ["review", "drafting", "researching", "approved", "discovered"].includes(item.status)) || items[0];
+  const topNextItem = items.find((item) => ["review", "drafting", "planning", "researching", "discovered"].includes(item.status)) || items[0];
   const topWorkflowAction = getPrimaryWorkflowActionForItem(topNextItem);
 
   const copyValue = async (value, target) => {
@@ -7826,14 +8043,26 @@ function ContentWorkbenchPanel({
       return;
     }
 
+    if (action.executionMode === "local_artifact") {
+      if (action.nextStatus && action.nextStatus !== item.status) {
+        onStatusChange(item.id, action.nextStatus);
+      }
+      await finishAction({
+        status: "success",
+        message: action.expectedResult || `${action.label} created a Workbench artefact.`,
+        toStatus: action.nextStatus || "",
+      });
+      return;
+    }
+
     if (action.executionMode === "manual_copy") {
       const copyValueForAction = getWorkflowManualCopyValue(action, item);
       const ok = await copyText(copyValueForAction);
       await finishAction({
         status: ok ? "success" : "warning",
         message: ok
-          ? "Copied command. Run it in your local terminal when ready."
-          : "Clipboard copy was unavailable. The command is shown below for manual use.",
+          ? "Contextual fallback copied. The Workbench artefact remains the primary review surface."
+          : "Clipboard copy was unavailable. The contextual fallback is shown below for manual use.",
         outputExcerpt: copyValueForAction,
         copiedCommand: copyValueForAction,
       });
@@ -7940,6 +8169,12 @@ function ContentWorkbenchPanel({
   const selectedWorkflowHistory = (workflowHistory?.entries || [])
     .filter((entry) => entry.itemId === selectedItem?.id)
     .slice(0, 4);
+  const selectedArtifacts = selectedItem ? buildContentWorkbenchArtifacts(selectedItem, selectedWorkflowHistory) : [];
+  const selectedArtifact = selectedArtifacts.find((artifact) => artifact.id === selectedArtifactId)
+    || selectedArtifacts.find((artifact) => artifact.status === "available")
+    || selectedArtifacts[0]
+    || null;
+  const guidedNextStep = selectedItem ? getContentGuidedNextStep(selectedItem, selectedArtifacts) : null;
   const latestWorkflowAction = selectedItem ? getPrimaryWorkflowActionForItem(selectedItem) : null;
   const latestWorkflowActionState = selectedItem && latestWorkflowAction
     ? workflowActionStates[workflowActionKey(selectedItem, latestWorkflowAction)]
@@ -8023,21 +8258,26 @@ function ContentWorkbenchPanel({
                     {artifact.exists ? "Available" : "Pending"}
                   </span>
                 </div>
-                <p className="font-mono text-[11px] text-slate-400" style={{ marginTop: "4px" }}>{artifact.path}</p>
+                {artifact.path && !artifact.path.startsWith("workbench:") ? (
+                  <p className="font-mono text-[11px] text-slate-400" style={{ marginTop: "4px" }}>{artifact.path}</p>
+                ) : null}
                 <p className="text-slate-400" style={{ marginTop: "4px" }}>
-                  {artifact.exists ? artifact.description : "Output will appear after running the linked command."}
+                  {artifact.summary || artifact.description || (artifact.exists ? "Workbench output is ready to review." : "Output will appear after the linked workflow step is complete.")}
                 </p>
+                {artifact.nextAction ? (
+                  <p className="text-cyan-100" style={{ marginTop: "4px" }}>Next: {artifact.nextAction}</p>
+                ) : null}
               </div>
             ))}
           </div>
         ) : null}
 
         {result.copiedCommand ? (
-          <div className="rounded-xl bg-amber-200/10 px-3 py-2 text-xs text-amber-100" style={{ marginTop: "10px" }}>
-            <p className="font-semibold">{resultStatus === "manual" ? "Copied command" : "Command to run"}</p>
-            <p className="font-mono text-[11px] text-amber-50" style={{ marginTop: "4px" }}>{result.copiedCommand}</p>
-            <p style={{ marginTop: "4px" }}>Run this in the local terminal when the manual review is complete.</p>
-          </div>
+          <details className="rounded-xl bg-amber-200/10 px-3 py-2 text-xs text-amber-100" style={{ marginTop: "10px" }}>
+            <summary className="cursor-pointer font-semibold">Advanced implementation detail</summary>
+            <p className="font-mono text-[11px] text-amber-50" style={{ marginTop: "8px" }}>{result.copiedCommand}</p>
+            <p style={{ marginTop: "4px" }}>Use this only if you need the underlying terminal fallback. The visible artefact above is the primary operator output.</p>
+          </details>
         ) : null}
 
         {result.outputExcerpt && !result.copiedCommand ? (
@@ -8087,10 +8327,10 @@ function ContentWorkbenchPanel({
     const selectedStage = selectedItem ? stageForItem(selectedItem) : null;
 
     return (
-      <section className="relative overflow-hidden rounded-[34px] border border-cyan-100/10 bg-[#07101d]/90 p-4 text-slate-100 shadow-2xl shadow-slate-950/30 ring-1 ring-white/5 backdrop-blur-xl md:p-5">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_0%,rgba(20,184,166,0.16),transparent_34%),radial-gradient(circle_at_88%_10%,rgba(34,211,238,0.08),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_26%)]" aria-hidden="true" />
+      <section className="relative overflow-visible text-slate-100">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_14%_0%,rgba(20,184,166,0.14),transparent_34%),radial-gradient(circle_at_88%_10%,rgba(34,211,238,0.08),transparent_30%)]" aria-hidden="true" />
         <div className="relative">
-          <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="grid gap-4 border-b border-white/10 pb-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
             <div className="max-w-3xl">
               <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-200/75">Editorial operations</p>
               <h2 className="font-heading text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">Content Workbench</h2>
@@ -8098,16 +8338,16 @@ function ContentWorkbenchPanel({
                 Select one work item, move it through the lifecycle and keep the next editorial action visible.
               </p>
             </div>
-            <div className="grid min-w-[250px] grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-white/[0.045] p-2 text-sm">
-              <div className="rounded-xl bg-black/10 px-3 py-2">
+            <div className="grid min-w-[250px] grid-cols-3 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06] text-sm">
+              <div className="bg-[#07101d]/75 px-3 py-2">
                 <p className="text-slate-500">Queue</p>
                 <p className="text-xl font-semibold tracking-[-0.04em] text-white">{items.length}</p>
               </div>
-              <div className="rounded-xl bg-black/10 px-3 py-2">
+              <div className="bg-[#07101d]/75 px-3 py-2">
                 <p className="text-slate-500">Review</p>
                 <p className="text-xl font-semibold tracking-[-0.04em] text-amber-200">{(statusCounts.review || 0) + (statusCounts.ready || 0)}</p>
               </div>
-              <div className="rounded-xl bg-black/10 px-3 py-2">
+              <div className="bg-[#07101d]/75 px-3 py-2">
                 <p className="text-slate-500">Live</p>
                 <p className="text-xl font-semibold tracking-[-0.04em] text-emerald-200">{(statusCounts.published || 0) + (statusCounts.monitoring || 0)}</p>
               </div>
@@ -8120,10 +8360,10 @@ function ContentWorkbenchPanel({
               return (
                 <div
                   key={stage.id}
-                  className={`rounded-2xl border px-4 py-3 transition-colors ${
+                  className={`border-b px-1 pb-3 transition-colors ${
                     active
-                      ? "border-cyan-200/40 bg-cyan-300/[0.12] shadow-lg shadow-cyan-950/10"
-                      : "border-white/10 bg-white/[0.04] hover:border-cyan-100/20"
+                      ? "border-cyan-200/70"
+                      : "border-white/10 hover:border-cyan-100/30"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
@@ -8144,13 +8384,13 @@ function ContentWorkbenchPanel({
             })}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-black/10 p-2" style={{ marginTop: "16px" }}>
+          <div className="flex flex-wrap items-center gap-2 border-b border-white/10 pb-4" style={{ marginTop: "16px" }}>
             {[
               ["Status", statusFilter, setStatusFilter, ["all", ...CONTENT_LIFECYCLE_STATUSES]],
               ["Priority", priorityFilter, setPriorityFilter, ["all", ...priorities]],
               ["Category", categoryFilter, setCategoryFilter, ["all", ...categories]],
             ].map(([label, value, setter, options]) => (
-              <label key={label} className="flex items-center gap-2 rounded-full bg-white/[0.055] px-3 py-1.5 text-xs text-slate-500 ring-1 ring-white/10">
+              <label key={label} className="flex items-center gap-2 rounded-full bg-white/[0.045] px-3 py-1.5 text-xs text-slate-500 ring-1 ring-white/10">
                 {label}
                 <select
                   value={value}
@@ -8167,7 +8407,7 @@ function ContentWorkbenchPanel({
                 </select>
               </label>
             ))}
-            <label className="flex items-center gap-2 rounded-full bg-white/[0.055] px-3 py-1.5 text-xs text-slate-500 ring-1 ring-white/10">
+            <label className="flex items-center gap-2 rounded-full bg-white/[0.045] px-3 py-1.5 text-xs text-slate-500 ring-1 ring-white/10">
               Publication
               <select value={publishedFilter} onChange={(event) => setPublishedFilter(event.target.value)} className="bg-[#07101d] text-sm font-semibold text-slate-100 outline-none">
                 <option value="all">All</option>
@@ -8175,7 +8415,7 @@ function ContentWorkbenchPanel({
                 <option value="unpublished">Not published</option>
               </select>
             </label>
-            <label className="flex items-center gap-2 rounded-full bg-white/[0.055] px-3 py-1.5 text-xs text-slate-500 ring-1 ring-white/10">
+            <label className="flex items-center gap-2 rounded-full bg-white/[0.045] px-3 py-1.5 text-xs text-slate-500 ring-1 ring-white/10">
               Owner
               <select value={ownershipFilter} onChange={(event) => setOwnershipFilter(event.target.value)} className="bg-[#07101d] text-sm font-semibold text-slate-100 outline-none">
                 <option value="all">All</option>
@@ -8198,13 +8438,13 @@ function ContentWorkbenchPanel({
               Content workflow data is not available yet. Run the SEO reports to populate opportunities, plans and QA signals.
             </div>
           ) : (
-            <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(390px,0.4fr)] 2xl:grid-cols-[minmax(0,1fr)_minmax(440px,0.36fr)]" style={{ marginTop: "18px" }}>
+            <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(420px,0.32fr)] 2xl:grid-cols-[minmax(0,1fr)_minmax(500px,0.28fr)]" style={{ marginTop: "20px" }}>
               <div className="grid gap-5">
                 {CONTENT_STATUS_GROUPS.map((stage) => {
                   const stageItems = standaloneQueue.filter((item) => stage.statuses.includes(item.status));
                   if (!stageItems.length) return null;
                   return (
-                    <section key={stage.id} className="grid gap-3 rounded-[28px] border border-white/10 bg-black/[0.12] p-3">
+                    <section key={stage.id} className="grid gap-3 border-b border-white/10 pb-5">
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
                           <span className="h-px w-8 bg-cyan-200/30" />
@@ -8236,10 +8476,10 @@ function ContentWorkbenchPanel({
                                   setSelectedId(item.id);
                                 }
                               }}
-                              className={`group cursor-pointer rounded-[24px] border p-4 text-left shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-300/50 ${
+                              className={`group cursor-pointer rounded-[20px] border p-4 text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-300/50 ${
                                 active
-                                  ? "border-cyan-200/50 bg-cyan-300/[0.11] shadow-xl shadow-cyan-950/10 ring-1 ring-cyan-200/25"
-                                  : "border-white/10 bg-white/[0.045] hover:-translate-y-0.5 hover:border-cyan-100/25 hover:bg-white/[0.07] hover:shadow-lg hover:shadow-slate-950/10"
+                                  ? "border-cyan-200/50 bg-cyan-300/[0.1] ring-1 ring-cyan-200/25"
+                                  : "border-white/10 bg-white/[0.035] hover:-translate-y-0.5 hover:border-cyan-100/25 hover:bg-white/[0.06]"
                               }`}
                             >
                               <div className="flex items-start justify-between gap-4">
@@ -8291,7 +8531,7 @@ function ContentWorkbenchPanel({
                 })}
               </div>
 
-              <aside className="h-fit rounded-[30px] border border-cyan-100/10 bg-[#08111f]/95 p-5 text-white shadow-2xl shadow-slate-950/30 ring-1 ring-white/5 xl:sticky xl:top-24">
+              <aside className="h-fit rounded-[28px] border border-cyan-100/10 bg-[#08111f]/90 p-5 text-white ring-1 ring-white/5 xl:sticky xl:top-24 xl:rounded-none xl:border-y-0 xl:border-r-0 xl:bg-transparent xl:pl-6 xl:shadow-none xl:ring-0">
                 {selectedItem ? (
                   <>
                     <div className="flex items-start justify-between gap-3">
@@ -8304,6 +8544,19 @@ function ContentWorkbenchPanel({
                         {formatStateLabel(selectedItem.priority)}
                       </span>
                     </div>
+
+                    {guidedNextStep ? (
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.055] p-4" style={{ marginTop: "18px" }}>
+                        <p className="text-xs font-semibold text-slate-500">Guided next step</p>
+                        <h4 className="text-base font-semibold text-white" style={{ marginTop: "5px" }}>{guidedNextStep.title}</h4>
+                        <p className="text-sm leading-6 text-slate-300" style={{ marginTop: "6px" }}>{guidedNextStep.summary}</p>
+                        {guidedNextStep.artifactLabel ? (
+                          <p className="text-xs text-cyan-100" style={{ marginTop: "8px" }}>
+                            Review: {guidedNextStep.artifactLabel}
+                          </p>
+                        ) : null}
+                      </div>
+                    ) : null}
 
                     <div className="rounded-2xl border border-cyan-200/20 bg-cyan-300/[0.12] p-4 text-cyan-50 shadow-lg shadow-cyan-950/10" style={{ marginTop: "18px" }}>
                       <p className="text-xs font-semibold text-cyan-100/70">Next workflow action</p>
@@ -8326,6 +8579,78 @@ function ContentWorkbenchPanel({
                         </p>
                       ) : null}
                     </div>
+
+                    {selectedArtifacts.length ? (
+                      <section className="grid gap-3" style={{ marginTop: "18px" }}>
+                        <div className="flex items-center justify-between gap-3">
+                          <h4 className="text-sm font-semibold text-white">Operational artefacts</h4>
+                          <span className="text-xs text-slate-500">Visible outputs</span>
+                        </div>
+                        <div className="grid gap-2 sm:grid-cols-2">
+                          {selectedArtifacts.map((artifact) => {
+                            const activeArtifact = selectedArtifact?.id === artifact.id;
+                            const available = artifact.status === "available";
+                            const ready = artifact.status === "ready";
+                            return (
+                              <button
+                                key={artifact.id}
+                                type="button"
+                                onClick={() => setSelectedArtifactId(artifact.id)}
+                                className={`rounded-2xl border p-3 text-left transition-colors ${
+                                  activeArtifact
+                                    ? "border-cyan-200/45 bg-cyan-300/[0.12]"
+                                    : "border-white/10 bg-white/[0.045] hover:border-cyan-100/25 hover:bg-white/[0.07]"
+                                }`}
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="text-sm font-semibold text-slate-100">{artifact.label}</span>
+                                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                                    available
+                                      ? "bg-emerald-300/10 text-emerald-100 ring-1 ring-emerald-200/20"
+                                      : ready
+                                        ? "bg-cyan-300/10 text-cyan-100 ring-1 ring-cyan-200/20"
+                                        : "bg-white/[0.06] text-slate-400 ring-1 ring-white/10"
+                                  }`}>
+                                    {available ? "Available" : ready ? "Ready" : "Upcoming"}
+                                  </span>
+                                </div>
+                                <p className="line-clamp-2 text-xs leading-5 text-slate-400" style={{ marginTop: "7px" }}>{artifact.summary}</p>
+                                <p className="text-xs text-cyan-100" style={{ marginTop: "7px" }}>{activeArtifact ? "Open below" : "Open / review"}</p>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {selectedArtifact ? (
+                          <div className="rounded-2xl border border-white/10 bg-black/15 p-4">
+                            <div className="flex flex-wrap items-start justify-between gap-3">
+                              <div>
+                                <p className="text-xs text-slate-500">Review surface</p>
+                                <h4 className="text-base font-semibold text-white" style={{ marginTop: "4px" }}>{selectedArtifact.preview?.title || selectedArtifact.label}</h4>
+                              </div>
+                              <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-xs font-semibold text-slate-300 ring-1 ring-white/10">
+                                {selectedArtifact.createdAt ? formatDateTime(selectedArtifact.createdAt) : formatStateLabel(selectedArtifact.status)}
+                              </span>
+                            </div>
+                            <p className="text-sm leading-6 text-slate-300" style={{ marginTop: "10px" }}>
+                              {selectedArtifact.preview?.summary || selectedArtifact.summary}
+                            </p>
+                            {selectedArtifact.preview?.bullets?.length ? (
+                              <ul className="grid gap-2 text-sm text-slate-300" style={{ marginTop: "10px", paddingLeft: "18px", listStyle: "disc" }}>
+                                {selectedArtifact.preview.bullets.map((bullet) => (
+                                  <li key={bullet}>{bullet}</li>
+                                ))}
+                              </ul>
+                            ) : null}
+                            {selectedArtifact.preview?.reviewPrompt ? (
+                              <div className="rounded-xl bg-cyan-300/[0.1] px-3 py-2 text-xs text-cyan-100 ring-1 ring-cyan-200/15" style={{ marginTop: "12px" }}>
+                                {selectedArtifact.preview.reviewPrompt}
+                              </div>
+                            ) : null}
+                          </div>
+                        ) : null}
+                      </section>
+                    ) : null}
 
                     <div className="grid gap-3" style={{ marginTop: "16px" }}>
                       {selectedWorkflowGroups.primary.length ? (

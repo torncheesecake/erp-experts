@@ -222,12 +222,14 @@ Design principles:
 - The top rail is compact and status-led, showing health, authority, runtime and cadence without large dashboard cards.
 - Navigation is calmer and workbench-first, with Content Workbench, Inbox and Opportunities ahead of infrastructure sections.
 - The layout uses a wider dark workspace, subtle depth, slimmer rails and fewer equal-weight boxes.
+- The standalone shell now uses the full viewport width with CSS grid and flexbox. The Workbench is no longer constrained to a large centred dashboard box.
 - ERP Experts remains visible only as active tenant context, not as app branding.
 - A code-native Sentinel mark now anchors the header and workspace surface, replacing generic icon treatment.
 - The first viewport is a command surface with live editorial queue rows and lifecycle lanes, not a boxed admin hero.
 - The latest interaction pass reduces the hero treatment further into a compact work-next strip so the Content Workbench itself becomes the main surface.
 - Content items behave as focused editorial work cards with a persistent working panel for rationale, goal, next action, status and safe helpers.
 - Workflow actions now sit above raw commands. The operator chooses tasks such as start research, generate brief, move to review or refresh monitoring, while manual commands remain collapsed for advanced use.
+- The operator journey is being reassessed around artefacts rather than commands. Research, Brief, Package, Review and Monitoring outputs now appear as reviewable Workbench surfaces with guided next-step recommendations.
 - The unified design system is dark-first. It uses deep navy and graphite shell surfaces, softer elevated work surfaces, cyan as the primary accent, and muted green, amber and red only for semantic state.
 - Bright white slabs have been removed from the standalone Workbench. Queue lanes, cards, filters, recent outputs and the working panel now share one operational surface language.
 - Infrastructure context is deliberately quieter. The top rail now presents Healthy, Private, Connected and Operational state before implementation detail.

@@ -362,7 +362,7 @@ function chooseWorkflow({ snapshot, counts, statuses, approvals, failedRuns }) {
   if (executionApproval) {
     return {
       state: "execution_ready",
-      recommendedNextStep: `Run npm run seo:plan:run -- ${executionApproval.planId}, then review the proposal before any patch.`,
+      recommendedNextStep: `Review the approved implementation workflow for ${executionApproval.planId}, then inspect the proposal before any patch.`,
       reason: `${executionApproval.planId} is approved for ${executionApproval.approvedFor}.`,
       humanInputRequired: true,
     };
@@ -380,7 +380,7 @@ function chooseWorkflow({ snapshot, counts, statuses, approvals, failedRuns }) {
   if (topApproval?.approvedFor === "planning") {
     return {
       state: "growth_ready",
-      recommendedNextStep: `Review the approved planning work for ${topApproval.planId}.`,
+      recommendedNextStep: `Review the planning output for ${topApproval.planId} and decide the next editorial action.`,
       reason: `${topApproval.planId} is approved for planning.`,
       humanInputRequired: true,
     };
@@ -455,7 +455,7 @@ function buildInboxRecommendation({ workflow, topPlan, topOpportunity, approvals
 
   if (workflow.state === "growth_ready" && planningApproval) {
     return {
-      title: "Review approved planning work",
+      title: "Review planning work",
       priority: "medium",
       status: "awaiting_review",
       recommendedNextStep: workflow.recommendedNextStep,

@@ -110,7 +110,7 @@ The Control Centre now supports saved local operator workspaces via `sentinel.op
 
 The Control Centre now includes contextual operator help backed by `platform/help/control-centre-help.json`. Help changes with the selected section, explains when to use each area, lists safe notes and shows a subtle first-run hint for new local sessions. This help is private/operator-only and is not exposed on `/seo-progress`.
 
-The Control Centre now includes a primary Content Workbench section for editorial operations. It derives article and topic workflow cards from existing opportunities, plans, inbox items, article QA rows and recommendations, then groups them through `discovered`, `approved`, `researching`, `drafting`, `review`, `ready`, `published` and `monitoring` states. Status changes are persisted only in local browser storage under `sentinel.contentWorkbench.v1`; workflow action history is browser-local under `sentinel.workflowActions.v1`. The Workbench does not publish content, generate full articles, run arbitrary commands or change SEO scoring, and it is not exposed on `/seo-progress`.
+The Control Centre now includes a primary Content Workbench section for editorial operations. It derives article and topic workflow cards from existing opportunities, plans, inbox items, article QA rows and recommendations, then groups them through `discovered`, `researching`, `planning`, `drafting`, `review`, `ready`, `published` and `monitoring` states. Older browser-local `approved` state is normalised to `planning`. Status changes are persisted only in local browser storage under `sentinel.contentWorkbench.v1`; workflow action history is browser-local under `sentinel.workflowActions.v1`. The Workbench does not publish content, generate full articles, run arbitrary commands or change SEO scoring, and it is not exposed on `/seo-progress`.
 
 The Control Centre has had a UX polish pass focused on daily operation rather than new behaviour. The Overview now prioritises current focus, recommended next step and primary safe actions; command groups are less dense; Activity Feed rows are quieter and taxonomy-labelled; stakeholder routes remain unchanged.
 
@@ -124,7 +124,7 @@ Current operator zones:
 
 - System Status: health, workflow, cadence state, deployment readiness and doctor state.
 - Current Focus: latest opportunity, latest plan, practical inbox item and recommended next step.
-- Content Workbench: article-level workflow for discovered topics, approved work, research, drafting, review, readiness, publication and monitoring.
+- Content Workbench: article-level workflow for discovered topics, research, planning, drafting, review, readiness, publication and monitoring.
 - Activity Feed: chronological narrative of recent monitor runs, controlled operator actions, cadence runs, report generation and notification payload preparation.
 - Tenant: active client context for ERP Experts, including base URL, operator route, stakeholder route and future multi-tenant note.
 - Authority State: first gate layer showing whether operator controls are in local bypass, required, verified or failed state.
@@ -512,7 +512,7 @@ Access control planning is now scaffolded in `docs/SENTINEL_ACCESS_CONTROL_PLAN.
 
 Sentinel ownership and remote-auth architecture is documented in `docs/SENTINEL_OWNERSHIP_AUTH_ARCHITECTURE.md`. The intended future model is that Matthew's Sentinel API, likely on the Raspberry Pi or another Matthew-controlled server, becomes the private authority that unlocks operator controls. If the API is unavailable, the Pi is offline or the token is invalid, `/seo-roadmap` should stay locked or read-only while `/seo-progress` remains stakeholder-safe. This is planning only: no login, token validation or route blocking has been implemented yet.
 
-The Action Inbox now uses the same Sentinel operational state to create a top-level review item such as `Review approved planning work`. This makes the inbox the practical operator queue while preserving `reports/seo-action-inbox.json` and the existing opportunity, plan, link, freshness and conversion inputs. Inbox rows are also appended to SQLite as operator queue history.
+The Action Inbox now uses the same Sentinel operational state to create top-level review items for current planning, research and content work. This makes the inbox the practical operator queue while preserving `reports/seo-action-inbox.json` and the existing opportunity, plan, link, freshness and conversion inputs. Inbox rows are also appended to SQLite as operator queue history.
 
 It does not change SEO scoring, edit content, approve plans, apply patches, publish or commit.
 
@@ -620,11 +620,17 @@ The first Sentinel authority gate is implemented but disabled by default. `GET /
 
 ## Workflow Action Outputs
 
-Sentinel workflow actions now produce visible operator outputs in the Content Workbench. The selected item panel shows the latest result, status change, generated or expected artefact, manual command and suggested next step. A compact Workbench history shows the latest five workflow outputs. Local transitions remain browser-local, manual-copy actions expose the command even if clipboard permission is unavailable, and allowlisted actions surface the capped API execution summary with detailed output collapsed.
+Sentinel workflow actions now produce visible operator outputs in the Content Workbench. The selected item panel shows the latest result, status change, generated or expected artefact and suggested next step. A compact Workbench history shows the latest five workflow outputs. Local transitions remain browser-local, local artefact actions create reviewable Workbench surfaces, and allowlisted actions surface the capped API execution summary with detailed output collapsed. Terminal fallbacks are treated as advanced implementation detail and are not the primary operator output.
+
+## Operator Journey Reassessment
+
+`docs/SENTINEL_OPERATOR_JOURNEY_REASSESSMENT.md` defines the content journey from discovery through research, planning, drafting, review, ready, published and monitoring. The Workbench now exposes Research, Brief, Package, Review and Monitoring artefact cards for the selected item, plus a guided next-step panel so the operator sees what happened, what was created, what to review and which operational action is next. This first pass deliberately avoids a new database schema and keeps artefact state local to the Workbench.
 
 ## Sentinel Unified Design System
 
 The standalone `/sentinel` shell now uses a coherent dark-first operational design system. The visual language is built around deep navy and graphite shell surfaces, softer elevated workspace panels, cyan as the primary action and selection accent, and muted semantic colours for health, warning and danger states only. Bright white Workbench slabs and mixed dashboard cards have been reduced so Content Workbench reads as the primary editorial workspace, with infrastructure context kept in a quieter status rail.
+
+The standalone layout has also moved away from a capped boxed dashboard canvas. `/sentinel` now uses the full viewport width, a slimmer grid-based left rail, an expanding content queue and a docked right-hand review panel on larger screens. The Workbench lanes use softer separation instead of repeated nested cards.
 
 ## Pi Service Verifier Canonical DB State
 

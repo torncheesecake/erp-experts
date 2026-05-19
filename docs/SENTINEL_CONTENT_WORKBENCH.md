@@ -29,8 +29,8 @@ It does not change SEO scoring and does not create a new content engine.
 Content items use this lifecycle:
 
 - `discovered`
-- `approved`
 - `researching`
+- `planning`
 - `drafting`
 - `review`
 - `ready`
@@ -38,6 +38,8 @@ Content items use this lifecycle:
 - `monitoring`
 
 These statuses are workflow labels for the operator. They do not publish content, alter article data or approve implementation work by themselves.
+
+Older browser-local state that used `approved` is normalised to `planning`. The intent is clearer: planning means the content item has enough context to become scoped editorial work, not that implementation or publication has been approved.
 
 ## Workbench UI
 
@@ -50,6 +52,7 @@ The current standalone design system is dark-first and workflow-led. It removes 
 - cyan for primary action and selection state
 - muted green, amber and red for health and risk only
 - softer lane separation instead of repeated heavy cards
+- full-width fluid grid and flex layout instead of a capped boxed dashboard canvas
 
 Each content work card now prioritises:
 
@@ -60,7 +63,7 @@ Each content work card now prioritises:
 - priority
 - enough rationale to choose what to open next
 
-The focused working panel shows content goal, opportunity rationale, suggested angle, recommended next step, linked plan/opportunity state and local workflow history. It is designed to feel like working on the selected item, not reading a metadata table.
+The focused working panel shows content goal, opportunity rationale, suggested angle, guided next step, reviewable artefacts, linked plan/opportunity state and local workflow history. It is designed to feel like working on the selected item, not reading a metadata table.
 
 The standalone view also includes a calmer stage ribbon for:
 
@@ -69,6 +72,8 @@ The standalone view also includes a calmer stage ribbon for:
 - Review
 - Live
 
+The standalone Workbench now uses the full viewport width. The left rail is slim, the central queue expands fluidly, and the selected item detail behaves as a docked right-hand review surface on larger screens.
+
 ## Actions
 
 The workbench now prioritises workflow actions over raw command thinking. Workflow actions are defined in `platform/workflows/content-workflow-actions.json` and documented in `docs/SENTINEL_WORKFLOW_ACTIONS.md`.
@@ -76,7 +81,6 @@ The workbench now prioritises workflow actions over raw command thinking. Workfl
 Primary actions include:
 
 - review opportunity
-- approve plan
 - start research
 - generate brief
 - prepare work package
@@ -90,12 +94,26 @@ Primary actions include:
 Each action maps to one of three behaviours:
 
 - local lifecycle transition
-- copy-only manual guidance
+- local artefact creation
 - existing allowlisted action execution through the Sentinel API
 
-Raw status controls, linked plan commands and brief prompts remain available, but they are placed behind collapsed manual controls so the operator starts from the task they want to complete.
+Raw status controls, linked plan commands and brief prompts remain available, but they are placed behind collapsed manual controls or advanced implementation detail so the operator starts from the task they want to complete.
 
 It does not auto-generate articles, auto-publish, run arbitrary commands or expose deploy/restore/cleanup actions.
+
+## Artefact Surfaces
+
+The Workbench is now artefact-led. A selected content item can show reviewable artefact cards for:
+
+- Research
+- Brief
+- Package
+- Review
+- Monitoring
+
+Each artefact card shows whether it is available, ready to create or upcoming, then points to the next operational action. Opening an artefact shows a structured preview, such as search intent, suggested angle, editorial structure, package tasks, review criteria or monitoring guidance.
+
+Workbench-local artefacts are not fake generated files. They are structured operator surfaces created from existing item context and action history. If a future action depends on a real local report, Sentinel states whether that report exists and where to review it.
 
 ## Action Outputs
 
@@ -108,11 +126,11 @@ The selected item panel shows the latest action output with:
 - status change when relevant
 - suggested next action
 - produced artefacts or pending output paths
-- copied or fallback manual command where relevant
+- advanced fallback detail where relevant
 
 Recent workflow outputs appear above the content lanes and show the latest five actions across the Workbench. This keeps the editorial flow clear after a status move, manual handoff or allowlisted diagnostic action.
 
-Artefact awareness is deliberately conservative. Sentinel marks committed or already-present local reports as available. If a linked report does not exist yet, the UI states that the output will appear after the linked command is run. It does not invent files.
+Artefact awareness is deliberately conservative. Sentinel marks Workbench artefacts, committed outputs or already-present local reports as available. If a linked report does not exist yet, the UI states what action creates it. It does not invent files or expose bare commands as the primary result.
 
 ## Persistence
 
